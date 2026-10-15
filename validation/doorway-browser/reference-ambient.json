@@ -1,0 +1,131 @@
+{
+  "label": "Natural authored population, 8 seconds of preparation; no stimuli or repositioned enemies",
+  "elapsed": 0,
+  "phase": "play",
+  "staging": true,
+  "perception": {
+    "states": {
+      "wander": 136,
+      "idle": 45
+    },
+    "noises": [],
+    "heard": 0,
+    "seen": 0,
+    "sightTests": 368,
+    "sharedFields": 0,
+    "fieldBuilds": 0,
+    "prepShots": 0,
+    "staging": true,
+    "time": 7.999999999999977
+  },
+  "population": 181,
+  "movedMoreThanFive": 155,
+  "nearDoor": [
+    {
+      "id": 106,
+      "moved": 52.333333333333606,
+      "x": 974.2960527068772,
+      "y": 2303.20053563213,
+      "state": "idle"
+    },
+    {
+      "id": 167,
+      "moved": 3.627467541482324,
+      "x": 1324.3544929174343,
+      "y": 2770.851965380367,
+      "state": "wander"
+    },
+    {
+      "id": 196,
+      "moved": 75.2952795070955,
+      "x": 1243.1690248608238,
+      "y": 2606.7251521021853,
+      "state": "idle"
+    },
+    {
+      "id": 233,
+      "moved": 50.472069529707,
+      "x": 1310.557834310382,
+      "y": 2657.534641535897,
+      "state": "wander"
+    },
+    {
+      "id": 234,
+      "moved": 0,
+      "x": 995.2527304142714,
+      "y": 2605.7835547067225,
+      "state": "wander"
+    },
+    {
+      "id": 246,
+      "moved": 40.266666666689204,
+      "x": 1040.4519238926794,
+      "y": 2879.649233319654,
+      "state": "wander"
+    },
+    {
+      "id": 272,
+      "moved": 34.46945642449429,
+      "x": 759.0500545192907,
+      "y": 2298.6701423657046,
+      "state": "idle"
+    },
+    {
+      "id": 273,
+      "moved": 0,
+      "x": 1099.2763444185257,
+      "y": 2381.575505256653,
+      "state": "wander"
+    },
+    {
+      "id": 274,
+      "moved": 76.30464889958441,
+      "x": 787.686716778896,
+      "y": 2256.8154598153624,
+      "state": "idle"
+    }
+  ],
+  "shelter": {
+    "room": {
+      "x": 128,
+      "y": 2496,
+      "w": 576,
+      "h": 576
+    },
+    "door": {
+      "id": 88,
+      "type": "shelterDoor",
+      "x": 724,
+      "y": 2624,
+      "w": 25,
+      "h": 128,
+      "hp": 0,
+      "maxhp": 0,
+      "solid": true,
+      "destroyed": false,
+      "open": false,
+      "amount": 0,
+      "vertical": true,
+      "_query6": 34659
+    },
+    "rear": {
+      "id": 89,
+      "type": "shelterRear",
+      "x": 82,
+      "y": 2624,
+      "w": 28,
+      "h": 128,
+      "hp": 0,
+      "maxhp": 0,
+      "solid": true,
+      "destroyed": false,
+      "vertical": true
+    },
+    "north": false,
+    "departed": false,
+    "departedAt": null,
+    "opens": 0,
+    "waitTime": 7.999999999999977,
+    "cooldown": 0
+  }
+}

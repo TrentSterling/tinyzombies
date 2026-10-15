@@ -1,0 +1,41 @@
+{
+  "htmlSha256": "e4754e8743e3d5284d44f5b786c22ef6d77bcefe972f2032543cf862d9f9fa4f",
+  "method": "Node VM executes exact audio host with stub AudioContext/OfflineAudioContext and filesystem-backed fetch. No browser, GPU, speaker output or subjective listening. Actual codec padding/PCM independently checked by Python and FFmpeg.",
+  "passed": true,
+  "checks": [
+    "whole-script syntax",
+    "deduplicated concurrent preload",
+    "two concurrent fetch/decode jobs",
+    "43 assets and hashes",
+    "no fetch/decode or source allocation before a buffer is ready",
+    "no fetch/decode at playback",
+    "per-category and total/low-priority limits",
+    "independent sources sharing decoded buffers",
+    "mission offsets",
+    "pause/mute/reset lifecycle",
+    "HTTP/hash/decode/duration/abort failure isolation",
+    "same-kind ready fallback",
+    "one explicit retry then bounded failure",
+    "late load while paused creates no playback"
+  ],
+  "normal": {
+    "fetches": 43,
+    "decodes": 43,
+    "maxActive": 2,
+    "timers": 0
+  },
+  "partial": {
+    "fetches": 48,
+    "decodes": 42,
+    "maxActive": 2,
+    "timers": 0,
+    "ready": 38,
+    "failed": {
+      "pipe-high": "Aborted",
+      "hit-1": "Asset version mismatch",
+      "rifle-2": "HTTP 404",
+      "death-2": "Unexpected decoded duration/channels",
+      "growl-2": "decode failure"
+    }
+  }
+}

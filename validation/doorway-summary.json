@@ -1,0 +1,698 @@
+{
+  "sha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "baselineSha256": "f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405",
+  "reference": {
+    "url": "https://tront.xyz/deadends/",
+    "main": "a547496c931a047c832a21d35165026df091025b",
+    "sha256": "209a9d39f79649304c278ed229a0fcba52c7a610ce6c7113cbd048c46f82837e",
+    "method": "Actual current DEAD ENDS gameplay and existing Canvas2D renderer; only final installAtlas27 call removed, RAF manually stepped, browser GPU/WebGL/WebGPU disabled. Not a GPU performance test.",
+    "quietWander": "155 of 181 authored zombies moved >5 world pixels in 8 seconds with no stimuli.",
+    "door": "After gunfire a controlled common approached a closed shelter; opening it allowed entry and player HP 100 to 23 while staging remained true."
+  },
+  "audioHostByteEquivalent": true,
+  "settings": {
+    "zombies": 2048,
+    "particles": 32768,
+    "resolution": [
+      1280,
+      720
+    ]
+  },
+  "scenes": {
+    "natural": {
+      "baseline": {
+        "elapsedSimSeconds": 6.183258056640625,
+        "movedOverFiveCentimetres": 10,
+        "medianFPS": 60.00531322789266,
+        "medianPolledGPUms": 1.900544,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 1,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0,
+          100
+        ],
+        "rounds": 0,
+        "kills": 0,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -28.05428695678711,
+            "z": 18.43011474609375,
+            "hp": 25,
+            "awake": 0,
+            "kind": 2
+          },
+          {
+            "i": 1,
+            "x": -84.86026000976562,
+            "z": -88.95059967041016,
+            "hp": 3,
+            "awake": 0,
+            "kind": 1
+          },
+          {
+            "i": 2,
+            "x": -80.11579895019531,
+            "z": -87.4003677368164,
+            "hp": 7,
+            "awake": 0,
+            "kind": 3
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 1073741823,
+            "wall": 1
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 1073741823,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 1073741823,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 1073741823,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      },
+      "candidate": {
+        "elapsedSimSeconds": 6.233355522155762,
+        "movedOverFiveCentimetres": 367,
+        "medianFPS": 60.0056954462851,
+        "medianPolledGPUms": 2.392064,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 1,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0,
+          100
+        ],
+        "rounds": 0,
+        "kills": 0,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -27.615570068359375,
+            "z": 18.418180465698242,
+            "hp": 25,
+            "awake": 0,
+            "kind": 2
+          },
+          {
+            "i": 1,
+            "x": -84.86026000976562,
+            "z": -88.95059967041016,
+            "hp": 3,
+            "awake": 0,
+            "kind": 1
+          },
+          {
+            "i": 2,
+            "x": -80.11579895019531,
+            "z": -87.4003677368164,
+            "hp": 7,
+            "awake": 0,
+            "kind": 3
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 30,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 80,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 96,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      }
+    },
+    "closed": {
+      "baseline": {
+        "elapsedSimSeconds": 5.216549873352051,
+        "movedOverFiveCentimetres": 24,
+        "medianFPS": 59.99870743902732,
+        "medianPolledGPUms": 1.96608,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 1,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0,
+          100
+        ],
+        "rounds": 1,
+        "kills": 0,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -55,
+            "z": 52,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -56,
+            "z": 48,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -56,
+            "z": 56,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      },
+      "candidate": {
+        "elapsedSimSeconds": 5.183324813842773,
+        "movedOverFiveCentimetres": 314,
+        "medianFPS": 60.004685240092876,
+        "medianPolledGPUms": 2.228224,
+        "hp": 100,
+        "doorHP": 22.928037643432617,
+        "doorClosed": 1,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0.3812499940395355,
+          100
+        ],
+        "rounds": 1,
+        "kills": 1,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -59.719966888427734,
+            "z": 52.54072952270508,
+            "hp": 2,
+            "awake": 8.416617393493652,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -59.719852447509766,
+            "z": 51.900691986083984,
+            "hp": 2,
+            "awake": 8.416617393493652,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -59.16303634643555,
+            "z": 52.93588638305664,
+            "hp": 2,
+            "awake": 8.416617393493652,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      }
+    },
+    "open": {
+      "baseline": {
+        "elapsedSimSeconds": 7.09993839263916,
+        "movedOverFiveCentimetres": 0,
+        "medianFPS": 60.00022122599487,
+        "medianPolledGPUms": 1.900544,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 0,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0,
+          100
+        ],
+        "rounds": 1,
+        "kills": 0,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -55,
+            "z": 52,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -56,
+            "z": 48,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -56,
+            "z": 56,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      },
+      "candidate": {
+        "elapsedSimSeconds": 7.1666412353515625,
+        "movedOverFiveCentimetres": 287,
+        "medianFPS": 60.005495384594255,
+        "medianPolledGPUms": 2.162688,
+        "hp": 9,
+        "doorHP": 19.953367233276367,
+        "doorClosed": 0,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0.9949899911880493,
+          9
+        ],
+        "rounds": 1,
+        "kills": 1,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -60.96687316894531,
+            "z": 52.044708251953125,
+            "hp": 2,
+            "awake": 10,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -61.52431869506836,
+            "z": 51.70906448364258,
+            "hp": 2,
+            "awake": 10,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -60.30216598510742,
+            "z": 52.250633239746094,
+            "hp": 2,
+            "awake": 10,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      }
+    },
+    "combat": {
+      "baseline": {
+        "elapsedSimSeconds": 5.083316802978516,
+        "movedOverFiveCentimetres": 24,
+        "medianFPS": 59.99778163000013,
+        "medianPolledGPUms": 1.96608,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 0,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0,
+          100
+        ],
+        "rounds": 95,
+        "kills": 0,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -55,
+            "z": 52,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -56,
+            "z": 48,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -56,
+            "z": 56,
+            "hp": 2,
+            "awake": 0,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      },
+      "candidate": {
+        "elapsedSimSeconds": 5.216519355773926,
+        "movedOverFiveCentimetres": 309,
+        "medianFPS": 60.00140093042541,
+        "medianPolledGPUms": 2.490368,
+        "hp": 100,
+        "doorHP": 28,
+        "doorClosed": 0,
+        "journey": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "director": [
+          0,
+          0,
+          0.36250001192092896,
+          100
+        ],
+        "rounds": 100,
+        "kills": 6,
+        "trackedZombies": [
+          {
+            "i": 0,
+            "x": -56.5545539855957,
+            "z": 52.06881332397461,
+            "hp": 0,
+            "awake": 19.419652938842773,
+            "kind": 0
+          },
+          {
+            "i": 1,
+            "x": -57.12266540527344,
+            "z": 49.22825622558594,
+            "hp": 0,
+            "awake": 18.52190399169922,
+            "kind": 0
+          },
+          {
+            "i": 2,
+            "x": -57.348602294921875,
+            "z": 54.44165802001953,
+            "hp": 0,
+            "awake": 19.50916290283203,
+            "kind": 0
+          }
+        ],
+        "nav": [
+          {
+            "x": -61,
+            "z": 52,
+            "cost": 0,
+            "wall": 0
+          },
+          {
+            "x": -59,
+            "z": 52,
+            "cost": 20,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 52,
+            "cost": 50,
+            "wall": 0
+          },
+          {
+            "x": -56,
+            "z": 48,
+            "cost": 66,
+            "wall": 0
+          }
+        ],
+        "errors": [],
+        "lost": null
+      }
+    }
+  },
+  "checks": {
+    "quietPreparation": true,
+    "doorApproachAndBatter": true,
+    "closedDoorBlocksBodies": true,
+    "openDoorEntryDamage": true,
+    "prepDirectorHeld": true,
+    "prepShotsDamageEnemies": true,
+    "baselineFreezeReproduced": true,
+    "overlapCollision": true,
+    "ordinaryControls": true,
+    "audioContracts": true,
+    "exactReleaseBootAndFrame": true
+  },
+  "sessions": [
+    {
+      "end": "2026-10-15T17:54:20.1502051+00:00",
+      "remainingOwnedProcesses": [],
+      "gpuFaults": [],
+      "start": "2026-10-15T17:48:28.1008966Z",
+      "remainingProfileProcesses": []
+    },
+    {
+      "remainingProfileProcesses": [],
+      "end": "2026-10-15T17:56:05.5753940+00:00",
+      "start": "2026-10-15T17:54:35.5411488Z",
+      "gpuFaults": [],
+      "remainingOwnedProcesses": []
+    },
+    {
+      "end": "2026-10-15T18:00:35.8336922+00:00",
+      "gpuFaults": [],
+      "remainingProfileProcesses": [],
+      "start": "2026-10-15T17:59:59.5086147Z",
+      "remainingOwnedProcesses": []
+    }
+  ],
+  "method": "Matched natural and three-zombie doorway scenes, same seed and scenario inputs, normal browser input after explicitly described fixture setup. Frame timing, aim tracking and GPU atomic ordering differ. Videos are silent CDP screen captures, not audio qualification. All full populations retained. Baseline crowd separation can move overlapping bodies despite its zombie AI freeze.",
+  "limitations": [
+    "Brief bounded local qualification on one Windows adapter, not a long soak or complete campaign run.",
+    "Shared routing through doors and 10-second awareness timer; this does not port the reference full last-seen search memory.",
+    "First mask probe incorrectly required an opened overhead door to clear every height bit. Corrected assertion checks ground clearance; runtime unchanged. Initial candidate and failed probe retained outside release receipts."
+  ],
+  "passed": true,
+  "qualificationSha256": "e4754e8743e3d5284d44f5b786c22ef6d77bcefe972f2032543cf862d9f9fa4f",
+  "releaseNormalization": {
+    "testedCRLFSha256": "e4754e8743e3d5284d44f5b786c22ef6d77bcefe972f2032543cf862d9f9fa4f",
+    "releaseLFSha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+    "onlyCRLFtoLF": true,
+    "restoresRepositoryLFConvention": true
+  },
+  "gpuReleasedUtc": "2026-10-15T18:00:35.8928730Z"
+}

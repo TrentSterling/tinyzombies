@@ -1,0 +1,1479 @@
+{
+  "label": "Controlled extra common zombie; player fires from the closed shelter, then all ammo is emptied to isolate doorway pursuit",
+  "start": {
+    "id": 285,
+    "x": 990,
+    "y": 2668
+  },
+  "population": 182,
+  "samples": [
+    {
+      "t": 0.7000000000000005,
+      "x": 970.7030278631353,
+      "y": 2706.270057135864,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 7.2,
+        "nextSense": 0.8700000000000006,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 1.2000000000000006,
+      "x": 916.3315526195491,
+      "y": 2706.4,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 7.566666666666668,
+        "nextSense": 1.2366666666666677,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 1.6999999999999988,
+      "x": 862.434461865947,
+      "y": 2706.4,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 8.116666666666665,
+        "nextSense": 1.7866666666666657,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 2.199999999999997,
+      "x": 810.1019814106257,
+      "y": 2695.3646288370055,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 8.666666666666664,
+        "nextSense": 2.336666666666664,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 2.6999999999999953,
+      "x": 796.2862419327412,
+      "y": 2690.654514916003,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 9.03333333333333,
+        "nextSense": 2.703333333333329,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 3.1999999999999935,
+      "x": 782.4284517344712,
+      "y": 2685.944859133437,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 9.583333333333327,
+        "nextSense": 3.253333333333327,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 3.6999999999999917,
+      "x": 780.5987705726909,
+      "y": 2685.322492347542,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 10.133333333333326,
+        "nextSense": 3.8033333333333252,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 4.19999999999999,
+      "x": 784.8048607281096,
+      "y": 2686.748100142133,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 10.683333333333323,
+        "nextSense": 4.353333333333324,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 4.699999999999989,
+      "x": 780.41162656405,
+      "y": 2685.2595913431906,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 11.04999999999999,
+        "nextSense": 4.719999999999989,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 5.199999999999987,
+      "x": 780.3061126316537,
+      "y": 2685.223841973835,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 11.599999999999987,
+        "nextSense": 5.269999999999987,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 5.699999999999985,
+      "x": 785.0507314512408,
+      "y": 2686.831358775703,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 12.149999999999984,
+        "nextSense": 5.819999999999985,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    },
+    {
+      "t": 6.199999999999983,
+      "x": 778.7569526344844,
+      "y": 2684.698973524184,
+      "hp": 79.30778155964799,
+      "mind": {
+        "state": "hunt",
+        "reason": "saw YOU",
+        "seen": true,
+        "target": 0,
+        "goal": {
+          "x": 650,
+          "y": 2688
+        },
+        "until": 12.699999999999983,
+        "nextSense": 6.369999999999983,
+        "nextIdle": 3,
+        "homeX": 990,
+        "homeY": 2668,
+        "goalX": 990,
+        "goalY": 2668,
+        "lastNoise": 12,
+        "mob": false,
+        "stuck": 0,
+        "rng": 599918334,
+        "lastCue": -99,
+        "heardRank28": 3,
+        "heardWho28": 0,
+        "heardStrength28": 6.0526442360897965,
+        "heardUntil28": 2.4333333333333336
+      }
+    }
+  ],
+  "perception": {
+    "states": {
+      "wander": 133,
+      "idle": 47,
+      "hunt": 2
+    },
+    "noises": [],
+    "heard": 6,
+    "seen": 10,
+    "sightTests": 3209,
+    "sharedFields": 1,
+    "fieldBuilds": 2,
+    "prepShots": 2,
+    "staging": true,
+    "time": 6.199999999999983
+  },
+  "shelter": {
+    "room": {
+      "x": 128,
+      "y": 2496,
+      "w": 576,
+      "h": 576
+    },
+    "door": {
+      "id": 88,
+      "type": "shelterDoor",
+      "x": 724,
+      "y": 2624,
+      "w": 25,
+      "h": 128,
+      "hp": 0,
+      "maxhp": 0,
+      "solid": true,
+      "destroyed": false,
+      "open": false,
+      "amount": 0,
+      "vertical": true,
+      "_query6": 132158,
+      "hit19": 0
+    },
+    "rear": {
+      "id": 89,
+      "type": "shelterRear",
+      "x": 82,
+      "y": 2624,
+      "w": 28,
+      "h": 128,
+      "hp": 0,
+      "maxhp": 0,
+      "solid": true,
+      "destroyed": false,
+      "vertical": true
+    },
+    "north": false,
+    "departed": false,
+    "departedAt": null,
+    "opens": 0,
+    "waitTime": 6.199999999999983,
+    "cooldown": 0
+  },
+  "stats": {
+    "kills": 0,
+    "shots": 2,
+    "rescues": 0
+  },
+  "performance": {
+    "schema": 2,
+    "build": "DEAD ENDS v29.2",
+    "createdAt": "2026-10-15T17:40:40.624Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "viewport": [
+      938,
+      542
+    ],
+    "pixelRatio": 1,
+    "chapter": "THE LAST BLOCK",
+    "worldSeed": 31987,
+    "netMode": "solo",
+    "samples": 0,
+    "elapsed": 0,
+    "settings": {
+      "gore": "carnage",
+      "effects": "full",
+      "zoom": 1,
+      "camera": "locked",
+      "shake": 0,
+      "menuFrameRate": "display"
+    },
+    "observer": "long-animation-frame",
+    "notes": [
+      "rAF interval is paired with the preceding callback. Paused, hidden and menu time excluded.",
+      "CPU/submission scopes are not GPU timings. Outside-CPU time may include rendering, browser scheduling and waiting.",
+      "Rendering scopes are children of render; simulation scopes are children of simulation. Do not add parent and child timings.",
+      "15-second capture measures foreground wall time, not 15 simulated seconds. No telemetry is sent."
+    ],
+    "summary": {
+      "interval": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "cpu": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "effects": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "simulation": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "render": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "ui": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "profiler": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "flow": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "coordinator": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "survivors": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "infected": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "hazards": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "director": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "network": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "background": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "aftermath": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "ground": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "props": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "actors": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "upper": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "lighting": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "steps": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "infectedCount": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "bodyCount": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "fireCount": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "droppedMs": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "blast": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "deathFX": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "bloodFX": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "bodyBake": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "sound": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "enemyQuery": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "devDraw": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      },
+      "outsideMeasuredCPU": {
+        "mean": 0,
+        "p50": 0,
+        "p95": 0,
+        "p99": 0,
+        "max": 0
+      }
+    },
+    "counters": {
+      "los": 2397,
+      "propTests": 894,
+      "flowBuilds": 3,
+      "flowReuses": 38,
+      "astar": 0,
+      "sharedPathHits": 0,
+      "spriteMisses": 22
+    },
+    "population": {
+      "infected": 182,
+      "settledBodies": 0,
+      "activeBodies": 0,
+      "firePools": 0,
+      "tiles": 1
+    },
+    "spikes": [],
+    "browserEvents": [],
+    "memory": {
+      "usedJSHeap": 26562211,
+      "totalJSHeap": 31962375
+    },
+    "overBudget": {
+      "over16_7": 0,
+      "over33_3": 0,
+      "over50": 0
+    },
+    "frameInterval": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "cpuWork": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "effects": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "simulation": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "renderSubmission": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "interface": {
+      "mean": 0,
+      "p50": 0,
+      "p95": 0,
+      "p99": 0,
+      "max": 0
+    },
+    "columns": [
+      "interval",
+      "cpu",
+      "effects",
+      "simulation",
+      "render",
+      "ui",
+      "profiler",
+      "flow",
+      "coordinator",
+      "survivors",
+      "infected",
+      "hazards",
+      "director",
+      "network",
+      "background",
+      "aftermath",
+      "ground",
+      "props",
+      "actors",
+      "upper",
+      "lighting",
+      "steps",
+      "infectedCount",
+      "bodyCount",
+      "fireCount",
+      "droppedMs",
+      "blast",
+      "deathFX",
+      "bloodFX",
+      "bodyBake",
+      "sound",
+      "enemyQuery",
+      "devDraw"
+    ],
+    "frames": [],
+    "camera": {
+      "mode": "locked",
+      "simulationHz": 60,
+      "renderInterpolation": true,
+      "chaseSmoothing": false,
+      "lastView": {
+        "x": 650,
+        "y": 2688,
+        "cameraX": 650,
+        "cameraY": 2688,
+        "scale": 0.6691358024691358,
+        "alpha": 0,
+        "offset": {
+          "x": 0,
+          "y": 0
+        },
+        "tick": 372
+      }
+    },
+    "checkpoint": {
+      "staging": true,
+      "departed": false
+    },
+    "blastEvents": [],
+    "renderer": {
+      "api": "Canvas 2D",
+      "hardwareAcceleration": "Browser-managed; these scopes do not measure GPU execution.",
+      "simulationHz": 60,
+      "cacheMiB": 59.91119384765625,
+      "stainSprites": 144,
+      "bodySprites": 540,
+      "cacheMisses": 0,
+      "prewarmMs": 6953.399999976158
+    },
+    "broadphase": {
+      "queries": 44,
+      "candidates": 34,
+      "fullScanEquivalent": 7989,
+      "rebuilds": 12
+    },
+    "debug": {
+      "enabled": false,
+      "sandbox": false
+    },
+    "scopeNotes": "blast/deathFX/bloodFX/bodyBake/sound/enemyQuery/devDraw are inclusive child scopes, NOT additional work to add to cpu. Blast windows contain 12 prior + 120 subsequent rendered frames; damage is not deferred.",
+    "startup": {
+      "playable": true,
+      "playableAt": 374.7999999523163,
+      "artState": "ready",
+      "artStarted": 374.89999997615814,
+      "artEnded": 13169.799999952316,
+      "stage": "infected",
+      "done": 1260,
+      "total": 1260,
+      "sliceMaxMs": 4.899999976158142,
+      "readbackDisabled": false,
+      "errors": [],
+      "stains": 144,
+      "bodies": 540
+    },
+    "run": {
+      "mode": "classic",
+      "seed": 678311,
+      "layout": {
+        "mode": "classic",
+        "seed": 678311,
+        "chapterSeed": 31987,
+        "map": 0,
+        "variant": -1,
+        "name": "Classic route",
+        "profile": 0,
+        "supplies": [],
+        "specials": []
+      }
+    },
+    "raster": {
+      "estimated": true,
+      "meaning": "Nominal RGBA backing-store bytes of enumerated canvases and ImageBitmaps, not browser process memory or VRAM. Browser copies, construction-time temporary surfaces and other resources are excluded.",
+      "groups": {
+        "mainFramebuffer": 2033584,
+        "worldSource": 4,
+        "minimaps": 3756244,
+        "terrainAndAftermath": 74317824,
+        "bloodSprites": 18584640,
+        "bodySprites": 44236800,
+        "propSprites": 10824896,
+        "infectedSprites": 209025792,
+        "effectsSprites": 2756608
+      },
+      "totalBytes": 365536392,
+      "peakBytes": 365619336,
+      "canvases": 1446,
+      "terrainTiles": 77,
+      "terrainAllocations": 462,
+      "sourceReleased": true,
+      "jsHeap": {
+        "used": 26562211,
+        "total": 31962375
+      }
+    },
+    "network": {
+      "protocol": 13,
+      "encoding": "40-byte quantized infected records; deltas against periodic keyframe; reliable ordered events",
+      "byteMethod": "Exact packed-buffer byte lengths plus UTF-8 JSON metadata size. Application payload estimate, not on-wire traffic. Browser data-channel counters are separate.",
+      "outBytes": 0,
+      "inBytes": 0,
+      "unpackedStateJSONBytes": 0,
+      "messages": 0,
+      "keyframes": 0,
+      "deltas": 0,
+      "resyncs": 0,
+      "backpressureSkips": 0,
+      "outBytesPerSecond": 0,
+      "inBytesPerSecond": 0,
+      "roundTripEstimateMs": null,
+      "jitterMs": 0,
+      "queues": [],
+      "browserDataChannels": null
+    },
+    "events13": [
+      {
+        "name": "world-built",
+        "atMs": 368.5,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 146
+      },
+      {
+        "name": "world-built",
+        "atMs": 553.7,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 126.4
+      },
+      {
+        "name": "run-start",
+        "atMs": 613,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "seed": 31987,
+        "mode": "classic"
+      },
+      {
+        "name": "art-batch",
+        "atMs": 1258.1,
+        "tick": 0,
+        "seconds": 0,
+        "stage": "core aftermath",
+        "count": 60
+      },
+      {
+        "name": "art-batch",
+        "atMs": 7328.3,
+        "tick": 0,
+        "seconds": 0,
+        "stage": "aftermath variety",
+        "count": 624
+      },
+      {
+        "name": "art-batch",
+        "atMs": 13169.8,
+        "tick": 0,
+        "seconds": 0,
+        "stage": "infected",
+        "count": 576
+      },
+      {
+        "name": "world-built",
+        "atMs": 97232.4,
+        "tick": 480,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 136.3
+      },
+      {
+        "name": "run-start",
+        "atMs": 97240.2,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "seed": 31987,
+        "mode": "classic"
+      },
+      {
+        "name": "world-built",
+        "atMs": 133651.8,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 131.5
+      },
+      {
+        "name": "run-start",
+        "atMs": 133659.5,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "seed": 31987,
+        "mode": "classic"
+      },
+      {
+        "name": "world-built",
+        "atMs": 163028.2,
+        "tick": 372,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 135.8
+      },
+      {
+        "name": "run-start",
+        "atMs": 163036.5,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "seed": 31987,
+        "mode": "classic"
+      },
+      {
+        "name": "world-built",
+        "atMs": 289794.9,
+        "tick": 372,
+        "seconds": 0,
+        "map": 0,
+        "tiles": 77,
+        "ms": 119.2
+      },
+      {
+        "name": "run-start",
+        "atMs": 289804.2,
+        "tick": 0,
+        "seconds": 0,
+        "map": 0,
+        "seed": 31987,
+        "mode": "classic"
+      }
+    ],
+    "stateHashes13": [
+      {
+        "tick": 120,
+        "hash": "54d5bb73"
+      },
+      {
+        "tick": 240,
+        "hash": "f6e71efd"
+      },
+      {
+        "tick": 360,
+        "hash": "a5a33ca8"
+      }
+    ],
+    "trace13": {
+      "timeOrigin": 1792085750740.1,
+      "now": 289886.10000002384,
+      "enabled": false
+    },
+    "renderSettings13": {
+      "scale": 1,
+      "hud": "standard",
+      "flash": false,
+      "quickWheel": false,
+      "scroll": "all",
+      "bindings": {}
+    },
+    "conditions13": null,
+    "spawnRejections13": {
+      "attempts": 0,
+      "hidden": 0,
+      "blocked": 0,
+      "route": 0,
+      "budget": 0
+    },
+    "audio13": {
+      "requested": 102,
+      "accepted": 102,
+      "merged": 0,
+      "activeVoices": 0,
+      "peakVoices": 0
+    },
+    "canvasCalls13": {
+      "enabled": false,
+      "counts": {}
+    },
+    "world13": {
+      "mapBuildMs": 119.20000004768372,
+      "terrainCopyMs": 26.700000047683716
+    },
+    "v14": {
+      "safe": {
+        "closing": false,
+        "closed": false,
+        "amount": 0,
+        "closer": -1
+      },
+      "doors": 5,
+      "doorBlocks": 0,
+      "weaponFinds": 6,
+      "specialInterrupts": 0,
+      "insideHits": 0,
+      "weapons": [
+        {
+          "id": 0,
+          "upgrade": {
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          }
+        },
+        {
+          "id": 1,
+          "upgrade": {
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          }
+        },
+        {
+          "id": 2,
+          "upgrade": {
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          }
+        },
+        {
+          "id": 3,
+          "upgrade": {
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          }
+        }
+      ],
+      "openDoors": 0
+    },
+    "art": {
+      "view": "normal",
+      "labels": true,
+      "environmentBuildMs": 30.700000047683716,
+      "cacheAssetsGraded": 940,
+      "sceneryBaked": true,
+      "worldWaterMask": true,
+      "perFrameReadback": false
+    },
+    "v19": {
+      "basis": "Tront / Claude edited v18.5",
+      "senses": {
+        "states": {
+          "wander": 133,
+          "idle": 47,
+          "hunt": 2
+        },
+        "noises": [],
+        "heard": 6,
+        "seen": 10,
+        "sightTests": 3209,
+        "sharedFields": 1,
+        "fieldBuilds": 2,
+        "prepShots": 2,
+        "staging": true,
+        "time": 6.199999999999983
+      },
+      "network": {
+        "protocol": 24,
+        "encoding": "40-byte quantized infected records; deltas against periodic keyframe; reliable ordered events",
+        "byteMethod": "Exact packed-buffer byte lengths plus UTF-8 JSON metadata size. Application payload estimate, not on-wire traffic. Browser data-channel counters are separate.",
+        "outBytes": 0,
+        "inBytes": 0,
+        "unpackedStateJSONBytes": 0,
+        "messages": 0,
+        "keyframes": 0,
+        "deltas": 0,
+        "resyncs": 0,
+        "backpressureSkips": 0,
+        "outBytesPerSecond": 0,
+        "inBytesPerSecond": 0,
+        "roundTripEstimateMs": null,
+        "jitterMs": 0,
+        "queues": [],
+        "browserDataChannels": null,
+        "transport": "",
+        "public": false,
+        "publicRoom": 1,
+        "ready": false,
+        "cloud": "idle",
+        "registering": false,
+        "seeking": false,
+        "localOnly": false,
+        "expectedEpoch": null,
+        "epoch": 5,
+        "malformedPackets": 0,
+        "stalePackets": 0,
+        "chunksReassembled": 0,
+        "chunkedMessages": 0,
+        "readyPeers": [],
+        "hostMigration": false,
+        "publicHostLoss": "Find another public round; no in-flight world migration",
+        "log": []
+      },
+      "safehouse": {
+        "preparationShots": 2,
+        "worldRunsDuringPreparation": true,
+        "closedDoorGunPort": true,
+        "sealsCancelled": 0
+      },
+      "fixes": {
+        "validShoveInterrupts": 0,
+        "blockedMelee": 0,
+        "upgrades": [
+          {
+            "id": 0,
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          },
+          {
+            "id": 1,
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          },
+          {
+            "id": 2,
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          },
+          {
+            "id": 3,
+            "rifle": false,
+            "auto": false,
+            "axe": false
+          }
+        ]
+      }
+    },
+    "v20": {
+      "basis": "Uploaded Claude v19.6 (index(9).html)",
+      "presentation": {
+        "lighting": "balanced",
+        "fog": true,
+        "normals": true,
+        "dust": true,
+        "rumble": true,
+        "deadzone": 0.18,
+        "aimAssist": true,
+        "renderer": "auto"
+      },
+      "canvas": {
+        "alpha": true,
+        "colorSpace": "srgb",
+        "colorType": "unorm8",
+        "desynchronized": false,
+        "toneMapping": {
+          "mode": "standard"
+        },
+        "willReadFrequently": false
+      },
+      "lighting": {
+        "lastMs": 12.299999952316284,
+        "normalBuildMs": 9.799999952316284,
+        "rays": 193,
+        "samples": 59200,
+        "sources": 7,
+        "normalBytes": 6096384
+      },
+      "art": {
+        "paletteGrading": true,
+        "graded": 940,
+        "unknownColors": 0,
+        "readbacks": 0,
+        "immutableSprites": true
+      },
+      "gamepad": {
+        "connected": false,
+        "mapping": "",
+        "active": false,
+        "disconnections": 0
+      },
+      "effects": {
+        "sparks": 0,
+        "clouds": 0,
+        "bursts": 0
+      }
+    },
+    "v21": {
+      "basis": "v20 + material / lighting exaggeration pass",
+      "lighting": {
+        "ms": 12.299999952316284,
+        "normalBuildMs": 9.799999952316284,
+        "rays": 193,
+        "samples": 59200,
+        "sources": 7,
+        "normalBoost": 1.12,
+        "surfaceBoost": 1.18,
+        "specBoost": 0.65
+      },
+      "presentation": {
+        "lighting": "balanced",
+        "fog": true,
+        "normals": true,
+        "dust": true,
+        "rumble": true,
+        "deadzone": 0.18,
+        "aimAssist": true,
+        "renderer": "auto"
+      }
+    },
+    "v221": {
+      "basis": "intact v21; complete controller/effects integration restored",
+      "quality": "balanced",
+      "lighting": {
+        "totalMs": 12.299999952316284,
+        "normalsMs": 9.799999952316284,
+        "shadowMs": 0,
+        "shadeMs": 0.2999999523162842,
+        "softenMs": 0.8999999761581421,
+        "composeMs": 1.100000023841858,
+        "sourceCount": 7,
+        "detailedLights": 1,
+        "tracedLights": 7,
+        "cacheHits": 0,
+        "cacheEntries": 2,
+        "pixels": 59200,
+        "samples": 37166,
+        "rays": 193
+      }
+    },
+    "v23": {
+      "basis": "v22.1",
+      "hud": {
+        "placement": "player",
+        "size": "normal",
+        "updates": 61,
+        "positionChanges": 2,
+        "lastUpdateMs": 0
+      },
+      "throwables": "retain selected category while stack remains; last firearm on depletion"
+    },
+    "v24": {
+      "basis": "v23",
+      "rooms": [
+        "pharmacy"
+      ],
+      "doors": 5,
+      "windows": 1,
+      "breaches": 0,
+      "swings": 0,
+      "contacts": 0,
+      "protocol": 24
+    },
+    "input241": {
+      "releases": 0,
+      "cancellations": 0,
+      "last": "start"
+    },
+    "v25": {
+      "challenge": "seeded",
+      "route": "Classic route",
+      "authoredRoutes": 10,
+      "protocol": 25
+    },
+    "textRenderer": {
+      "ready": false,
+      "backend": "initializing",
+      "fallback": "",
+      "error": "",
+      "frames": 0,
+      "draws": 0,
+      "glyphs": 0,
+      "uploads": 0,
+      "uiBuilds": 0,
+      "uiMs": 0,
+      "submitMs": 0,
+      "worldLabels": 0,
+      "nativeBakes": 0,
+      "atlasSize": 2048,
+      "atlas": [
+        2048,
+        2048
+      ],
+      "uiDpr": 1,
+      "worldDpr": 1
+    },
+    "lightingRenderer": {
+      "ready": false,
+      "backend": "CPU fallback",
+      "reason": "WebGL2 lighting unavailable",
+      "frames": 0,
+      "materialUploads": 0,
+      "ms": 0
+    },
+    "noise": {
+      "emitted": {
+        "gunshot": 2
+      },
+      "steps": 0,
+      "roomExits": 0,
+      "fieldBuilds": 1,
+      "fieldHits": 55,
+      "sharedFields": 1,
+      "checked": 56,
+      "live": []
+    },
+    "artworkCache": {
+      "survivorEntries": 4,
+      "pickupEntries": 4,
+      "hits": 64,
+      "misses": 8,
+      "ambientSkipped": 173552,
+      "survivorBytes": 720896,
+      "worldUploads": 0,
+      "worldUploadMs": 0,
+      "backgroundReuse": 0
+    },
+    "artwork29": {
+      "entries": 21,
+      "hits": 4291,
+      "bakes": 21,
+      "bytes": 944640
+    },
+    "nativeRenderer": {
+      "ready": false,
+      "backend": "Canvas2D reference",
+      "error": "",
+      "frames": 0,
+      "draws": 0,
+      "vertices": 0,
+      "uploads": 0,
+      "uploadBytes": 0,
+      "textureBytes": 0,
+      "evictions": 0,
+      "unsupported": [],
+      "cpuMs": 0,
+      "textureBytesMeaning": "Tracked world RGBA8 textures; excludes float normals/lightmaps, font atlas, buffers and browser copies."
+    }
+  }
+}

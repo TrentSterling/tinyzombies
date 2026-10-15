@@ -1,0 +1,13 @@
+{
+  "variant": "candidate",
+  "sha256": "e4754e8743e3d5284d44f5b786c22ef6d77bcefe972f2032543cf862d9f9fa4f",
+  "scenario": "mask",
+  "telemetry": [],
+  "result": {
+    "initial": 255,
+    "overlap": 983295,
+    "openOverlap": 986639,
+    "openEmpty": 3584,
+    "passed": true
+  }
+}

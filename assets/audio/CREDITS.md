@@ -17,4 +17,4 @@ License: [Creative Commons CC0 1.0](https://creativecommons.org/publicdomain/zer
 
 Edits: select individual transients; mono conversion; resample to 48 kHz; remove DC; trim leading/trailing silence and excessive tails; retain short attack/decay fades; match levels with peak headroom; combine selected recorded layers offline; encode lossless PCM16 FLAC. No oscillator fallback is used. The original recordings are unchanged.
 
-Selection and validation so far use source descriptions, waveform/level measurements and two independent decoders. Auditory review is still pending. The firework pack includes some processed effects; `fw_` files were selected provisionally and require listener confirmation before release.
+Selection and technical validation use source descriptions, waveform/level measurements and two independent decoders. The user listened to the selected-sample preview and approved its direction. The firework pack includes some processed effects; `fw_` files are part of that preview. No agent listening or final in-game perceptual assessment is claimed; actual browser qualification remains pending.

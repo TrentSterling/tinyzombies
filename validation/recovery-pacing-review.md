@@ -1,6 +1,6 @@
 # Recovery after combat settles
 
-Status: CPU-qualified candidate only. Windows GPU and ordinary-input gameplay validation are still required before merge or deployment. No browser or GPU workload was launched for this batch; Jet retains the shared GPU lease.
+Status: qualified on the leased Windows RTX 5070 Ti. Exact runtime commit `11d15850c64068dde8158539f70adbedc8c34dc8` passed the CPU and GPU checks below without further runtime changes. The isolated browser, server and monitor closed with zero GPU faults. The GPU lease was released at **2026-10-15 19:07:43 UTC** for Jet's remaining work.
 
 Tiny's released director leaves FADE after 16 seconds even when squad intensity remains at its maximum. Its 17–24-second recovery period can therefore expire during the same fight, after which normal enemy replenishment resumes. Renewed pressure or an objective alarm during recovery also consumes that timer.
 
@@ -45,12 +45,35 @@ node tools/check_recovery_pacing.cjs baseline.html index.html candidate-cpu.json
 
 The first diagnostic assertion rejected a transition logged at exactly 16 seconds because accumulated double-precision time crossed the threshold while the indexed timestamp equaled 16. The assertion was corrected to tolerate that boundary before the runtime edit. This was a harness issue, not a candidate behavior failure.
 
-## Required leased Windows validation
+## Windows qualification
 
-After the parent hands over the GPU slot, use the established isolated-profile harness and GPU-fault monitor. Confirm exact served hashes, shader compilation, frame-zero boot and one bounded frame before scenario work. Stop immediately on device loss or a Windows GPU reset.
+Chrome 155.0.8059.41, NVIDIA RTX 5070 Ti, driver 32.0.15.9186 / 591.86, 1280×720. Both served Document hashes matched their exact LF snapshots. Each passed frame-zero shader initialization and the single-frame gate before bounded workload tests. [Machine-readable summary](recovery-windows-summary.json) and [raw results, captures and harness](recovery-browser/) preserve the evidence.
 
-Exercise the same controlled director transitions on the actual GPU, including high pressure, intermittent calm, alarm interruption and the movement exit. Then use normal controls for a bounded encounter/objective run at the unchanged 2,048-zombie / 32,768-particle settings. Record intensity, phase/time, alarms, awake counts, replenishment, health, objectives and frame/GPU timing. Check prep doorway behavior and audio as part of that run; close all owned processes before handing back the lease.
+Five actual compiled `mission5` GPU fixtures cover sustained high pressure, the end of a fight, interrupted recovery, forced alarms and the movement exit. They dispatch one workgroup per 1/30-second tick with controlled state; they do not claim to simulate combat. Baseline enters RELAX at 16 seconds despite maximum intensity and returns to BUILD around 39.5 seconds. Candidate holds FADE; when pressure ends at 20 seconds it reaches RELAX around 26.3 seconds, then returns to BUILD after its full generated recovery duration. Alarm overrides and movement exits pass.
 
-The main gameplay risk is the existing global awake-count intensity floor: 55 awake zombies already exceed the calm threshold, even if some are distant. The CPU checks establish that this input holds FADE and that clearing it allows recovery. Gameplay must establish that it produces a useful lull rather than an excessively long suppression of replenishment. Do not change that metric or add an emergency timeout without evidence. Route progress is still the existing maximum distance from the start; correcting route semantics is outside this batch.
+The matched encounter runs use the same authored world/seed and ordinary keyboard/pointer inputs: open and leave the shelter, aim at nearby targets, stop player firing after 23 seconds, and reload. No actors or player state are repositioned for this encounter. All 2,048 zombies and 32,768 particles remain active in the normal full pipeline.
 
-This is an implementation-owner review, not an independent second review. The candidate must remain unmerged until hardware evidence resolves the risk above. Rollback before release is simply to discard/revert this isolated branch; the live doorway release remains the baseline. Any later published rollback must use a history-preserving revert.
+| Encounter observation | Previous release | Candidate |
+| --- | --- | --- |
+| RELAX begins | 27.15 s, intensity 0.62, 351 awake enemies | 41.10 s, intensity 0.019, 2 awake enemies |
+| BUILD resumes | 45.08 s | 63.30 s |
+| Player health after approximately 66 s | 100 | 100 |
+| Median FPS | 60.00 | 60.01 |
+| Recorded encounter GPU median / p95 | 2.88 / 3.93 ms | 3.74 / 7.54 ms |
+| Matched quiet scene GPU median / p95 | 2.49 / 3.47 ms | 2.42 / 2.62 ms |
+
+The candidate supplies about 22 seconds of recovery after the fight subsides. The encounter worlds evolve differently because timing, aim targets and GPU atomic order differ, and the director deliberately changes subsequent replenishment. Its higher encounter GPU time is retained in the report; it is not a controlled measurement of the added branch's cost. A separate reverse-order ten-second quiet-scene check, excluding its first two seconds and without video capture, shows no observed regression and remains near 60 FPS.
+
+![Actual encounter intensity, awake enemies and director phases](recovery-browser/recovery-timeline.png)
+
+For the distant-enemy risk, 80 existing authored zombies 55–100 metres away receive the normal ten-second threat memory. Their positions, HP, population and complete simulation remain unchanged; journey/FADE are initialized explicitly. All distant alerts expire naturally. The candidate reaches RELAX at 13.97 seconds with no distant awake enemies and full player health, then stays recovered through the 23-second test. This resolves the tested risk without changing the existing global intensity metric or adding an emergency timeout. Other maps/seeds and prolonged alarm chains remain beyond this bounded test.
+
+Regression checks pass: 367 zombies wander in 6.2 seconds of quiet preparation, with zero shots/alerts and full player health. Normal movement, 89 rounds including squad fire, one pipe detonation, one grenade, map/help, pause and restart work. The controls run takes ordinary combat damage to 93 HP; restart restores 100 HP and the authored start. Both encounter runs load all 43 SFX clips successfully; the audio host is byte-equivalent and all 736,350 asset bytes match the approved hashes. The screen recording is silent because browser output was muted; the original WebAudio mixer ran.
+
+For a rerun, copy exact baseline/candidate HTML and `assets/` beside the harness, acquire the shared GPU lease, and use a fresh profile. `boot` and `gate` precede `pacing <variant> director`, `distant`, `encounter`, and `bench`. `door candidate natural` and `ordinary candidate` cover regressions. Stop on device loss or Windows GPU faults; close and clean up owned processes before releasing the lease.
+
+## Release review and rollback
+
+This is an implementation-owner review, not an independent second review. The runtime remains the reviewed three-added/one-removed-line director change. CPU preservation checks cover every byte outside that block; actual GPU and gameplay evidence resolve the identified prolonged-FADE concern for this seed and adapter. No outstanding blocker was found. Merge only the reviewed PR head, then verify public HTML and every audio asset against the qualified hashes.
+
+The exact baseline is retained at `d72ef66ddd988b7a7e760a40525436cfcc73f213`. If a published rollback is needed, revert this PR's merge commit with mainline parent 1 and deploy the new revert commit; never reset or force-push main. Route progress remains maximum distance from the start, and this qualification is not a full campaign or extended soak.

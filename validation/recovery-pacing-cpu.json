@@ -884,7 +884,7 @@
     "reproduce": "node tools/check_recovery_pacing.cjs baseline.html index.html candidate-cpu.json"
   },
   "baselineCommit": "d72ef66ddd988b7a7e760a40525436cfcc73f213",
-  "candidateStatus": "CPU-qualified only; requires leased Windows GPU validation before release",
+  "candidateStatus": "CPU control-flow evidence; completed Windows qualification is recorded in recovery-windows-summary.json",
   "reference": {
     "url": "https://tront.xyz/deadends/",
     "sourceSha256": "209a9d39f79649304c278ed229a0fcba52c7a610ce6c7113cbd048c46f82837e",

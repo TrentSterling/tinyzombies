@@ -1,0 +1,930 @@
+{
+  "candidateSha256": "fedee3e5054b56841bda85903d261cb740e955a289a4e5ddcfc6d17b67f76192",
+  "baselineSha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "candidateRuntimeCommit": "11d15850c64068dde8158539f70adbedc8c34dc8",
+  "baselineCommit": "d72ef66ddd988b7a7e760a40525436cfcc73f213",
+  "browser": "Chrome 155.0.8059.41",
+  "adapter": "NVIDIA GeForce RTX 5070 Ti",
+  "driver": "32.0.15.9186 / 591.86",
+  "resolution": [
+    1280,
+    720
+  ],
+  "population": {
+    "zombies": 2048,
+    "particles": 32768
+  },
+  "gpuLeaseReleasedUtc": "2026-10-15T19:07:43.1794168Z",
+  "session": {
+    "remainingProfileProcesses": [],
+    "start": "2026-10-15T19:01:17.6644957Z",
+    "gpuFaults": [],
+    "remainingOwnedProcesses": [],
+    "end": "2026-10-15T19:07:27.1770093+00:00"
+  },
+  "variants": {
+    "baseline": {
+      "directorPassed": true,
+      "encounter": {
+        "elapsed": 66.21800231933594,
+        "survived": true,
+        "hp": 100,
+        "transitions": [
+          {
+            "t": 0.01666666753590107,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "active": 0,
+            "nearAwake": 0,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 1.100067138671875,
+            "phase": 1,
+            "phaseTime": 0.11659999191761017,
+            "intensity": 0.8999999761581421,
+            "active": 57,
+            "nearAwake": 28,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 5.999890327453613,
+            "phase": 2,
+            "phaseTime": 0,
+            "intensity": 0.8999999761581421,
+            "active": 96,
+            "nearAwake": 44,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 11.149846076965332,
+            "phase": 3,
+            "phaseTime": 0.13339999318122864,
+            "intensity": 0.49334049224853516,
+            "active": 53,
+            "nearAwake": 44,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 27.14985466003418,
+            "phase": 0,
+            "phaseTime": 0.11659999191761017,
+            "intensity": 0.6200000047683716,
+            "active": 351,
+            "nearAwake": 48,
+            "farAwake": 39,
+            "hp": 100,
+            "relaxFor": 17.998220443725586
+          },
+          {
+            "t": 45.08371353149414,
+            "phase": 1,
+            "phaseTime": 0.04989999532699585,
+            "intensity": 0.22500000894069672,
+            "active": 36,
+            "nearAwake": 11,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 17.998220443725586
+          }
+        ],
+        "performance": {
+          "gpuMs": {
+            "median": 2.883584,
+            "p95": 3.93216
+          },
+          "cpuMs": {
+            "median": 0.26600713726805003,
+            "p95": 0.2968535690802736
+          },
+          "fps": {
+            "median": 60.00424054254477,
+            "p95": 60.018743475036956
+          }
+        },
+        "kills": 331,
+        "roundsIncludingSquad": 832,
+        "audio": {
+          "pipeBeeps": 0,
+          "bank": {
+            "state": "ready",
+            "total": 43,
+            "ready": 43,
+            "failed": {},
+            "downloadBytes": 736350,
+            "decodedBytes": 3125156,
+            "skipped": 0,
+            "concurrency": 2
+          },
+          "mix": {
+            "limit": 32,
+            "active": 1,
+            "peak": 16,
+            "played": 935,
+            "dropped": 21,
+            "byKind": {
+              "rifle": 320,
+              "debris": 52,
+              "crit": 10,
+              "death": 290,
+              "hit": 128,
+              "step": 18,
+              "breath": 42,
+              "growl": 53,
+              "mass": 3,
+              "snap": 10,
+              "latch": 8,
+              "ratchet": 1
+            },
+            "sampleMs": 0.7999999523162842,
+            "readbacks": 384,
+            "nearby": 10,
+            "barrels": 0,
+            "nearDeaths": 316,
+            "resets": 8
+          }
+        }
+      },
+      "distant": {
+        "passed": true,
+        "elapsed": 23.099864959716797,
+        "transitions": [
+          {
+            "t": 0.01666666753590107,
+            "phase": 3,
+            "phaseTime": 0.01666666753590107,
+            "intensity": 0.49666666984558105,
+            "active": 108,
+            "nearAwake": 7,
+            "farAwake": 80,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 10.999916076660156,
+            "phase": 0,
+            "phaseTime": 0.11669999361038208,
+            "intensity": 0.3133300840854645,
+            "active": 1,
+            "nearAwake": 0,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 22.2067928314209
+          }
+        ],
+        "remainingFarAwake": 0,
+        "hp": 100
+      },
+      "quietPerformance": {
+        "gpuMs": {
+          "median": 2.490368,
+          "p95": 3.473408
+        },
+        "cpuMs": {
+          "median": 0.1905310452913618,
+          "p95": 0.2166743520602707
+        },
+        "fps": {
+          "median": 60.005656013886046,
+          "p95": 60.01445730846112
+        }
+      }
+    },
+    "candidate": {
+      "directorPassed": true,
+      "encounter": {
+        "elapsed": 66.06805419921875,
+        "survived": true,
+        "hp": 100,
+        "transitions": [
+          {
+            "t": 0,
+            "phase": 0,
+            "phaseTime": 10,
+            "intensity": 0,
+            "active": 0,
+            "nearAwake": 0,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 1.083366870880127,
+            "phase": 1,
+            "phaseTime": 0.11669999361038208,
+            "intensity": 0.8999999761581421,
+            "active": 57,
+            "nearAwake": 28,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 5.999955177307129,
+            "phase": 2,
+            "phaseTime": 0.016699999570846558,
+            "intensity": 0.8999999761581421,
+            "active": 96,
+            "nearAwake": 44,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 11.199822425842285,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0.49002063274383545,
+            "active": 62,
+            "nearAwake": 53,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 41.10025405883789,
+            "phase": 0,
+            "phaseTime": 0.04989999905228615,
+            "intensity": 0.01875000074505806,
+            "active": 2,
+            "nearAwake": 2,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 22.00345230102539
+          },
+          {
+            "t": 63.30109786987305,
+            "phase": 1,
+            "phaseTime": 0.23329998552799225,
+            "intensity": 0.2750000059604645,
+            "active": 44,
+            "nearAwake": 18,
+            "farAwake": 2,
+            "hp": 100,
+            "relaxFor": 22.00345230102539
+          }
+        ],
+        "performance": {
+          "gpuMs": {
+            "median": 3.735552,
+            "p95": 7.53664
+          },
+          "cpuMs": {
+            "median": 0.20827855032950446,
+            "p95": 0.32444160503041203
+          },
+          "fps": {
+            "median": 60.00794825096865,
+            "p95": 60.02969665175653
+          }
+        },
+        "kills": 289,
+        "roundsIncludingSquad": 759,
+        "audio": {
+          "pipeBeeps": 0,
+          "bank": {
+            "state": "ready",
+            "total": 43,
+            "ready": 43,
+            "failed": {},
+            "downloadBytes": 736350,
+            "decodedBytes": 3125156,
+            "skipped": 0,
+            "concurrency": 2
+          },
+          "mix": {
+            "limit": 32,
+            "active": 4,
+            "peak": 19,
+            "played": 894,
+            "dropped": 18,
+            "byKind": {
+              "rifle": 321,
+              "crit": 8,
+              "death": 250,
+              "step": 30,
+              "debris": 54,
+              "hit": 111,
+              "growl": 53,
+              "mass": 5,
+              "breath": 45,
+              "snap": 9,
+              "latch": 7,
+              "ratchet": 1
+            },
+            "sampleMs": 4.700000047683716,
+            "readbacks": 384,
+            "nearby": 38,
+            "barrels": 0,
+            "nearDeaths": 275,
+            "resets": 8
+          }
+        }
+      },
+      "distant": {
+        "passed": true,
+        "elapsed": 23.1164493560791,
+        "transitions": [
+          {
+            "t": 0,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0.5,
+            "active": 80,
+            "nearAwake": 0,
+            "farAwake": 80,
+            "hp": 100,
+            "relaxFor": 20
+          },
+          {
+            "t": 13.9664945602417,
+            "phase": 0,
+            "phaseTime": 0.10010000318288803,
+            "intensity": 0.0062500000931322575,
+            "active": 1,
+            "nearAwake": 0,
+            "farAwake": 0,
+            "hp": 100,
+            "relaxFor": 18.71827507019043
+          }
+        ],
+        "remainingFarAwake": 0,
+        "hp": 100
+      },
+      "quietPerformance": {
+        "gpuMs": {
+          "median": 2.424832,
+          "p95": 2.62144
+        },
+        "cpuMs": {
+          "median": 0.17166269630020362,
+          "p95": 0.2059763306865104
+        },
+        "fps": {
+          "median": 60.001629154667256,
+          "p95": 60.012494706840904
+        }
+      }
+    }
+  },
+  "limits": [
+    "One adapter and seed, short bounded tests, not a campaign or soak.",
+    "Encounter input strategy and seed match, but wall timing, aim targets, atomics and evolving geometry differ.",
+    "Direct mission GPU fixtures isolate the compiled director with controlled state; they do not simulate combat.",
+    "Screen recordings are silent; original WebAudio ran in an output-muted isolated browser.",
+    "Timings include diagnostic readbacks; recorded encounters include screencast overhead."
+  ],
+  "controls": {
+    "candidate_sha256": "fedee3e5054b56841bda85903d261cb740e955a289a4e5ddcfc6d17b67f76192",
+    "before": {
+      "url": "http://127.0.0.1:56461/candidate.html?seed=73129",
+      "secureContext": true,
+      "ready": true,
+      "lost": null,
+      "stopped": false,
+      "errors": [],
+      "notes": [],
+      "frame": 5724,
+      "simTime": 6.199966666666644,
+      "settings": {
+        "zombies": 2048,
+        "pool": 32768,
+        "demo": false,
+        "started": true,
+        "paused": true,
+        "stats": false,
+        "muted": false,
+        "zoom": 34,
+        "quality": 1,
+        "lab": false,
+        "map": true,
+        "hideUI": false,
+        "reticle": 1,
+        "tactical": false,
+        "help": false
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "counters": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2048,
+        2364,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0,
+        90260,
+        371,
+        12812,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        28,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        21,
+        42,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fps": 59.98527280920024,
+      "gpuMs": 2.162688
+    },
+    "action": {
+      "thrown": 1,
+      "pipeExplosions": 1,
+      "grenades": 1,
+      "rounds": 89,
+      "position": [
+        -55.296241760253906,
+        0,
+        54.127723693847656,
+        93
+      ]
+    },
+    "help": {
+      "help": true,
+      "paused": true
+    },
+    "pause": {
+      "passed": true,
+      "counter": 955
+    },
+    "restart": {
+      "passed": true,
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ]
+    },
+    "after": {
+      "url": "http://127.0.0.1:56461/candidate.html?seed=73129",
+      "secureContext": true,
+      "ready": true,
+      "lost": null,
+      "stopped": false,
+      "errors": [],
+      "notes": [],
+      "frame": 6411,
+      "simTime": 0.550066666666661,
+      "settings": {
+        "zombies": 2048,
+        "pool": 32768,
+        "demo": false,
+        "started": true,
+        "paused": true,
+        "stats": false,
+        "muted": false,
+        "zoom": 34,
+        "quality": 1,
+        "lab": false,
+        "map": true,
+        "hideUI": false,
+        "reticle": 1,
+        "tactical": false,
+        "help": false
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "counters": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2048,
+        2386,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0,
+        90260,
+        32,
+        12812,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        28,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fps": 60.00016409670536,
+      "gpuMs": 2.359296
+    }
+  },
+  "preparation": {
+    "moved": 367,
+    "elapsed": 6.199954509735107,
+    "hp": 100,
+    "journey": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "shots": 0,
+    "alerts": 0
+  },
+  "audioPreservation": {
+    "passed": true,
+    "audioHostSha256": "6c0c405eafc6f804aa8e50d7fe2274d2d0b2156f10e0540cc57ceb41b5af780b",
+    "clips": 43,
+    "bytes": 736350,
+    "files": [
+      {
+        "file": "assets/audio/rifle-1.flac",
+        "bytes": 7532,
+        "sha256": "0ce25f4231f661782adf95bb3eea5e1c84e084f944819960df8c3e428e2462bb"
+      },
+      {
+        "file": "assets/audio/rifle-2.flac",
+        "bytes": 7477,
+        "sha256": "56ff47006983447e3937eb996e6aea603dcd0cebb919434d8a2a86d19f3d1d59"
+      },
+      {
+        "file": "assets/audio/rifle-3.flac",
+        "bytes": 10330,
+        "sha256": "3b48806ceb1d5dd8f63a38e26a98158e7ccdb1aab4b0be04169aa15edcd58a13"
+      },
+      {
+        "file": "assets/audio/rifle-4.flac",
+        "bytes": 10381,
+        "sha256": "efafcaadba8222f88413fb55c8066d5bcfb8a61c217371140f6659bd28475a73"
+      },
+      {
+        "file": "assets/audio/shotgun-1.flac",
+        "bytes": 16940,
+        "sha256": "b795bb52742ab6f98dc4614183482a2b2bda4c82b5a6f2f132580f18ccdeab14"
+      },
+      {
+        "file": "assets/audio/shotgun-2.flac",
+        "bytes": 16586,
+        "sha256": "ac5da0d20451be9269016e25ef8fd3b151dc3435636a210d4db355b1b57774d1"
+      },
+      {
+        "file": "assets/audio/shotgun-3.flac",
+        "bytes": 18126,
+        "sha256": "3c1af06ec6ca238ffa192a3c5332c2f0f3d238bab81917b2a90ca78c1910d127"
+      },
+      {
+        "file": "assets/audio/hit-1.flac",
+        "bytes": 11703,
+        "sha256": "56b6ab4562f35e3e5c47cf328f494044384169f097309156b50d0dcdd57e7d15"
+      },
+      {
+        "file": "assets/audio/hit-2.flac",
+        "bytes": 8182,
+        "sha256": "c59a67faadb134e32de046e8b79c958b0049fc1f45b4492cc373684e9a51edd1"
+      },
+      {
+        "file": "assets/audio/hit-3.flac",
+        "bytes": 13457,
+        "sha256": "0c7cc37bfbfd64dcfad1485229d58dead84360a5a113241a3734e1a895bc4426"
+      },
+      {
+        "file": "assets/audio/death-1.flac",
+        "bytes": 21334,
+        "sha256": "f40d5815793ae93ed055750a4ba77becaacb595e79e64c31e99fc1ab6761b7d8"
+      },
+      {
+        "file": "assets/audio/death-2.flac",
+        "bytes": 24499,
+        "sha256": "06115d4cbeb18975f4dd3902b39af1945da178d465374698d18d1c343faf87ef"
+      },
+      {
+        "file": "assets/audio/death-3.flac",
+        "bytes": 18837,
+        "sha256": "0afbff6a92a09255fe0548655a94c3f675a365e36787c9dafe5a30a86d23ea3a"
+      },
+      {
+        "file": "assets/audio/growl-1.flac",
+        "bytes": 33665,
+        "sha256": "4ea64046484eefd00a669795c3aecaf0a474c667df5e12cbe47ceb00bfb1b09e"
+      },
+      {
+        "file": "assets/audio/growl-2.flac",
+        "bytes": 39430,
+        "sha256": "66c76dcae496581985cd2699a5288ef87a3ccf93d5f943307703709401145488"
+      },
+      {
+        "file": "assets/audio/growl-3.flac",
+        "bytes": 40162,
+        "sha256": "fea636dc2768b39934b9fbeb98809feb693a083882a10d66e18760ff511369e0"
+      },
+      {
+        "file": "assets/audio/growl-4.flac",
+        "bytes": 45701,
+        "sha256": "adc658503c3190fa950e82462c518ad652e246886ab257895654ed121fbd3a5f"
+      },
+      {
+        "file": "assets/audio/breath-1.flac",
+        "bytes": 24054,
+        "sha256": "bab38d745d7b6521ee50088f656bf8776a1e6599e7bab3652546326f8b1ca875"
+      },
+      {
+        "file": "assets/audio/breath-2.flac",
+        "bytes": 21758,
+        "sha256": "a255c63bdb50711dc959849e3c12287c95c3ead179c476742f1485ac6a571700"
+      },
+      {
+        "file": "assets/audio/breath-3.flac",
+        "bytes": 25580,
+        "sha256": "14084b5ad3dff6ceead46dc774a135764d8f4ffab07dc738a67deb7e26c57223"
+      },
+      {
+        "file": "assets/audio/explosion-1.flac",
+        "bytes": 41413,
+        "sha256": "4bf9c29df114aff44c8ffa38908fa7752aaab07b8f8bb7a0750e1719a519b424"
+      },
+      {
+        "file": "assets/audio/explosion-2.flac",
+        "bytes": 17325,
+        "sha256": "65ebe30041e192305fcfe81b8e23676e884a03d7baa15246e8992eececd898df"
+      },
+      {
+        "file": "assets/audio/explosion-3.flac",
+        "bytes": 31590,
+        "sha256": "6139fc1f7eaa8006670610d51d59a87128a2d643e7dd03fb9a272a75e9df5e3f"
+      },
+      {
+        "file": "assets/audio/chain-1.flac",
+        "bytes": 16078,
+        "sha256": "7e509965aa214dddda79ccf699ab41825e1ce59531df42025a30a6930d460169"
+      },
+      {
+        "file": "assets/audio/chain-2.flac",
+        "bytes": 17403,
+        "sha256": "a823108d87e17840193bb161418ee3f919ea992bff098320179652ae092dd3b3"
+      },
+      {
+        "file": "assets/audio/debris-1.flac",
+        "bytes": 18908,
+        "sha256": "6f77d90926297832d3d6d4d3caa354380a3e0bf014fe35ea842aa7a6ea5d2c58"
+      },
+      {
+        "file": "assets/audio/debris-2.flac",
+        "bytes": 16590,
+        "sha256": "2b734d612f9c9cb2f03317c29f4b7a27af8f76b1fbb1536c9644c3248d94a2dd"
+      },
+      {
+        "file": "assets/audio/debris-3.flac",
+        "bytes": 16450,
+        "sha256": "69d561d160cac13d8650177f4f18bc257e5c5b6db420bb854f0c6c6a7889f3be"
+      },
+      {
+        "file": "assets/audio/door-1.flac",
+        "bytes": 5110,
+        "sha256": "caab1e41f4c8125c8d9892c5d2a93c09761b0ce9fc5d0f1e55a6f14dbc75b879"
+      },
+      {
+        "file": "assets/audio/door-2.flac",
+        "bytes": 5473,
+        "sha256": "84fd6e69a6924127f3bc053d9c02673a65c87339a658ad8ad9d71373317c884e"
+      },
+      {
+        "file": "assets/audio/step-1.flac",
+        "bytes": 4180,
+        "sha256": "5ffaf27e3ad24d777ae36ff88d98078ffc87aef9ac11b4315101df32ac6440df"
+      },
+      {
+        "file": "assets/audio/step-2.flac",
+        "bytes": 5457,
+        "sha256": "34deb78713ccc9101646b0403d4bde0784aabbdf98a6b4221b7eaa760451531b"
+      },
+      {
+        "file": "assets/audio/step-3.flac",
+        "bytes": 5367,
+        "sha256": "62a66c674051472efdd85bb193f41a764f2c397e193fba552d89d1d4d3b7e8a1"
+      },
+      {
+        "file": "assets/audio/crit-1.flac",
+        "bytes": 11747,
+        "sha256": "b923a0c8ba7fed4138ff4764e951a1a2dda701dd5517a172cc755015d8ac6fae"
+      },
+      {
+        "file": "assets/audio/crit-2.flac",
+        "bytes": 10562,
+        "sha256": "78a6d7d56beabcb0fa6a08d3c6cc5a52cb4091bb41e0c0783818323bb17f06b6"
+      },
+      {
+        "file": "assets/audio/mass-1.flac",
+        "bytes": 12370,
+        "sha256": "913896ae8b8592d936b810b7fc26716d9686a11fdd55a0b2837582d5c71d3670"
+      },
+      {
+        "file": "assets/audio/mass-2.flac",
+        "bytes": 23812,
+        "sha256": "80622fdd79e17ba6778868194906e5df1275dcd8f0f8cdeb36c660868eaec341"
+      },
+      {
+        "file": "assets/audio/pipe-low.flac",
+        "bytes": 7187,
+        "sha256": "5828b67d9338e5ca8c84c45af94e3d79c324be1f58fd69712f263c4a006a0404"
+      },
+      {
+        "file": "assets/audio/pipe-mid.flac",
+        "bytes": 5708,
+        "sha256": "6ba63394fe5621a9588ca378323f692ea99ebbda3ec612f85c05e2e7c20176f0"
+      },
+      {
+        "file": "assets/audio/pipe-high.flac",
+        "bytes": 6298,
+        "sha256": "026884fb538a68451d833b9ec5ac5541c509b64cbeae6252b37de52b993f7ce8"
+      },
+      {
+        "file": "assets/audio/latch.flac",
+        "bytes": 13058,
+        "sha256": "d8dba1fc9db8ecf9644a24978dc4de9f28d32a52626be5106c80dbc1b6d9e75a"
+      },
+      {
+        "file": "assets/audio/ratchet.flac",
+        "bytes": 15998,
+        "sha256": "7d6db75d9582f118db568cc9be3d786ec8c6ffb03324b8a503ee34f652aeedea"
+      },
+      {
+        "file": "assets/audio/snap.flac",
+        "bytes": 12532,
+        "sha256": "d6f1fb9ea70dcfccd869ae60039d4eff5ca1fa211ab3853ba25a908ec5f8a16f"
+      }
+    ]
+  }
+}

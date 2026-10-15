@@ -1,0 +1,83 @@
+[
+  {
+    "file": "baseline-distant.json.gz",
+    "uncompressedName": "baseline-distant.json",
+    "uncompressedBytes": 1387512,
+    "uncompressedSha256": "eae04204935a2aeec2c06b5b4227151ce097d9385d2d04a8d25734153b82655e",
+    "compressedBytes": 92013,
+    "compressedSha256": "c05277ecf0a646d0b4bde49ae925c2c1f04eba3bee4999566ad22b38eb4b777d",
+    "roundTripVerified": true
+  },
+  {
+    "file": "baseline-encounter.json.gz",
+    "uncompressedName": "baseline-encounter.json",
+    "uncompressedBytes": 3975699,
+    "uncompressedSha256": "36c474d5e806ee1385598b3b5b872882a2ed254d93aca2e5be40f813e2819827",
+    "compressedBytes": 115369,
+    "compressedSha256": "0380e5ca44932a6422c058a6b39fa02dd5fe1def954e734aa49e0f2659b2cf13",
+    "roundTripVerified": true
+  },
+  {
+    "file": "candidate-bench.json.gz",
+    "uncompressedName": "candidate-bench.json",
+    "uncompressedBytes": 618835,
+    "uncompressedSha256": "569b8d96e41d7cee1f531c1fde4c10f4d58ec3a8ff14280b1f08c3182b5f37df",
+    "compressedBytes": 12326,
+    "compressedSha256": "5a5bcddb6e05ba120b97bae1e6cb832002e835f267325fcc3162a64d0bc22708",
+    "roundTripVerified": true
+  },
+  {
+    "file": "candidate-distant.json.gz",
+    "uncompressedName": "candidate-distant.json",
+    "uncompressedBytes": 1384076,
+    "uncompressedSha256": "ee31848ea87d6c54caf07231be1a5959c0e1d8ffa04255bf81e792d5c97bceae",
+    "compressedBytes": 91669,
+    "compressedSha256": "f2bdcc3b4d54626936bd35d7641823fd65bb79ed289d79b91b38e1e62b1b1254",
+    "roundTripVerified": true
+  },
+  {
+    "file": "candidate-encounter.json.gz",
+    "uncompressedName": "candidate-encounter.json",
+    "uncompressedBytes": 3914897,
+    "uncompressedSha256": "0adfdee743b96da7719ba2e78841edaf8d1a5566ca5de8d6eeef70c5262487c4",
+    "compressedBytes": 106969,
+    "compressedSha256": "6e9b5c88ffdbbd2dbdb91e2f8db249f6af8e1de44a09dee9bb9d0b2be4c1349d",
+    "roundTripVerified": true
+  },
+  {
+    "file": "candidate-natural.json.gz",
+    "uncompressedName": "candidate-natural.json",
+    "uncompressedBytes": 827795,
+    "uncompressedSha256": "9d3b1d271cfefb3b4d987c3ba6780a30ab1bd0a5f128ed4837d81be8708a31ed",
+    "compressedBytes": 98143,
+    "compressedSha256": "25af38148a08974f526924d8c503a4995f01135c74d8c7b57fa2be830581a97e",
+    "roundTripVerified": true
+  },
+  {
+    "file": "baseline-bench.json.gz",
+    "uncompressedName": "baseline-bench.json",
+    "uncompressedBytes": 105164,
+    "uncompressedSha256": "072705f2c6ce8e8416f1419422730fd0f41b1c30202f07c222815fdde4b9e19d",
+    "compressedBytes": 3893,
+    "compressedSha256": "7b36837f4c0b675f375075083a37bb9c934884a38b02d8e432a4ed981eff8400",
+    "roundTripVerified": true
+  },
+  {
+    "file": "baseline-director.json.gz",
+    "uncompressedName": "baseline-director.json",
+    "uncompressedBytes": 78774,
+    "uncompressedSha256": "025ae38b99d5d1c7dbf1dd358ad6f5c53ef83be9dd76832dc669f515c1f7d8bd",
+    "compressedBytes": 3830,
+    "compressedSha256": "1526170b4b8d26f153dd9025161f7f88a23842ee7abb9682aebc0e99881a35bf",
+    "roundTripVerified": true
+  },
+  {
+    "file": "candidate-director.json.gz",
+    "uncompressedName": "candidate-director.json",
+    "uncompressedBytes": 76766,
+    "uncompressedSha256": "87230096a9ad48aea5038ae99c90d81d146bdf24639b2040b4408a2a7bd824ab",
+    "compressedBytes": 3691,
+    "compressedSha256": "064fe06db0dbdcd08ef7a5c1e066784b3c52d77074a9ec99286fcce55024e162",
+    "roundTripVerified": true
+  }
+]

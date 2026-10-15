@@ -1,0 +1,548 @@
+{
+  "listened": false,
+  "listeningLimitation": "Audio input is unsupported in this execution environment. Recordings are provided for listening review; perceived quality and compressor pumping have not been judged by ear.",
+  "method": "Post-master lossless stereo float PCM from AudioWorklet; 30 FPS canvas video captured separately. Candidate replays recorded baseline keyboard/pointer inputs in the same seeded, positioned full-population fixtures. Frame timing and GPU atomic ordering are not identical. No loudness normalization in the main before/after recordings.",
+  "scenarios": {
+    "quiet": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 3.4104308390022675,
+        "peakDbFS": null,
+        "truePeak4xDbFS": null,
+        "rmsDbFS": null,
+        "clippedSamples": 0,
+        "peakSources": 0,
+        "medianFPS": 60.000800365480046,
+        "medianRenderCpuMs": 0.2865234839526787,
+        "medianPolledGpuMs": 2.29376,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 0,
+        "firedRounds": 0,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {},
+        "inputEvents": 0,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c"
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 3.4191383219954647,
+        "peakDbFS": null,
+        "truePeak4xDbFS": null,
+        "rmsDbFS": null,
+        "clippedSamples": 0,
+        "peakSources": 0,
+        "medianFPS": 60.003505865397685,
+        "medianRenderCpuMs": 0.3129324916135628,
+        "medianPolledGpuMs": 2.228224,
+        "maxAudioSampleMsCumulative": 0.5,
+        "kills": 0,
+        "firedRounds": 0,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {},
+        "inputEvents": 0,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae"
+      }
+    },
+    "single": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 4.269569160997732,
+        "peakDbFS": -19.359144878436247,
+        "truePeak4xDbFS": -19.256154142140065,
+        "rmsDbFS": -44.57321643291587,
+        "clippedSamples": 0,
+        "peakSources": 5,
+        "medianFPS": 60.003103071199334,
+        "medianRenderCpuMs": 0.2705729237466103,
+        "medianPolledGpuMs": 2.490368,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 1,
+        "firedRounds": 13,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {},
+        "inputEvents": 33,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c"
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 4.18249433106576,
+        "peakDbFS": -14.189426601533594,
+        "truePeak4xDbFS": -14.071699688483555,
+        "rmsDbFS": -40.18551053199208,
+        "clippedSamples": 0,
+        "peakSources": 7,
+        "medianFPS": 59.998646905909915,
+        "medianRenderCpuMs": 0.29897993357867925,
+        "medianPolledGpuMs": 2.588672,
+        "maxAudioSampleMsCumulative": 0.7999999523162842,
+        "kills": 1,
+        "firedRounds": 13,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {
+          "step": 2,
+          "rifle": 10,
+          "debris": 3,
+          "death": 1
+        },
+        "inputEvents": 32,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae"
+      }
+    },
+    "horde": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 8.17922902494331,
+        "peakDbFS": -19.176310864798307,
+        "truePeak4xDbFS": -18.966139627328143,
+        "rmsDbFS": -37.527426406723734,
+        "clippedSamples": 0,
+        "peakSources": 5,
+        "medianFPS": 60.00155968953622,
+        "medianRenderCpuMs": 0.2545135330694045,
+        "medianPolledGpuMs": 2.883584,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 36,
+        "firedRounds": 120,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {},
+        "inputEvents": 60,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c"
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 8.240181405895692,
+        "peakDbFS": -13.402597936578626,
+        "truePeak4xDbFS": -13.368463715999155,
+        "rmsDbFS": -30.3404161301402,
+        "clippedSamples": 0,
+        "peakSources": 18,
+        "medianFPS": 60.00287856991596,
+        "medianRenderCpuMs": 0.2838875707527029,
+        "medianPolledGpuMs": 2.818048,
+        "maxAudioSampleMsCumulative": 0.7999999523162842,
+        "kills": 34,
+        "firedRounds": 120,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {
+          "step": 92,
+          "rifle": 107,
+          "debris": 10,
+          "death": 32,
+          "growl": 8,
+          "breath": 10,
+          "hit": 4,
+          "mass": 2
+        },
+        "inputEvents": 60,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae"
+      }
+    },
+    "chain": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 6.788934240362812,
+        "peakDbFS": -19.176311453397933,
+        "truePeak4xDbFS": -18.96614192544154,
+        "rmsDbFS": -46.58128258992363,
+        "clippedSamples": 0,
+        "peakSources": 5,
+        "medianFPS": 60.00272013522405,
+        "medianRenderCpuMs": 0.24753679292207476,
+        "medianPolledGpuMs": 2.752512,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 6,
+        "firedRounds": 13,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {},
+        "inputEvents": 53,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c"
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 6.768616780045352,
+        "peakDbFS": -11.996448711573786,
+        "truePeak4xDbFS": -11.990920799164314,
+        "rmsDbFS": -32.06454009535782,
+        "clippedSamples": 0,
+        "peakSources": 19,
+        "medianFPS": 60.00155642165093,
+        "medianRenderCpuMs": 0.29079860603029817,
+        "medianPolledGpuMs": 2.555904,
+        "maxAudioSampleMsCumulative": 0.7999999523162842,
+        "kills": 6,
+        "firedRounds": 13,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 0,
+        "audioKindsCumulative": {
+          "step": 158,
+          "rifle": 117,
+          "debris": 13,
+          "death": 37,
+          "growl": 15,
+          "breath": 18,
+          "hit": 16,
+          "mass": 3,
+          "explosion": 2
+        },
+        "inputEvents": 52,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae"
+      }
+    },
+    "pipe": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 8.780045351473923,
+        "peakDbFS": -21.4624400271762,
+        "truePeak4xDbFS": -21.455396578441245,
+        "rmsDbFS": -49.80344751016733,
+        "clippedSamples": 0,
+        "peakSources": 2,
+        "medianFPS": 60.0048105771229,
+        "medianRenderCpuMs": 0.26371939953598067,
+        "medianPolledGpuMs": 2.752512,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 8,
+        "firedRounds": 0,
+        "pipeDetonations": 1,
+        "peakPipeBeeps": 15,
+        "audioKindsCumulative": {},
+        "inputEvents": 3,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c"
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 8.780045351473923,
+        "peakDbFS": -12.968392887473128,
+        "truePeak4xDbFS": -12.801345085663806,
+        "rmsDbFS": -32.79992569127596,
+        "clippedSamples": 0,
+        "peakSources": 9,
+        "medianFPS": 59.939334710016134,
+        "medianRenderCpuMs": 0.33961297905773113,
+        "medianPolledGpuMs": 2.62144,
+        "maxAudioSampleMsCumulative": 4,
+        "kills": 10,
+        "firedRounds": 0,
+        "pipeDetonations": 1,
+        "peakPipeBeeps": 16,
+        "audioKindsCumulative": {
+          "step": 233,
+          "rifle": 117,
+          "debris": 13,
+          "death": 40,
+          "growl": 23,
+          "breath": 26,
+          "hit": 16,
+          "mass": 4,
+          "explosion": 3,
+          "beepLow": 4,
+          "beepMid": 4,
+          "beepHigh": 8
+        },
+        "inputEvents": 3,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae"
+      }
+    },
+    "controls": {
+      "before": {
+        "sampleRate": 44100,
+        "seconds": 6.788934240362812,
+        "peakDbFS": -35.81220754902887,
+        "truePeak4xDbFS": -35.032135066434805,
+        "rmsDbFS": -61.96376382130555,
+        "clippedSamples": 0,
+        "peakSources": 1,
+        "medianFPS": 60.002129222046605,
+        "medianRenderCpuMs": 0.24918982945120324,
+        "medianPolledGpuMs": 3.145728,
+        "maxAudioSampleMsCumulative": null,
+        "kills": 0,
+        "firedRounds": 0,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 3,
+        "audioKindsCumulative": {},
+        "inputEvents": 12,
+        "passed": true,
+        "sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c",
+        "pausedActiveSourceMaximum": 0,
+        "mutedActiveSourceMaximum": 0,
+        "pauseInteriorRmsDbFS": null,
+        "muteInteriorRmsDbFS": null
+      },
+      "after": {
+        "sampleRate": 44100,
+        "seconds": 6.788934240362812,
+        "peakDbFS": -17.413109299261865,
+        "truePeak4xDbFS": -17.407581890919356,
+        "rmsDbFS": -41.260317563112174,
+        "clippedSamples": 0,
+        "peakSources": 6,
+        "medianFPS": 60.00144399588354,
+        "medianRenderCpuMs": 0.29650282922950355,
+        "medianPolledGpuMs": 2.555904,
+        "maxAudioSampleMsCumulative": 4,
+        "kills": 0,
+        "firedRounds": 0,
+        "pipeDetonations": 0,
+        "peakPipeBeeps": 3,
+        "audioKindsCumulative": {
+          "step": 259,
+          "rifle": 117,
+          "debris": 13,
+          "death": 40,
+          "growl": 26,
+          "breath": 28,
+          "hit": 16,
+          "mass": 4,
+          "explosion": 3,
+          "beepLow": 7,
+          "beepMid": 4,
+          "beepHigh": 8
+        },
+        "inputEvents": 12,
+        "passed": true,
+        "sha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae",
+        "pausedActiveSourceMaximum": 2,
+        "mutedActiveSourceMaximum": 3,
+        "pauseInteriorRmsDbFS": null,
+        "muteInteriorRmsDbFS": null
+      }
+    }
+  },
+  "reviewOrder": [
+    "quiet",
+    "single",
+    "horde",
+    "chain",
+    "pipe",
+    "controls"
+  ],
+  "files": {
+    "Tiny-Zombies-before.mp4": {
+      "sha256": "d53df21886f75c7a667f447f8ef31bfbc36585e86024fb1289c42f1a1bc63711",
+      "bytes": 6796102,
+      "segments": [
+        {
+          "scenario": "quiet",
+          "startSeconds": 0,
+          "durationSeconds": 3.4104308390022675
+        },
+        {
+          "scenario": "single",
+          "startSeconds": 3.4104308390022675,
+          "durationSeconds": 4.269569160997732
+        },
+        {
+          "scenario": "horde",
+          "startSeconds": 7.68,
+          "durationSeconds": 8.17922902494331
+        },
+        {
+          "scenario": "chain",
+          "startSeconds": 15.85922902494331,
+          "durationSeconds": 6.788934240362812
+        },
+        {
+          "scenario": "pipe",
+          "startSeconds": 22.648163265306124,
+          "durationSeconds": 8.780045351473923
+        },
+        {
+          "scenario": "controls",
+          "startSeconds": 31.428208616780047,
+          "durationSeconds": 6.788934240362812
+        }
+      ]
+    },
+    "Tiny-Zombies-before.wav": {
+      "sha256": "004441949139bb2a32c0f15483428ae46891d0a0c6a846d0ddb2a962ca99a3ee",
+      "bytes": 10112358,
+      "segments": [
+        {
+          "scenario": "quiet",
+          "startSeconds": 0,
+          "durationSeconds": 3.4104308390022675
+        },
+        {
+          "scenario": "single",
+          "startSeconds": 3.4104308390022675,
+          "durationSeconds": 4.269569160997732
+        },
+        {
+          "scenario": "horde",
+          "startSeconds": 7.68,
+          "durationSeconds": 8.17922902494331
+        },
+        {
+          "scenario": "chain",
+          "startSeconds": 15.85922902494331,
+          "durationSeconds": 6.788934240362812
+        },
+        {
+          "scenario": "pipe",
+          "startSeconds": 22.648163265306124,
+          "durationSeconds": 8.780045351473923
+        },
+        {
+          "scenario": "controls",
+          "startSeconds": 31.428208616780047,
+          "durationSeconds": 6.788934240362812
+        }
+      ]
+    },
+    "Tiny-Zombies-after.mp4": {
+      "sha256": "603cb2cd44fdb06b63335dddb01f94bcc99e3a82eb36b3eafbb11f231f5cdd8f",
+      "bytes": 7619640,
+      "segments": [
+        {
+          "scenario": "quiet",
+          "startSeconds": 0,
+          "durationSeconds": 3.407528344671202
+        },
+        {
+          "scenario": "single",
+          "startSeconds": 3.407528344671202,
+          "durationSeconds": 4.18249433106576
+        },
+        {
+          "scenario": "horde",
+          "startSeconds": 7.590022675736962,
+          "durationSeconds": 8.240181405895692
+        },
+        {
+          "scenario": "chain",
+          "startSeconds": 15.830204081632655,
+          "durationSeconds": 6.768616780045352
+        },
+        {
+          "scenario": "pipe",
+          "startSeconds": 22.598820861678007,
+          "durationSeconds": 8.774240362811792
+        },
+        {
+          "scenario": "controls",
+          "startSeconds": 31.3730612244898,
+          "durationSeconds": 6.788934240362812
+        }
+      ]
+    },
+    "Tiny-Zombies-after.wav": {
+      "sha256": "97a5391944bc1114f4786043aa4396424a690cbb2ff78b2520ab081f1c2faa7b",
+      "bytes": 10097766,
+      "segments": [
+        {
+          "scenario": "quiet",
+          "startSeconds": 0,
+          "durationSeconds": 3.407528344671202
+        },
+        {
+          "scenario": "single",
+          "startSeconds": 3.407528344671202,
+          "durationSeconds": 4.18249433106576
+        },
+        {
+          "scenario": "horde",
+          "startSeconds": 7.590022675736962,
+          "durationSeconds": 8.240181405895692
+        },
+        {
+          "scenario": "chain",
+          "startSeconds": 15.830204081632655,
+          "durationSeconds": 6.768616780045352
+        },
+        {
+          "scenario": "pipe",
+          "startSeconds": 22.598820861678007,
+          "durationSeconds": 8.774240362811792
+        },
+        {
+          "scenario": "controls",
+          "startSeconds": 31.3730612244898,
+          "durationSeconds": 6.788934240362812
+        }
+      ]
+    }
+  },
+  "levelMatchedHorde": {
+    "candidateGainDb": -7.1870102765835355,
+    "description": "Baseline horde followed by candidate horde attenuated to the same PCM RMS. Main before/after files preserve actual output gain."
+  },
+  "syntheticStress": {
+    "priority": {
+      "accepted": {
+        "death": 6,
+        "impact": 5,
+        "zombie": 5,
+        "step": 4,
+        "debris": 2,
+        "cue": 5,
+        "weapon": 5
+      },
+      "active": 32,
+      "extraLowAccepted": false,
+      "stats": {
+        "limit": 32,
+        "active": 32,
+        "peak": 32,
+        "played": 557,
+        "dropped": 7,
+        "byKind": {
+          "step": 263,
+          "rifle": 122,
+          "debris": 15,
+          "death": 46,
+          "growl": 31,
+          "breath": 28,
+          "hit": 21,
+          "mass": 4,
+          "explosion": 3,
+          "beepLow": 12,
+          "beepMid": 4,
+          "beepHigh": 8
+        },
+        "sampleMs": 4,
+        "readbacks": 217,
+        "nearby": 0,
+        "barrels": 4,
+        "nearDeaths": 51,
+        "resets": 9
+      }
+    },
+    "overload": {
+      "accepted": 22,
+      "active": 22
+    },
+    "pausedVoices": {
+      "active": 0,
+      "sources": 0,
+      "paused": true
+    },
+    "peakSources": 32,
+    "peakDbFS": -8.968752609066113,
+    "clippedSamples": 0,
+    "description": "Artificially saturated low-priority voices, then cue/weapon reservations; separate 2x source-gain overload and pause-clear check. Not ordinary gameplay."
+  },
+  "limitations": [
+    "No listening occurred; artistic quality, fatigue, cue readability by ear and perceived pumping require review.",
+    "Fixtures retain 2048 enemies/32768 particles but reposition most enemies far away; these are controlled tests, not blind human play.",
+    "CPU frame metrics cover render submission. Audio sample time is measured separately and cumulative; GPU timestamps are polled and may repeat.",
+    "No long-session audio soak or maximum 8192-enemy runtime test."
+  ]
+}

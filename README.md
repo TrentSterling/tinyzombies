@@ -4,6 +4,10 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Combat audio candidate: awaiting listening review
+
+This feature branch contains a tested but unpublished procedural audio candidate: zombie/gait voices, layered hits and deaths, chain accents, spatial variation and a bounded 32-source mix. Six recorded Windows fixtures and an artificial voice-saturation check passed without clipping or GPU faults. No listening occurred in the test environment; quality, cue readability and perceived pumping still require review before merge or deployment. See [the audio review and limitations](validation/audio-review.md) and [artifact manifest](validation/audio-artifact-manifest.json). The public game remains on the authored-route release below.
+
 ## Authored routes and supply loops
 
 Reserved approaches, three optional supply loops and six destructible freight buildings give the existing mission a sequence of bends and clear objective pockets. Ground markings follow those routes. Mission coordinates, enemy director, supply/trap behavior and simulation shaders are preserved. See [the route intent and validation](validation/flow-review.md).
@@ -12,7 +16,7 @@ The exact build completed chapter 1 on Windows Chrome 155 / RTX 5070 Ti using or
 
 Compare the actual same-seed, frame-one [before](assets/route-before.png) and [after](assets/route-after.png) captures. [Watch the gameplay highlights](assets/route-gameplay-proof.mp4) or inspect the [victory capture](assets/route-victory.png). The clip contains cuts between recorded mission segments and no audio.
 
-CPU collision/navigation models also pass three seeds across all three chapters, including lane widths, objective/supply access, support groups, door states and bounded squad-search progress. Chapters 2/3 have CPU coverage only. A matched ten-second prep-area comparison completed about 60 FPS in both builds; this short sample does not establish a performance gain or long-session stability. Full methods and limits are in [the Windows report](validation/flow-windows-summary.json). Current HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
+CPU collision/navigation models also pass three seeds across all three chapters, including lane widths, objective/supply access, support groups, door states and bounded squad-search progress. Chapters 2/3 have CPU coverage only. A matched ten-second prep-area comparison completed about 60 FPS in both builds; this short sample does not establish a performance gain or long-session stability. Full methods and limits are in [the Windows report](validation/flow-windows-summary.json). Published authored-route HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
 
 ## Compact minimap and environment contrast
 

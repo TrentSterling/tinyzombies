@@ -1,0 +1,14 @@
+{
+  "candidateSha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae",
+  "baselineSha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c",
+  "sourceBeforeHostIdentical": true,
+  "shaderDeclarationsIdentical": 40,
+  "worldGenerationIdentical": true,
+  "audioUsesPrivateSeededVariation": true,
+  "audioWritesGameplayBuffers": false,
+  "stateLayoutsAndEntityBudgetsUnchanged": true,
+  "voiceLimit": 32,
+  "nonPriorityLimit": 22,
+  "sourceRetention": "Baseline, first candidate and final candidate kept in separate capture directories. Original uploaded HTML remains unchanged.",
+  "publication": "Staged only; listening review required."
+}

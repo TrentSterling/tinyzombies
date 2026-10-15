@@ -1,0 +1,130 @@
+{
+  "candidateSha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae",
+  "baselineSha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c",
+  "status": "Draft; listening review required before merge or deployment.",
+  "listened": false,
+  "artifacts": [
+    {
+      "filename": "Tiny-Zombies-before.mp4",
+      "bytes": 6796102,
+      "sha256": "d53df21886f75c7a667f447f8ef31bfbc36585e86024fb1289c42f1a1bc63711",
+      "libraryFileId": "libfile_3cea5f5b431c8191a48883b9164ef213",
+      "fileId": "file_00000000e10081f581405ca4c1e8cd29",
+      "libraryVersion": 0,
+      "mimeType": "video/mp4"
+    },
+    {
+      "filename": "Tiny-Zombies-after.mp4",
+      "bytes": 7619640,
+      "sha256": "603cb2cd44fdb06b63335dddb01f94bcc99e3a82eb36b3eafbb11f231f5cdd8f",
+      "libraryFileId": "libfile_cdf4b26de4d881918c6d5e8e1812dede",
+      "fileId": "file_0000000011a0824398726f09754e128b",
+      "libraryVersion": 0,
+      "mimeType": "video/mp4"
+    },
+    {
+      "filename": "Tiny-Zombies-before.wav",
+      "bytes": 10112358,
+      "sha256": "004441949139bb2a32c0f15483428ae46891d0a0c6a846d0ddb2a962ca99a3ee",
+      "libraryFileId": "libfile_dae378af9d0081919d4c09c2ecce3b43",
+      "fileId": "file_00000000d68c820c95f5df2b8d678a3e",
+      "libraryVersion": 0,
+      "mimeType": "audio/vnd.wave"
+    },
+    {
+      "filename": "Tiny-Zombies-after.wav",
+      "bytes": 10097766,
+      "sha256": "97a5391944bc1114f4786043aa4396424a690cbb2ff78b2520ab081f1c2faa7b",
+      "libraryFileId": "libfile_953d715d7454819190f8508bae45c73d",
+      "fileId": "file_0000000098e881f49dd9418641f05bd4",
+      "libraryVersion": 0,
+      "mimeType": "audio/vnd.wave"
+    },
+    {
+      "filename": "Tiny-Zombies-horde-level-matched.mp4",
+      "bytes": 6544231,
+      "sha256": "733f5d9a0ac6dd8a41240a793ddd77b5b5e221739ebd0f5b25f26838e4daaf89",
+      "libraryFileId": "libfile_c97f605ad04c8191b0637e5f56b372e9",
+      "fileId": "file_00000000d9ec81f4a0a4d893a5648874",
+      "libraryVersion": 0,
+      "mimeType": "video/mp4"
+    },
+    {
+      "filename": "Tiny-Zombies-audio-measurements.json",
+      "bytes": 16962,
+      "sha256": "2ef6f376f539a8603d79eccba7700ca0fae6c4bf2f48e53e36ad7d5b370e48c0",
+      "libraryFileId": "libfile_c641fed3aba881919be47b27db36bead",
+      "fileId": "file_00000000259881f99a5e061441559727",
+      "libraryVersion": 0,
+      "mimeType": "application/json"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "audio-evidence/baseline-quiet.json",
+      "bytes": 55404,
+      "sha256": "a1ff0620cde2fcef7b5fef3ca754ae23c40aa0b577f7de04dd7f98a9bfe53e7e"
+    },
+    {
+      "path": "audio-evidence/baseline-single.json",
+      "bytes": 65834,
+      "sha256": "faa88c7697c55ae3015d4cb009e36beae238b5fb8d9d782e7f9057580521955a"
+    },
+    {
+      "path": "audio-evidence/baseline-horde.json",
+      "bytes": 84008,
+      "sha256": "6abbf03f6c1f62ed75a437d08329ca44c1b242c420776ef3f3e1f21a34dbfdf2"
+    },
+    {
+      "path": "audio-evidence/baseline-chain.json",
+      "bytes": 79877,
+      "sha256": "95675b48e5cd216403f84d1bd1c491d9539126223c5eb6f1c72e5ad0171ab114"
+    },
+    {
+      "path": "audio-evidence/baseline-pipe.json",
+      "bytes": 77524,
+      "sha256": "a42e7e6e7c1c091cd822fe66b6cae4887369460c544b52fee7f9cdba1e82dfbe"
+    },
+    {
+      "path": "audio-evidence/baseline-controls.json",
+      "bytes": 70034,
+      "sha256": "ffe2c0e04178914e3626d36d19c325ff6a21415434b3ee6eed99ec1cfb350e47"
+    },
+    {
+      "path": "audio-evidence/candidate-quiet.json",
+      "bytes": 63641,
+      "sha256": "211b6f69547dfa5dc3714292ea3d3b85c892d9a3e1838d3bf05ad9f8de3511ca"
+    },
+    {
+      "path": "audio-evidence/candidate-single.json",
+      "bytes": 78532,
+      "sha256": "ceb3b8af85179b75460b453a580236becdfbd55630f7e053f40c5bda9df8ffdf"
+    },
+    {
+      "path": "audio-evidence/candidate-horde.json",
+      "bytes": 118992,
+      "sha256": "97cb1147e5af02c7ba43b259270ca34668b748698f68fd677c10b73cde5c2fd4"
+    },
+    {
+      "path": "audio-evidence/candidate-chain.json",
+      "bytes": 108831,
+      "sha256": "cb6745f97cb9e7c81edaf7596ae6183d9b8fc85fa9a3a80d79cf30c84570b1ce"
+    },
+    {
+      "path": "audio-evidence/candidate-pipe.json",
+      "bytes": 110707,
+      "sha256": "4e5efee1d6d94b46c52fa3c70b903e399bf06fcf17abc8294bb8ab776ae20e79"
+    },
+    {
+      "path": "audio-evidence/candidate-controls.json",
+      "bytes": 103456,
+      "sha256": "8d9b42626bf921a1d57831c2cc12ca2a6f7c8186c08c5f879e3a824faf3e7781"
+    },
+    {
+      "path": "audio-evidence/candidate-stress.json",
+      "bytes": 91356,
+      "sha256": "3cbc932c0465dc3e88568b9c7f2e8658c712fca22e8d29b346469284fc657fbc"
+    }
+  ],
+  "access": "Review media are preserved in the owner's ChatGPT Library; these IDs do not grant public access."
+}

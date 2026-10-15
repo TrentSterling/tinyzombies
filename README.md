@@ -4,6 +4,10 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Combat audio
+
+Procedural zombie/gait voices, layered hits and deaths, spatial variation and staggered chain accents use a bounded 32-source mix. Background steps and calls have varied spacing limits, and weapons/pipe cues retain priority capacity. Six matched Windows fixtures plus saturation passed without clipping or GPU faults, at about 60 FPS. Recordings and signal measurements support the validation; the execution environment could not listen, so perceptual quality is not claimed. See [the audio release report](validation/audio-release-review.md), [recording manifest](validation/audio-release-artifact-manifest.json), and [historical draft review](validation/audio-review.md).
+
 ## Authored routes and supply loops
 
 Reserved approaches, three optional supply loops and six destructible freight buildings give the existing mission a sequence of bends and clear objective pockets. Ground markings follow those routes. Mission coordinates, enemy director, supply/trap behavior and simulation shaders are preserved. See [the route intent and validation](validation/flow-review.md).
@@ -12,7 +16,7 @@ The exact build completed chapter 1 on Windows Chrome 155 / RTX 5070 Ti using or
 
 Compare the actual same-seed, frame-one [before](assets/route-before.png) and [after](assets/route-after.png) captures. [Watch the gameplay highlights](assets/route-gameplay-proof.mp4) or inspect the [victory capture](assets/route-victory.png). The clip contains cuts between recorded mission segments and no audio.
 
-CPU collision/navigation models also pass three seeds across all three chapters, including lane widths, objective/supply access, support groups, door states and bounded squad-search progress. Chapters 2/3 have CPU coverage only. A matched ten-second prep-area comparison completed about 60 FPS in both builds; this short sample does not establish a performance gain or long-session stability. Full methods and limits are in [the Windows report](validation/flow-windows-summary.json). Current HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
+CPU collision/navigation models also pass three seeds across all three chapters, including lane widths, objective/supply access, support groups, door states and bounded squad-search progress. Chapters 2/3 have CPU coverage only. A matched ten-second prep-area comparison completed about 60 FPS in both builds; this short sample does not establish a performance gain or long-session stability. Full methods and limits are in [the Windows report](validation/flow-windows-summary.json). Published authored-route HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
 
 ## Compact minimap and environment contrast
 
@@ -60,10 +64,10 @@ The exact two-byte change passed Windows paired GPU tests: identical particle bu
 
 ## Validation of the preceding compatibility build
 
-The following longer and cloud tests apply to SHA `1be63cbf…`, before the two-byte blood-radius adjustment. They are retained as historical evidence, not relabelled as tests of the latest HTML.
+The following longer and cloud tests apply to SHA `1be63cbfâ€¦`, before the two-byte blood-radius adjustment. They are retained as historical evidence, not relabelled as tests of the latest HTML.
 
 
-- Windows hardware: Chrome 155.0.8059.41, NVIDIA RTX 5070 Ti, driver 591.86, 1280×720, default 2,048 zombies / 32,768 particles. A bounded 60-second test completed 3,600 active frames (10-second gate plus 50 seconds, with an inspection pause), approximately 60 FPS and median reported GPU time 3.87 ms. Movement, 983 rounds, two grenades, wall destruction/fracture, particles and pathfinding ran without game/device errors or new Windows GPU faults. Pause/resume/restart passed and restart restored health, ammunition and world. Simulation continued after the player was downed. Hosted URL testing is a separate deployment check.
+- Windows hardware: Chrome 155.0.8059.41, NVIDIA RTX 5070 Ti, driver 591.86, 1280Ã—720, default 2,048 zombies / 32,768 particles. A bounded 60-second test completed 3,600 active frames (10-second gate plus 50 seconds, with an inspection pause), approximately 60 FPS and median reported GPU time 3.87 ms. Movement, 983 rounds, two grenades, wall destruction/fracture, particles and pathfinding ran without game/device errors or new Windows GPU faults. Pause/resume/restart passed and restart restored health, ammunition and world. Simulation continued after the player was downed. Hosted URL testing is a separate deployment check.
 
 - Chromium 140 / Playwright 1.55, SwiftShader WebGPU: 155 frames, default 2,048 zombies and 32,768 particles; movement, firing, voxel destruction, grenade/melee input, pause, restart and demo; no JavaScript or GPU errors. Software-renderer coverage does not establish hardware performance.
 - Cloud run: https://github.com/TrentSterling/trentsterling.github.io/actions/runs/38620762717

@@ -1,0 +1,56 @@
+{
+  "candidateSha256": "7beb963c6f69243fc7e9450ab93ef958d25c144f09153010ae185c0e1c55da62",
+  "priorDraftSha256": "38d814c2f7f02f197cd6028a22cb112b21acfbd00aa48651284e74273b8401ae",
+  "comparison": "03a7ba3 prior draft versus release candidate; all main files preserve output gain.",
+  "listened": false,
+  "files": [
+    {
+      "filename": "Tiny-Zombies-audio-release-after.mp4",
+      "bytes": 7346690,
+      "sha256": "903c919bf6b5cc516b29e60800fb15dea94d9896cf70fc642b9382bda41edd60",
+      "libraryFileId": "libfile_b30d49731a40819199acf55f5aea8af3",
+      "fileId": "file_00000000c29081f4a1f43f2960dbf165",
+      "libraryVersion": 0
+    },
+    {
+      "filename": "Tiny-Zombies-audio-release-after.wav",
+      "bytes": 10048614,
+      "sha256": "ee5a8d749050c0a8272ba050667c914de610ddf1b1b265c39903ba027b1aafed",
+      "libraryFileId": "libfile_1c2c5ba8a50c8191aa8eaa11eb6893f9",
+      "fileId": "file_00000000bfe481f991914d3e5d37f440",
+      "libraryVersion": 0
+    },
+    {
+      "filename": "Tiny-Zombies-audio-release-before.mp4",
+      "bytes": 7425843,
+      "sha256": "7c8ec6c3bdb8ab02c7767c8f4ab1237f4e472b8468799497b3162eda6972f99e",
+      "libraryFileId": "libfile_f4ecdcd8c29081919e6034d47827bf16",
+      "fileId": "file_000000007074820dbc9ae6ee4139aa5d",
+      "libraryVersion": 0
+    },
+    {
+      "filename": "Tiny-Zombies-audio-release-before.wav",
+      "bytes": 10071654,
+      "sha256": "ba891b177cf305568ba117a1dfa768e6acb2ed7d57282a0de66fd1c1438ab785",
+      "libraryFileId": "libfile_5ef9262bf76481919da9f5237451e13e",
+      "fileId": "file_00000000aa5c820a835416cbb2fc3272",
+      "libraryVersion": 0
+    },
+    {
+      "filename": "Tiny-Zombies-audio-release-horde-level-matched.mp4",
+      "bytes": 6584441,
+      "sha256": "9dd241fadb7a3a482dc62d4017f328238ac95d0f92fae56e7f2b64e3a2f0d84c",
+      "libraryFileId": "libfile_e869e7f325bc81919688ff4aaec1d1a0",
+      "fileId": "file_00000000e02c82109c56a83d8d5bcd27",
+      "libraryVersion": 0
+    },
+    {
+      "filename": "Tiny-Zombies-audio-release-measurements.json",
+      "bytes": 29858,
+      "sha256": "fb9ba159595cc6cd64fb99f93744d1bdd1cf64cf5caacbf637ea16fb567a6a08",
+      "libraryFileId": "libfile_9b52e4f116d88191b188fd623d4b0212",
+      "fileId": "file_00000000d9d881f4b5d65b606f78a35c",
+      "libraryVersion": 0
+    }
+  ]
+}

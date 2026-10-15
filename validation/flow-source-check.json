@@ -1,0 +1,533 @@
+{
+  "kind": "CPU generation, quarter-metre static collision sweep and bounded structural-group checks",
+  "candidate_sha256": "c2fc15a25fea1cfa78b5f22a3c51f1392195fab58a19cbeb9fcbbc5cd7509633",
+  "reports": [
+    {
+      "stage": 1,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 1,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 1,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 141,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 141,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 141,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 138,
+      "groups": 480,
+      "largestGroup": 288,
+      "authoredBuildings": 6,
+      "doors": 25,
+      "routes": [
+        {
+          "name": "Prep to rescue yard",
+          "samples": 99,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "samples": 227,
+          "centreBlocked": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "samples": 284,
+          "centreBlocked": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "samples": 147,
+          "centreBlocked": []
+        },
+        {
+          "name": "East relay to extraction",
+          "samples": 433,
+          "centreBlocked": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "samples": 11,
+          "centreBlocked": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "samples": 187,
+          "centreBlocked": []
+        },
+        {
+          "name": "Central service bypass",
+          "samples": 110,
+          "centreBlocked": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "samples": 195,
+          "centreBlocked": []
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "No runtime/GPU execution.",
+    "Centerline sweeps include a .24m actor radius and static geometry only; dynamic props, doors, squad travel and ordinary inputs still need validation.",
+    "Wider route clearance and support placement are reviewed separately."
+  ]
+}

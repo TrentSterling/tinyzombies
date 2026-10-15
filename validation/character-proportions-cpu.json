@@ -1,0 +1,63 @@
+{
+  "method": "CPU execution of exact extracted part transform with restricted vector-operation substitutions. Exact source preservation checks and geometric dimension/distance invariants. Controlled geometry inputs are not gameplay, WGSL compilation or visual proof.",
+  "baselineSha256": "fedee3e5054b56841bda85903d261cb740e955a289a4e5ddcfc6d17b67f76192",
+  "candidateSha256": "52cc1f3f2ddba7a8277685b0d1ded88982b47a88a7fafdc0b3ebe146144539f8",
+  "candidateBytes": 398094,
+  "changedShaderModules": [
+    "boxes"
+  ],
+  "gameplayAndHostOutsideBoxesExact": true,
+  "authoredArtAndMotionExact": true,
+  "geometryCases": 37544,
+  "unchangedUprightCases": 28896,
+  "downedSquadHeadDimensions": {
+    "before": [
+      0.49119999999999997,
+      0.20526,
+      0.49119999999999997
+    ],
+    "after": [
+      0.49119999999999997,
+      0.49119999999999997,
+      0.49119999999999997
+    ]
+  },
+  "poseSelections": {
+    "busySquad": {
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "pose": 0
+    },
+    "downedSquad": {
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "pose": -1
+    },
+    "downedPlayer": {
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "pose": -1
+    },
+    "crawler": {
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "pose": 1
+    }
+  },
+  "shaderCompilation": "pending GPU slot",
+  "actualGameplayVisualValidation": "pending GPU slot",
+  "passed": true,
+  "completedUtc": "2026-10-15T19:56:17.722Z"
+}

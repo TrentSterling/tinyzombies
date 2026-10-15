@@ -643,11 +643,13 @@ fn box3(o:vec3f,d:vec3f,c:vec3f,h:vec3f,limit:f32,kind:u32,id:u32)->Hit3 {
 }
 fn rotPart(v:vec3f,dir:vec2f)->vec3f {if(abs(dir.x)>abs(dir.y)){return select(vec3f(-v.z,v.y,v.x),vec3f(v.z,v.y,-v.x),dir.x>0.0);}return select(vec3f(-v.x,v.y,-v.z),v,dir.y>0.0);}
 fn zombie3(o:vec3f,d:vec3f,z:Zombie,id:u32,limit:f32)->Hit3 {
- if(z.p.w<=0.0){return miss3(limit);}let scale=zScale(z.extraData.z);
- if(box3(o,d,z.p.xyz+vec3f(0,.55,0)*scale,vec3f(.50,.65,.50)*scale,limit,3u,id).kind==0u){return miss3(limit);}
+ if(z.p.w<=0.0){return miss3(limit);}let crawler=z.extraData.z==4.0;let scale=select(zScale(z.extraData.z),vec3f(1),crawler);
+ let center=select(vec3f(0,.55,0)*scale,vec3f(0,.32,0),crawler);let broad=select(vec3f(.50,.65,.50)*scale,vec3f(.65,.40,.65),crawler);
+ if(box3(o,d,z.p.xyz+center,broad,limit,3u,id).kind==0u){return miss3(limit);}
  let facing=S.pos.xz-z.p.xz;var hit=miss3(limit);let range=ART_RANGE6[u32(z.extraData.z)];
- for(var part=0u;part<range.y;part++){let a=ART_BOX6[range.x+part];let local=a.p.xyz+artMotion6(a.h.w,z.v.z,z.extraData.z,z.extraData.w,length(z.v.xy),z.extraData.y);
-  hit=closer3(hit,box3(o,d,z.p.xyz+rotPart(local*scale,facing),abs(rotPart(a.h.xyz*scale,facing)),hit.t,3u,id));
+ for(var part=0u;part<range.y;part++){let a=ART_BOX6[range.x+part];var local=a.p.xyz+artMotion6(a.h.w,z.v.z,z.extraData.z,z.extraData.w,length(z.v.xy),z.extraData.y);var half=a.h.xyz;
+  if(crawler){local=vec3f(local.x,.32-local.z,local.y-.50);half=half.xzy;}
+  hit=closer3(hit,box3(o,d,z.p.xyz+rotPart(local*scale,facing),abs(rotPart(half*scale,facing)),hit.t,3u,id));
  }return hit;
 }
 
@@ -827,10 +829,13 @@ fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
  // V5 director owns pressure; do not overwrite it with a fixed modulo clock.
  var mv=u.inputMove.xy;var aim=u.aim.xy;var fire=u.inputMove.z;var alt=u.inputMove.w;var grenade=u.aim.z;var dash=u.aim.w;
  if(u.clock.w>0.0){mv=vec2f(cos(S.aux.x*.29),sin(S.aux.x*.29))*.65;aim=vec2f(cos(S.aux.x*.55),sin(S.aux.x*.55))*10.0;fire=1.0;alt=select(0.0,1.0,fract(S.aux.x*.19)>.77);grenade=select(0.0,1.0,fract(S.aux.x*.3)<.025);}
- if(S.pos.w<=0.0||u.config.z<.5||S.goal.w>0.0||S.chooser.x>.5){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;}
+ // Incapacitated movement uses the same collision path at a fixed crawl speed.
+ let downed=S.player7.x>0.0;
+ if((S.pos.w<=0.0&&!downed)||u.config.z<.5||S.goal.w>0.0||S.chooser.x>.5){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;}
+ if(S.pos.w<=0.0||downed){fire=0.0;alt=0.0;grenade=0.0;dash=0.0;S.motion.w=0.0;}
  let dir=safe2(aim);if(length(dir)>.1){S.look.x=dir.x;S.look.y=dir.y;}
  if(dash>.5&&S.timers.w<=0.0){S.timers.w=max(.55,1.15-u.run.w*.15);S.motion.w=.16;}
- S.motion.w=max(0.0,S.motion.w-dt);let speed=select(4.8+u.run.w*.25,15.0,S.motion.w>0.0)*select(1.0,.64,S.squad7.y>=0.0)*select(1.0,.82,S.cell.w==1.0);mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
+ S.motion.w=max(0.0,S.motion.w-dt);let speed=select(select(4.8+u.run.w*.25,15.0,S.motion.w>0.0)*select(1.0,.64,S.squad7.y>=0.0)*select(1.0,.82,S.cell.w==1.0),.60,downed);mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
  var p=S.pos.xyz;let h=vec3f(.24,.30,.24);let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}
  p.x=clamp(p.x,-95.3,95.3);p.z=clamp(p.z,-95.3,95.3);S.pos=vec4f(p,S.pos.w);S.motion.x=mv.x;S.motion.y=mv.y;S.anim8.x+=length(movement)*5.0;
  for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var pr=Props[pi];
@@ -1427,9 +1432,15 @@ const boxesShader=COMMON+`
 @group(0) @binding(5) var<storage,read> Props:array<Prop>;
 @group(0) @binding(7) var<storage,read_write> Boxes:array<Box>;
 var<private> modelSize:vec3f=vec3f(1);
+// Low poses rotate intact cuboids; activity never compresses body proportions.
+var<private> modelProne:f32=0.0;
 fn box(p:vec3f,size:vec3f,color:vec3f,kind:f32,glow:f32){let clip=u.vp*vec4f(p-vec3f(S.pos.x,0,S.pos.z),1);let ext=length(size);if(kind>.5&&(abs(clip.x)>1.1+ext/u.screen.z||abs(clip.y)>1.1+ext/u.screen.w)){return;}let i=atomicAdd(&C[8],1u);if(i<190000u){Boxes[i]=Box(vec4f(p,glow),vec4f(size,kind),vec4f(color,1));}}
 fn rotated(v:vec3f,face:u32)->vec3f {switch face{case 1u:{return vec3f(v.z,v.y,-v.x);}case 2u:{return vec3f(-v.x,v.y,-v.z);}case 3u:{return vec3f(-v.z,v.y,v.x);}default:{return v;}}}
-fn part(base:vec3f,local:vec3f,sz:vec3f,color:vec3f,face:u32,glow:f32){box(base+rotated(local*modelSize,face),max(vec3f(.001),abs(rotated(sz*modelSize,face))-vec3f(.0018)),color,1,glow);}
+fn part(base:vec3f,local:vec3f,sz:vec3f,color:vec3f,face:u32,glow:f32){
+ var posed=local*modelSize;var extent=sz*modelSize;
+ if(modelProne!=0.0){posed=vec3f(posed.x,.32-modelProne*posed.z,modelProne*(posed.y-.50));extent=extent.xzy;}
+ box(base+rotated(posed,face),max(vec3f(.001),abs(rotated(extent,face))-vec3f(.0018)),color,1,glow);
+}
 fn beam6(a:vec3f,b:vec3f,color:vec3f,width:f32,glow:f32){
  let center=(a+b)*.5;let clip=u.vp*vec4f(center-vec3f(S.pos.x,0,S.pos.z),1);let extent=length(b-a)*.5;
  if(abs(clip.x)>1.15+extent/u.screen.z||abs(clip.y)>1.15+extent/u.screen.w||length(b-a)<.001){return;}
@@ -1449,11 +1460,12 @@ fn artColor6(index:u32,kind:f32,variant:f32)->vec3f {
  }
 }
 fn enemyModel6(z:Zombie){
- let kind=z.extraData.z;let scale=zScale(kind);let bounds=1.3*scale.y;
+ let kind=z.extraData.z;let scale=zScale(kind);let bounds=1.3*select(scale.y,1.0,kind==4.0);
  let clip=u.vp*vec4f(z.p.xyz+vec3f(0,bounds*.5,0)-vec3f(S.pos.x,0,S.pos.z),1);
  if(abs(clip.x)>1.1+bounds/u.screen.z||abs(clip.y)>1.1+bounds/u.screen.w){return;}
  let dir=S.pos.xz-z.p.xz;var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}
- modelSize=scale;let range=ART_RANGE6[u32(kind)];var charred=0.0;
+ modelSize=scale;modelProne=select(0.0,1.0,kind==4.0);if(kind==4.0){modelSize=vec3f(1);}
+ let range=ART_RANGE6[u32(kind)];var charred=0.0;
  for(var h=0u;h<16u;h++){let f=S.heat6[h];if(f.w>S.aux.x&&length(f.xy-z.p.xz)<f.z){charred=.48;}}
  let wind=select(0.0,clamp(z.extraData.w/.95,0.0,1.0),kind==6.0);
  for(var k=0u;k<range.y;k++){let art=ART_BOX6[range.x+k];let palette=u32(art.p.w);var col=artColor6(palette,kind,z.extraData.x);
@@ -1464,7 +1476,7 @@ fn enemyModel6(z:Zombie){
   let glow=select(select(0.0,.42,palette==5u),.8+wind*2.2+pulse*3.0,palette==11u)+pulse*.2;
   part(z.p.xyz,art.p.xyz+artMotion6(art.h.w,z.v.z,kind,z.extraData.w,length(z.v.xy),z.extraData.y),art.h.xyz*2.0,col,face,glow);
  }
- modelSize=vec3f(1);
+ modelSize=vec3f(1);modelProne=0.0;
  if(kind==6.0){
   let hp=clamp(z.p.w/(110.0+u.run.x*12.0),0.0,1.0);let y=2.65;
   box(z.p.xyz+vec3f(0,y,0),vec3f(1.65,.065,.09),vec3f(.045,.055,.06),3,0);
@@ -1479,7 +1491,8 @@ fn enemyModel6(z:Zombie){
 
 fn model(base:vec3f,dir:vec2f,phase:f32,variant:f32,player:bool,flash:f32,typ:f32){
  var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0);}else{face=select(2u,0u,dir.y>0);}
- modelSize=vec3f(1);if(typ==2.0){modelSize=vec3f(1.4);}if(typ==3.0){modelSize=vec3f(1.2,1.08,1.2);}if(typ==4.0){modelSize=vec3f(1,.55,1);}if(typ==-3.0){modelSize=vec3f(1,.45,1);}
+ modelSize=vec3f(1);if(typ==2.0){modelSize=vec3f(1.4);}if(typ==3.0){modelSize=vec3f(1.2,1.08,1.2);}
+ modelProne=select(select(0.0,1.0,typ==4.0),-1.0,typ==-3.0);
  let walk=clamp(length(S.motion.xy),0.0,1.0);let bob=(.5-.5*cos(phase*2.0))*.026*walk;let stride=sin(phase)*.10*walk;let punch=sin(clamp(S.anim8.z/.30,0.0,1.0)*3.14159265);let reload=select(0.0,1.0,S.weapons.y>0.0);var skin=select(vec3f(.28,.53,.35)*(0.88+variant*.25),vec3f(.94,.73,.40),player);if(typ==1.0){skin=vec3f(.43,.64,.29);}if(typ==2.0){skin=vec3f(.29,.38,.31);}if(typ==3.0){skin=vec3f(.51,.51,.22);}if(typ==5.0){skin=vec3f(.55,.20,.45);}
  let legs=select(vec3f(.13,.22,.20),vec3f(.19,.14,.105),player);let top=select(skin,select(vec3f(.32,.67,.19),vec3f(.56,.19,.69),typ< -1.5),player);
  part(base,vec3f(0,.6875+bob,0),vec3f(.493,.493,.493),mix(skin,vec3f(1,.74,.45),flash*.45),face,0);
@@ -1490,7 +1503,7 @@ fn model(base:vec3f,dir:vec2f,phase:f32,variant:f32,player:bool,flash:f32,typ:f3
  else{let eye=select(vec3f(.95,.095,.065),vec3f(1,.63,.065),typ==1.0);part(base,vec3f(-.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(0,.53,.252),vec3f(.1875,.0625,.016),skin*.38,face,0);}
  if(typ==2.0){part(base,vec3f(0,.375,.23),vec3f(.5,.1875,.0625),vec3f(.42,.30,.18),face,0);}if(typ==3.0){part(base,vec3f(0,.38,.23),vec3f(.3125,.25,.125),vec3f(.63,.17,.15),face,.2);}
  if(typ==5.0){part(base,vec3f(0,1.02,0),vec3f(.23,.19,.23),vec3f(.98,.47,.14),face,.5);part(base,vec3f(0,.54,.27),vec3f(.24,.15,.05),vec3f(.075,.024,.037),face,0);}
- modelSize=vec3f(1);
+ modelSize=vec3f(1);modelProne=0.0;
 }
 // Authored on a 1/16 metre lattice; a bounded cuboid list, not duplicated per-draw functions.
 const FRIEND7:array<vec4f,32> = array<vec4f,32>(
@@ -1513,7 +1526,7 @@ const FRIEND7:array<vec4f,32> = array<vec4f,32>(
 fn friend7(id:u32){
  let p=S.team7[id].p;let look=S.team7[id].look;let aim=S.team7[id].aim;let ai=S.team7[id].ai;let movement=S.team7[id].movement;
  let down=p.w<=0.0;let busy=ai.y==4.0||ai.y==5.0||ai.y==6.0;let dir=look.xy;var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}
- modelSize=vec3f(1,select(select(1.0,.82,busy),.42,down),1);
+ modelSize=vec3f(1);modelProne=select(0.0,-1.0,down);
  let col=select(select(vec3f(.63,.22,.76),vec3f(.10,.63,.73),id==1u),vec3f(.94,.53,.12),id==2u);let skin=select(vec3f(.86,.64,.41),vec3f(.53,.34,.22),id==2u);
  let stride=sin(S.aux.x*12.0+f32(id))*min(1.0,length(movement.xy))*.09;let lift=abs(stride)*.55;
  for(var j=0u;j<16u;j++){
@@ -1522,7 +1535,7 @@ fn friend7(id:u32){
   if(j==15u&&id!=2u){continue;}
   part(p.xyz,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.07*sin(S.aux.x*7.0),busy&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
  }
- modelSize=vec3f(1);
+ modelSize=vec3f(1);modelProne=0.0;
  let origin=p.xyz+vec3f(0,select(.50,.22,down),0);var gun=vec3f(dir.x,0,dir.y);if(aim.w>0.0||look.w>.03){gun=safe3(aim.xyz-origin);}let glen=select(.64,.90,id==1u);
  let visualOrigin=origin-gun*look.w*.055-vec3f(0,select(0.0,.12,S.team7[id].pack.z>0.0),0);
  beam6(visualOrigin+gun*.15,visualOrigin+gun*.44,vec3f(.31,.35,.35),.115,0);beam6(visualOrigin+gun*.447,visualOrigin+gun*(glen+.23),vec3f(.17,.22,.24),.085,0);

@@ -1,0 +1,17 @@
+{
+  "method": "CPU source isolation and conservative crawler ray broad-phase containment across authored motion ranges. Compiled GPU ray probes are recorded separately.",
+  "beforeSha256": "4a670f4ac344b810f20864923760828a7aa23f2e752741fb5d5e7f45631ede62",
+  "candidateSha256": "42d7d28e07ed2a80d64d274b374f7effbbce06c36da390af42cf88bd0e19f20f",
+  "changedModules": [
+    "aim3",
+    "bullet3"
+  ],
+  "onlyZombieRayFunctionChanged": true,
+  "renderShaderExact": true,
+  "movementCollisionExact": true,
+  "artAndDamageHelpersExact": true,
+  "cases": 36288,
+  "minFloor": 0.07,
+  "passed": true,
+  "completedUtc": "2026-10-15T20:42:19.438Z"
+}

@@ -1,0 +1,85 @@
+{
+  "candidate": {
+    "bytes": 398561,
+    "sha256": "42d7d28e07ed2a80d64d274b374f7effbbce06c36da390af42cf88bd0e19f20f"
+  },
+  "baseline": {
+    "commit": "c28921129fad8a4b12dfc647757302f406841943",
+    "sha256": "fedee3e5054b56841bda85903d261cb740e955a289a4e5ddcfc6d17b67f76192"
+  },
+  "browser": "Chrome 155.0.8059.41 (isolated headless profile)",
+  "adapter": "NVIDIA GeForce RTX 5070 Ti",
+  "driver": "32.0.15.9186 / 591.86",
+  "resolution": [
+    1280,
+    720
+  ],
+  "counts": {
+    "zombies": 2048,
+    "particles": 32768
+  },
+  "lease": {
+    "acquired": "2026-10-15T20:29:36.024Z",
+    "released": "2026-10-15T20:43:00.122Z",
+    "limitMinutes": 15
+  },
+  "gpuSessions": [
+    {
+      "remainingOwnedProcesses": [],
+      "gpuFaults": [],
+      "end": "2026-10-15T20:31:00.1191623+00:00",
+      "remainingProfileProcesses": [],
+      "start": "2026-10-15T20:29:36.1304459Z"
+    },
+    {
+      "gpuFaults": [],
+      "remainingOwnedProcesses": [],
+      "remainingProfileProcesses": [],
+      "end": "2026-10-15T20:36:16.1809631+00:00",
+      "start": "2026-10-15T20:31:23.9108561Z"
+    },
+    {
+      "remainingProfileProcesses": [],
+      "start": "2026-10-15T20:38:47.6157133Z",
+      "end": "2026-10-15T20:39:55.7477499+00:00",
+      "gpuFaults": [],
+      "remainingOwnedProcesses": []
+    },
+    {
+      "remainingProfileProcesses": [],
+      "remainingOwnedProcesses": [],
+      "gpuFaults": [],
+      "start": "2026-10-15T20:40:38.8293074Z",
+      "end": "2026-10-15T20:43:00.1026971+00:00"
+    }
+  ],
+  "naturalGameplay": {
+    "baseline": {
+      "elapsedSeconds": 60.25114059448242,
+      "capturedFrames": 602,
+      "medianFps": 60.003233639404655,
+      "gpuMedianMs": 2.818048,
+      "gpuP95Ms": 3.93216,
+      "finalHp": 58,
+      "observedPlayerDowned": false,
+      "observedSquadBusy": true,
+      "completed": true,
+      "uncapturedAudio": true,
+      "captureWallSeconds": 60.10093402862549
+    },
+    "candidate": {
+      "elapsedSeconds": 60.06795120239258,
+      "capturedFrames": 600,
+      "medianFps": 60.00064525894795,
+      "gpuMedianMs": 2.62144,
+      "gpuP95Ms": 3.538944,
+      "finalHp": 79,
+      "observedPlayerDowned": false,
+      "observedSquadBusy": true,
+      "completed": true,
+      "uncapturedAudio": true,
+      "captureWallSeconds": 59.927595138549805
+    }
+  },
+  "limits": "Bounded single-seed, single-adapter qualification, not an extended soak. Natural runs did not down the player; downed movement and poses use explicitly controlled GPU fixtures. Combat trajectories and GPU times are observational, not controlled performance comparisons."
+}

@@ -827,10 +827,13 @@ fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
  // V5 director owns pressure; do not overwrite it with a fixed modulo clock.
  var mv=u.inputMove.xy;var aim=u.aim.xy;var fire=u.inputMove.z;var alt=u.inputMove.w;var grenade=u.aim.z;var dash=u.aim.w;
  if(u.clock.w>0.0){mv=vec2f(cos(S.aux.x*.29),sin(S.aux.x*.29))*.65;aim=vec2f(cos(S.aux.x*.55),sin(S.aux.x*.55))*10.0;fire=1.0;alt=select(0.0,1.0,fract(S.aux.x*.19)>.77);grenade=select(0.0,1.0,fract(S.aux.x*.3)<.025);}
- if(S.pos.w<=0.0||u.config.z<.5||S.goal.w>0.0||S.chooser.x>.5){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;}
+ // Incapacitated movement uses the same collision path at a fixed crawl speed.
+ let downed=S.player7.x>0.0;
+ if((S.pos.w<=0.0&&!downed)||u.config.z<.5||S.goal.w>0.0||S.chooser.x>.5){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;}
+ if(S.pos.w<=0.0||downed){fire=0.0;alt=0.0;grenade=0.0;dash=0.0;S.motion.w=0.0;}
  let dir=safe2(aim);if(length(dir)>.1){S.look.x=dir.x;S.look.y=dir.y;}
  if(dash>.5&&S.timers.w<=0.0){S.timers.w=max(.55,1.15-u.run.w*.15);S.motion.w=.16;}
- S.motion.w=max(0.0,S.motion.w-dt);let speed=select(4.8+u.run.w*.25,15.0,S.motion.w>0.0)*select(1.0,.64,S.squad7.y>=0.0)*select(1.0,.82,S.cell.w==1.0);mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
+ S.motion.w=max(0.0,S.motion.w-dt);let speed=select(select(4.8+u.run.w*.25,15.0,S.motion.w>0.0)*select(1.0,.64,S.squad7.y>=0.0)*select(1.0,.82,S.cell.w==1.0),.60,downed);mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
  var p=S.pos.xyz;let h=vec3f(.24,.30,.24);let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}
  p.x=clamp(p.x,-95.3,95.3);p.z=clamp(p.z,-95.3,95.3);S.pos=vec4f(p,S.pos.w);S.motion.x=mv.x;S.motion.y=mv.y;S.anim8.x+=length(movement)*5.0;
  for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var pr=Props[pi];

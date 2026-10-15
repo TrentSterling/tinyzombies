@@ -1,0 +1,12 @@
+{
+  "checkedUtc": "2026-10-15T20:06:44.852Z",
+  "audioFilesUnchanged": 43,
+  "originalV9": {
+    "bytes": 368656,
+    "sha256": "787cdb9b13b91e27313e550826580e4030ce314fb571299ec171ddf051f99349"
+  },
+  "candidate": {
+    "bytes": 398314,
+    "sha256": "4a670f4ac344b810f20864923760828a7aa23f2e752741fb5d5e7f45631ede62"
+  }
+}

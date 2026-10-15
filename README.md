@@ -4,6 +4,18 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Compact minimap and environment contrast
+
+The compact minimap is restored at the upper right during active play. Hold Tab for the larger field map. Help, pause and hidden-HUD mode hide the compact map. Both sizes use the same existing GPU renderer and live collision/entity data.
+
+Static architecture and ground now use darker, less saturated materials, following DEAD ENDS' category separation. Character and particle colors, lighting, post-processing, mission behavior and world geometry remain unchanged. The reference came from the verified DEAD ENDS source and gallery/repository image.
+
+The exact build passed Windows shader compilation and ordinary browser-input gameplay on Chrome 155 / RTX 5070 Ti. Movement, 86 rifle rounds, pipe and grenade detonations, controls, Tab map, pause and restart passed without runtime/device errors or new Windows GPU faults. Same-seed frame-one captures verify the visible contrast change and compact minimap; source checks prove identical world/prop/occupancy buffers for seed 73129. See `validation/map-source-check.json` and `validation/map-windows-summary.json`.
+
+Compare [before](assets/contrast-before.png) and [after](assets/contrast-after.png), or see the [combat capture](assets/contrast-combat.png). These are actual Windows captures. The broader authored route redesign remains a separate, unpublished prototype awaiting gameplay validation.
+
+Current `index.html` SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+
 ## V9.1 pipe bombs and smaller floor marks
 
 This branch adds a pipe bomb on B, separate from the existing grenade on Space. It arcs toward the cursor, beeps after landing, attracts nearby zombies with line of sight, and detonates after six seconds using the existing blast, damage and destruction pipeline. It costs one ordnance and has a twelve-second cooldown. Long Distraction extends its fuse. The fuse and beep scheduler pause with the game.

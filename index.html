@@ -20,7 +20,7 @@ const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 // Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
-const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:false,hideUI:false,reticle:1,tactical:false,help:false};
+const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
@@ -2022,7 +2022,7 @@ const faceBuildShader=COMMON+`
 @group(0) @binding(6) var<storage,read> WP:array<u32>;
 @group(0) @binding(7) var<storage,read_write> Faces:array<Box>;
 @compute @workgroup_size(64) fn build(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=wg.x;if(chunk>=CHUNKS){return;}let centre=vec3f(f32(chunk%48u)*4.0-94.0,1.0,f32(chunk/48u)*4.0-94.0);let clip=u.vp*vec4f(centre-vec3f(S.pos.x,0,S.pos.z),1);if(abs(clip.x)>1.0+8.0/u.screen.z||abs(clip.y)>1.0+8.0/u.screen.w){return;}
- let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.43,.49,.46);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.58,.37,.18);}if(mat==2u){color=vec3f(.68,.70,.62);}if(mat==3u){color=vec3f(.57,.29,.22);}if(mat==4u){color=vec3f(.17,.26,.29);}if(mat==5u){color=vec3f(.19,.31,.35);}color*=.94+rnd(item.x*17u)*.12;
+ let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}color*=.94+rnd(item.x*17u)*.12;
  let char6=WP[${MAX_WORLD}u+item.x];let charAmount=f32(char6&255u)/255.0;color=mix(color,vec3f(.065,.051,.044),smoothstep(.05,.70,charAmount));
  let packed=WP[item.x];let amount=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);color=mix(color,mix(vec3f(.25,.022,.025),vec3f(.56,.015,.035),exp(-age*.05)),amount*.9*select(1.0,.24,char6>packed));color=mix(color,vec3f(.034,.029,.025),charAmount*.60);
  let damage=1.0-clamp(b.p.w/max(1.0,b.extraData.z),0.0,1.0);let dst=atomicAdd(&C[19],1u);if(dst<${MAX_FACES}u){Faces[dst]=Box(vec4f(b.p.xyz+n*.125,damage),vec4f(n,4),vec4f(color,1));}}
@@ -2064,12 +2064,12 @@ fn shadowAt(v:vec4f,n:vec3f)->f32{let p=v.xyz/v.w;let uv=p.xy*vec2f(.5,-.5)+.5;l
  if(o.kind>3.5&&o.kind<4.5&&o.world.y>.5){let delta=o.world.xz-S.pos.xz;let d=safe2(u.camera.xz);let along=dot(delta,d);let across=abs(dot(delta,vec2f(-d.y,d.x)));if(along>.25&&along<3.0&&across<.65&&((u32(o.clip.x)+u32(o.clip.y))%4u)<3u){discard;}}
  if(o.kind<.5 && n.y>.5){let p=o.world.xz;let packed=bloodAt(p);let blood=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);let grid=abs(fract((p+.002)*4.0)-.5);let line=1.0-smoothstep(.468,.496,max(grid.x,grid.y));let tile=floor(p*4.0);let noise=rnd(u32(abs(tile.x+191.0))*773u+u32(abs(tile.y+331.0))*1301u);color*=.94+noise*.11;color*=.87+line*.13;
   let local=fract((p+96.0)/48.0)*48.0;let edge=min(min(local.x,48.0-local.x),min(local.y,48.0-local.y));let road=edge<6.0;
-  color=mix(vec3f(.41,.44,.41),vec3f(.31,.37,.37),select(0.0,1.0,road));color*=.97+noise*.06;
-  if(edge>5.7&&edge<6.2){color=vec3f(.58,.61,.55);}let stripe=abs(edge-3.2)<.045&&fract((p.x+p.y)/2.0)>.40;
-  if(stripe){color=vec3f(.72,.63,.31);}let seams=max(abs(fract(p/2.0)-.5).x,abs(fract(p/2.0)-.5).y);color*=.94+.06*(1.0-smoothstep(.485,.5,seams));
-  if(u.run.x==2.0){color=mix(color,vec3f(.40,.32,.25),.20);}
+  color=mix(vec3f(.22,.25,.26),vec3f(.16,.20,.22),select(0.0,1.0,road));color*=.97+noise*.06;
+  if(edge>5.7&&edge<6.2){color=vec3f(.32,.35,.35);}let stripe=abs(edge-3.2)<.045&&fract((p.x+p.y)/2.0)>.40;
+  if(stripe){color=vec3f(.44,.40,.25);}let seams=max(abs(fract(p/2.0)-.5).x,abs(fract(p/2.0)-.5).y);color*=.94+.06*(1.0-smoothstep(.485,.5,seams));
+  if(u.run.x==2.0){color=mix(color,vec3f(.25,.22,.19),.20);}
   if(u.run.x>=3.0){let rail=abs(fract((p.x+18.0)/8.0)-.5);if(rail>.476&&abs(p.y)<60.0){color=mix(color,vec3f(.14,.20,.23),.58);}}
-  let perimeter=max(abs(p.x),abs(p.y));color=mix(color,vec3f(.53,.61,.57),smoothstep(90.0,96.0,perimeter)*.7);
+  let perimeter=max(abs(p.x),abs(p.y));color=mix(color,vec3f(.27,.32,.32),smoothstep(90.0,96.0,perimeter)*.7);
   let scorch=charAt6(p);let charAmount=f32(scorch&255u)/255.0;let charAge=max(0.0,S.aux.x-f32(scorch>>8u)/16.0);
   color=mix(color,vec3f(.045,.037,.032)*(0.8+noise*.35),smoothstep(.035,.65,charAmount));
   let coverage=smoothstep(.05,.6,blood)*select(1.0,1.0-charAmount*.90,scorch>0u&&charAge<age);wet=coverage*exp(-age*.075);color=mix(color,mix(vec3f(.23,.024,.024),vec3f(.54,.008,.021),exp(-age*.045))*(.83+noise*.17),coverage);color=mix(color,vec3f(.029,.024,.021),charAmount*.66);wet*=1.0-charAmount*.9;
@@ -2475,7 +2475,14 @@ function hud(){
   // Contextual medical channel, shown as a small fill meter rather than a sentence.
   if(keys.has('KeyH')&&kits>0){rect(cx-28*k,cy+r+38*k,56*k,2*k,COL9.dim);rect(cx-28*k,cy+r+38*k,56*k*clamp9(playerValues[431]/1.8,0,1),2*k,COL9.green);}
  }
- // Holding Tab is tactical inspection, not an always-on dashboard.
+ // Compact navigation uses the existing GPU map, with no new simulation pass.
+ if(settings.map&&active&&!settings.tactical&&!settings.hideUI&&!settings.help&&!settings.paused){
+  const sz=clamp9(height*.23,136,180),x=width-sz-18*k,y=18*k;
+  panel9(x-6*k,y-6*k,sz+12*k,sz+29*k,.88);
+  uiQuad9(x,y,sz,sz,[1,1,1,1],130);
+  text('Tab  Field map',x,y+sz+7*k,11*k,COL9.soft);
+ }
+ // Holding Tab expands the field map and squad status.
  if(settings.tactical&&!choosing&&!dead&&!won){
   const sz=clamp9(height*.48,220,440),x=(width-sz)/2,y=(height-sz)/2-32*k;
   panel9(x-28*k,y-64*k,sz+56*k,sz+155*k,.92);
@@ -2642,7 +2649,7 @@ async function snapshot(particleCount=0){
  if(count)result.particles=Array.from(new Float32Array(await readBuffer(pA,0,count*64)));
  return result;
 }
-function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[67],attracted:counters[71],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:true,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[67],attracted:counters[71],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 async function main(){
  if(!navigator.gpu)throw new Error('navigator.gpu is unavailable. Secure context: '+window.isSecureContext+'. WebGPU is mandatory.');
  adapter=await navigator.gpu.requestAdapter({powerPreference:'high-performance'});if(!adapter)throw new Error('No WebGPU adapter was returned by this browser.');
@@ -2680,7 +2687,7 @@ async function main(){
  renderBG=bg(renderPipeline,[[0,U],[1,S],[2,Boxes],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);shadowBG=bg(shadowPipeline,[[0,U],[1,S],[2,Boxes]]);uiBG=bg(uiPipeline,[[0,uiUniform],[1,glyphBuffer],[2,fontBuffer],[3,O],[4,S],[5,Paint],[6,C],[7,zHeads]]);
  faceBG=bg(facePipeline,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);faceShadowBG=bg(faceShadowPipeline,[[0,U],[1,S],[2,Faces]]);
  buildComputeBindings();sizeTargets();updateUniforms(0);reset();bindInput();boot.hidden=true;
- diagnostics.world={seed:runSeed,rooms:world.roomCount,chunks:CHUNK_COUNT,stage,metres:WORLD,voxelSize:.25,destructibleVoxels:world.count,characterGrid:16,particlePairWindow:1.35,particleShrinkWindow:.62};diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.world.occupiedPages=world.occupiedPages;diagnostics.v8={fullPaintTiles:PAINT_PAGES,paintBytes:PAINT_SIZE*4,fragments:WRECK_MAX8,groupCheckBudget:4,chapter:world.chapter8.name,extraBarrels:world.extraBarrels8.length};diagnostics.world.faceCacheEntries=world.cacheSize;
+ diagnostics.world={seed:runSeed,rooms:world.roomCount,chunks:CHUNK_COUNT,stage,metres:WORLD,voxelSize:.25,destructibleVoxels:world.count,characterGrid:16,particlePairWindow:1.35,particleShrinkWindow:.62};diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:true,tactical:'hold Tab',debug:'F3'};diagnostics.world.occupiedPages=world.occupiedPages;diagnostics.v8={fullPaintTiles:PAINT_PAGES,paintBytes:PAINT_SIZE*4,fragments:WRECK_MAX8,groupCheckBudget:4,chapter:world.chapter8.name,extraBarrels:world.extraBarrels8.length};diagnostics.world.faceCacheEntries=world.cacheSize;
  window.__tiny={settings,diagnostics,snapshot,reset:()=>{resetRequested=true;},start:()=>{settings.started=true;},clearBlood:()=>{clearBloodRequested=true;},exportDiagnostics,get stats(){return {frame,fps,cpuMs,gpuMs,gpuStages,stage,seed:runSeed,worldVoxels:world.count,rooms:world.roomCount,counters:Array.from(counters),stopped};},
   async collisionProbe(){settings.paused=true;settings.started=false;settings.demo=false;await device.queue.onSubmittedWorkDone();const original=settings.zombies;settings.zombies=0;clearParticles();const p=new Float32Array(32);p.set([-.08,3,0,3,1,0,0,.1,.55,.025,.06,1,0,3,1.35,0],0);p.set([.08,3,0,3,-1,0,0,.1,.55,.025,.06,1,0,3,1.35,0],16);device.queue.writeBuffer(pA,0,p);const before=Array.from(new Float32Array(await readBuffer(pA,0,128)));uniformData[32]=1/60;device.queue.writeBuffer(U,0,uniformData);const e=device.createCommandEncoder();pass(e,'integrate',bindings.integrate,Math.ceil(settings.pool/64));e.clearBuffer(pHeads);pass(e,'gridP',bindings.gridP,Math.ceil(settings.pool/64));pass(e,'solve',bindings.solve,Math.ceil(settings.pool/64));device.queue.submit([e.finish()]);const after=Array.from(new Float32Array(await readBuffer(pA,0,128)));settings.zombies=original;resetRequested=true;return {before,after};}
  };

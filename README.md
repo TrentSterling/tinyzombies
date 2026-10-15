@@ -4,6 +4,12 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Live preparation and doorway pursuit
+
+Nearby zombies wander during preparation, react to sight and noise, gather at closed doors and batter them, then enter when opened. Shooting and squad defense work before departure; automatic horde waves and respawns still wait for departure. This follows direct inspection of DEAD ENDS gameplay. The approved recorded SFX and default populations are preserved.
+
+The doorway, combat, collision and normal-controls checks passed on Windows Chrome 155 / RTX 5070 Ti with no GPU faults. [Watch the before/after comparison](https://chatgpt.com/api/library/files/libfile_d97cee8451e88191a4e64b81e637f997/download) or read the [methods and limitations](validation/doorway-review.md). Broader encounter pacing is a separate pass.
+
 ## Combat audio
 
 Combat uses 43 compact CC0 recordings and recording-derived layers: rifle/shotgun attacks, wet hits/deaths, creature vocals, material breaks, firework blasts and mechanical cues. The 719 KiB bank predecodes asynchronously, plays immediately from cache, and retains the bounded 32-source spatial mix and pipe countdown timing. Missing or late assets never block gameplay or replay old events.

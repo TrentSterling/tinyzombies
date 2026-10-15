@@ -42,3 +42,11 @@ An initial occupancy assertion incorrectly expected an opened overhead door to c
 ## Repeating the targeted checks
 
 The `doorway-browser` harness serves only baseline/candidate HTML and the audio manifest files. Copy exact tested HTML files and `assets/` beside it, use a fresh profile, and hold the shared GPU lease before running `launch.ps1`. `check.mjs boot candidate` verifies the Document hash at frame zero. `gate candidate` runs one frame. `door candidate natural`, `closed`, `open`, `combat`, and `mask` run the targeted probes; open continues the closed scene. `ordinary candidate` checks normal controls. `close candidate` and `cleanup.ps1` must finish before releasing the GPU lease. Stop on any device loss or Windows GPU fault.
+
+`manifest.json` identifies the scenario-tested CRLF snapshot. To test the final LF release, copy `final-manifest.json` over the harness's `manifest.json`; the runtime is otherwise identical, as recorded in `final-line-ending-proof.json`.
+
+## Release review and rollback
+
+Runtime commit `e290fcf3056b90e1085bb66123ff17e731af52e9` was reviewed against `ccc932b7f541086c8ff17e5bf0df12c4eee2a950`. This is an implementation-owner review, not an independent second reviewer. No unresolved blocker was found in the changed preparation gates, sight loop, ambient steering, recruited-squad behavior, door attacker predicate, occupancy packing, navigation mask or reset ordering. The source change is 25 added and 17 removed lines; the remaining files are validation evidence and documentation. Audio assets/host, GPU buffer allocation and existing iteration/candidate limits were checked against the prior release.
+
+The exact release file has a successful fresh-profile boot and single-frame check, and the scenario-qualified snapshot differs only in newline encoding. The PR must merge only its reviewed head, preserving the prior main commit as the rollback point. If rollback is needed, revert the PR's merge commit with mainline parent 1 and deploy that new revert commit; do not reset or force-push main. Public HTML and all 43 same-origin audio files must match the qualified hashes after deployment. The prior playable release remains available in Git history at `ccc932b7f541086c8ff17e5bf0df12c4eee2a950`.

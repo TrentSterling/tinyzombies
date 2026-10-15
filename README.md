@@ -4,6 +4,18 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Map readability development candidate
+
+This separately staged change restores a compact minimap at the upper right during active play. Hold Tab for the existing larger field map; the compact version uses the same GPU renderer and live collision/entity data. Help, pause and the hidden-HUD mode hide the compact map.
+
+Static architecture and ground use darker, less saturated materials. Actor and particle colors, lighting, post-processing, mission behavior and world geometry remain exact. This follows the category separation observed in the DEAD ENDS source and repository/gallery imagery; the reference was not live-playtested for this change.
+
+CPU checks verify JavaScript syntax, one compact/expanded map instance, and identical world, prop and occupancy buffers for seed 73129. All simulation shaders remain exact. See `validation/map-source-check.json`. Actual GPU compilation, same-seed screenshots and ordinary-input playtesting are pending; these source checks do not establish visual quality or performance.
+
+The geometry proposal in `validation/map-route-plan.json` preserves the mission checkpoints while adding recognizable rescue, power and extraction approaches and optional supply loops. It has not been applied. Initial collision sampling found trap supports on the proposed west approach and service bypass; those must be avoided or treated as explicit narrowed passages before geometry is changed.
+
+Current map/contrast candidate HTML SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+
 ## V9.1 development candidate
 
 This branch adds a pipe bomb on B, separate from the existing grenade on Space. It arcs toward the cursor, beeps after landing, attracts nearby zombies with line of sight, and detonates after six seconds using the existing blast, damage and destruction pipeline. It costs one ordnance and has a twelve-second cooldown. Long Distraction extends its fuse. The fuse and beep scheduler pause with the game.
@@ -54,7 +66,7 @@ Compatibility repair SHA-256: `1be63cbf1a3887251b0b26067133e71068f7c820c96f5f1c2
 
 Previous release SHA-256: `c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4`
 
-V9.1 candidate `index.html` SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
+Base V9.1 candidate HTML SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
 
 With Python and Node.js available, reproduce from your preserved original using:
 

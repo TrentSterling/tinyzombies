@@ -1,0 +1,342 @@
+{
+  "kind": "CPU collision sampling of proposed routes against unchanged seed 73129",
+  "staticVoxels": 74848,
+  "occupiedPages": 419,
+  "props": 147,
+  "supportGroups": 416,
+  "main": [
+    {
+      "name": "Prep to rescue yard",
+      "centre": {
+        "samples": 51,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 765,
+        "blocked": 0,
+        "firstObstructions": []
+      }
+    },
+    {
+      "name": "Rescue to west relay",
+      "centre": {
+        "samples": 98,
+        "blocked": 4,
+        "firstObstructions": [
+          [
+            -48,
+            17.5
+          ],
+          [
+            -48,
+            17
+          ],
+          [
+            -48,
+            16.5
+          ],
+          [
+            -48,
+            16
+          ]
+        ]
+      },
+      "lane": {
+        "samples": 1470,
+        "blocked": 8,
+        "firstObstructions": [
+          [
+            -48,
+            17.5
+          ],
+          [
+            -47.5,
+            17.5
+          ],
+          [
+            -48,
+            17
+          ],
+          [
+            -47.5,
+            17
+          ],
+          [
+            -48,
+            16.5
+          ],
+          [
+            -47.5,
+            16.5
+          ],
+          [
+            -48,
+            16
+          ],
+          [
+            -47.5,
+            16
+          ]
+        ]
+      }
+    },
+    {
+      "name": "West relay to freight cell",
+      "centre": {
+        "samples": 140,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 2100,
+        "blocked": 0,
+        "firstObstructions": []
+      }
+    },
+    {
+      "name": "Freight cell to east relay",
+      "centre": {
+        "samples": 75,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 1125,
+        "blocked": 8,
+        "firstObstructions": [
+          [
+            -3,
+            -14.5
+          ],
+          [
+            -2.5,
+            -14.5
+          ],
+          [
+            -3,
+            -15
+          ],
+          [
+            -2.5,
+            -15
+          ],
+          [
+            -3,
+            -15.5
+          ],
+          [
+            -2.5,
+            -15.5
+          ],
+          [
+            -3,
+            -16
+          ],
+          [
+            -2.5,
+            -16
+          ]
+        ]
+      }
+    },
+    {
+      "name": "East relay to extraction",
+      "centre": {
+        "samples": 223,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 3345,
+        "blocked": 16,
+        "firstObstructions": [
+          [
+            30,
+            -25
+          ],
+          [
+            30,
+            -24.5
+          ],
+          [
+            30.5,
+            -25
+          ],
+          [
+            30.5,
+            -24.5
+          ],
+          [
+            33,
+            -25
+          ],
+          [
+            33,
+            -24.5
+          ],
+          [
+            33.5,
+            -25
+          ],
+          [
+            33.5,
+            -24.5
+          ],
+          [
+            45,
+            29
+          ],
+          [
+            45,
+            29.5
+          ]
+        ]
+      }
+    }
+  ],
+  "loops": [
+    {
+      "name": "Rescue supply flank",
+      "centre": {
+        "samples": 83,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 913,
+        "blocked": 4,
+        "firstObstructions": [
+          [
+            -34.5,
+            40.5
+          ],
+          [
+            -34.5,
+            40
+          ],
+          [
+            -34.5,
+            39.5
+          ],
+          [
+            -34.5,
+            39
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Central service bypass",
+      "centre": {
+        "samples": 66,
+        "blocked": 12,
+        "firstObstructions": [
+          [
+            -16,
+            -15.5
+          ],
+          [
+            -16,
+            -16
+          ],
+          [
+            -16,
+            -16
+          ],
+          [
+            -15.5,
+            -16
+          ],
+          [
+            -15,
+            -16
+          ],
+          [
+            -14.5,
+            -16
+          ],
+          [
+            -13,
+            -16
+          ],
+          [
+            -12.5,
+            -16
+          ],
+          [
+            -12,
+            -16
+          ],
+          [
+            -11.5,
+            -16
+          ]
+        ]
+      },
+      "lane": {
+        "samples": 726,
+        "blocked": 48,
+        "firstObstructions": [
+          [
+            -16,
+            -15.5
+          ],
+          [
+            -15.5,
+            -15.5
+          ],
+          [
+            -15,
+            -15.5
+          ],
+          [
+            -14.5,
+            -15.5
+          ],
+          [
+            -16,
+            -16
+          ],
+          [
+            -15.5,
+            -16
+          ],
+          [
+            -15,
+            -16
+          ],
+          [
+            -14.5,
+            -16
+          ],
+          [
+            -16,
+            -17
+          ],
+          [
+            -16,
+            -16.5
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Extraction yard flank",
+      "centre": {
+        "samples": 99,
+        "blocked": 0,
+        "firstObstructions": []
+      },
+      "lane": {
+        "samples": 1089,
+        "blocked": 0,
+        "firstObstructions": []
+      }
+    }
+  ],
+  "notes": [
+    "Sampling uses the existing coarse 1m walk grid; quarter-metre collision and dynamic props require follow-up.",
+    "This is a proposal diagnosis, not evidence of completed route changes or gameplay."
+  ]
+}

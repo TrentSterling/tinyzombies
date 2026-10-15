@@ -1,0 +1,43 @@
+{
+  "kind": "CPU-only stage-one validation; no GPU rendering",
+  "baseline_sha256": "4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355",
+  "candidate_sha256": "b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540",
+  "candidate_bytes": 374525,
+  "javascript_syntax": "passed",
+  "changed_shader_modules": [
+    "faces",
+    "render"
+  ],
+  "exact_world_hashes": {
+    "blocks": "372f38124cbb304784f2eff0001b3376d4892778e66b83417e5b54c44db2251a",
+    "props": "7e779a18599ecb8b4b25cdf901eb35de356a8132cba0b66e6aa25e52c161ec80",
+    "occ": "90f237bbe1a0b69b8eb466920fbfc611d8591dc2484489372c79a72b95932e1f"
+  },
+  "minimap": {
+    "default": true,
+    "compact": [
+      1100,
+      14.399999618530273,
+      165.60000610351562,
+      165.60000610351562
+    ],
+    "expanded": [
+      467.20001220703125,
+      161.60000610351562,
+      345.6000061035156,
+      345.6000061035156
+    ],
+    "hidden_during_help": true
+  },
+  "preserved": [
+    "all simulation shaders",
+    "actor and particle geometry/colors",
+    "lighting and post-processing",
+    "mission and world geometry",
+    "pipe bomb",
+    "blood persistence and radius",
+    "NVIDIA scratch repair"
+  ],
+  "runtime_validation": "pending desktop GPU window",
+  "map_geometry_changes": "not yet applied"
+}

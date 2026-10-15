@@ -1,0 +1,6 @@
+{
+  "beforeSha256": "7beb963c6f69243fc7e9450ab93ef958d25c144f09153010ae185c0e1c55da62",
+  "candidateSha256": "47a492c20627a145e53fe578230969cdf95769d15f98b96d130dccf6bf89655d",
+  "onlyWarmVariantCountAndFixedCueCacheKeyChanged": true,
+  "allGameplayVisualsShadersMixSchedulingAndVoiceLimitsIdentical": true
+}

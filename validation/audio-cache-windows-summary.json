@@ -1,0 +1,392 @@
+{
+  "beforeSha256": "7beb963c6f69243fc7e9450ab93ef958d25c144f09153010ae185c0e1c55da62",
+  "candidateSha256": "47a492c20627a145e53fe578230969cdf95769d15f98b96d130dccf6bf89655d",
+  "environment": {
+    "browser": "Chrome/155.0.8059.41",
+    "adapter": "NVIDIA GeForce RTX 5070 Ti",
+    "driver": "591.86",
+    "resolution": [
+      1280,
+      720
+    ],
+    "zombies": 2048,
+    "particles": 32768,
+    "isolatedProfile": true,
+    "desktopOutputMuted": true
+  },
+  "listened": false,
+  "all144BrowserWaveformsFrameCountsAndDurationsIdentical": true,
+  "cache": {
+    "before": {
+      "warm": {
+        "buffers": 78,
+        "pcmBytes": 5159736,
+        "sampleRate": 44100
+      },
+      "full": {
+        "buffers": 144,
+        "pcmBytes": 7392960
+      },
+      "missionOffsets": [
+        [
+          0.0,
+          0.09999999999999964,
+          0.20000000000000018
+        ],
+        [
+          0.0,
+          0.09999999999999964,
+          0.20000000000000018
+        ]
+      ],
+      "overlappingSourceCount": 5,
+      "overlappingBufferCount": 4,
+      "pauseActiveVoices": 0,
+      "resetActiveVoices": 0
+    },
+    "after": {
+      "warm": {
+        "buffers": 63,
+        "pcmBytes": 4961256,
+        "sampleRate": 44100
+      },
+      "full": {
+        "buffers": 89,
+        "pcmBytes": 5924400
+      },
+      "missionOffsets": [
+        [
+          0.0,
+          0.10000000000000009,
+          0.20000000000000018
+        ],
+        [
+          0.0,
+          0.09999999999999964,
+          0.20000000000000018
+        ]
+      ],
+      "overlappingSourceCount": 5,
+      "overlappingBufferCount": 1,
+      "pauseActiveVoices": 0,
+      "resetActiveVoices": 0
+    }
+  },
+  "scenarios": {
+    "pipe": {
+      "before": {
+        "passed": true,
+        "peakSources": 6,
+        "clippedSamples": 0,
+        "medianFPS": 59.99965668675378,
+        "pipeBeeps": 16,
+        "pipeDetonations": 1,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepMid",
+          "beepMid",
+          "beepMid",
+          "beepMid",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.6666009426116943,
+          1.333200454711914,
+          1.9999992847442627,
+          2.6665985584259033,
+          3.083296537399292,
+          3.499894857406616,
+          3.916593313217163,
+          4.333191633224487,
+          4.499891519546509,
+          4.666590929031372,
+          4.833289861679077,
+          4.999889612197876,
+          5.166589021682739,
+          5.333287954330444,
+          5.499987363815308
+        ],
+        "captureSeconds": 8.751020408163265,
+        "reportSha256": "4b04a368d2fcb0321a90092e3c193cb14b5a822d58607b6241a27f57236425b0"
+      },
+      "after": {
+        "passed": true,
+        "peakSources": 6,
+        "clippedSamples": 0,
+        "medianFPS": 60.001310571912484,
+        "pipeBeeps": 16,
+        "pipeDetonations": 1,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepMid",
+          "beepMid",
+          "beepMid",
+          "beepMid",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh",
+          "beepHigh"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.6667009592056274,
+          1.3333994150161743,
+          1.9999982118606567,
+          2.6666964292526245,
+          3.0833951234817505,
+          3.4999948740005493,
+          3.9165936708450317,
+          4.333291172981262,
+          4.4999905824661255,
+          4.666689515113831,
+          4.833388447761536,
+          4.9999881982803345,
+          5.1666871309280396,
+          5.333386063575745,
+          5.499885678291321
+        ],
+        "captureSeconds": 8.742312925170069,
+        "reportSha256": "eec707af1c584bc4fd1f314ced0477fee7e4f65d94f4fa832b7bded06ee02787"
+      }
+    },
+    "controls": {
+      "before": {
+        "passed": true,
+        "peakSources": 3,
+        "clippedSamples": 0,
+        "medianFPS": 60.00017235291557,
+        "pipeBeeps": 3,
+        "pipeDetonations": 0,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.6667008996009827,
+          2.000100314617157
+        ],
+        "captureSeconds": 6.730884353741496,
+        "reportSha256": "9578ac6993efe6ac1221c8f4663d36021c5726f1be7b8eea7e930f05d26aa5d8",
+        "pauseInteriorMax": 0.0,
+        "muteInteriorMax": 0.0
+      },
+      "after": {
+        "passed": true,
+        "peakSources": 2,
+        "clippedSamples": 0,
+        "medianFPS": 60.00161950287763,
+        "pipeBeeps": 4,
+        "pipeDetonations": 0,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepMid"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.6666009426116943,
+          1.9999008178710938,
+          2.666600227355957
+        ],
+        "captureSeconds": 6.739591836734694,
+        "reportSha256": "afb48f40c4056a2a30ea33dc5b106b7a61cc53678124bef5f006df264c090f91",
+        "pauseInteriorMax": 0.0,
+        "muteInteriorMax": 0.0
+      }
+    },
+    "stress": {
+      "before": {
+        "passed": true,
+        "peakSources": 32,
+        "clippedSamples": 0,
+        "medianFPS": 60.00070778309741,
+        "pipeBeeps": 0,
+        "pipeDetonations": 0,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "captureSeconds": 5.369614512471656,
+        "reportSha256": "276b23fcce3aaae659f63a156bfd21947b405117a042f35317ef712079f51135",
+        "priority": {
+          "accepted": {
+            "death": 6,
+            "impact": 5,
+            "zombie": 5,
+            "step": 4,
+            "debris": 2,
+            "cue": 5,
+            "weapon": 5
+          },
+          "active": 32,
+          "extraLowAccepted": false,
+          "stats": {
+            "limit": 32,
+            "active": 32,
+            "peak": 32,
+            "played": 113,
+            "dropped": 4,
+            "byKind": {
+              "tone440": 1,
+              "tone660": 1,
+              "tone880": 1,
+              "tone230": 2,
+              "tone180": 1,
+              "beepLow": 18,
+              "step": 35,
+              "growl": 15,
+              "breath": 4,
+              "beepMid": 4,
+              "beepHigh": 8,
+              "death": 9,
+              "mass": 1,
+              "explosion": 1,
+              "hit": 5,
+              "debris": 2,
+              "rifle": 5
+            },
+            "sampleMs": 0.5,
+            "readbacks": 84,
+            "nearby": 0,
+            "barrels": 0,
+            "nearDeaths": 11,
+            "resets": 6
+          }
+        },
+        "overload": {
+          "accepted": 22,
+          "active": 22
+        },
+        "pausedVoices": {
+          "active": 0,
+          "sources": 0,
+          "paused": true
+        }
+      },
+      "after": {
+        "passed": true,
+        "peakSources": 32,
+        "clippedSamples": 0,
+        "medianFPS": 60.002756840436106,
+        "pipeBeeps": 0,
+        "pipeDetonations": 0,
+        "cueKinds": [
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow",
+          "beepLow"
+        ],
+        "cueGameClockOffsets": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "captureSeconds": 5.372517006802721,
+        "reportSha256": "ee100790882883f96328fac3b9af84d3d6387f115672d4121258fdbba17e57ee",
+        "priority": {
+          "accepted": {
+            "death": 6,
+            "impact": 5,
+            "zombie": 5,
+            "step": 4,
+            "debris": 2,
+            "cue": 5,
+            "weapon": 5
+          },
+          "active": 32,
+          "extraLowAccepted": false,
+          "stats": {
+            "limit": 32,
+            "active": 32,
+            "peak": 32,
+            "played": 116,
+            "dropped": 4,
+            "byKind": {
+              "tone440": 1,
+              "tone660": 1,
+              "tone880": 1,
+              "tone230": 2,
+              "tone180": 1,
+              "beepLow": 18,
+              "step": 36,
+              "growl": 16,
+              "breath": 4,
+              "beepMid": 5,
+              "beepHigh": 8,
+              "death": 9,
+              "mass": 1,
+              "explosion": 1,
+              "hit": 5,
+              "debris": 2,
+              "rifle": 5
+            },
+            "sampleMs": 0.5,
+            "readbacks": 85,
+            "nearby": 0,
+            "barrels": 0,
+            "nearDeaths": 11,
+            "resets": 6
+          }
+        },
+        "overload": {
+          "accepted": 22,
+          "active": 22
+        },
+        "pausedVoices": {
+          "active": 0,
+          "sources": 0,
+          "paused": true
+        }
+      }
+    }
+  },
+  "sessionClose": {
+    "end": "2026-10-15T09:41:01.6124443+00:00",
+    "remainingProfileProcesses": [],
+    "start": "2026-10-15T09:39:50.6937261Z",
+    "gpuFaults": [],
+    "remainingOwnedProcesses": []
+  },
+  "limitations": [
+    "PCM payload bytes exclude AudioBuffer/Map/node overhead and are not process RSS.",
+    "Full-catalog saving assumes all 24 kinds and six variants have been requested; ordinary sessions may not reach that cache state.",
+    "Complete mixed recordings are not claimed bit-identical; independent game runs differ in timing and GPU ordering.",
+    "No auditory listening or FPS improvement is claimed."
+  ],
+  "harnessCorrection": "The first baseline audio-only overlap probe used pipeBeep with an out-of-range default lure position, so the unchanged game culled it. That session closed with no GPU fault. The corrected probe uses unpositioned fixed-cue sources; the matched pipe fixture separately checks actual bomb cue behavior.",
+  "pipeMaximumRelativeCueClockDifferenceSeconds": 0.0001989603042602539
+}

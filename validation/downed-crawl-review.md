@@ -38,3 +38,7 @@ The [proportion tests](character-proportions-review.md) qualify their separate s
 A single slot capped at 15 wall minutes has been requested after Jet's GPU handoff. No slot has been acquired and no browser/GPU workload has run for these two changes. Preserve the original V9 and the current public release until the combined candidate passes the approved review/release route.
 
 Within the slot, use exact served-byte identity, shader-boot and one-frame gates with the existing isolated profile and Windows GPU fault monitor. First check bounded downed input/collision/revive fixtures, clearly labelled as fixtures. Then record normal before/after gameplay with the same seed, counts, route and intended inputs, including walking, firing and naturally occurring damage/healing/downed/crawler transitions. If a desired state does not occur within the cap, report it as incomplete; do not claim a forced state as ordinary gameplay. Inspect rigid low poses for ground contact, weapon alignment and overlap against the unchanged collision volumes. Stop on any device loss/reset or unresponsive frame progress; close only owned processes and release the lease before packaging.
+
+## Completed combined qualification
+
+This document records an intermediate CPU checkpoint. Windows validation is complete for the final combined runtime, including the crawler ray-alignment adjustment. See [final runtime review](character-runtime-review.md) for exact identity, GPU evidence, limitations and release review.

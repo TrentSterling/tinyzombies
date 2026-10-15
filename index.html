@@ -643,11 +643,13 @@ fn box3(o:vec3f,d:vec3f,c:vec3f,h:vec3f,limit:f32,kind:u32,id:u32)->Hit3 {
 }
 fn rotPart(v:vec3f,dir:vec2f)->vec3f {if(abs(dir.x)>abs(dir.y)){return select(vec3f(-v.z,v.y,v.x),vec3f(v.z,v.y,-v.x),dir.x>0.0);}return select(vec3f(-v.x,v.y,-v.z),v,dir.y>0.0);}
 fn zombie3(o:vec3f,d:vec3f,z:Zombie,id:u32,limit:f32)->Hit3 {
- if(z.p.w<=0.0){return miss3(limit);}let scale=zScale(z.extraData.z);
- if(box3(o,d,z.p.xyz+vec3f(0,.55,0)*scale,vec3f(.50,.65,.50)*scale,limit,3u,id).kind==0u){return miss3(limit);}
+ if(z.p.w<=0.0){return miss3(limit);}let crawler=z.extraData.z==4.0;let scale=select(zScale(z.extraData.z),vec3f(1),crawler);
+ let center=select(vec3f(0,.55,0)*scale,vec3f(0,.32,0),crawler);let broad=select(vec3f(.50,.65,.50)*scale,vec3f(.65,.40,.65),crawler);
+ if(box3(o,d,z.p.xyz+center,broad,limit,3u,id).kind==0u){return miss3(limit);}
  let facing=S.pos.xz-z.p.xz;var hit=miss3(limit);let range=ART_RANGE6[u32(z.extraData.z)];
- for(var part=0u;part<range.y;part++){let a=ART_BOX6[range.x+part];let local=a.p.xyz+artMotion6(a.h.w,z.v.z,z.extraData.z,z.extraData.w,length(z.v.xy),z.extraData.y);
-  hit=closer3(hit,box3(o,d,z.p.xyz+rotPart(local*scale,facing),abs(rotPart(a.h.xyz*scale,facing)),hit.t,3u,id));
+ for(var part=0u;part<range.y;part++){let a=ART_BOX6[range.x+part];var local=a.p.xyz+artMotion6(a.h.w,z.v.z,z.extraData.z,z.extraData.w,length(z.v.xy),z.extraData.y);var half=a.h.xyz;
+  if(crawler){local=vec3f(local.x,.32-local.z,local.y-.50);half=half.xzy;}
+  hit=closer3(hit,box3(o,d,z.p.xyz+rotPart(local*scale,facing),abs(rotPart(half*scale,facing)),hit.t,3u,id));
  }return hit;
 }
 

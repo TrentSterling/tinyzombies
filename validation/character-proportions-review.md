@@ -17,3 +17,7 @@ node tools/check_character_proportions.cjs PATH_TO_BASELINE_HTML index.html vali
 ```
 
 Hardware validation remains pending Jet's handoff: shader boot and one-frame gates, then a bounded before/after normal gameplay recording covering movement, attacks, healing/revive, downing, crawler conversion and respawn. Inspect low-pose ground contact, weapon alignment, silhouette/hit readability and transitions. Stop on device loss/reset; do not launch the original V9. No GPU lease was acquired for this source checkpoint.
+
+## Completed combined qualification
+
+This document records an intermediate CPU checkpoint. Windows validation is complete for the final combined runtime, including the crawler ray-alignment adjustment. See [final runtime review](character-runtime-review.md) for exact identity, GPU evidence, limitations and release review.

@@ -1,0 +1,582 @@
+{
+  "candidate_sha256": "4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355",
+  "browser": "Chrome/155.0.8059.41",
+  "adapter": {
+    "vendorId": 4318,
+    "deviceId": 11269,
+    "subSysId": 339482990,
+    "revision": 161,
+    "vendorString": "",
+    "deviceString": "NVIDIA GeForce RTX 5070 Ti",
+    "driverVendor": "NVIDIA",
+    "driverVersion": "32.0.15.9186"
+  },
+  "resolution": [
+    1280,
+    720
+  ],
+  "ordinary_gameplay": {
+    "candidate_sha256": "4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355",
+    "before": {
+      "url": "http://127.0.0.1:60302/pipe.html?seed=73129",
+      "secureContext": true,
+      "ready": true,
+      "lost": null,
+      "stopped": false,
+      "errors": [],
+      "notes": [],
+      "frame": 1,
+      "simTime": 0.016666666666666666,
+      "settings": {
+        "zombies": 2048,
+        "pool": 32768,
+        "demo": false,
+        "started": true,
+        "paused": true,
+        "stats": false,
+        "muted": false,
+        "zoom": 34,
+        "quality": 1,
+        "lab": false,
+        "map": false,
+        "hideUI": false,
+        "reticle": 1,
+        "tactical": false,
+        "help": false
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "counters": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2048,
+        2376,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0,
+        74848,
+        1,
+        7646,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        419,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        28,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        535,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fps": 60,
+      "gpuMs": null
+    },
+    "action": {
+      "thrown": 1,
+      "pipeExplosions": 1,
+      "grenades": 1,
+      "rounds": 91,
+      "position": [
+        -55.29670333862305,
+        0,
+        54.12760925292969,
+        100
+      ]
+    },
+    "help": {
+      "help": true,
+      "paused": true
+    },
+    "pause": {
+      "passed": true,
+      "counter": 601
+    },
+    "restart": {
+      "passed": true,
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ]
+    },
+    "after": {
+      "url": "http://127.0.0.1:60302/pipe.html?seed=73129",
+      "secureContext": true,
+      "ready": true,
+      "lost": null,
+      "stopped": false,
+      "errors": [],
+      "notes": [],
+      "frame": 708,
+      "simTime": 0.5665666666666667,
+      "settings": {
+        "zombies": 2048,
+        "pool": 32768,
+        "demo": false,
+        "started": true,
+        "paused": true,
+        "stats": false,
+        "muted": false,
+        "zoom": 34,
+        "quality": 1,
+        "lab": false,
+        "map": false,
+        "hideUI": false,
+        "reticle": 1,
+        "tactical": false,
+        "help": false
+      },
+      "resolution": [
+        1280,
+        720
+      ],
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "counters": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2048,
+        2368,
+        0,
+        0,
+        0,
+        100,
+        0,
+        0,
+        0,
+        0,
+        74848,
+        33,
+        7646,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        28,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "fps": 60.00533723833451,
+      "gpuMs": 2.359296
+    }
+  },
+  "pipe_fixture": {
+    "method": "Explicit four-zombie lab fixture; all throw, pause and resume actions use normal browser input events. Complete unchanged GPU simulation runs.",
+    "fixture": {
+      "description": "Four seeded zombies at 3m radius around an 8m throw target; allies disabled in this labelled fixture. Normal GPU simulation and input handlers are retained.",
+      "target": [
+        -56,
+        52
+      ],
+      "aim": [
+        1004.7093398279377,
+        475.26269908036676
+      ],
+      "player": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "zombieCount": 4
+    },
+    "pause": {
+      "start": {
+        "clock": 11.299949645996094,
+        "fuse": 4.700038909912109,
+        "cooldown": 10.716716766357422,
+        "target": [
+          -56,
+          52
+        ],
+        "ordnance": 8,
+        "thrown": 1,
+        "detonated": 0,
+        "attracted": 4,
+        "grenades": 0,
+        "beeps": 2,
+        "audioState": "running",
+        "zombies": [
+          {
+            "x": -58.5299186706543,
+            "z": 52,
+            "hp": 12
+          },
+          {
+            "x": -56.355838775634766,
+            "z": 53.66472244262695,
+            "hp": 12
+          },
+          {
+            "x": -54.74134063720703,
+            "z": 52.008060455322266,
+            "hp": 12
+          },
+          {
+            "x": -56.384735107421875,
+            "z": 50.23597717285156,
+            "hp": 12
+          }
+        ],
+        "errors": []
+      },
+      "end": {
+        "clock": 11.299949645996094,
+        "fuse": 4.700038909912109,
+        "cooldown": 10.716716766357422,
+        "target": [
+          -56,
+          52
+        ],
+        "ordnance": 8,
+        "thrown": 1,
+        "detonated": 0,
+        "attracted": 4,
+        "grenades": 0,
+        "beeps": 2,
+        "audioState": "running",
+        "zombies": [
+          {
+            "x": -58.5299186706543,
+            "z": 52,
+            "hp": 12
+          },
+          {
+            "x": -56.355838775634766,
+            "z": 53.66472244262695,
+            "hp": 12
+          },
+          {
+            "x": -54.74134063720703,
+            "z": 52.008060455322266,
+            "hp": 12
+          },
+          {
+            "x": -56.384735107421875,
+            "z": 50.23597717285156,
+            "hp": 12
+          }
+        ],
+        "errors": []
+      },
+      "passed": true
+    },
+    "attraction": {
+      "beforeDistance": 2.993308922585338,
+      "afterDistance": 0.4912246285479725,
+      "state": {
+        "clock": 13.449919700622559,
+        "fuse": 2.5500457286834717,
+        "cooldown": 8.566746711730957,
+        "target": [
+          -56,
+          52
+        ],
+        "ordnance": 8,
+        "thrown": 1,
+        "detonated": 0,
+        "attracted": 4,
+        "grenades": 0,
+        "beeps": 6,
+        "audioState": "running",
+        "zombies": [
+          {
+            "x": -56.653785705566406,
+            "z": 52,
+            "hp": 12
+          },
+          {
+            "x": -56.14081954956055,
+            "z": 52.63954544067383,
+            "hp": 12
+          },
+          {
+            "x": -55.9986572265625,
+            "z": 52.000064849853516,
+            "hp": 12
+          },
+          {
+            "x": -56.1414794921875,
+            "z": 51.36056137084961,
+            "hp": 12
+          }
+        ],
+        "errors": []
+      },
+      "passed": true
+    },
+    "after": {
+      "clock": 16.349790573120117,
+      "fuse": 0,
+      "cooldown": 5.666863441467285,
+      "target": [
+        -56,
+        52
+      ],
+      "ordnance": 8,
+      "thrown": 1,
+      "detonated": 1,
+      "attracted": 0,
+      "grenades": 0,
+      "beeps": 17,
+      "audioState": "running",
+      "zombies": [
+        {
+          "x": -56.65972137451172,
+          "z": 51.99995422363281,
+          "hp": -88.08350372314453
+        },
+        {
+          "x": -56.151084899902344,
+          "z": 52.63912582397461,
+          "hp": -88.08350372314453
+        },
+        {
+          "x": -55.99674987792969,
+          "z": 52.0001335144043,
+          "hp": -88.08350372314453
+        },
+        {
+          "x": -56.15174865722656,
+          "z": 51.36032485961914,
+          "hp": -88.08350372314453
+        }
+      ],
+      "errors": []
+    },
+    "videoFrames": 78,
+    "audio": "Real running WebAudio context scheduled beeps; isolated Chrome output muted."
+  },
+  "paired_blood": {
+    "paired_phases": [
+      {
+        "phase": "landing",
+        "particle_sha256": "04c8c4eb4278cf54be27c8d510e07af13b73501dc7fa952a9d84282beaf7e9d5",
+        "particles": 2,
+        "impacts": 2,
+        "floor_cells_before": 30,
+        "floor_cells_after": 10
+      },
+      {
+        "phase": "death",
+        "particle_sha256": "8d5de06867344d158e1000f55c8c2dc58b12fb9d10bcdce93a989d807fc68a25",
+        "particles": 128,
+        "impacts": 0,
+        "floor_cells_before": 0,
+        "floor_cells_after": 0
+      },
+      {
+        "phase": "airborne",
+        "particle_sha256": "0bc198ff44c94a24941b229ff2fa5461ef68829a23df11566260e5f0925e4b30",
+        "particles": 128,
+        "impacts": 14,
+        "floor_cells_before": 39,
+        "floor_cells_after": 11
+      },
+      {
+        "phase": "settled",
+        "particle_sha256": "3f223e14a9b648579cead1570bf85f060bc27cb7f32d7e0ce6b06cadddd347c1",
+        "particles": 96,
+        "impacts": 107,
+        "floor_cells_before": 709,
+        "floor_cells_after": 292
+      }
+    ],
+    "exact_particle_buffers_and_impacts": true,
+    "isolated_cells": {
+      "droplet": [
+        21,
+        9
+      ],
+      "gore": [
+        9,
+        1
+      ]
+    },
+    "limitation": "The seeded death fixture deliberately omits pair solving to avoid atomic-order variance; separate ordinary-gameplay tests cover the full pipeline."
+  },
+  "session": {
+    "startUtc": "2026-10-15T01:46:33.448302Z",
+    "endUtc": "2026-10-15T01:54:25.4563380Z",
+    "windowsGpuFaultCount": 0,
+    "events": [],
+    "remainingOwnedProcesses": []
+  },
+  "limits": [
+    "Bounded smoke tests, not a long-duration stability benchmark.",
+    "The four-zombie attraction fixture disables allies and uses existing lab replenishment; it does not validate resource consumption.",
+    "WebAudio ran and scheduled 17 beeps, but output was muted and has not been listened to.",
+    "The seeded particle comparison omits pair solving; ordinary gameplay runs the complete pipeline.",
+    "Pipe blast damage was isolated; scenery destruction ran in ordinary mixed weapon gameplay and was not isolated to the pipe bomb."
+  ],
+  "evidence": {
+    "video": "assets/pipe-bomb-proof.mp4",
+    "attraction": "assets/pipe-attraction.png",
+    "explosion": "assets/pipe-explosion.png",
+    "blood_before": "assets/floor-blood-before.png",
+    "blood_after": "assets/floor-blood-after.png"
+  }
+}

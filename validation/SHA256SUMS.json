@@ -1,6 +1,16 @@
 {
   ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "README.md": "c44659133345873b483ec67c186cbe06754044f1ddf8b778285209c41d6bf848",
+  "README.md": "2c54e0c6dfbc0ed446d7316a20fa3e9a783f683afef8090fd68be79af0f79c0c",
+  "assets/contrast-after.png": "8d4a64d3712403b4a1f59681dbce84c8e3d65dbc0c10af675263a8856ffa5d8b",
+  "assets/contrast-before.png": "7209dea73687675d32196eb583345f2f26c59b23898d09b68ed7c1dd0b84b68a",
+  "assets/contrast-combat.png": "f7611af5a5bbc30308eb77f030b40c795c0d60b0f213e395034ff3b6fd102458",
+  "assets/controls.png": "37a3a3aef9040fcbf1f0053463e54ec1f074d7bc3dda9e250eedbc3aed2788c2",
+  "assets/field-map.png": "9677c7fd169bf3c7e89429ea2460afb977d8ca49df37ab7e2b6fb394bb58b071",
+  "assets/floor-blood-after.png": "33af70a38e7b2034052473e0133c771d9bee21c8a8b9fd5bd3c898aeca8609d5",
+  "assets/floor-blood-before.png": "5f5393122a74320351d3af760469e1d73c8d98fe5006c403a53de1cf26c85c95",
+  "assets/pipe-attraction.png": "ec1993fc86f83c6c2c6cedf38c6118ec955576eb0e202ffff7a40ae6e8fedbca",
+  "assets/pipe-bomb-proof.mp4": "4c40348aab3e10536066790a3f6ff4503cbe75687afb926a7675c806ab46a279",
+  "assets/pipe-explosion.png": "2d2cefb993111e2d56899ea7cd83d094cb3f21309360ad92e70952ff387c333a",
   "assets/tiny-zombies-v9.png": "e7ea5b211d4b1fad1fbeac1ec843c0e44cf5170291d9aa9ee40222fa75a2d119",
   "index.html": "b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540",
   "tools/check_blood_radius.js": "598f56880e617a451c922cc5e0a4c2adbd73cbbbd3dc336ca26c98113adc171d",
@@ -13,7 +23,9 @@
   "validation/map-route-collision-review.json": "cfb34b2c000b3a15e8f5845c3a194b7cca4aae3eff0bda93b87aca5a7ee0e2f3",
   "validation/map-route-plan.json": "e9d8217c17a179bb682adf9b2e5c6c33434b4b1e1a4d091f8c6cc4b2b6be35e5",
   "validation/map-source-check.json": "a1d321a1ca887f4146473d5b11b9befc3b7153e90bb9c8d5fb9196d6f26b34c2",
+  "validation/map-windows-summary.json": "3190e30c982a89427ce881d9531378f37077c67d4df8cf39836b8777ee9d5b56",
   "validation/structural-check.json": "0cd6a8d26e10bf461bfcf160cd8830ee4fc0a73de2e3d87bdc9376b3656ca392",
   "validation/v91-source-check.json": "dcec02ae95498a91a777bf325d3d280e3aabcd16a88d92bf4091746bca98417c",
+  "validation/v91-windows-summary.json": "780532922d945af5d1e655402782097f41ef44bfd233e08a4e28912321750a19",
   "validation/windows-summary.json": "15adc87e102a0a638134a1f272036ecf7872411e1641d1f8c2cec87f68eb8ff1"
 }

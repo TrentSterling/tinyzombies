@@ -2261,13 +2261,15 @@ function enableAudio(){
   const ceiling=audio.createWaveShaper(),curve=new Float32Array(4097);for(let i=0;i<curve.length;i++){const x=i/(curve.length-1)*2-1;curve[i]=.88*Math.tanh(x*1.1)/Math.tanh(1.1);}ceiling.curve=curve;ceiling.oversample='2x';
   audioGain=audio.createGain();audioGain.gain.value=.4;audioMix9.connect(highpass);highpass.connect(compressor);compressor.connect(ceiling);ceiling.connect(audioGain);audioGain.connect(audio.destination);
   audio.resume();audioStats9();
-  const warm=['rifle','death','growl','breath','explosion','chain','mass','hit','step','debris','beepLow','beepMid','beepHigh'].flatMap(kind=>Array.from({length:6},(_,variant)=>[kind,variant]));
+  const warm=['rifle','death','growl','breath','explosion','chain','mass','hit','step','debris','beepLow','beepMid','beepHigh'].flatMap(kind=>Array.from({length:kind.startsWith('beep')?1:6},(_,variant)=>[kind,variant]));
   const warmOne=deadline=>{if(warm.length&&deadline.timeRemaining()>3){const [kind,variant]=warm.shift();audioClip9(kind,variant);}if(warm.length)requestIdleCallback(warmOne);};if(window.requestIdleCallback)requestIdleCallback(warmOne);
  }catch(e){diagnostics.notes.push('Audio unavailable: '+e.message);}
 }
 // Original procedural PCM only. Each seeded variant contains its own short layers,
 // so one voice is one source even for body/crackle/tail combinations.
 function audioClip9(kind,variant=0){
+ // Fixed-frequency cues have identical PCM across variants; sources remain independent.
+ if(kind.startsWith('beep')||kind.startsWith('tone'))variant=0;
  const key=kind+':'+variant;if(audioClips9.has(key))return audioClips9.get(key);
  const lengths={rifle:.11,shotgun:.27,crit:.21,explosion:.95,chain:.42,hit:.16,death:.46,growl:.9,breath:.6,step:.15,debris:.32,door:.19,mass:.58,beepLow:.075,beepMid:.075,beepHigh:.075};
  const tone=kind.startsWith('tone'),duration=tone?.18:lengths[kind],rate=audio.sampleRate;

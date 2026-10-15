@@ -1,10 +1,10 @@
-# Browser qualification plan — pending
+# Browser qualification plan - completed
 
 Runtime candidate: `a84f7f4991b5d56d99c77f390a3309cec5762447`.
 Candidate HTML SHA-256: `f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405`.
 Baseline: `e348826cb74b2c6bc17c92d6014ea4ac3220c240`, HTML SHA-256 `47a492c20627a145e53fe578230969cdf95769d15f98b96d130dccf6bf89655d`.
 
-No browser, server or GPU workload has been launched for this candidate. The parent will provide verified GPU availability after Jet releases its lease. There will be no direct peer messaging. Do not overlap hardware benchmarks or treat an expired timestamp alone as proof that another owner's workload stopped.
+Executed on October 15, 2026 after the coordinated GPU window was released. The successful session was `recorded-audio-qualification2`; all owned processes closed and the lease was released at 16:55:32 UTC. See [the final review](recorded-audio-review.md) and [Windows summary](recorded-audio-windows-summary.json). The steps below preserve the planned method; they are not pending work.
 
 ## Prepared local harness
 

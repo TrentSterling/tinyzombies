@@ -6,11 +6,11 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 ## Combat audio
 
-This branch contains an unpublished recorded-audio candidate: 43 compact CC0 clips replace the generated combat sounds and electronic cues. The bank is 719 KiB, predecoded asynchronously, and retains the existing bounded spatial mix. CPU checks pass; browser captures and listening review remain pending. See [the candidate report](validation/recorded-audio-review.md) and [source credits](assets/audio/CREDITS.md). The following paragraphs describe the preceding shipped release.
+Combat uses 43 compact CC0 recordings and recording-derived layers: rifle/shotgun attacks, wet hits/deaths, creature vocals, material breaks, firework blasts and mechanical cues. The 719 KiB bank predecodes asynchronously, plays immediately from cache, and retains the bounded 32-source spatial mix and pipe countdown timing. Missing or late assets never block gameplay or replay old events.
 
-Procedural zombie/gait voices, layered hits and deaths, spatial variation and staggered chain accents use a bounded 32-source mix. Background steps and calls have varied spacing limits, and weapons/pipe cues retain priority capacity. Six matched Windows fixtures plus saturation passed without clipping or GPU faults, at about 60 FPS. Recordings and signal measurements support the validation; the execution environment could not listen, so perceptual quality is not claimed. See [the audio release report](validation/audio-release-review.md), [recording manifest](validation/audio-release-artifact-manifest.json), and [historical draft review](validation/audio-review.md).
+The exact runtime passed Windows Chrome 155 / RTX 5070 Ti loading, failure/delay, decode, combat, timing, controls and saturation checks. Six matched scenes per build plus stress ran at approximately 60 FPS with no clipped samples or GPU faults. The horde recording contains 35 kills and recorded death/impact/debris layers. [Watch the horde recording](https://chatgpt.com/api/library/files/libfile_cdcd3ba023288191933758bb7c483600/download), read [the release review](validation/recorded-audio-review.md), or inspect [source credits](assets/audio/CREDITS.md). The user approved the selected-sample preview; no agent listening or long-session audio stability claim is made.
 
-Fixed pipe and mission cues share identical PCM buffers while keeping independent playback sources. Warm-up uses 15 fewer buffers (198,480 PCM bytes at 44.1 kHz); full supported-catalog coverage saves 1,468,560 bytes. Waveform identity, cue timing, voice limits and controls were checked. See [the cache validation](validation/audio-cache-review.md).
+Earlier procedural-mix and fixed-cue-cache measurements remain in the historical [audio report](validation/audio-release-review.md) and [cache report](validation/audio-cache-review.md).
 
 ## Authored routes and supply loops
 

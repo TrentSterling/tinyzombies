@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:51899/baseline.html?seed=73129",
+  "sha256": "47a492c20627a145e53fe578230969cdf95769d15f98b96d130dccf6bf89655d",
+  "expectedHash": "47a492c20627a145e53fe578230969cdf95769d15f98b96d130dccf6bf89655d",
+  "bytes": 392271,
+  "passed": true
+}

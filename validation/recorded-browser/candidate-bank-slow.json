@@ -1,0 +1,46 @@
+{
+  "mode": "slow",
+  "sha256": "f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405",
+  "method": "Actual browser WebAudio decode and exact runtime bank/voice probes; game rendering remains frozen for this probe. No auditory claim.",
+  "before": {
+    "bank": {
+      "state": "loading",
+      "total": 43,
+      "ready": 42,
+      "failed": {},
+      "downloadBytes": 730052,
+      "decodedBytes": 3105956,
+      "skipped": 0,
+      "concurrency": 2
+    },
+    "missing": true,
+    "played": false,
+    "playedCount": 0
+  },
+  "bank": {
+    "state": "ready",
+    "total": 43,
+    "ready": 43,
+    "failed": {},
+    "downloadBytes": 736350,
+    "decodedBytes": 3125156,
+    "skipped": 1,
+    "concurrency": 2
+  },
+  "after": {
+    "voices": 0,
+    "playedCount": 0,
+    "paused": true,
+    "bank": {
+      "state": "ready",
+      "total": 43,
+      "ready": 43,
+      "failed": {},
+      "downloadBytes": 736350,
+      "decodedBytes": 3125156,
+      "skipped": 1,
+      "concurrency": 2
+    }
+  },
+  "passed": true
+}

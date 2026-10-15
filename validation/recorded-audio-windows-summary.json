@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "runtimeCommit": "a84f7f4991b5d56d99c77f390a3309cec5762447",
+  "htmlSha256": "f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405",
+  "baselineCommit": "e348826cb74b2c6bc17c92d6014ea4ac3220c240",
+  "browser": "Chrome 155.0.8059.41 (isolated headless hardware profile)",
+  "adapter": "NVIDIA GeForce RTX 5070 Ti",
+  "driver": "32.0.15.9186 / 591.86",
+  "resolution": [
+    1280,
+    720
+  ],
+  "population": {
+    "zombies": 2048,
+    "particles": 32768
+  },
+  "fixtures": 13,
+  "codecChecks": 86,
+  "failedAssetScenarios": {
+    "404": "rifle-2",
+    "hashMismatch": "hit-1",
+    "503": "pipe-high",
+    "delayed8000ms": "pipe-high"
+  },
+  "limits": [
+    "No agent listening occurred. User approval of the selected-sample preview is distinct from final in-game mix assessment.",
+    "Fixtures retain 2048 enemies/32768 particles but reposition most enemies far away; these are controlled tests, not blind human play.",
+    "CPU frame metrics cover render submission. Audio sample time is measured separately and cumulative; GPU timestamps are polled and may repeat.",
+    "No long-session audio soak or maximum 8192-enemy runtime test."
+  ],
+  "noRuntimeCodeChangedDuringQualification": true,
+  "cleanup": {
+    "end": "2026-10-15T16:54:01.6129309+00:00",
+    "remainingProfileProcesses": [],
+    "gpuFaults": [],
+    "remainingOwnedProcesses": [],
+    "start": "2026-10-15T16:45:30.037253Z"
+  },
+  "evidence": {
+    "candidate-bank-decode.json": "91ec776985e290db6c58ce116ad5d164ac42c631a6b7f33435ea5538d234b09f",
+    "candidate-bank-failure.json": "415130f99cabd1a78bc7f9ab55642851fd1d0336d645aeecb0260873463d04b8",
+    "candidate-bank-slow.json": "47acd68764e1ea222b6da505bc2da3d700e4859673d90bb73070e9b9e7cd9cae",
+    "candidate-bank-playback.json": "585b9db438d50edd83a0e549a644cf1f44cb85c2f062d2c28eebf91133520331",
+    "candidate-missing-assets-ordinary-result.json": "c8cc306f6f92bccafe2cb729b4c3b9ec44444a00cb45f565a51f327783c0b7c0",
+    "candidate-loaded-document-identity.json": "c393c36b7e39551c678b7c0c06a90ce926f683e5d327308e09ce4bbf59136547",
+    "baseline-loaded-document-identity.json": "4c36e473cc7d6967e8e04c4513b9f75d068cce2235b8a0a9deafc46f164a9327",
+    "candidate-browser-system-info.json": "c41bb48e11ab3a0af794d60f62c6cde1c295a632839e8787333cf06681e6c7be",
+    "session-close.json": "d2a3fa6995263cdd2a9f75d903ee4961af944d67f84d9328ad6c069028b75bd8",
+    "baseline-quiet.json": "7425dc4eab73bb26fbc872e1374c5dc604efa26852aef3802dc27904457f373d",
+    "baseline-single.json": "59b994f0702721873e87fe5dd96e6e2d94920385395302169b695d9d59ecf104",
+    "baseline-horde.json": "c22ae5dec7e31a57216b3f48c23e7c9125ea5dbaebc9f6dd5f0e6679c58cd19d",
+    "baseline-chain.json": "97c2e5e38f8757e5c8d303006a77002ff294ca7672a50db3bb5af7e6b290cea3",
+    "baseline-pipe.json": "d2631aa68446b0b991a61fd3f8c7671b33bc8658ebbe2e00c5878c328fcefd1f",
+    "baseline-controls.json": "df8466780429b3253477360dffe1c21c69709605385e5846cc171f3de9f8e229",
+    "candidate-quiet.json": "5c986457fa1c271fee51677f6e7b2e3581fd37224cf0058960accdfb86ce03dd",
+    "candidate-single.json": "e122210b39761f56e9423d78a3e3d41b0b1a1068b1ff51164c3cfd4ad20b2d1b",
+    "candidate-horde.json": "4cad8327c898e6bb0ea20b4073da1dd93fa6beec77831b29d574562574ad849b",
+    "candidate-chain.json": "197ea7e55f565c2f64174ec74101ec9ec88d0050caf89ecb2697af6cc7c1e8e6",
+    "candidate-pipe.json": "bac0c274ff113064d54cdc9cc88ccf0da18c254c4f7f4f97870782cdb84f5d12",
+    "candidate-controls.json": "24d481bc6b466ae8f081d84ce85572b4e5e70214c4d436a39eed4d0ada3a025c",
+    "candidate-stress.json": "74893a54893cd51c234f8c51b751a108cd300c7b6c07a2f03be04e55b998a2f1"
+  },
+  "initialProbeCorrection": "Chrome float mapping differs from libsndfile by at most one PCM16 LSB. Recovering signed PCM16 with positive scale32767 and negative32768 matches every 48k clip exactly. First session stopped at frame0; no application code changed; both sessions had zero Windows GPU faults."
+}

@@ -3,7 +3,7 @@
   "license": "CC0-1.0",
   "codec": "FLAC PCM16 mono 48000Hz",
   "processing": "Select isolated one-shots; mono mean; polyphase resample; DC removal; trim at 1.2% peak retaining 0.75ms attack lead and <=12ms tail; category duration cap; 0.75ms/12ms linear edge fades; RMS match with 0.82 peak bound; optional recorded layers; lossless FLAC. No internal time-stretch or silence splice. Natural inter-layer offsets preserved.",
-  "listeningStatus": "CPU/source/waveform inspection only; no perceptual listening claim. Browser decode, gameplay capture and listener review pending.",
+  "listeningStatus": "User approved the selected-sample preview. Actual browser decode/playback and in-game captures passed; see validation/recorded-audio-review.md. No agent listening or final perceptual-quality claim.",
   "sources": {
     "sources": [
       {

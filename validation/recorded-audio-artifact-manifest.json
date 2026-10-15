@@ -1,0 +1,79 @@
+{
+  "method": "Individual Library uploads; original mixer gain except the explicitly labeled level-matched comparison. Audio recorded post-master, then synchronized to separately captured canvas video.",
+  "listenedByAgent": false,
+  "files": [
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-horde.mp4",
+      "file_id": "file_00000000825c820e8afc15ba8034113e",
+      "library_file_id": "libfile_cdcd3ba023288191933758bb7c483600",
+      "current_version_number": 0,
+      "file_size_bytes": 3419895,
+      "sha256": "178537f0bd5f32b7eb4d8c5db359147eb7fa69495dfa03e57393cff4ea5978f4",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_cdcd3ba023288191933758bb7c483600/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-before.mp4",
+      "file_id": "file_00000000ef048210a970f9a3953f712a",
+      "library_file_id": "libfile_5fc06c125ee48191861abc515f137c44",
+      "current_version_number": 0,
+      "file_size_bytes": 7707421,
+      "sha256": "cb0a4936f7a5779afb484a1d11b7056392b7a13bda5be9ce41e5090ce326ed49",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_5fc06c125ee48191861abc515f137c44/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-before.wav",
+      "file_id": "file_00000000ec00822f91e9aa6be64f3f10",
+      "library_file_id": "libfile_e9796a6a22348191aed20625b7ac8842",
+      "current_version_number": 0,
+      "file_size_bytes": 10077798,
+      "sha256": "ac7d1f823865a972c0231fbfb3295e4676c85e5dd4e077ac0b75a8ef5ad0a4f0",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_e9796a6a22348191aed20625b7ac8842/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-after.mp4",
+      "file_id": "file_00000000b81481f594fe9bcabce7532b",
+      "library_file_id": "libfile_fa8a2c872c9081918b737f54c57673b6",
+      "current_version_number": 0,
+      "file_size_bytes": 7547888,
+      "sha256": "22db24a5352fb682ad2b17af76b0e3ee8b7c9896a1522cdb01d7a5755970dc4d",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_fa8a2c872c9081918b737f54c57673b6/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-after.wav",
+      "file_id": "file_000000006e5c81f49efb5a82c00cb09b",
+      "library_file_id": "libfile_c156e550ff00819198346d425666b7a5",
+      "current_version_number": 0,
+      "file_size_bytes": 10123878,
+      "sha256": "c89d8a46affc7f05962fd4eaddb114b2b1ed04ce6c78cec669a4292f817c6910",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_c156e550ff00819198346d425666b7a5/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-horde.wav",
+      "file_id": "file_00000000c068820a872afea379ea07df",
+      "library_file_id": "libfile_85340e3b181081918221b54f2a74bf1b",
+      "current_version_number": 0,
+      "file_size_bytes": 2183526,
+      "sha256": "8366cd189cb75bfbf467b6647ca651846995ae1bf58d0a7b402cdb92b8aa4f32",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_85340e3b181081918221b54f2a74bf1b/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-horde-level-matched.mp4",
+      "file_id": "file_000000008778820a80e43f21d5b08caa",
+      "library_file_id": "libfile_f3ee2e2b4b2c8191b0db225b3e222c39",
+      "current_version_number": 0,
+      "file_size_bytes": 7016304,
+      "sha256": "99746247e3456195076d4277a3532ff9a606a2285e19312cbaf21d3310769a03",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_f3ee2e2b4b2c8191b0db225b3e222c39/download"
+    },
+    {
+      "file_name": "Tiny-Zombies-recorded-SFX-measurements.json",
+      "file_id": "file_000000008864821089d5cb23a4d48353",
+      "library_file_id": "libfile_54d6017eaaa081918355adacb2c00621",
+      "current_version_number": 0,
+      "file_size_bytes": 30950,
+      "sha256": "804a5647d7aabb33bde8815956405bd3051001439753549584eeafbaaef88024",
+      "downloadUrl": "https://chatgpt.com/api/library/files/libfile_54d6017eaaa081918355adacb2c00621/download"
+    }
+  ],
+  "localMetadata": "Library saves succeeded. Windows lacks os.setxattr; helper application failed. Receipts and IDs are retained as JSON sidecars instead; uploads were not repeated."
+}

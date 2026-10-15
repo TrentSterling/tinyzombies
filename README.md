@@ -4,7 +4,7 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
-## V9.1 development candidate
+## V9.1 pipe bombs and smaller floor marks
 
 This branch adds a pipe bomb on B, separate from the existing grenade on Space. It arcs toward the cursor, beeps after landing, attracts nearby zombies with line of sight, and detonates after six seconds using the existing blast, damage and destruction pipeline. It costs one ordnance and has a twelve-second cooldown. Long Distraction extends its fuse. The fuse and beep scheduler pause with the game.
 
@@ -12,7 +12,11 @@ Floor stamps shrink again: isolated droplets cover 9 paint cells instead of 21, 
 
 The start/pause screens show both bomb controls. Press ? to open a complete controls overlay. Throwing with no ordnance or during a cooldown gives a brief contextual message.
 
-CPU-only source and input/audio-scheduler checks pass; see `validation/v91-source-check.json`. GPU compilation, actual Windows input, attraction/explosion behavior, audible output and paired visual validation are pending. The prior Windows results below do not validate this candidate.
+The exact build passed shader compilation and bounded Windows gameplay on Chrome 155.0.8059.41 / NVIDIA RTX 5070 Ti, driver 591.86, with the default 2,048 zombies and 32,768 particles. Ordinary browser input moved the player out of the prep room, fired 91 rounds, detonated a pipe bomb and a grenade, opened controls and the field map, and passed pause/restart checks. No device errors or new Windows GPU faults were observed.
+
+In an explicit four-zombie fixture, real B input attracted all four from an average 2.99 m to 0.49 m from the bomb; the delayed explosion killed them. Pause held the fuse and beep count. WebAudio scheduled 17 beeps, but the isolated browser output was muted, so audible quality is not verified. [Watch the actual fixture capture](assets/pipe-bomb-proof.mp4).
+
+Paired GPU particle buffers and impact counts matched across isolated impacts and a seeded death event. At frame 120, floor coverage fell from 709 cells to 292 while the 96 active particles and 107 impacts matched exactly. This fixture omits pair solving to avoid atomic-order differences; ordinary gameplay exercises the complete pipeline. See `validation/v91-source-check.json` and `validation/v91-windows-summary.json` for methods and limits. These short checks do not replace a long stability run.
 
 ## Play locally
 
@@ -54,7 +58,7 @@ Compatibility repair SHA-256: `1be63cbf1a3887251b0b26067133e71068f7c820c96f5f1c2
 
 Previous release SHA-256: `c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4`
 
-V9.1 candidate `index.html` SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
+V9.1 pipe-bomb build `index.html` SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
 
 With Python and Node.js available, reproduce from your preserved original using:
 

@@ -27,6 +27,14 @@ assert.deepEqual(changed, ['lights', 'begin', 'zombies', 'integrate', 'boxes']);
 assert.equal(current.sources.integrate, old.sources.integrate.replace('let radius=select(1,2,q.c.w<.5);', 'let radius=select(0,1,q.c.w<.5);'));
 for (const name of ['spawn','solve','gridP','drip','fracture8','squadNav7','buddy','render','ui']) assert.equal(current.sources[name], old.sources[name], name + ' preserved exactly');
 assert.equal(current.run('COMMON'), old.run('COMMON'), 'State layout, budgets and scalar helpers remain exact');
+// Existing squad passes dynamically index 64..66 and 68..70. New telemetry must stay outside them.
+for (const slot of [63,67,71,81]) {
+  assert.ok(!new RegExp('\\bC\\['+slot+'(?:u)?\\]').test(baseline.toString('utf8')), 'new counter slot was unused in baseline: '+slot);
+  assert.ok(![64,65,66,68,69,70].includes(slot), 'counter cannot overlap squad contacts/slams');
+}
+assert.ok(current.sources.zombies.includes('atomicAdd(&C[64u+ti],1u)'), 'squad contact accounting remains intact');
+assert.ok(current.sources.buddy.includes('atomicExchange(&C[64u+id],0u)'), 'squad contact consumption remains intact');
+
 assert.equal(current.run('JSON.stringify(L7)'), old.run('JSON.stringify(L7)'));
 assert.equal(current.run('JSON.stringify(L8)'), old.run('JSON.stringify(L8)'));
 assert.ok(!candidate.toString('utf8').includes('\u00e2\u20ac'), 'no accidental UTF-8/Windows encoding corruption');
@@ -72,9 +80,9 @@ current.run('settings.paused=true;playerValues[24]=11.5;playerValues[110]=4.5;up
 assert.equal(current.run('testBeeps.length'), 1, 'paused audio scheduler does not beep');
 current.run('settings.paused=false;updateBombAudio()');
 assert.equal(current.run('testBeeps.length'), 2);
-current.run('playerValues[110]=0;counters[64]=1;updateBombAudio();updateBombAudio()');
+current.run('playerValues[110]=0;counters[67]=1;updateBombAudio();updateBombAudio()');
 assert.equal(current.run('testSounds.length'), 1, 'one pipe explosion sample produces one sound');
-current.run('counters[66]=1;updateBombAudio();updateBombAudio()');
+current.run('counters[81]=1;updateBombAudio();updateBombAudio()');
 assert.equal(current.run('testSounds.length'), 2, 'grenade audio follows its own GPU event counter');
 const footprint = radius => {
   let n = 0;

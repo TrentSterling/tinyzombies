@@ -17,6 +17,7 @@ function fail(e){stopped=true;const msg=e?.stack||e?.message||String(e);diagnost
 window.addEventListener('error',e=>fail(e.error||e.message));
 window.addEventListener('unhandledrejection',e=>fail(e.reason));
 const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
+// Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
 const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:false,hideUI:false,reticle:1,tactical:false,help:false};
@@ -775,7 +776,7 @@ fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
 
  S.feedback.x=0.0;S.weapons.z=max(0.0,S.weapons.z-dt);S.weapons.w=max(0.0,S.weapons.w-dt*6.0);
  S.escape.w=max(0.0,S.escape.w-dt);S.lure.w=max(0.0,S.lure.w-dt);
- for(var ci=38u;ci<41u;ci++){atomicStore(&C[ci],0u);}atomicStore(&C[53],0u);atomicStore(&C[54],0u);atomicStore(&C[65],0u);
+ for(var ci=38u;ci<41u;ci++){atomicStore(&C[ci],0u);}atomicStore(&C[53],0u);atomicStore(&C[54],0u);atomicStore(&C[71],0u);
  if(S.weapons.y>0.0){S.weapons.y=max(0.0,S.weapons.y-dt);if(S.weapons.y==0.0){S.weapons.x=magazineSize(S.modsA.y);}}
  if(S.goal.w==0.0&&S.pos.w>0.0&&u.config.z>.5){
   if((u.v3.z>.5||S.weapons.x<=0.0)&&S.weapons.y<=0.0&&S.weapons.x<magazineSize(S.modsA.y)){S.weapons.y=reloadDuration(S.modsA.x);}
@@ -824,14 +825,14 @@ if(pr.p.w==1.0&&pr.data.x>0.0&&length(p.xz-pr.p.xz)<.8&&S.pos.w>0.0&&S.pos.w<96.
   let num=select(1u,8u,mode==2u);for(var i=0u;i<num;i++){S.shots[i]=vec4f(0,0,0,select(2.0,3.0,mode==2u)+u.run.z*.6);}
  }
  if(grenade>.5&&S.timers.z<=0.0&&S.bomb.z<=0.0&&(u.run.y>.5||S.supplies.x>=1.0)){S.supplies.x=max(0.0,S.supplies.x-1.0);S.runStats.y+=1.0;let destinationPoint=S.pos.xz+safe2(aim)*min(length(aim),11.0);S.bomb=vec4f(destinationPoint,.45,0);S.bombStart=vec4f(S.pos.xyz,0);S.timers.z=max(1.0,1.85-u.run.w*.12);}
- if(S.bomb.z>0.0){S.bomb.z-=dt;if(S.bomb.z<=0.0){S.blast=vec4f(S.bomb.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;atomicAdd(&C[66],1u);}}
+ if(S.bomb.z>0.0){S.bomb.z-=dt;if(S.bomb.z<=0.0){S.blast=vec4f(S.bomb.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;atomicAdd(&C[81],1u);}}
  if(S.goal.w==0.0&&S.pos.w>0.0&&u.config.z>.5){
   if(u.controls.y>.5&&S.skill.x<=0.0&&(u.run.y>.5||S.supplies.x>=1.0)){S.supplies.x=max(0.0,S.supplies.x-1.0);S.runStats.y+=1.0;S.tools.x=1.0;S.skill.x=3.8;S.look.z=1.0;S.mission.w=wallRay(S.pos.xz+dir*.2,dir,14.0);}
   if(u.controls.z>.5&&S.skill.y<=0.0&&(u.run.y>.5||S.supplies.x>=2.0)){S.supplies.x=max(0.0,S.supplies.x-2.0);S.runStats.y+=2.0;let destinationPoint=S.pos.xz+dir*min(10.0,length(aim));S.tools=vec4f(S.tools.x,.95,destinationPoint);S.skill.y=7.0;}
  }
  if(S.tools.y>0.0){let old=S.tools.y;S.tools.y=max(0.0,S.tools.y-dt);if(old>.20&&S.tools.y<=.20){S.blast=vec4f(S.tools.zw,.5,4.5);S.aux.w=1.0;}}
  // Reuse the existing blast/destruction pipeline. Defer a simultaneous blast by one frame.
- if(S.spare5.w>0.0&&S.lure.z<=0.0&&S.aux.w<.5){S.blast=vec4f(S.lure.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;S.spare5.w=0.0;S.escape.w=.4;S.noise=vec4f(S.lure.xy,3.0,30.0);atomicAdd(&C[64],1u);}
+ if(S.spare5.w>0.0&&S.lure.z<=0.0&&S.aux.w<.5){S.blast=vec4f(S.lure.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;S.spare5.w=0.0;S.escape.w=.4;S.noise=vec4f(S.lure.xy,3.0,30.0);atomicAdd(&C[67],1u);}
  if(S.pos.w<=0.0&&S.player7.x==0.0&&S.goal.w==0.0){S.player7=vec4f(45,0,0,S.player7.w);S.radio7=vec4f(0,4,4,-1);}
  if(S.player7.x>0.0&&u.inputMove.z>.5&&S.timers.x<=0.0){S.shots[0]=vec4f(0,0,0,2.2);S.timers.x=.28;S.aux.y=1.0;S.look.z=1.0;S.ballistic.x+=1.0;S.ballistic.z=1.0;}atomicStore(&C[12],u32(max(0.0,S.pos.w)));
 }
@@ -1006,7 +1007,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
  if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;}
- if(S.lure.z>0.0&&S.spare5.w-S.lure.z>=.45&&length(S.lure.xy-z.p.xz)<15.0){let ld=safe2(S.lure.xy-z.p.xz);let ln=length(S.lure.xy-z.p.xz);var visible=true;for(var li=1u;li<min(30u,u32(ln*2.0));li++){if(solid(vec3f(z.p.x+ld.x*f32(li)*.5,.55,z.p.z+ld.y*f32(li)*.5))>0u){visible=false;break;}}if(visible){goalPoint=S.lure.xy;awake=true;z.v.w=max(z.v.w,6.0);atomicAdd(&C[65],1u);}}
+ if(S.lure.z>0.0&&S.spare5.w-S.lure.z>=.45&&length(S.lure.xy-z.p.xz)<15.0){let ld=safe2(S.lure.xy-z.p.xz);let ln=length(S.lure.xy-z.p.xz);var visible=true;for(var li=1u;li<min(30u,u32(ln*2.0));li++){if(solid(vec3f(z.p.x+ld.x*f32(li)*.5,.55,z.p.z+ld.y*f32(li)*.5))>0u){visible=false;break;}}if(visible){goalPoint=S.lure.xy;awake=true;z.v.w=max(z.v.w,6.0);atomicAdd(&C[71],1u);}}
  if(awake){atomicAdd(&C[53],1u);}
  let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);
  // Short direct line-of-sight segments preserve natural motion inside a room.
@@ -2189,8 +2190,8 @@ function pipeBeep(remaining){
 function updateBombAudio(){
  const clock=playerValues[24]||0,fuse=playerValues[110]||0,total=playerValues[499]||0;
  if(settings.paused||!settings.started){nextPipeBeep=clock;return;}
- if(counters[64]>lastPipeExplosion)sound(2);if(counters[66]>lastGrenadeExplosion)sound(2);
- lastPipeExplosion=counters[64];lastGrenadeExplosion=counters[66];
+ if(counters[67]>lastPipeExplosion)sound(2);if(counters[81]>lastGrenadeExplosion)sound(2);
+ lastPipeExplosion=counters[67];lastGrenadeExplosion=counters[81];
  if(fuse>0&&total-fuse>=.45&&clock>=nextPipeBeep){pipeBeep(fuse);nextPipeBeep=clock+(fuse>3?.65:fuse>1.5?.35:.16);}
  if(fuse<=0)nextPipeBeep=clock;
 }
@@ -2641,7 +2642,7 @@ async function snapshot(particleCount=0){
  if(count)result.particles=Array.from(new Float32Array(await readBuffer(pA,0,count*64)));
  return result;
 }
-function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[64],attracted:counters[65],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[67],attracted:counters[71],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 async function main(){
  if(!navigator.gpu)throw new Error('navigator.gpu is unavailable. Secure context: '+window.isSecureContext+'. WebGPU is mandatory.');
  adapter=await navigator.gpu.requestAdapter({powerPreference:'high-performance'});if(!adapter)throw new Error('No WebGPU adapter was returned by this browser.');

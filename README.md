@@ -54,7 +54,7 @@ Compatibility repair SHA-256: `1be63cbf1a3887251b0b26067133e71068f7c820c96f5f1c2
 
 Previous release SHA-256: `c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4`
 
-V9.1 candidate `index.html` SHA-256: `4ef7a98719650488a164edaaa656a9fc2f10dcce0ab0e1dc9884244e190f4285`
+V9.1 candidate `index.html` SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
 
 With Python and Node.js available, reproduce from your preserved original using:
 

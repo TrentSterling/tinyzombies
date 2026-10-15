@@ -1,6 +1,6 @@
-# Authored route prototype: CPU review
+# Authored routes: source and runtime review
 
-Unpublished. No browser or GPU work was run during this review. MEGABUTT retains the current GPU window. The live game remains the separately validated minimap/contrast build, SHA-256 `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+Runtime checks completed October 15, 2026, after the exclusive GPU window was released by MEGABUTT. The comparison baseline is the preceding minimap/contrast build, SHA-256 `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`. Original CPU-only review and prototype commits remain in history.
 
 The reviewed prototype HTML is SHA-256 `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`. The original `42102ea` prototype remains in history.
 
@@ -31,18 +31,20 @@ The test parses the actual JavaScript and generates worlds in a Node VM without 
 
 - Three chapters times seeds `73129`, `1`, and `1048573`: all nine combinations pass. Quarter-metre sweeps sample 40,534 positions per world across the declared lane widths, using the actual 0.24 m actor footprint and a model of the game's half-metre dynamic collision raster. No blocked samples remain when tactical doors are raised.
 - Rescue, both relays, cell, extraction, all six caches, four switches and active medkits have reachable interaction positions. Medkits use their actual 0.8 m pickup distance. Each scripted slab can be lowered individually without removing access to these targets; simultaneous traps and accumulated wreckage are not covered.
-- Twelve authored doorway centers align with physical openings: raised clears, closed blocks. The existing prep door also passes both states. Automatic opening and squad behavior still need runtime coverage.
+- Twelve authored doorway centers align with physical openings: raised clears, closed blocks. The existing prep door also passes both states. Runtime subsequently covered the prep/exit doors and live squad mission passage; not every freight doorway received a dedicated runtime traversal.
 - All 493 structural components have ground support. The largest group has 288 cells, below the repaired 512-cell limit. Six explicit geometric breach probes become passable after removal of their wall aperture. These probes do not execute damage or fracture shaders.
 - A CPU model of the existing 256-node, 192-expansion squad search makes progress over every route segment, using up to four repeated searches for the longest segment. It does not simulate live steering, crowd avoidance or concurrent door changes.
-- World budgets remain bounded: 90,260 voxels, 463-466 occupied pages, 138-141 props, 480 group slots. The published world has 74,848 voxels, so the increase still needs GPU measurement.
+- World budgets remain bounded: 90,260 voxels, 463-466 occupied pages, 138-141 props, 480 group slots. The preceding world has 74,848 voxels. The matched short GPU comparison below covers this increase in the prep scene.
 - Every simulation shader source, state layout and fracture-data builder is exact. Only the render shader changes for road materials. Lab block, prop and occupancy buffers match the published build across all nine combinations.
 
-## Next GPU window
+## Completed Windows runtime checks
 
-1. Use a fresh isolated profile and fault monitor. Compile with animation disabled, then allow one active frame before a bounded ten-second gate. Stop on a device loss or Windows GPU fault.
-2. Capture published and candidate seed `73129` at the same camera and frame. Inspect the prep transition, route bends, building doors, support visibility and ground markings.
-3. Use ordinary movement, aiming, firing and E interactions to leave prep, reach rescue and approach the west relay; record health, squad progress, positions and any stalls. No health override or teleport belongs in the ordinary-input proof.
-4. Cover the remaining bends, supply loops and extraction approach in additional bounded segments. Any positioned or reduced-population fixture must be labelled separately from normal gameplay.
-5. Exercise an authored wall breach and a trap drop, then verify actual collision/nav updates and squad passage. Capture the short gameplay proof and retain the exact HTML hash.
+Fresh isolated Chrome 155.0.8059.41, NVIDIA RTX 5070 Ti, driver 591.86; seed 73129, 1280x720. Shader compilation with animation disabled, single-frame gates, and bounded runtime all passed. Same-seed frame-one screenshots and runtime screenshots were inspected: route ground, doorway approaches, structures and supports render correctly, with the compact minimap and preserved character/particle contrast.
 
-Do not merge or publish this prototype before those runtime checks and visual review pass.
+Ordinary keyboard/pointer input completed rescue, west relay, cell pickup/delivery, east relay and extraction. Default 2,048 zombies and 32,768 particles remained in use. No teleports, health overrides or gameplay-state writes occurred during this mission. H healed normally at the cell pocket. The final defense reached `goal=1` (Safehouse secured) at game clock 96.785 s / frame 5801, with player health 31 and squad health 54/80/50. All three squadmates entered the safehouse. The run removed 2,155 voxels and fired 2,258 rifle rounds. Inspection pauses separated the bounded segments.
+
+Separate positioned, zero-zombie fixtures with three live allies passed all three optional loops. Melee removed 112 voxels from an authored freight wall: the probe changed from blocked/infinite nav cost to open/cost 20, and the player crossed it. The existing central slab dropped from y=2.75 to 0.25 and changed its probe from open/cost 58 to blocked/infinite cost; the player and squad took the detour. Its normal expiry reopened the probe. These checks cover damage and navigation updates, not a newly detached fracture chunk.
+
+The ten-second matched prep comparison completed 605 frames in 10.081 s for the baseline and 604 in 10.093 s for the candidate. Median reported GPU time was 2.425 vs 2.163 ms; p95 2.753 vs 2.687 ms. Polled timestamps may repeat and prep enemies have not entered active pursuit, so this is a smoke comparison, not proof of a performance improvement or combat benchmark.
+
+No device/runtime errors or new Windows GPU faults occurred. The first route harness attempt stopped on an expression typo; the first breach probe touched a perpendicular corner. Both diagnostic issues were corrected without changing the game. See [the exact runtime evidence and limitations](flow-windows-summary.json), [system information](flow-windows-system-info.json), [before](../assets/route-before.png), [after](../assets/route-after.png), and [actual gameplay highlights](../assets/route-gameplay-proof.mp4). Chapters 2/3 have CPU coverage only; this does not replace long-session testing.

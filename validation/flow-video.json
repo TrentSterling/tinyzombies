@@ -1,0 +1,22 @@
+{
+  "description": "Actual CDP captures from rescue, east-relay and final safehouse segments, concatenated at recorded wall-clock timing; cuts between segments, no audio.",
+  "durationSeconds": 27.529892015457158,
+  "segments": [
+    {
+      "segment": "rescue",
+      "startSeconds": 0,
+      "frameCount": 88
+    },
+    {
+      "segment": "east",
+      "startSeconds": 8.827399110794067,
+      "frameCount": 99
+    },
+    {
+      "segment": "secure2",
+      "startSeconds": 18.744786214828494,
+      "frameCount": 88
+    }
+  ],
+  "sha256": "cddc7dab75fe7dec933e0b95d2686a023c415ca6c43d6e15b1abc44913342cb2"
+}

@@ -1,17 +1,15 @@
 {
   "kind": "CPU-only source and host behavior validation",
   "baseline_sha256": "c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4",
-  "candidate_sha256": "91bfd3a6ac2827f6b4f827ab8e932e3297556393bb5b513475c1bb6bb86f7534",
-  "candidate_bytes": 374227,
+  "candidate_sha256": "4ef7a98719650488a164edaaa656a9fc2f10dcce0ab0e1dc9884244e190f4285",
+  "candidate_bytes": 374071,
   "javascript_syntax": "passed",
   "changed_shader_modules": [
     "lights",
     "begin",
     "zombies",
     "integrate",
-    "boxes",
-    "render",
-    "ui"
+    "boxes"
   ],
   "exact_preservation": [
     "particle emission",
@@ -19,6 +17,7 @@
     "pair solver",
     "particle grid",
     "wall drips",
+    "persistent blood rendering and minimap",
     "NVIDIA scratch fix",
     "state layout and entity budgets"
   ],

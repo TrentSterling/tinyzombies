@@ -23,13 +23,18 @@ function load(bytes) {
 }
 const old = load(baseline), current = load(candidate);
 const changed = Object.keys(old.sources).filter(name => old.sources[name] !== current.sources[name]);
-assert.deepEqual(changed, ['lights', 'begin', 'zombies', 'integrate', 'boxes', 'render', 'ui']);
+assert.deepEqual(changed, ['lights', 'begin', 'zombies', 'integrate', 'boxes']);
 assert.equal(current.sources.integrate, old.sources.integrate.replace('let radius=select(1,2,q.c.w<.5);', 'let radius=select(0,1,q.c.w<.5);'));
-for (const name of ['spawn','solve','gridP','drip','fracture8','squadNav7','buddy']) assert.equal(current.sources[name], old.sources[name], name + ' preserved exactly');
+for (const name of ['spawn','solve','gridP','drip','fracture8','squadNav7','buddy','render','ui']) assert.equal(current.sources[name], old.sources[name], name + ' preserved exactly');
 assert.equal(current.run('COMMON'), old.run('COMMON'), 'State layout, budgets and scalar helpers remain exact');
 assert.equal(current.run('JSON.stringify(L7)'), old.run('JSON.stringify(L7)'));
 assert.equal(current.run('JSON.stringify(L8)'), old.run('JSON.stringify(L8)'));
 assert.ok(!candidate.toString('utf8').includes('\u00e2\u20ac'), 'no accidental UTF-8/Windows encoding corruption');
+for (const [width, height] of [[800,600],[1280,720],[1920,1080]]) {
+  const k = Math.max(.72, Math.min(1.15, height/900)), cardWidth = Math.max(180*k, Math.min(370*k, width*.27));
+  const labelWidth = current.run(`textWidth9(FIELD_MODS.find(mod=>mod.name==='Long Distraction').a,${14*k})`);
+  assert.ok(labelWidth <= cardWidth-36*k, 'pipe-bomb upgrade description fits its card at '+width+'x'+height);
+}
 
 current.run('bindInput()');
 const key = (code, repeat = false) => current.handlers.keydown({code, repeat, preventDefault(){}});
@@ -79,7 +84,7 @@ const footprint = radius => {
 console.log(JSON.stringify({
   kind:'CPU-only source and host behavior validation', baseline_sha256:digest(baseline), candidate_sha256:digest(candidate),
   candidate_bytes:candidate.length, javascript_syntax:'passed', changed_shader_modules:changed,
-  exact_preservation:['particle emission','particle integration except floor radius','pair solver','particle grid','wall drips','NVIDIA scratch fix','state layout and entity budgets'],
+  exact_preservation:['particle emission','particle integration except floor radius','pair solver','particle grid','wall drips','persistent blood rendering and minimap','NVIDIA scratch fix','state layout and entity budgets'],
   isolated_floor_cells:{droplet:{before:footprint(2),after:footprint(1)},gore:{before:footprint(1),after:footprint(0)}},
   controls:'passed: separate B/Space, no repeat throws, pause and help restoration',
   audio_scheduler:'passed with stubs: landing delay, sample deduplication, pause, distinct pipe/grenade events',

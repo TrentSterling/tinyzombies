@@ -8,7 +8,7 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 This branch adds a pipe bomb on B, separate from the existing grenade on Space. It arcs toward the cursor, beeps after landing, attracts nearby zombies with line of sight, and detonates after six seconds using the existing blast, damage and destruction pipeline. It costs one ordnance and has a twelve-second cooldown. Long Distraction extends its fuse. The fuse and beep scheduler pause with the game.
 
-Floor stamps shrink again: isolated droplets cover 9 paint cells instead of 21, and gore covers 1 instead of 9. Floor blood begins fading after 12 simulation seconds and disappears at 50 seconds; renewed impacts refresh their cells. Wall marks and particle emission, motion, colors, sizes and lifetimes are preserved. The minimap follows the same floor fade.
+Floor stamps shrink again: isolated droplets cover 9 paint cells instead of 21, and gore covers 1 instead of 9. Blood remains persistent; its existing shading, drying appearance and minimap rendering are preserved. Wall marks and particle emission, motion, colors, sizes and lifetimes are preserved.
 
 The start/pause screens show both bomb controls. Press ? to open a complete controls overlay. Throwing with no ordnance or during a cooldown gives a brief contextual message.
 
@@ -54,7 +54,7 @@ Compatibility repair SHA-256: `1be63cbf1a3887251b0b26067133e71068f7c820c96f5f1c2
 
 Previous release SHA-256: `c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4`
 
-V9.1 candidate `index.html` SHA-256: `91bfd3a6ac2827f6b4f827ab8e932e3297556393bb5b513475c1bb6bb86f7534`
+V9.1 candidate `index.html` SHA-256: `4ef7a98719650488a164edaaa656a9fc2f10dcce0ab0e1dc9884244e190f4285`
 
 With Python and Node.js available, reproduce from your preserved original using:
 

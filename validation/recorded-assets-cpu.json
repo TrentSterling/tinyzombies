@@ -1,0 +1,400 @@
+{
+  "method": "All delivered FLAC files decoded independently with libsndfile and FFmpeg; exact PCM16 equality and frame count, onset at -46 dB relative peak, anti-click edge samples, finite/no-clipping check, 1 ms RMS silence-run report at -70 dBFS. No browser, GPU or perceptual listening.",
+  "passed": true,
+  "totals": {
+    "clips": 43,
+    "downloadBytes": 736350,
+    "pcmBytesAt48k": 3125156,
+    "seconds": 16.276854166666666,
+    "maxOnsetMs": 0.75
+  },
+  "clips": [
+    {
+      "id": "rifle-1",
+      "seconds": 0.19,
+      "onsetMs": 0.6666666666666666,
+      "maxInternalBelowMinus70dBFSMs": 1,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "rifle-2",
+      "seconds": 0.19,
+      "onsetMs": 0.6666666666666666,
+      "maxInternalBelowMinus70dBFSMs": 1,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "rifle-3",
+      "seconds": 0.19,
+      "onsetMs": 0.020833333333333332,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "rifle-4",
+      "seconds": 0.19,
+      "onsetMs": 0.75,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "shotgun-1",
+      "seconds": 0.34,
+      "onsetMs": 0.4583333333333333,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "shotgun-2",
+      "seconds": 0.34,
+      "onsetMs": 0.625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "shotgun-3",
+      "seconds": 0.34,
+      "onsetMs": 0.6458333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "hit-1",
+      "seconds": 0.25,
+      "onsetMs": 0.75,
+      "maxInternalBelowMinus70dBFSMs": 1,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "hit-2",
+      "seconds": 0.18354166666666666,
+      "onsetMs": 0.3541666666666667,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "hit-3",
+      "seconds": 0.25,
+      "onsetMs": 0.5208333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "death-1",
+      "seconds": 0.486625,
+      "onsetMs": 0.4166666666666667,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "death-2",
+      "seconds": 0.49897916666666664,
+      "onsetMs": 0.6458333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "death-3",
+      "seconds": 0.37554166666666666,
+      "onsetMs": 0.5,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "growl-1",
+      "seconds": 0.7685625,
+      "onsetMs": 0.5625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "growl-2",
+      "seconds": 0.788375,
+      "onsetMs": 0.6041666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "growl-3",
+      "seconds": 0.8140833333333334,
+      "onsetMs": 0.5625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "growl-4",
+      "seconds": 0.905625,
+      "onsetMs": 0.6875,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "breath-1",
+      "seconds": 0.5345,
+      "onsetMs": 0.6875,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.7149658203125
+    },
+    {
+      "id": "breath-2",
+      "seconds": 0.47008333333333335,
+      "onsetMs": 0.5208333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.606964111328125
+    },
+    {
+      "id": "breath-3",
+      "seconds": 0.519875,
+      "onsetMs": 0.3333333333333333,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "explosion-1",
+      "seconds": 0.9,
+      "onsetMs": 0.6458333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "explosion-2",
+      "seconds": 0.6106875,
+      "onsetMs": 0.3333333333333333,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "explosion-3",
+      "seconds": 0.9,
+      "onsetMs": 0.6041666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "chain-1",
+      "seconds": 0.45,
+      "onsetMs": 0.6041666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "chain-2",
+      "seconds": 0.45,
+      "onsetMs": 0.625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "debris-1",
+      "seconds": 0.43695833333333334,
+      "onsetMs": 0.7083333333333334,
+      "maxInternalBelowMinus70dBFSMs": 1,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "debris-2",
+      "seconds": 0.45,
+      "onsetMs": 0.2708333333333333,
+      "maxInternalBelowMinus70dBFSMs": 11,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "debris-3",
+      "seconds": 0.4420208333333333,
+      "onsetMs": 0.2708333333333333,
+      "maxInternalBelowMinus70dBFSMs": 11,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "door-1",
+      "seconds": 0.12877083333333333,
+      "onsetMs": 0.625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "door-2",
+      "seconds": 0.10439583333333333,
+      "onsetMs": 0.6666666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "step-1",
+      "seconds": 0.11608333333333333,
+      "onsetMs": 0.5833333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "step-2",
+      "seconds": 0.14,
+      "onsetMs": 0.125,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.57806396484375
+    },
+    {
+      "id": "step-3",
+      "seconds": 0.14,
+      "onsetMs": 0.6458333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "crit-1",
+      "seconds": 0.23,
+      "onsetMs": 0.5625,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "crit-2",
+      "seconds": 0.25,
+      "onsetMs": 0.5208333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "mass-1",
+      "seconds": 0.2771458333333333,
+      "onsetMs": 0.5208333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "mass-2",
+      "seconds": 0.5,
+      "onsetMs": 0.75,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "pipe-low",
+      "seconds": 0.12,
+      "onsetMs": 0.5416666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "pipe-mid",
+      "seconds": 0.095,
+      "onsetMs": 0.6458333333333334,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "pipe-high",
+      "seconds": 0.1,
+      "onsetMs": 0.4166666666666667,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "latch",
+      "seconds": 0.29,
+      "onsetMs": 0.4166666666666667,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "ratchet",
+      "seconds": 0.32,
+      "onsetMs": 0.7291666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    },
+    {
+      "id": "snap",
+      "seconds": 0.2,
+      "onsetMs": 0.7291666666666666,
+      "maxInternalBelowMinus70dBFSMs": 0,
+      "independentDecoderExact": true,
+      "encoderPaddingFrames": 0,
+      "peak": 0.819976806640625
+    }
+  ]
+}

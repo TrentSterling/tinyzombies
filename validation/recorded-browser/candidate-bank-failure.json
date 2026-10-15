@@ -1,0 +1,106 @@
+{
+  "mode": "failure",
+  "sha256": "f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405",
+  "method": "Actual browser WebAudio decode and exact runtime bank/voice probes; game rendering remains frozen for this probe. No auditory claim.",
+  "bank": {
+    "state": "partial",
+    "total": 43,
+    "ready": 40,
+    "failed": {
+      "pipe-high": "HTTP 503",
+      "hit-1": "Asset version mismatch",
+      "rifle-2": "HTTP 404"
+    },
+    "downloadBytes": 710872,
+    "decodedBytes": 3021476,
+    "skipped": 9,
+    "concurrency": 2
+  },
+  "runtime": {
+    "sameKindFallback": true,
+    "accepted": true,
+    "missingCue": false,
+    "sourcesBefore": 1,
+    "requestsBefore": 47,
+    "requestsAfter": 47
+  },
+  "retry": {
+    "state": "partial",
+    "total": 43,
+    "ready": 40,
+    "failed": {
+      "pipe-high": "HTTP 503",
+      "hit-1": "Asset version mismatch",
+      "rifle-2": "HTTP 404"
+    },
+    "downloadBytes": 710872,
+    "decodedBytes": 3021476,
+    "skipped": 10,
+    "concurrency": 2
+  },
+  "after": {
+    "voices": 0,
+    "paused": true,
+    "bank": {
+      "state": "partial",
+      "total": 43,
+      "ready": 40,
+      "failed": {
+        "pipe-high": "HTTP 503",
+        "hit-1": "Asset version mismatch",
+        "rifle-2": "HTTP 404"
+      },
+      "downloadBytes": 710872,
+      "decodedBytes": 3021476,
+      "skipped": 10,
+      "concurrency": 2
+    }
+  },
+  "attempts": {
+    "rifle-1": 1,
+    "shotgun-1": 1,
+    "pipe-low": 1,
+    "pipe-mid": 1,
+    "pipe-high": 2,
+    "explosion-1": 1,
+    "hit-1": 2,
+    "death-1": 1,
+    "crit-1": 1,
+    "latch": 1,
+    "ratchet": 1,
+    "snap": 1,
+    "chain-1": 1,
+    "growl-1": 1,
+    "breath-1": 1,
+    "step-1": 1,
+    "debris-1": 1,
+    "door-1": 1,
+    "mass-1": 1,
+    "rifle-2": 2,
+    "shotgun-2": 1,
+    "explosion-2": 1,
+    "hit-2": 1,
+    "death-2": 1,
+    "crit-2": 1,
+    "chain-2": 1,
+    "growl-2": 1,
+    "breath-2": 1,
+    "step-2": 1,
+    "debris-2": 1,
+    "door-2": 1,
+    "mass-2": 1,
+    "rifle-3": 1,
+    "shotgun-3": 1,
+    "explosion-3": 1,
+    "hit-3": 1,
+    "death-3": 1,
+    "growl-3": 1,
+    "breath-3": 1,
+    "step-3": 1,
+    "debris-3": 1,
+    "rifle-4": 1,
+    "growl-4": 1
+  },
+  "passed": true,
+  "recoveryNext": "Clean serving restored. Fresh boot plus bank decode probe must verify full recovery; failed assets have exhausted their two-attempt budget on this page."
+}

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "baselineCommit": "e348826cb74b2c6bc17c92d6014ea4ac3220c240",
+  "candidateHtmlSha256": "f7cc36522bf433ad879f5be1aaeb8077dee11f11578ad61dfbf0a286a2914405",
+  "method": "Exact normalized-text identity outside the audio host block plus its single boot preload call. Thus every shader, world/input/simulation/render/readback function remains unchanged.",
+  "originalSha256": "787cdb9b13b91e27313e550826580e4030ce314fb571299ec171ddf051f99349",
+  "originalBytes": 368656,
+  "gpuLaunched": false,
+  "publicDeploymentChanged": false
+}

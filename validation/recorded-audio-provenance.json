@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "method": "Preserved source-page snapshots contain CC0 links; all original archive/page/license hashes match acquisition receipts; every selected source entry matches the processed manifest. This verifies provenance and unchanged source files, not subjective timbre.",
+  "sources": [
+    {
+      "id": "firearms",
+      "author": "Ben Jaszczak, Brian Nelson, Kevin Heras, Matthew Nanney",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/the-free-firearm-sound-library",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    },
+    {
+      "id": "zombies",
+      "author": "artisticdude",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/zombies-sound-pack",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    },
+    {
+      "id": "slime",
+      "author": "rubberduck",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/40-cc0-water-splash-slime-sfx",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    },
+    {
+      "id": "debris",
+      "author": "rubberduck",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/75-cc0-breaking-falling-hit-sfx",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    },
+    {
+      "id": "bangs",
+      "author": "rubberduck",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/25-cc0-bang-firework-sfx",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    },
+    {
+      "id": "mechanical",
+      "author": "LFA",
+      "license": "CC0-1.0",
+      "sourcePage": "https://opengameart.org/content/equipment-clicks-iii",
+      "licenseLinkPresent": true,
+      "pageAndOriginalArchiveHashesMatch": true
+    }
+  ],
+  "selectedOriginalEntries": 43,
+  "processedClips": 43,
+  "licenseSnapshotHashMatches": true
+}

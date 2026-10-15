@@ -1,27 +1,236 @@
 {
-  "status": "proposal; geometry not yet changed",
+  "status": "Historical proposal, superseded by flow-layout.json; the implemented route prototype is unpublished and awaits runtime validation.",
   "reference": "https://github.com/TrentSterling/deadends",
-  "preserve": ["objective coordinates", "mission sequence", "destructible geometry", "quarter-metre collision", "particle spectacle", "NVIDIA scratch fix"],
+  "preserve": [
+    "objective coordinates",
+    "mission sequence",
+    "destructible geometry",
+    "quarter-metre collision",
+    "particle spectacle",
+    "NVIDIA scratch fix"
+  ],
   "mainLaneWidthMetres": 7,
   "sideLaneWidthMetres": 5,
   "legs": [
-    {"name":"Prep to rescue yard", "points":[[-60,52],[-54,52],[-54,48],[-40,48]]},
-    {"name":"Rescue to west relay", "points":[[-40,48],[-48,48],[-48,8]]},
-    {"name":"West relay to freight cell", "points":[[-48,8],[-48,0],[0,0],[0,-8],[-4,-8]]},
-    {"name":"Freight cell to east relay", "points":[[-4,-8],[0,-8],[0,-28],[12,-28]]},
-    {"name":"East relay to extraction", "points":[[12,-28],[48,-28],[48,24],[40,24],[40,32],[45,32]]}
+    {
+      "name": "Prep to rescue yard",
+      "points": [
+        [
+          -60,
+          52
+        ],
+        [
+          -54,
+          52
+        ],
+        [
+          -54,
+          48
+        ],
+        [
+          -40,
+          48
+        ]
+      ]
+    },
+    {
+      "name": "Rescue to west relay",
+      "points": [
+        [
+          -40,
+          48
+        ],
+        [
+          -48,
+          48
+        ],
+        [
+          -48,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "West relay to freight cell",
+      "points": [
+        [
+          -48,
+          8
+        ],
+        [
+          -48,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -8
+        ],
+        [
+          -4,
+          -8
+        ]
+      ]
+    },
+    {
+      "name": "Freight cell to east relay",
+      "points": [
+        [
+          -4,
+          -8
+        ],
+        [
+          0,
+          -8
+        ],
+        [
+          0,
+          -28
+        ],
+        [
+          12,
+          -28
+        ]
+      ]
+    },
+    {
+      "name": "East relay to extraction",
+      "points": [
+        [
+          12,
+          -28
+        ],
+        [
+          48,
+          -28
+        ],
+        [
+          48,
+          24
+        ],
+        [
+          40,
+          24
+        ],
+        [
+          40,
+          32
+        ],
+        [
+          45,
+          32
+        ]
+      ]
+    }
   ],
   "loops": [
-    {"name":"Rescue supply flank", "points":[[-40,48],[-32,48],[-32,32],[-48,32]], "purpose":"A second approach around the rescue yard and the existing resupply at -35,32."},
-    {"name":"Central service bypass", "points":[[-16,0],[-16,-16],[0,-16]], "purpose":"A parallel fighting route around the freight-cell approach, rejoining before the east relay."},
-    {"name":"Extraction yard flank", "points":[[48,0],[32,0],[32,24],[40,24]], "purpose":"An optional supply and trap detour around the final avenue, rejoining the west-facing safehouse entrance."}
+    {
+      "name": "Rescue supply flank",
+      "points": [
+        [
+          -40,
+          48
+        ],
+        [
+          -32,
+          48
+        ],
+        [
+          -32,
+          32
+        ],
+        [
+          -48,
+          32
+        ]
+      ],
+      "purpose": "A second approach around the rescue yard and the existing resupply at -35,32."
+    },
+    {
+      "name": "Central service bypass",
+      "points": [
+        [
+          -16,
+          0
+        ],
+        [
+          -16,
+          -16
+        ],
+        [
+          0,
+          -16
+        ]
+      ],
+      "purpose": "A parallel fighting route around the freight-cell approach, rejoining before the east relay."
+    },
+    {
+      "name": "Extraction yard flank",
+      "points": [
+        [
+          48,
+          0
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          32,
+          24
+        ],
+        [
+          40,
+          24
+        ]
+      ],
+      "purpose": "An optional supply and trap detour around the final avenue, rejoining the west-facing safehouse entrance."
+    }
   ],
   "encounterPockets": [
-    {"name":"Rescue yard", "centre":[-40,48], "radius":8},
-    {"name":"West relay hold", "centre":[-48,8], "radius":7},
-    {"name":"Freight-cell junction", "centre":[-4,-8], "radius":7},
-    {"name":"East relay hold", "centre":[12,-28], "radius":8},
-    {"name":"Extraction forecourt", "centre":[40,32], "radius":6}
+    {
+      "name": "Rescue yard",
+      "centre": [
+        -40,
+        48
+      ],
+      "radius": 8
+    },
+    {
+      "name": "West relay hold",
+      "centre": [
+        -48,
+        8
+      ],
+      "radius": 7
+    },
+    {
+      "name": "Freight-cell junction",
+      "centre": [
+        -4,
+        -8
+      ],
+      "radius": 7
+    },
+    {
+      "name": "East relay hold",
+      "centre": [
+        12,
+        -28
+      ],
+      "radius": 8
+    },
+    {
+      "name": "Extraction forecourt",
+      "centre": [
+        40,
+        32
+      ],
+      "radius": 6
+    }
   ],
   "implementationLimits": [
     "Reserve lane clearance before placing architecture and optional clutter, without widening the final safehouse entry.",

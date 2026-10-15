@@ -4,6 +4,16 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Authored routes and supply loops
+
+Reserved approaches, three optional supply loops and six destructible freight buildings give the existing mission a sequence of bends and clear objective pockets. Ground markings follow those routes. Mission coordinates, enemy director, supply/trap behavior and simulation shaders are preserved. See [the route intent and validation](validation/flow-review.md).
+
+The exact build completed chapter 1 on Windows Chrome 155 / RTX 5070 Ti using ordinary movement, combat, healing and objective inputs at the default 2,048 zombies and 32,768 particles. All three squadmates reached the secured safehouse alive. The game clock reached 96.79 seconds across bounded segments with inspection pauses. Separate positioned, zero-zombie fixtures passed all supply loops, wall-breach collision/navigation updates, and a falling-slab detour. No device errors or new Windows GPU faults were observed.
+
+Compare the actual same-seed, frame-one [before](assets/route-before.png) and [after](assets/route-after.png) captures. [Watch the gameplay highlights](assets/route-gameplay-proof.mp4) or inspect the [victory capture](assets/route-victory.png). The clip contains cuts between recorded mission segments and no audio.
+
+CPU collision/navigation models also pass three seeds across all three chapters, including lane widths, objective/supply access, support groups, door states and bounded squad-search progress. Chapters 2/3 have CPU coverage only. A matched ten-second prep-area comparison completed about 60 FPS in both builds; this short sample does not establish a performance gain or long-session stability. Full methods and limits are in [the Windows report](validation/flow-windows-summary.json). Current HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
+
 ## Compact minimap and environment contrast
 
 The compact minimap is restored at the upper right during active play. Hold Tab for the larger field map. Help, pause and hidden-HUD mode hide the compact map. Both sizes use the same existing GPU renderer and live collision/entity data.
@@ -12,9 +22,9 @@ Static architecture and ground now use darker, less saturated materials, followi
 
 The exact build passed Windows shader compilation and ordinary browser-input gameplay on Chrome 155 / RTX 5070 Ti. Movement, 86 rifle rounds, pipe and grenade detonations, controls, Tab map, pause and restart passed without runtime/device errors or new Windows GPU faults. Same-seed frame-one captures verify the visible contrast change and compact minimap; source checks prove identical world/prop/occupancy buffers for seed 73129. See `validation/map-source-check.json` and `validation/map-windows-summary.json`.
 
-Compare [before](assets/contrast-before.png) and [after](assets/contrast-after.png), or see the [combat capture](assets/contrast-combat.png). These are actual Windows captures. The broader authored route redesign remains a separate, unpublished prototype awaiting gameplay validation.
+Compare [before](assets/contrast-before.png) and [after](assets/contrast-after.png), or see the [combat capture](assets/contrast-combat.png). These are actual Windows captures of the preceding minimap release.
 
-Current `index.html` SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+Published minimap build HTML SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
 
 ## V9.1 pipe bombs and smaller floor marks
 

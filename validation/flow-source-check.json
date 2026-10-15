@@ -1,0 +1,21 @@
+{
+  "kind": "CPU source review and explicit collision/navigation models; no browser or GPU",
+  "candidate_sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c",
+  "baseline_sha256": "b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540",
+  "assertions": "passed",
+  "seed_chapter_combinations": 9,
+  "lane_samples_per_combination": 40534,
+  "blocked_lane_samples": 0,
+  "interaction_targets_per_combination": 26,
+  "authored_doors": 12,
+  "grounded_structural_components": 493,
+  "simulation_shader_sources": "exact match to published baseline",
+  "full_report": "flow-cpu-audit.json",
+  "runtime_validation": "not run; pending next authorized GPU window",
+  "limits": [
+    "CPU models are not GPU execution or ordinary-input gameplay.",
+    "Actor collision uses the game quarter-metre static grid and half-metre dynamic raster with the .24 m actor footprint.",
+    "Squad search mirrors the bounded 256-node/192-expansion algorithm, but does not simulate steering, crowd avoidance, doors auto-opening or concurrent moving actors.",
+    "Breach probes establish geometry clearance only, not actual damage/fracture behavior."
+  ]
+}

@@ -80,6 +80,13 @@ let runSeed=(+(params.get('seed')||73129))>>>0,stage=1,upgrades=[0,0,0],navPhase
 const roomNames=['NORTH LOADING','PUMP YARD','NORTH PROCESSING','COLD STORAGE','WEST DEPOT','POWER STATION','SERVICE QUARTER','EAST LOGISTICS','RESCUE DISTRICT','CENTRAL FREIGHT','ASSEMBLY YARD','SAFEHOUSE DISTRICT','ENTRY APPROACH','SOUTH STORAGE','MAINTENANCE','OUTER FREIGHT'];
 function keyCell(x,y,z){return x+GRID*(z+GRID*y);}
 function occAddress(x,y,z,occ){if(x<0||x>=GRID||z<0||z>=GRID||y<0||y>=12)return -1;let page=occ[(x>>4)+CGRID*(z>>4)];return page?OCC_BASE+(page-1)*CHUNK_CELLS+(x&15)+16*(z&15)+256*y:-1;}
+const FLOW9={"legs":[{"name":"Prep doorway","width":3,"points":[[-64,52],[-59.5,52]]},{"name":"Prep to rescue yard","width":7,"points":[[-59.5,52],[-54,52],[-54,48],[-40,48]]},{"name":"Rescue to west relay","width":7,"points":[[-40,48],[-52,48],[-52,8],[-48,8]]},{"name":"West relay to freight cell","width":7,"points":[[-48,8],[-48,0],[1,0],[1,-8],[-4,-8]]},{"name":"Freight cell to east relay","width":5,"points":[[-4,-8],[1,-8],[1,-28],[12,-28]]},{"name":"East relay to extraction","width":7,"points":[[12,-28],[48,-28],[48,24],[40,24],[40,32],[43,32]]},{"name":"Safehouse doorway","width":2,"points":[[43,32],[45.5,32]]}],"loops":[{"name":"Rescue supply flank","width":5,"points":[[-40,48],[-31,48],[-31,32],[-52,32]]},{"name":"Central service bypass","width":5,"points":[[-16,0],[-16,-10],[1,-10]]},{"name":"Extraction yard flank","width":5,"points":[[48,0],[32,0],[32,24],[40,24]]}],"pockets":[{"name":"Rescue yard","x":-40,"z":48,"r":8},{"name":"West relay hold","x":-48,"z":8,"r":7},{"name":"Freight-cell junction","x":-4,"z":-8,"r":7},{"name":"East relay hold","x":12,"z":-28,"r":8},{"name":"Extraction forecourt","x":40,"z":32,"r":6}],"buildings":[{"name":"Rescue depot","x":-44,"z":58,"w":20,"d":10,"doors":[1,0,1,0]},{"name":"West stores","x":-70,"z":16,"w":12,"d":24,"doors":[0,1,0,1]},{"name":"Freight office","x":-38,"z":-20,"w":16,"d":14,"doors":[0,1,0,1]},{"name":"Relay shed","x":4,"z":-44,"w":20,"d":6,"doors":[0,1,1,0]},{"name":"East logistics","x":28,"z":-16,"w":12,"d":12,"doors":[0,1,0,1]},{"name":"Extraction cargo island","x":36,"z":6,"w":6,"d":10,"doors":[0,0,1,1]}]};
+const FLOW_SEGMENTS9=[...FLOW9.legs,...FLOW9.loops].flatMap(route=>route.points.slice(1).map((b,i)=>({a:route.points[i],b,width:route.width})));
+function flowFree9(x,z,margin=0){
+ return !FLOW_SEGMENTS9.some(({a,b,width})=>x>=Math.min(a[0],b[0])-width*.5-margin&&x<=Math.max(a[0],b[0])+width*.5+margin&&z>=Math.min(a[1],b[1])-width*.5-margin&&z<=Math.max(a[1],b[1])+width*.5+margin)
+  &&!FLOW9.pockets.some(p=>Math.hypot(x-p.x,z-p.z)<p.r+margin);
+}
+function freightFree9(x,z,margin=0){return !FLOW9.buildings.some(b=>x>b.x-margin&&x<b.x+b.w+margin&&z>b.z-margin&&z<b.z+b.d+margin);}
 function makeWorld(){
  let a=runSeed;const rand=()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return ((t^t>>>14)>>>0)/4294967296;};
  const objectGroups8=[], cells=new Map(), groups=new Uint32Array(GROUP_WORDS8),props=new Float32Array(MAX_PROPS*16),slabs=[],edges=[],buildings=[],yards=[];
@@ -91,9 +98,9 @@ function makeWorld(){
  function add(x,y,z,mat=0,g=0){if(x<0||x>=GRID||y<0||y>=12||z<0||z>=GRID)return;cells.set(keyCell(x,y,z),[x,y,z,mat,g]);}
  function boxM(x,y,z,sx,sy,sz,mat=0,g=0){let ix=Math.round((x+96)*4),iy=Math.round(y*4),iz=Math.round((z+96)*4);for(let yy=0;yy<Math.round(sy*4);yy++)for(let zz=0;zz<Math.round(sz*4);zz++)for(let xx=0;xx<Math.round(sx*4);xx++)add(ix+xx,iy+yy,iz+zz,mat,g);}
  function wall(x,z,length,vertical,door=0,mat=0,height=2){let n=Math.round(length*4),gs=[];for(let i=0;i<n;i++){let seg=Math.floor(i/16);if(gs[seg]===undefined)gs[seg]=newGroup();if(door&&Math.abs((i+.5)*.25-length*.5)<door*.5)continue;boxM(x+(vertical?0:i*.25),0,z+(vertical?i*.25:0),vertical?.5:.25,height,vertical?.25:.5,mat,gs[seg]);if(height>=1.5)boxM(x+(vertical?0:i*.25),height,z+(vertical?i*.25:0),vertical?.5:.25,.25,vertical?.25:.5,2,gs[seg]);}}
- function crate(x,z,w=1.5){if(!free(x,z,w))return;let g=newGroup();objectGroups8.push(g);boxM(x,0,z,w,.75,w,1,g);boxM(x,.75,z,w,.25,w,2,g);}
- function shelf(x,z){if(!free(x,z,3))return;let g=newGroup();objectGroups8.push(g);for(let dx of [0,2.75])for(let dz of [0,1])boxM(x+dx,0,z+dz,.25,1.75,.25,4,g);for(let y of [.5,1.5])boxM(x,y,z,3,.25,1.25,4,g);for(let k=0;k<3;k++)boxM(x+.25+k,.75,z+.25,.5,.5,.5,1,g);}
- function prop(x,z,type=0){if(propCount>=MAX_PROPS)throw Error('Prop capacity');if(!free(x,z,1))return;props.set([x,0,z,type,type===0?6:type===2?18:type===3?12:1,0,0,rand(),2.4,1.4,0,0,0,0,0,0],propCount++*16);}
+ function crate(x,z,w=1.5){if(!free(x,z,w)||(!settings.lab&&(!flowFree9(x+w*.5,z+w*.5,w*.6)||!freightFree9(x+w*.5,z+w*.5,w*.6))))return;let g=newGroup();objectGroups8.push(g);boxM(x,0,z,w,.75,w,1,g);boxM(x,.75,z,w,.25,w,2,g);}
+ function shelf(x,z){if(!free(x,z,3)||(!settings.lab&&(!flowFree9(x+1.5,z+.5,2)||!freightFree9(x+1.5,z+.5,2))))return;let g=newGroup();objectGroups8.push(g);for(let dx of [0,2.75])for(let dz of [0,1])boxM(x+dx,0,z+dz,.25,1.75,.25,4,g);for(let y of [.5,1.5])boxM(x,y,z,3,.25,1.25,4,g);for(let k=0;k<3;k++)boxM(x+.25+k,.75,z+.25,.5,.5,.5,1,g);}
+ function prop(x,z,type=0){if(propCount>=MAX_PROPS)throw Error('Prop capacity');if(!free(x,z,1)||(!settings.lab&&type!==1&&(!flowFree9(x,z,1.5)||!freightFree9(x,z,1.5))))return;props.set([x,0,z,type,type===0?6:type===2?18:type===3?12:1,0,0,rand(),2.4,1.4,0,0,0,0,0,0],propCount++*16);}
  // Sixteen districts share a 12 m street network. Buildings occupy islands, never the full district.
  for(let rz=0;rz<4;rz++)for(let rx=0;rx<4;rx++){
   let id=rx+4*rz,cx=-72+rx*48,cz=-72+rz*48;
@@ -101,24 +108,37 @@ function makeWorld(){
   if(!settings.lab){let bx=cx-18+(rand()<.5?0:2),bz=cz-18,w=18+(id%3)*1.5,d=10+(id%2)*2;
    // Keep objective pockets outside the architectural footprint.
    if(exclusions.some(([x,z,r])=>x>bx-r&&x<bx+w+r&&z>bz-r&&z<bz+d+r)){bz=cz+8;}
-   if(free(bx+w/2,bz+d/2,Math.max(w,d)*.52)){
+   if(free(bx+w/2,bz+d/2,Math.max(w,d)*.52)&&flowFree9(bx+w/2,bz+d/2,Math.max(w,d)*.52)&&freightFree9(bx+w/2,bz+d/2,Math.max(w,d)*.52)){
     let mat=stage===2?3:(id%5===1?3:0);wall(bx,bz,w,false,0,mat);wall(bx,bz+d,w,false,4.5,mat);wall(bx,bz,d,true,3.5,mat);wall(bx+w-.5,bz,d,true,3.5,mat);
     buildings.push({x:bx,z:bz,w,d});shelf(bx+2,bz+2);shelf(bx+w-6,bz+2);
    }
    // Short cover islands leave more than 10 m around either end.
-   if(id%2===0&&free(cx+8,cz+9,4)){wall(cx+6,cz+9,5,false,0,0,1.0);crate(cx+12,cz+12);}
+   if(id%2===0&&free(cx+8,cz+9,4)&&flowFree9(cx+8,cz+9,4)&&freightFree9(cx+8,cz+9,4)){wall(cx+6,cz+9,5,false,0,0,1.0);crate(cx+12,cz+12);}
    else {crate(cx+8,cz+7,2);crate(cx+11,cz+8,1.25);}
    crate(cx-9,cz+14,1.5); if(id%4===2)shelf(cx-12,cz+9);
   }else{crate(cx+8,cz+8);}
   prop(cx-12,cz+4,0);if(id%2===0)prop(cx+14,cz-2,0);
   if(id%2===1)prop(cx-8,cz+13,1);
   if(id%4===1)prop(cx+10,cz+14,2);else if(id%4===2)prop(cx+8,cz+12,3);
-  if(id%2===0&&!settings.lab&&free(cx+6,cz-1,3)){
+  if(id%2===0&&!settings.lab&&free(cx+6,cz-1,3)&&flowFree9(cx+7.75,cz-.75,3)&&freightFree9(cx+7.75,cz-.75,3)){
    const x=cx+6,z=cz-1,g=newGroup();boxM(x,0,z,.5,2.5,.5,4,g);boxM(x+3,0,z,.5,2.5,.5,4,g);
    props.set([x+1.75,2.75,z+.25,4,35,0,0,rand(),3.5,.5,1.5,g,0,0,0,0],propCount++*16);slabs.push({group:g,x:x+1.75,z:z+.25});
   }
   for(let dx of [-17,17]){const x=cx+dx,z=cz+17;if(free(x,z,1))props.set([x,1.6,z,6,4,0,0,rand(),0,0,0,0,0,0,0,0],propCount++*16);}
   if(rx<3)edges.push({a:id,b:id+1,open:true});if(rz<3)edges.push({a:id,b:id+4,open:true});
+ }
+ // Authored freight masses frame the operation's bends and parallel approaches.
+ if(!settings.lab){
+  for(const b of FLOW9.buildings){
+   const mat=stage===2?3:0;
+   wall(b.x,b.z,b.w,false,b.doors[0]?4.5:0,mat);wall(b.x,b.z+b.d,b.w,false,b.doors[1]?4.5:0,mat);
+   wall(b.x,b.z,b.d,true,b.doors[2]?3.5:0,mat);wall(b.x+b.w-.5,b.z,b.d,true,b.doors[3]?3.5:0,mat);
+   buildings.push({...b,authored:true});
+  }
+  // Low islands offer cover at encounter edges, without occupying the reserved lanes.
+  for(const [x,z,len,vertical] of [[-45,40,5,false],[-37,56,4,false],[-40,5,5,true],[-12,-20,4,false],[20,-22,5,false],[32,34,4,true]]){
+   if(flowFree9(x+(vertical?.25:len*.5),z+(vertical?len*.5:.25),.4)&&freightFree9(x+(vertical?.25:len*.5),z+(vertical?len*.5:.25),.4))wall(x,z,len,vertical,0,0,1.0);
+  }
  }
  // Broken perimeter walls communicate extent without blocking offscreen reinforcements.
  for(let i=0;i<12;i++){let q=-88+i*16;wall(q,-92,7,false,0,0,1.25);wall(q,91.5,7,false,0,0,1.25);wall(-92,q,7,true,0,0,1.25);wall(91.5,q,7,true,0,0,1.25);}
@@ -149,13 +169,18 @@ function makeWorld(){
   wall(sx-4,sz-4,8,false,0,5,1.75);wall(sx-4,sz+3.5,8,false,0,5,1.75);wall(sx-4,sz-4,8,true,0,5,1.75);wall(sx+3.5,sz-4,8,true,3.5,5,1.75);
   const addDoor7=(x,z,sx,sz,closed,startDoor=false)=>{const index=propCount++;props.set([x,closed?1:3.4,z,9,28,closed?1:0,0,startDoor?1:0,sx,2,sz,0,0,0,0,0],index*16);doors7.push({index,x,z,sx,sz,startDoor});};
   addDoor7(sx+3.75,sz,.5,3.5,true,true);
-  for(const b of buildings){addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);}
+  for(const b of buildings){
+   if(!b.authored||b.doors[1])addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);
+   if(b.authored&&b.doors[0])addDoor7(b.x+b.w*.5,b.z+.25,4.5,.5,false);
+   if(b.authored&&b.doors[2])addDoor7(b.x+.25,b.z+b.d*.5,.5,3.5,false);
+   if(b.authored&&b.doors[3])addDoor7(b.x+b.w-.25,b.z+b.d*.5,.5,3.5,false);
+  }
  }
 
 
  // Extra barrels sit on the sides of yards and the escape route, away from safe prep/objective pockets.
  const extraBarrels8=[];
- const barrel8=(x,z)=>{if(propCount>=MAX_PROPS-8||!free(x,z,.8))return;
+ const barrel8=(x,z)=>{if(propCount>=MAX_PROPS-8||!free(x,z,.8)||(!settings.lab&&(!flowFree9(x,z,.8)||!freightFree9(x,z,.8))))return;
   if(Math.hypot(x-start[0],z-start[1])<8)return;
   if([...Array(3)].some((_,a)=>[...Array(3)].some((_,b)=>cells.has(keyCell(Math.floor((x+96)*4)+a-1,0,Math.floor((z+96)*4)+b-1)))))return;
   if(Array.from({length:propCount},(_,i)=>Math.hypot(props[i*16]-x,props[i*16+2]-z)).some(d=>d<.9))return;
@@ -186,7 +211,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {objectGroups8,extraBarrels8,chapter8:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -2055,6 +2080,41 @@ fn faceWorld(vid:u32,b:Box)->vec3f {let q=array<vec2f,6>(vec2f(-.5,-.5),vec2f(.5
 @vertex fn faceShadowVS(@builtin(vertex_index) vid:u32,@builtin(instance_index) id:u32)->@builtin(position) vec4f {let b=Boxes[id];return u.light*vec4f(faceWorld(vid,b)-vec3f(S.pos.x,0,S.pos.z),1);}
 
 fn shadowAt(v:vec4f,n:vec3f)->f32{let p=v.xyz/v.w;let uv=p.xy*vec2f(.5,-.5)+.5;let bias=.0007+.001*(1.0-max(dot(n,normalize(vec3f(-.5,.8,.4))),0.0));var s=0.0;for(var y=0;y<2;y++){for(var x=0;x<2;x++){let offset=(vec2f(f32(x),f32(y))-.5)/1024.0;s+=textureSampleCompareLevel(shadowMap,shadowSampler,uv+offset,p.z-bias);}}return s*.25;}
+fn routeGround9(p:vec2f)->f32 {var edge=1e6;
+ edge=min(edge,max(abs(p.x-(-61.750))-3.750,abs(p.y-(52.000))-1.500));
+ edge=min(edge,max(abs(p.x-(-56.750))-6.250,abs(p.y-(52.000))-3.500));
+ edge=min(edge,max(abs(p.x-(-54.000))-3.500,abs(p.y-(50.000))-5.500));
+ edge=min(edge,max(abs(p.x-(-47.000))-10.500,abs(p.y-(48.000))-3.500));
+ edge=min(edge,max(abs(p.x-(-46.000))-9.500,abs(p.y-(48.000))-3.500));
+ edge=min(edge,max(abs(p.x-(-52.000))-3.500,abs(p.y-(28.000))-23.500));
+ edge=min(edge,max(abs(p.x-(-50.000))-5.500,abs(p.y-(8.000))-3.500));
+ edge=min(edge,max(abs(p.x-(-48.000))-3.500,abs(p.y-(4.000))-7.500));
+ edge=min(edge,max(abs(p.x-(-23.500))-28.000,abs(p.y-(0.000))-3.500));
+ edge=min(edge,max(abs(p.x-(1.000))-3.500,abs(p.y-(-4.000))-7.500));
+ edge=min(edge,max(abs(p.x-(-1.500))-6.000,abs(p.y-(-8.000))-3.500));
+ edge=min(edge,max(abs(p.x-(-1.500))-5.000,abs(p.y-(-8.000))-2.500));
+ edge=min(edge,max(abs(p.x-(1.000))-2.500,abs(p.y-(-18.000))-12.500));
+ edge=min(edge,max(abs(p.x-(6.500))-8.000,abs(p.y-(-28.000))-2.500));
+ edge=min(edge,max(abs(p.x-(30.000))-21.500,abs(p.y-(-28.000))-3.500));
+ edge=min(edge,max(abs(p.x-(48.000))-3.500,abs(p.y-(-2.000))-29.500));
+ edge=min(edge,max(abs(p.x-(44.000))-7.500,abs(p.y-(24.000))-3.500));
+ edge=min(edge,max(abs(p.x-(40.000))-3.500,abs(p.y-(28.000))-7.500));
+ edge=min(edge,max(abs(p.x-(41.500))-5.000,abs(p.y-(32.000))-3.500));
+ edge=min(edge,max(abs(p.x-(44.250))-1.250,abs(p.y-(32.000))-1.000));
+ edge=min(edge,max(abs(p.x-(-35.500))-7.000,abs(p.y-(48.000))-2.500));
+ edge=min(edge,max(abs(p.x-(-31.000))-2.500,abs(p.y-(40.000))-10.500));
+ edge=min(edge,max(abs(p.x-(-41.500))-13.000,abs(p.y-(32.000))-2.500));
+ edge=min(edge,max(abs(p.x-(-16.000))-2.500,abs(p.y-(-5.000))-7.500));
+ edge=min(edge,max(abs(p.x-(-7.500))-11.000,abs(p.y-(-10.000))-2.500));
+ edge=min(edge,max(abs(p.x-(40.000))-10.500,abs(p.y-(0.000))-2.500));
+ edge=min(edge,max(abs(p.x-(32.000))-2.500,abs(p.y-(12.000))-14.500));
+ edge=min(edge,max(abs(p.x-(36.000))-6.500,abs(p.y-(24.000))-2.500));
+ edge=min(edge,length(p-vec2f(-40.0,48.0))-8.0);
+ edge=min(edge,length(p-vec2f(-48.0,8.0))-7.0);
+ edge=min(edge,length(p-vec2f(-4.0,-8.0))-7.0);
+ edge=min(edge,length(p-vec2f(12.0,-28.0))-8.0);
+ edge=min(edge,length(p-vec2f(40.0,32.0))-6.0);
+ return edge; }
 @fragment fn fs(o:Out)->@location(0) vec4f {
  var color=o.color.xyz;let n=o.normal;var wet=0.0;
  if(o.kind>3.5&&o.kind<4.5&&o.local.x>.015){let uv=select(select(o.world.xy,o.world.zy,abs(n.x)>.5),o.world.xz,abs(n.y)>.5);let q=fract(uv*4.0);let crack=abs(q.y-fract(q.x*1.73+.19));let split=abs(q.x-fract(q.y*2.21+.47));let line=1.0-smoothstep(.015,.045,max(0.0,min(crack,split)));color*=1.0-o.local.x*.18-line*smoothstep(.05,.75,o.local.x)*.57;}
@@ -2063,9 +2123,9 @@ fn shadowAt(v:vec4f,n:vec3f)->f32{let p=v.xyz/v.w;let uv=p.xy*vec2f(.5,-.5)+.5;l
 
  if(o.kind>3.5&&o.kind<4.5&&o.world.y>.5){let delta=o.world.xz-S.pos.xz;let d=safe2(u.camera.xz);let along=dot(delta,d);let across=abs(dot(delta,vec2f(-d.y,d.x)));if(along>.25&&along<3.0&&across<.65&&((u32(o.clip.x)+u32(o.clip.y))%4u)<3u){discard;}}
  if(o.kind<.5 && n.y>.5){let p=o.world.xz;let packed=bloodAt(p);let blood=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);let grid=abs(fract((p+.002)*4.0)-.5);let line=1.0-smoothstep(.468,.496,max(grid.x,grid.y));let tile=floor(p*4.0);let noise=rnd(u32(abs(tile.x+191.0))*773u+u32(abs(tile.y+331.0))*1301u);color*=.94+noise*.11;color*=.87+line*.13;
-  let local=fract((p+96.0)/48.0)*48.0;let edge=min(min(local.x,48.0-local.x),min(local.y,48.0-local.y));let road=edge<6.0;
+  let local=fract((p+96.0)/48.0)*48.0;let oldEdge=min(min(local.x,48.0-local.x),min(local.y,48.0-local.y));let edge=select(routeGround9(p),oldEdge-6.0,u.run.y>.5);let road=edge<0.0;
   color=mix(vec3f(.22,.25,.26),vec3f(.16,.20,.22),select(0.0,1.0,road));color*=.97+noise*.06;
-  if(edge>5.7&&edge<6.2){color=vec3f(.32,.35,.35);}let stripe=abs(edge-3.2)<.045&&fract((p.x+p.y)/2.0)>.40;
+  if(u.run.y>.5&&edge>-.30&&edge<.20){color=vec3f(.32,.35,.35);}else if(u.run.y<=.5&&abs(edge)<.10){color=vec3f(.29,.32,.32);}let stripe=u.run.y>.5&&abs(edge+2.8)<.045&&fract((p.x+p.y)/2.0)>.40;
   if(stripe){color=vec3f(.44,.40,.25);}let seams=max(abs(fract(p/2.0)-.5).x,abs(fract(p/2.0)-.5).y);color*=.94+.06*(1.0-smoothstep(.485,.5,seams));
   if(u.run.x==2.0){color=mix(color,vec3f(.25,.22,.19),.20);}
   if(u.run.x>=3.0){let rail=abs(fract((p.x+18.0)/8.0)-.5);if(rail>.476&&abs(p.y)<60.0){color=mix(color,vec3f(.14,.20,.23),.58);}}

@@ -1,11 +1,25 @@
 {
   "legs": [
     {
+      "name": "Prep doorway",
+      "width": 3,
+      "points": [
+        [
+          -64,
+          52
+        ],
+        [
+          -59.5,
+          52
+        ]
+      ]
+    },
+    {
       "name": "Prep to rescue yard",
       "width": 7,
       "points": [
         [
-          -60,
+          -59.5,
           52
         ],
         [

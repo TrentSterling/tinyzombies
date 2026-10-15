@@ -1,0 +1,8425 @@
+{
+  "kind": "CPU source review and explicit collision/navigation models; no browser or GPU",
+  "baseline_sha256": "b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540",
+  "candidate_sha256": "ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c",
+  "changed_shader_modules": [
+    "render"
+  ],
+  "preserved": [
+    "all simulation shader sources",
+    "state/buffer layouts",
+    "fracture scratch bounds and builder",
+    "objective coordinates",
+    "mission progression and interaction logic",
+    "pipe bombs and blood behavior"
+  ],
+  "reports": [
+    {
+      "stage": 1,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 1,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 1,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 141,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 141,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 2,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 141,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 73129,
+      "voxels": 90260,
+      "pages": 463,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 1,
+      "voxels": 90260,
+      "pages": 464,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    },
+    {
+      "stage": 3,
+      "seed": 1048573,
+      "voxels": 90260,
+      "pages": 466,
+      "props": 138,
+      "groups": 480,
+      "maxGroup": 288,
+      "reachableCoarseCells": 35198,
+      "objectives": [
+        {
+          "name": "rescue",
+          "point": [
+            -40,
+            48
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -40.75,
+            46.5
+          ]
+        },
+        {
+          "name": "west relay",
+          "point": [
+            -48,
+            8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -48.75,
+            6.5
+          ]
+        },
+        {
+          "name": "cell",
+          "point": [
+            -4,
+            -8
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -4.75,
+            -9.5
+          ]
+        },
+        {
+          "name": "east relay",
+          "point": [
+            12,
+            -28
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            11.25,
+            -29.5
+          ]
+        },
+        {
+          "name": "extraction",
+          "point": [
+            48,
+            32
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            47.25,
+            30.5
+          ]
+        },
+        {
+          "name": "cache 0",
+          "point": [
+            -59,
+            50
+          ],
+          "reachableInteractionCells": 126,
+          "example": [
+            -59.75,
+            48.5
+          ]
+        },
+        {
+          "name": "cache 1",
+          "point": [
+            -47,
+            35
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -47.75,
+            33.5
+          ]
+        },
+        {
+          "name": "cache 2",
+          "point": [
+            -40,
+            4
+          ],
+          "reachableInteractionCells": 137,
+          "example": [
+            -40.75,
+            2.5
+          ]
+        },
+        {
+          "name": "cache 3",
+          "point": [
+            -8,
+            -10
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            -8.75,
+            -11.5
+          ]
+        },
+        {
+          "name": "cache 4",
+          "point": [
+            20,
+            -23
+          ],
+          "reachableInteractionCells": 133,
+          "example": [
+            19.25,
+            -24.5
+          ]
+        },
+        {
+          "name": "cache 5",
+          "point": [
+            31,
+            23
+          ],
+          "reachableInteractionCells": 149,
+          "example": [
+            30.25,
+            21.5
+          ]
+        },
+        {
+          "name": "switch 0",
+          "point": [
+            -35.75,
+            41.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -36.5,
+            40
+          ]
+        },
+        {
+          "name": "switch 1",
+          "point": [
+            -48.75,
+            18.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -49.5,
+            17
+          ]
+        },
+        {
+          "name": "switch 2",
+          "point": [
+            -3.75,
+            -13.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            -4.5,
+            -15
+          ]
+        },
+        {
+          "name": "switch 3",
+          "point": [
+            25.25,
+            29.5
+          ],
+          "reachableInteractionCells": 138,
+          "example": [
+            24.5,
+            28
+          ]
+        },
+        {
+          "name": "medkit 6",
+          "point": [
+            -32,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 17",
+          "point": [
+            64,
+            -59
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -59.75
+          ]
+        },
+        {
+          "name": "medkit 25",
+          "point": [
+            -32,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 30",
+          "point": [
+            64,
+            -11
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            -11.75
+          ]
+        },
+        {
+          "name": "medkit 44",
+          "point": [
+            64,
+            37
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            36.25
+          ]
+        },
+        {
+          "name": "medkit 53",
+          "point": [
+            -32,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -32.25,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 64",
+          "point": [
+            64,
+            85
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            63.75,
+            84.25
+          ]
+        },
+        {
+          "name": "medkit 68",
+          "point": [
+            -55,
+            44
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -55.25,
+            43.25
+          ]
+        },
+        {
+          "name": "medkit 69",
+          "point": [
+            -35,
+            32
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -35.25,
+            31.25
+          ]
+        },
+        {
+          "name": "medkit 70",
+          "point": [
+            -8,
+            -18
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            -8.25,
+            -18.75
+          ]
+        },
+        {
+          "name": "medkit 71",
+          "point": [
+            28,
+            20
+          ],
+          "reachableInteractionCells": 37,
+          "example": [
+            27.75,
+            19.25
+          ]
+        }
+      ],
+      "doorStates": {
+        "closedBlocks": true,
+        "raisedClears": true
+      },
+      "routeClearance": [
+        {
+          "name": "Prep doorway",
+          "width": 3,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 209,
+          "edgeExamples": []
+        },
+        {
+          "name": "Prep to rescue yard",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2619,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue to west relay",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 6129,
+          "edgeExamples": []
+        },
+        {
+          "name": "West relay to freight cell",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 7668,
+          "edgeExamples": []
+        },
+        {
+          "name": "Freight cell to east relay",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2793,
+          "edgeExamples": []
+        },
+        {
+          "name": "East relay to extraction",
+          "width": 7,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 11691,
+          "edgeExamples": []
+        },
+        {
+          "name": "Safehouse doorway",
+          "width": 2,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 77,
+          "edgeExamples": []
+        },
+        {
+          "name": "Rescue supply flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3553,
+          "edgeExamples": []
+        },
+        {
+          "name": "Central service bypass",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 2090,
+          "edgeExamples": []
+        },
+        {
+          "name": "Extraction yard flank",
+          "width": 5,
+          "centreBlocked": [],
+          "fullWidthBlocked": 0,
+          "fullWidthSamples": 3705,
+          "edgeExamples": []
+        }
+      ],
+      "supports": {
+        "components": 493,
+        "largestGroup": 288,
+        "unanchored": []
+      },
+      "boundedSquadSearch": [
+        {
+          "name": "Prep doorway",
+          "segments": [
+            {
+              "from": [
+                -64,
+                52
+              ],
+              "to": [
+                -59.5,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "Prep to rescue yard",
+          "segments": [
+            {
+              "from": [
+                -59.5,
+                52
+              ],
+              "to": [
+                -54,
+                52
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 7
+            },
+            {
+              "from": [
+                -54,
+                52
+              ],
+              "to": [
+                -54,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            },
+            {
+              "from": [
+                -54,
+                48
+              ],
+              "to": [
+                -40,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 15
+            }
+          ]
+        },
+        {
+          "name": "Rescue to west relay",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -52,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 13
+            },
+            {
+              "from": [
+                -52,
+                48
+              ],
+              "to": [
+                -52,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 75
+            },
+            {
+              "from": [
+                -52,
+                8
+              ],
+              "to": [
+                -48,
+                8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 5
+            }
+          ]
+        },
+        {
+          "name": "West relay to freight cell",
+          "segments": [
+            {
+              "from": [
+                -48,
+                8
+              ],
+              "to": [
+                -48,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                -48,
+                0
+              ],
+              "to": [
+                1,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 102
+            },
+            {
+              "from": [
+                1,
+                0
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                -4,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            }
+          ]
+        },
+        {
+          "name": "Freight cell to east relay",
+          "segments": [
+            {
+              "from": [
+                -4,
+                -8
+              ],
+              "to": [
+                1,
+                -8
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 6
+            },
+            {
+              "from": [
+                1,
+                -8
+              ],
+              "to": [
+                1,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 26
+            },
+            {
+              "from": [
+                1,
+                -28
+              ],
+              "to": [
+                12,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 12
+            }
+          ]
+        },
+        {
+          "name": "East relay to extraction",
+          "segments": [
+            {
+              "from": [
+                12,
+                -28
+              ],
+              "to": [
+                48,
+                -28
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 3,
+              "totalExpanded": 63
+            },
+            {
+              "from": [
+                48,
+                -28
+              ],
+              "to": [
+                48,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 4,
+              "totalExpanded": 116
+            },
+            {
+              "from": [
+                48,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                24
+              ],
+              "to": [
+                40,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            },
+            {
+              "from": [
+                40,
+                32
+              ],
+              "to": [
+                43,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 4
+            }
+          ]
+        },
+        {
+          "name": "Safehouse doorway",
+          "segments": [
+            {
+              "from": [
+                43,
+                32
+              ],
+              "to": [
+                45.5,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 3
+            }
+          ]
+        },
+        {
+          "name": "Rescue supply flank",
+          "segments": [
+            {
+              "from": [
+                -40,
+                48
+              ],
+              "to": [
+                -31,
+                48
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 10
+            },
+            {
+              "from": [
+                -31,
+                48
+              ],
+              "to": [
+                -31,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                -31,
+                32
+              ],
+              "to": [
+                -52,
+                32
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 28
+            }
+          ]
+        },
+        {
+          "name": "Central service bypass",
+          "segments": [
+            {
+              "from": [
+                -16,
+                0
+              ],
+              "to": [
+                -16,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 11
+            },
+            {
+              "from": [
+                -16,
+                -10
+              ],
+              "to": [
+                1,
+                -10
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 18
+            }
+          ]
+        },
+        {
+          "name": "Extraction yard flank",
+          "segments": [
+            {
+              "from": [
+                48,
+                0
+              ],
+              "to": [
+                32,
+                0
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 17
+            },
+            {
+              "from": [
+                32,
+                0
+              ],
+              "to": [
+                32,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 2,
+              "totalExpanded": 34
+            },
+            {
+              "from": [
+                32,
+                24
+              ],
+              "to": [
+                40,
+                24
+              ],
+              "done": true,
+              "noProgress": false,
+              "searches": 1,
+              "totalExpanded": 9
+            }
+          ]
+        }
+      ],
+      "individualDroppedSlabs": [
+        {
+          "switch": [
+            -35.75,
+            41.5
+          ],
+          "slab": [
+            -31,
+            40
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -48.75,
+            18.5
+          ],
+          "slab": [
+            -44,
+            17
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            -3.75,
+            -13.5
+          ],
+          "slab": [
+            1,
+            -15
+          ],
+          "allObjectivesAccessible": true
+        },
+        {
+          "switch": [
+            25.25,
+            29.5
+          ],
+          "slab": [
+            30,
+            28
+          ],
+          "allObjectivesAccessible": true
+        }
+      ]
+    }
+  ],
+  "breachChecks": [
+    {
+      "building": "Rescue depot",
+      "point": [
+        -43,
+        58.25
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    },
+    {
+      "building": "West stores",
+      "point": [
+        -69,
+        16.25
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    },
+    {
+      "building": "Freight office",
+      "point": [
+        -37,
+        -19.75
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    },
+    {
+      "building": "Relay shed",
+      "point": [
+        5,
+        -43.75
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    },
+    {
+      "building": "East logistics",
+      "point": [
+        29,
+        -15.75
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    },
+    {
+      "building": "Extraction cargo island",
+      "point": [
+        37,
+        6.25
+      ],
+      "voxelsRemoved": 162,
+      "beforeBlocked": true,
+      "afterClear": true
+    }
+  ],
+  "limits": [
+    "CPU models are not GPU execution or ordinary-input gameplay.",
+    "Actor collision uses the game quarter-metre static grid and half-metre dynamic raster with the .24 m actor footprint.",
+    "Squad search mirrors the bounded 256-node/192-expansion algorithm, but does not simulate steering, crowd avoidance, doors auto-opening or concurrent moving actors.",
+    "Breach probes establish geometry clearance only, not actual damage/fracture behavior."
+  ],
+  "labPreservation": [
+    {
+      "stage": 1,
+      "seed": 73129,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "52c62b9ce36b68101107d48ddc8da19920cb42cbbf08a3df94c5fe540ec71a38",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 1,
+      "seed": 1,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "4bd4bca33639bc3308be4d68f89723ff9ce9f893141e765c9bbd7c873eeec492",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 1,
+      "seed": 1048573,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "60512113241bcae57a9bdb86c7ece4d365d20fd5e92f70b5712ab173ab579c5e",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 2,
+      "seed": 73129,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "f22705bf87eb48fee5d8443e48c11bdac5d6367b8d410e0f9abb793e857b87a2",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 2,
+      "seed": 1,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "79e6646c3cb214b7c4c5654f346b1faa21917cb5b8ae9b1cb49e9bc7b5835501",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 2,
+      "seed": 1048573,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "b7be495f93ddd853ee1fb30bf081c915d050afa2151c34dd10b9785ca3872667",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 3,
+      "seed": 73129,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "52c62b9ce36b68101107d48ddc8da19920cb42cbbf08a3df94c5fe540ec71a38",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 3,
+      "seed": 1,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "4bd4bca33639bc3308be4d68f89723ff9ce9f893141e765c9bbd7c873eeec492",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    },
+    {
+      "stage": 3,
+      "seed": 1048573,
+      "hashes": {
+        "blocks": "847d7c60283c75426479c9de2dab7d20996fdccb1aee98309000a8329495c696",
+        "props": "60512113241bcae57a9bdb86c7ece4d365d20fd5e92f70b5712ab173ab579c5e",
+        "occ": "fd642439da813bf3a67638a8b756b684219880e46f851d99f37274d56d24b86f"
+      }
+    }
+  ],
+  "authoredDoors": [
+    {
+      "building": "Rescue depot",
+      "point": [
+        -34,
+        58.25
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Rescue depot",
+      "point": [
+        -43.75,
+        63
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "West stores",
+      "point": [
+        -64,
+        40.25
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "West stores",
+      "point": [
+        -58.25,
+        28
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Freight office",
+      "point": [
+        -30,
+        -5.75
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Freight office",
+      "point": [
+        -22.25,
+        -13
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Relay shed",
+      "point": [
+        14,
+        -37.75
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Relay shed",
+      "point": [
+        4.25,
+        -41
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "East logistics",
+      "point": [
+        34,
+        -3.75
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "East logistics",
+      "point": [
+        39.75,
+        -10
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Extraction cargo island",
+      "point": [
+        36.25,
+        11
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    },
+    {
+      "building": "Extraction cargo island",
+      "point": [
+        41.75,
+        11
+      ],
+      "openClear": true,
+      "closedBlocks": true
+    }
+  ],
+  "assertions": "passed"
+}

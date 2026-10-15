@@ -4,19 +4,25 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
-## Map readability development candidate
+## Unpublished authored route prototype
 
-This separately staged change restores a compact minimap at the upper right during active play. Hold Tab for the existing larger field map; the compact version uses the same GPU renderer and live collision/entity data. Help, pause and the hidden-HUD mode hide the compact map.
+This branch contains a local route prototype awaiting its GPU window. The public game remains the validated minimap/contrast release below. The working HTML adds reserved approaches, supply loops, freight buildings and route-following ground materials while preserving mission coordinates and simulation shaders. See [the concrete route review and pending runtime plan](validation/flow-review.md).
 
-Static architecture and ground use darker, less saturated materials. Actor and particle colors, lighting, post-processing, mission behavior and world geometry remain exact. This follows the category separation observed in the DEAD ENDS source and repository/gallery imagery; the reference was not live-playtested for this change.
+CPU collision/navigation models pass across three seeds and all three chapters, including full lane widths, objective and supply access, support groups, door states and bounded squad-search progress. This is not gameplay or GPU validation. Current prototype HTML SHA-256: `ca3675b42b5ec46776153a26ea847e7af77c7ce30f57e426b4eb3dc1e1fcff1c`.
 
-CPU checks verify JavaScript syntax, one compact/expanded map instance, and identical world, prop and occupancy buffers for seed 73129. All simulation shaders remain exact. See `validation/map-source-check.json`. Actual GPU compilation, same-seed screenshots and ordinary-input playtesting are pending; these source checks do not establish visual quality or performance.
+## Compact minimap and environment contrast
 
-The geometry proposal in `validation/map-route-plan.json` preserves the mission checkpoints while adding recognizable rescue, power and extraction approaches and optional supply loops. It has not been applied. Initial collision sampling found trap supports on the proposed west approach and service bypass; those must be avoided or treated as explicit narrowed passages before geometry is changed.
+The compact minimap is restored at the upper right during active play. Hold Tab for the larger field map. Help, pause and hidden-HUD mode hide the compact map. Both sizes use the same existing GPU renderer and live collision/entity data.
 
-Current map/contrast candidate HTML SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+Static architecture and ground now use darker, less saturated materials, following DEAD ENDS' category separation. Character and particle colors, lighting, post-processing, mission behavior and world geometry remain unchanged. The reference came from the verified DEAD ENDS source and gallery/repository image.
 
-## V9.1 development candidate
+The exact build passed Windows shader compilation and ordinary browser-input gameplay on Chrome 155 / RTX 5070 Ti. Movement, 86 rifle rounds, pipe and grenade detonations, controls, Tab map, pause and restart passed without runtime/device errors or new Windows GPU faults. Same-seed frame-one captures verify the visible contrast change and compact minimap; source checks prove identical world/prop/occupancy buffers for seed 73129. See `validation/map-source-check.json` and `validation/map-windows-summary.json`.
+
+Compare [before](assets/contrast-before.png) and [after](assets/contrast-after.png), or see the [combat capture](assets/contrast-combat.png). These are actual Windows captures. The broader authored route redesign remains a separate, unpublished prototype awaiting gameplay validation.
+
+Published minimap build HTML SHA-256: `b16d90b1e63f82b4b07def0888345ad854c811803a33b82e6b2257a99a655540`.
+
+## V9.1 pipe bombs and smaller floor marks
 
 This branch adds a pipe bomb on B, separate from the existing grenade on Space. It arcs toward the cursor, beeps after landing, attracts nearby zombies with line of sight, and detonates after six seconds using the existing blast, damage and destruction pipeline. It costs one ordnance and has a twelve-second cooldown. Long Distraction extends its fuse. The fuse and beep scheduler pause with the game.
 
@@ -24,7 +30,11 @@ Floor stamps shrink again: isolated droplets cover 9 paint cells instead of 21, 
 
 The start/pause screens show both bomb controls. Press ? to open a complete controls overlay. Throwing with no ordnance or during a cooldown gives a brief contextual message.
 
-CPU-only source and input/audio-scheduler checks pass; see `validation/v91-source-check.json`. GPU compilation, actual Windows input, attraction/explosion behavior, audible output and paired visual validation are pending. The prior Windows results below do not validate this candidate.
+The exact build passed shader compilation and bounded Windows gameplay on Chrome 155.0.8059.41 / NVIDIA RTX 5070 Ti, driver 591.86, with the default 2,048 zombies and 32,768 particles. Ordinary browser input moved the player out of the prep room, fired 91 rounds, detonated a pipe bomb and a grenade, opened controls and the field map, and passed pause/restart checks. No device errors or new Windows GPU faults were observed.
+
+In an explicit four-zombie fixture, real B input attracted all four from an average 2.99 m to 0.49 m from the bomb; the delayed explosion killed them. Pause held the fuse and beep count. WebAudio scheduled 17 beeps, but the isolated browser output was muted, so audible quality is not verified. [Watch the actual fixture capture](assets/pipe-bomb-proof.mp4).
+
+Paired GPU particle buffers and impact counts matched across isolated impacts and a seeded death event. At frame 120, floor coverage fell from 709 cells to 292 while the 96 active particles and 107 impacts matched exactly. This fixture omits pair solving to avoid atomic-order differences; ordinary gameplay exercises the complete pipeline. See `validation/v91-source-check.json` and `validation/v91-windows-summary.json` for methods and limits. These short checks do not replace a long stability run.
 
 ## Play locally
 
@@ -66,7 +76,7 @@ Compatibility repair SHA-256: `1be63cbf1a3887251b0b26067133e71068f7c820c96f5f1c2
 
 Previous release SHA-256: `c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4`
 
-Base V9.1 candidate HTML SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
+V9.1 pipe-bomb build `index.html` SHA-256: `4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355`
 
 With Python and Node.js available, reproduce from your preserved original using:
 

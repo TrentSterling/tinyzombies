@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:59315/candidate.html?seed=73129",
+  "sha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "expectedHash": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "bytes": 397543,
+  "passed": true
+}

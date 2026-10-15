@@ -817,8 +817,8 @@ fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
 
  S.feedback.z=max(0.0,S.feedback.z-dt);
  let slammed=atomicLoad(&C[62]);atomicStore(&C[62],0u);atomicStore(&C[59],0u);
- if(slammed>0u&&S.journey7.x>.5&&S.pos.w>0.0&&S.goal.w==0.0&&S.feedback.z<=0.0&&u.config.z>.5){S.pos.w=max(0.0,S.pos.w-24.0);S.feedback.z=.7;S.look.w=1.0;}
- if(u.config.z>0.0&&S.pos.w>0.0&&S.goal.w==0.0&&hit>0u&&S.aux.x>5.0&&S.journey7.x>.5&&S.feedback.z<=0.0){S.pos.w=max(0.0,S.pos.w-select(7.0,11.0,hit>=4u)*(1.0-S.modsA.w*.15));S.feedback.z=.48;S.look.w=.7;}
+ if(slammed>0u&&S.aux.x>5.0&&S.pos.w>0.0&&S.goal.w==0.0&&S.feedback.z<=0.0&&u.config.z>.5){S.pos.w=max(0.0,S.pos.w-24.0);S.feedback.z=.7;S.look.w=1.0;}
+ if(u.config.z>0.0&&S.pos.w>0.0&&S.goal.w==0.0&&hit>0u&&S.aux.x>5.0&&S.feedback.z<=0.0){S.pos.w=max(0.0,S.pos.w-select(7.0,11.0,hit>=4u)*(1.0-S.modsA.w*.15));S.feedback.z=.48;S.look.w=.7;}
  for(var i=2u;i<=8u;i++){atomicStore(&C[i],0u);}atomicStore(&C[10],0u);atomicStore(&C[11],atomicLoad(&C[1]));atomicStore(&C[16],0u);atomicStore(&C[17],0u);atomicStore(&C[19],0u);atomicStore(&C[26],0u);atomicStore(&C[28],atomicLoad(&C[27]));atomicStore(&C[30],0u);atomicAdd(&C[18],1u);
  S.aux.x+=dt;S.aux.y=0.0;S.aux.z=u.config.z;S.aux.w=0.0;S.tools.x=0.0;
  S.timers=max(S.timers-vec4f(dt),vec4f(-dt,-dt,0,0));S.skill.x=max(0.0,S.skill.x-dt);S.skill.y=max(0.0,S.skill.y-dt);
@@ -1022,24 +1022,29 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
    if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))){found=true;break;}
   }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=select(hp0,110.0+u.run.x*12.0,kind==6.0);z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5));z.extraData.z=kind;z.extraData.w=0.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
- if(dt<=0.0||S.chooser.x>.5||(S.journey7.x<.5&&u.run.y<.5)){atomicAdd(&C[7],1u);B[i]=z;return;}
+ if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=exp(-u.clock.x*5.5);z.history.w*=exp(-u.clock.x*5.5);
  let toPlayer=S.pos.xz-z.p.xz;let distance=length(toPlayer);var goalPoint=S.pos.xz;var nearTeam=999.0;var nearestTarget=distance;
  for(var ti=0u;ti<3u;ti++){let ally=S.team7[ti];if(ally.vital.z<.5){continue;}let d=length(ally.p.xz-z.p.xz);nearTeam=min(nearTeam,d);if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;}}
- z.v.w=max(0.0,z.v.w-dt);if(distance<select(select(21.0,16.0,S.wave.x<.5),43.0,S.wave.x>1.5)||z.extraData.y>.01||nearTeam<12.0||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
+ // Preparation gates the director, not nearby actors. Awareness needs sight, sound or injury.
+ z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
  if(distance>52.0&&nearTeam>15.0&&z.v.w<=0.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
- var awake=z.v.w>0.0||distance<14.0||nearTeam<11.0;
+ var awake=z.v.w>0.0;
  if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;}
  if(S.lure.z>0.0&&S.spare5.w-S.lure.z>=.45&&length(S.lure.xy-z.p.xz)<15.0){let ld=safe2(S.lure.xy-z.p.xz);let ln=length(S.lure.xy-z.p.xz);var visible=true;for(var li=1u;li<min(30u,u32(ln*2.0));li++){if(solid(vec3f(z.p.x+ld.x*f32(li)*.5,.55,z.p.z+ld.y*f32(li)*.5))>0u){visible=false;break;}}if(visible){goalPoint=S.lure.xy;awake=true;z.v.w=max(z.v.w,6.0);atomicAdd(&C[71],1u);}}
- if(awake){atomicAdd(&C[53],1u);}
  let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);
  // Short direct line-of-sight segments preserve natural motion inside a room.
- var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;k<steps;k++){if(solid(vec3f(z.p.x+direct.x*f32(k)*.5,.55,z.p.z+direct.y*f32(k)*.5))>0u){sight=false;break;}}
+ var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
+ if(sight&&targetDistance<select(16.0,24.0,S.wave.x>.5)){z.v.w=10.0;awake=true;}
+ if(awake){atomicAdd(&C[53],1u);}
  if(sight||targetDistance<1.2){dir=direct;}
+ // Deterministic, short ambient walks with pauses; reuse existing collision and crowd budgets.
+ let wanderClock=S.aux.x+rnd(i*733u)*19.0;let wanderTurn=u32(floor(wanderClock/5.5));
+ if(!awake){let angle=rnd(i*919u+wanderTurn*197u)*6.2831853;dir=vec2f(cos(angle),sin(angle));}
  var speed=1.12+z.extraData.x*.36+min(.5,(u.run.x-1.0)*.10);if(kind==1.0){speed=2.6;}if(kind==2.0){speed=.92;}if(kind==3.0){speed=.95;}if(kind==4.0){speed=.82;}if(kind==5.0){speed=1.05;}if(kind==6.0){speed=1.04;}
- speed*=select(.95,1.14,S.wave.x>1.5);if(!awake){speed=0.0;}if(S.wave.x<.5&&distance>18.0){speed*=.58;}
+ speed*=select(.95,1.14,S.wave.x>1.5);if(!awake){speed=select(.18+rnd(i*31u)*.12,0.0,fract(wanderClock/5.5)>.65);}if(S.wave.x<.5&&distance>18.0){speed*=.58;}
  var velocity=mix(z.v.xy,dir*speed,1.0-exp(-dt*12.0))+z.history.zw;
  var sep=vec2f(0);var forwardSpace=1.0;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
  for(var k=0u;k<25u;k++){let rot=hash(i+u32(u.clock.z/4.0))%16u;let off=neighbor6(k,rot);
@@ -1076,7 +1081,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
  for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==4.0&&pr.data.x>0.0&&pr.data.y==2.0&&pr.more.y<-.7&&pr.p.y-pr.aux.y*.5<1.1&&all(abs(pr.p.xz-z.p.xz)<pr.aux.xz*.5+vec2f(.2))){damage+=200.0;atomicAdd(&C[34],1u);}}
  var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,.36,p.z);let tz=vec3f(p.x,.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
  if(!blocked(tx,h)){p.x=tx.x;}let tz2=vec3f(p.x,.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}
- if(stuck&&sight==false&&kind!=6.0){let ahead=z.p.xz+direct*.52;if(kind==2.0){z.extraData.w+=dt;if(z.extraData.w>.85){atomicMax(&O[PRESS_OFFSET+navcell(ahead)],1024u);z.extraData.w=-.5;}}else if(i%5u==0u){atomicAdd(&O[PRESS_OFFSET+navcell(ahead)],1u);}}
+ if(awake&&stuck&&sight==false&&kind!=6.0){let ahead=z.p.xz+direct*.52;if(kind==2.0){z.extraData.w+=dt;if(z.extraData.w>.85){atomicMax(&O[PRESS_OFFSET+navcell(ahead)],1024u);z.extraData.w=-.5;}}else if(i%5u==0u){atomicAdd(&O[PRESS_OFFSET+navcell(ahead)],1u);}}
  if(kind==3.0&&(distance<1.5||z.extraData.w>0.0)){z.extraData.w+=dt;if(z.extraData.w>=.94){damage=1000.0;atomicMax(&O[PRESS_OFFSET+navcell(z.p.xz)],65536u);}}
  p.x=clamp(p.x,-95.5,95.5);p.z=clamp(p.z,-95.5,95.5);
  if(distance<radius+.32&&u.config.z>.5&&S.motion.w<=0.0&&S.goal.w==0.0){atomicAdd(&C[10],select(1u,4u,kind==2.0||kind==6.0));}
@@ -1695,10 +1700,9 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
  if(dt<=0.0||S.goal.w>0.0||S.chooser.x>.5){return;}if(u.run.y>.5){if(S.player7.x>0.0){S.goal.w=2.0;}return;}S.radio7.y=max(0.0,S.radio7.y-dt);if(S.player7.x==0.0){S.player7.z=max(0.0,S.player7.z-dt);}
  // Preserve the old Violet prefix for mission compatibility; the squad has one owner.
  S.team7[0].p=S.buddy;S.team7[0].vital.z=S.rescue.z;S.team7[0].flags.y=S.rescue.x;
- if(S.journey7.x<.5&&u.run.y<.5){for(var k=0u;k<3u;k++){S.team7[k].aim.w=0.0;S.team7[k].ai.x=0.0;S.team7[k].ai.y=0.0;}return;}
  // Deterministic rescue/heal reservations. Player first, then wounded squadmates.
  var claims:array<i32,4>;for(var i=0u;i<4u;i++){claims[i]=-1;}var used=0u;
- for(var destination7=0u;destination7<4u;destination7++){let pos=teamTarget7(i32(destination7)-1);var needs=pos.w<=0.0;if(destination7==0u){needs=S.player7.x>0.0;}if(destination7>0u&&S.team7[destination7-1u].vital.z<.5&&distance(pos.xz,S.pos.xz)>30.0){needs=false;}
+ for(var destination7=0u;destination7<4u;destination7++){let pos=teamTarget7(i32(destination7)-1);var needs=pos.w<=0.0;if(destination7==0u){needs=S.player7.x>0.0;}if(destination7>0u&&S.team7[destination7-1u].vital.z<.5&&(S.journey7.x<.5||distance(pos.xz,S.pos.xz)>30.0)){needs=false;}
   if(!needs){continue;}var best=1e9;var owner=-1;for(var j=0u;j<3u;j++){let a=S.team7[j];if(a.p.w<=0.0||(used&(1u<<j))!=0u||j+1u==destination7){continue;}let score=distance(pos.xz,a.p.xz)+select(0.0,-1.5,j==0u)+(80.0-a.p.w)*.015;if(score<best){owner=i32(j);best=score;}}
   claims[destination7]=owner;if(owner>=0){used|=1u<<u32(owner);}
  }
@@ -1706,7 +1710,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
  if(S.player7.x==0.0&&u.v3.x>.5&&(manual>=0||S.squad7.y>=0.0)){if(S.squad7.y<0.0){S.squad7.y=f32(manual);}manual=i32(S.squad7.y);}else{S.squad7.y=-1.0;}
  var healthy=0u;
  for(var id=0u;id<3u;id++){
-  var a=S.team7[id];a.aim.w=0.0;a.look.z=max(0.0,a.look.z-dt);a.look.w=max(0.0,a.look.w-dt*9.0);a.memory.z=max(0.0,a.memory.z-dt);a.vital.y=max(0.0,a.vital.y-dt);a.ai.w-=dt;a.pathInfo.z-=dt;
+  var a=S.team7[id];if(S.journey7.x<.5&&a.vital.z<.5){continue;}a.aim.w=0.0;a.look.z=max(0.0,a.look.z-dt);a.look.w=max(0.0,a.look.w-dt*9.0);a.memory.z=max(0.0,a.memory.z-dt);a.vital.y=max(0.0,a.vital.y-dt);a.ai.w-=dt;a.pathInfo.z-=dt;
   let touches=atomicExchange(&C[64u+id],0u);let slam=atomicExchange(&C[68u+id],0u);
   if(a.p.w>0.0&&a.vital.y<=0.0&&(touches>0u||slam>0u)){a.p.w=max(0.0,a.p.w-select(6.0,24.0,slam>0u));a.vital.y=.55;if(a.p.w==0.0){a.vital.x=0.0;a.flags.y=0.0;S.radio7=vec4f(f32(id),3.0,1.0,0);}}
   if(a.p.w>0.0){healthy++;}if(distance(a.p.xz,S.pos.xz)<28.0){a.vital.z=1.0;}a.pack.z=max(0.0,a.pack.z-dt);if(a.pack.z==0.0&&a.flags.x>.5){a.pack.x=a.pack.y;a.flags.x=0.0;}
@@ -1823,7 +1827,7 @@ struct Node7{cell:vec2i, parent:i32, used:u32, g:f32, f:f32, pad:vec2f};
 var<workgroup> nodes:array<Node7,256>;
 var<workgroup> reverse:array<vec2i,128>;
 @compute @workgroup_size(1) fn update(@builtin(workgroup_id) wi:vec3u){
- let id=wi.x;if(id>=3u||u.run.y>.5||u.clock.x<=0.0||S.goal.w>0.0||S.journey7.x<.5){return;}let a=S.team7[id];
+ let id=wi.x;if(id>=3u||u.run.y>.5||u.clock.x<=0.0||S.goal.w>0.0){return;}let a=S.team7[id];
  if(a.p.w<=0.0||a.pathInfo.z>0.0){return;}let destination7=a.destination7.xz;let d=distance(a.p.xz,destination7);
  // No graph search is needed for a short, genuinely clear local segment.
  if(d<12.0){var clear=true;let n=max(1u,u32(ceil(d/.40)));for(var k=1u;k<=n;k++){let p=mix(a.p.xz,destination7,f32(k)/f32(n));if(blocked(vec3f(p.x,.36,p.y),vec3f(.24,.29,.24))){clear=false;break;}}
@@ -1868,7 +1872,7 @@ const doors7Shader=COMMON+`
   // Only local grid buckets, with a fixed candidate cap. No all-world door-to-zombie loop.
   for(var zz=-3;zz<=3;zz++){for(var xx=-3;xx<=3;xx++){
    let c=cell+vec2i(xx,zz);if(any(c<vec2i(0))||any(c>=vec2i(NG))||checked>=96u){continue;}var it=H[u32(c.x+NG*c.y)];
-   for(var q=0u;q<16u&&it>0u&&checked<96u;q++){let j=it-1u;it=H[ZHEADS+j];checked++;let z=Z[j];if(z.p.w<=0.0){continue;}if(all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(footprint(z.extraData.z)))){occupied=true;}if(all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(.85))){attackers+=select(1u,6u,z.extraData.z==6.0);}}
+   for(var q=0u;q<16u&&it>0u&&checked<96u;q++){let j=it-1u;it=H[ZHEADS+j];checked++;let z=Z[j];if(z.p.w<=0.0){continue;}if(all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(footprint(z.extraData.z)))){occupied=true;}if(z.v.w>0.0&&all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(.85))){attackers+=select(1u,6u,z.extraData.z==6.0);}}
   }}
   let press=u.controls.x>.5&&S.mission5.y==8.0&&u32(S.mission5.z)==i&&S.player7.x==0.0;
   if(press&&d.more.y<.5){if(d.data.y<.5&&occupied){S.radio7=vec4f(0,2,5,0);atomicAdd(&C[82],1u);}else{d.data.y=1.0-d.data.y;atomicAdd(&C[76],1u);S.radio7=vec4f(0,1.5,select(6.0,7.0,d.data.y>.5),0);}}
@@ -1878,7 +1882,7 @@ const doors7Shader=COMMON+`
     if(a.p.w>0.0&&a.ai.y!=4.0&&a.ai.y!=5.0&&a.ai.y!=6.0&&distance(a.p.xz,d.p.xz)<3.4&&offset[along]*dest[along]<-.02){d.data.y=0.0;atomicAdd(&C[76],1u);break;}}
   }
   if(d.data.y>.5&&attackers>0u&&distance(d.p.xz,S.pos.xz)<18.0&&floor(S.aux.x*4.0)>floor((S.aux.x-u.clock.x)*4.0)){atomicAdd(&C[91],1u);}
-  var damage=0.0;if(d.data.y>.5&&S.journey7.x>.5){damage+=u.clock.x*min(10.0,f32(attackers)*1.7);}
+  var damage=0.0;if(d.data.y>.5){damage+=u.clock.x*min(10.0,f32(attackers)*1.7);}
   for(var j=0u;j<11u;j++){var sh=S.bullets[min(j,8u)];if(j>=9u){sh=S.extraBullets7[j-9u];}if(sh.origin.w<=0.0){continue;}if(sh.tag.x==4.0&&u32(sh.tag.y)==i){damage+=select(2.2,9.0,sh.tag.w>=2.0);}}
   if(S.aux.w>0.0&&distance(S.blast.xy,d.p.xz)<S.blast.w){damage+=45.0;}
   if(S.tools.x>0.0){let delta=d.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);if(along>0.0&&along<14.0&&abs(dot(delta,vec2f(-S.look.y,S.look.x)))<max(d.aux.x,d.aux.z)*.5+1.1){damage+=80.0;}}
@@ -1914,7 +1918,7 @@ const crowdShader=COMMON+`
 const dynamicShader=COMMON+`
 @group(0) @binding(1) var<storage,read> P:array<Prop>;
 @group(0) @binding(2) var<storage,read_write> O:array<atomic<u32>>;
-@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask);}}}
+@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask|select(mask<<16u,0u,pr.p.w==9.0));}}}
 `;
 const lightsShader=COMMON+`
 struct PointLight{p:vec4f,c:vec4f};
@@ -1947,7 +1951,9 @@ const navInitShader=COMMON+`
 @group(0) @binding(1) var<storage,read> S:State;
 @group(0) @binding(2) var<storage,read_write> O:array<u32>;
 @group(0) @binding(3) var<storage,read_write> A:array<u32>;
-`+SOLID+`
+// Low 12 bits remain exact physical occupancy. High 12 bits exclude doors only:
+// actors can plan toward a closed doorway while collision and battering keep it solid.
+`+SOLID.replace('O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]&mask','(O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]>>16u)&mask')+`
 @compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;let source=navcell(S.pos.xz)==i;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=select(1073741823u,0u,source);}
 `;
 const navRelaxShader=COMMON+`
@@ -2480,6 +2486,8 @@ function reset(){resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExp
  updateUniforms(0);
  const enc=device.createCommandEncoder({label:'reset seeded compound'});for(const b of [C,pA,pB,Paint,WP,zHeads,pHeads])enc.clearBuffer(b);
  pass(enc,'init',bindings.initA,MAX_Z/64);pass(enc,'init',bindings.initB,MAX_Z/64);
+ // First-frame sight and movement must see the closed doors before the first simulation tick.
+ pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));
  // The generation-time field is uploaded once. Subsequent routing is entirely GPU-resident.
  device.queue.writeBuffer(NavA,0,world.navSeed);device.queue.writeBuffer(NavB,0,world.navSeed);
  device.queue.submit([enc.finish()]);counters.fill(0);counters[12]=100;zParity=0;navPhase=0;settings.paused=false;last=0;time=0;nextSound=nextBoom=lastCritSound=0;

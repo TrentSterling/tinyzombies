@@ -1,0 +1,6 @@
+{
+  "testedCRLFSha256": "e4754e8743e3d5284d44f5b786c22ef6d77bcefe972f2032543cf862d9f9fa4f",
+  "releaseLFSha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "onlyCRLFtoLF": true,
+  "restoresRepositoryLFConvention": true
+}

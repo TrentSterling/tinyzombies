@@ -1,0 +1,13 @@
+{
+  "file": "Tiny-Zombies-recovery-before-after.mp4",
+  "bytes": 21501568,
+  "sha256": "004131dc17bc98ddea6efc5d0453d2f983a236f26a0b7b981818e856301c14b6",
+  "durationSeconds": 66.1,
+  "resolution": [
+    1920,
+    600
+  ],
+  "frameRate": "10/1",
+  "completeDecodePassed": true,
+  "description": "Side-by-side actual GPU encounter screencasts with measured phase/intensity/awake-count captions. Silent; original SFX runtime unchanged. Saved to the requesting user's Library."
+}

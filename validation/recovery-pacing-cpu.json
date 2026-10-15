@@ -1,0 +1,900 @@
+{
+  "method": "Node VM extracts exact current WGSL mission director block; restricted scalar transcription executes that block with controlled intensity inputs and a fixed RNG sample. CPU control-flow evidence only: no browser, WebGPU execution, perception simulation, float32/atomic timing, or gameplay performance claim.",
+  "baselineSha256": "6a8b47bcce3eb65b236240ffc1be9d9052b5ab6ab026089405566fb63bea4572",
+  "candidateSha256": "fedee3e5054b56841bda85903d261cb740e955a289a4e5ddcfc6d17b67f76192",
+  "baselineBlockSha256": "f2fdcca38d40641426d4d2fd43ad131176c94bcc9d99cd953a5f6af777d252cb",
+  "candidateBlockSha256": "81cbd2ac80857d678ecd6fe111efe5237eeede3ccc8a115b4596d81c8d3280e5",
+  "baselineReproduced": true,
+  "candidateImplemented": true,
+  "results": {
+    "sustained_pressure": {
+      "baseline": {
+        "events": [
+          {
+            "t": 16,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 36.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 41.516666666666666,
+            "phase": 2,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 2,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 46.53333333333333,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          }
+        ],
+        "final": {
+          "phase": 3,
+          "time": 13.466666666666915,
+          "intensity": 1
+        },
+        "sampleCount": 120,
+        "samplesSha256": "6d4f2b2e386a63cc01c7fc0b3f73a6dbcf3e125348e8d5dbaa540b7c3f877cfb"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 3,
+          "time": 0,
+          "intensity": 1
+        },
+        "sampleCount": 120,
+        "samplesSha256": "cabf04791689ae10915380f85d94fa69d08ec48126f908d5c5035ebce42cc3b8"
+      }
+    },
+    "fight_ends_at_40s": {
+      "baseline": {
+        "events": [
+          {
+            "t": 16,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 36.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 1,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 71.51666666666667,
+            "phase": 2,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 2,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 76.53333333333333,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 79.55,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          }
+        ],
+        "final": {
+          "phase": 0,
+          "time": 0.44999999999999996,
+          "intensity": 0
+        },
+        "sampleCount": 160,
+        "samplesSha256": "1301068e306443384aec1e501ad934dcfeb9e3eb84a812a39dfd0789da9c3893"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 46.3,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 66.8,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 13.200000000000236,
+          "intensity": 0
+        },
+        "sampleCount": 160,
+        "samplesSha256": "0649c4eee8a0ab8d1747f07ad1659a12735f7a22a32b917f8a3cc104bfaecf71"
+      }
+    },
+    "intermittent_calm": {
+      "baseline": {
+        "events": [
+          {
+            "t": 3.0166666666666666,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0.2833333333333329,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          }
+        ],
+        "final": {
+          "phase": 0,
+          "time": 14.983333333333658,
+          "intensity": 0.35
+        },
+        "sampleCount": 36,
+        "samplesSha256": "c811be360027103659abd7003a839a3f3fadba3bb70660a9b20f93ec3d9af55d"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 3,
+          "time": 0,
+          "intensity": 0.35
+        },
+        "sampleCount": 36,
+        "samplesSha256": "3c974dff570039a8b944950692f9d4b475732df4ee5fb2d66c876865bb2923e0"
+      }
+    },
+    "recovery_interrupted": {
+      "baseline": {
+        "events": [
+          {
+            "t": 12.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 27.49999999999972,
+          "intensity": 0
+        },
+        "sampleCount": 80,
+        "samplesSha256": "691786c55c1d3ac31b3d60d0d7faa69052029a8152106c6cbe8dbed6eb3edfb9"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 2,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0.6,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 11.283333333333333,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 31.78333333333333,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 8.216666666666654,
+          "intensity": 0
+        },
+        "sampleCount": 80,
+        "samplesSha256": "b673938a2a23ad5399520988c0cdb2375815a40853c7ecba9ea5fb5d82dee670"
+      }
+    },
+    "alarm_during_recovery": {
+      "baseline": {
+        "events": [
+          {
+            "t": 12.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 29.499999999999606,
+          "intensity": 0
+        },
+        "sampleCount": 84,
+        "samplesSha256": "c89b97366a264d94840bd5da50b3f25e9eb0bba6e33bbb6819828a6fde546b1e"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 2,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 1,
+            "wave": 2,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 15,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 35.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 6.499999999999982,
+          "intensity": 0
+        },
+        "sampleCount": 84,
+        "samplesSha256": "6ce6d006d1793632ad182ef3850ad84d39d439172f6552868a1e5d578e23902f"
+      }
+    },
+    "quiet_time_exit": {
+      "baseline": {
+        "events": [
+          {
+            "t": 20.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 7.499999999999979,
+          "intensity": 0
+        },
+        "sampleCount": 56,
+        "samplesSha256": "d680aff1f91fee510f94f82614a3deaa19f476c6786857356c3a307ffcf042d4"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 20.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 7.499999999999979,
+          "intensity": 0
+        },
+        "sampleCount": 56,
+        "samplesSha256": "d680aff1f91fee510f94f82614a3deaa19f476c6786857356c3a307ffcf042d4"
+      }
+    },
+    "movement_exit": {
+      "baseline": {
+        "events": [
+          {
+            "t": 7.016666666666667,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 48,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 4.983333333333321,
+          "intensity": 0
+        },
+        "sampleCount": 24,
+        "samplesSha256": "fd7ca3e700171e3c6df0750acfabf22f3eb573ed8897cec261b83eda8228ebc3"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 7.016666666666667,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 48,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 4.983333333333321,
+          "intensity": 0
+        },
+        "sampleCount": 24,
+        "samplesSha256": "fd7ca3e700171e3c6df0750acfabf22f3eb573ed8897cec261b83eda8228ebc3"
+      }
+    },
+    "preparation": {
+      "baseline": {
+        "events": [],
+        "final": {
+          "phase": 0,
+          "time": 0,
+          "intensity": 1
+        },
+        "sampleCount": 90,
+        "samplesSha256": "91181b33b31c604c33079ec66ae73d318ee56b828da13927581cd27b56ef7dae"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 0,
+          "time": 0,
+          "intensity": 1
+        },
+        "sampleCount": 90,
+        "samplesSha256": "91181b33b31c604c33079ec66ae73d318ee56b828da13927581cd27b56ef7dae"
+      }
+    },
+    "downed_survivor": {
+      "baseline": {
+        "events": [
+          {
+            "t": 16,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0.85,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 36.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0.85,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 41.516666666666666,
+            "phase": 2,
+            "phaseTime": 0,
+            "intensity": 0.85,
+            "alarm": 0,
+            "wave": 2,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 46.53333333333333,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0.85,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          }
+        ],
+        "final": {
+          "phase": 3,
+          "time": 13.466666666666915,
+          "intensity": 0.85
+        },
+        "sampleCount": 120,
+        "samplesSha256": "31dba73860385110dc981e5ee478761326be90eae30673bb09e3479c4802c897"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 3,
+          "time": 0,
+          "intensity": 0.85
+        },
+        "sampleCount": 120,
+        "samplesSha256": "4748cff1e45b261e862830382d7ac1f802ae519c725c8fc49afa83971b0bb8d4"
+      }
+    },
+    "alerted_crowd": {
+      "baseline": {
+        "events": [
+          {
+            "t": 16,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0.5,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 36.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0.5,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 23.499999999999947,
+          "intensity": 0.5
+        },
+        "sampleCount": 120,
+        "samplesSha256": "e33e1665107cb47a3aecc506ecd25513c29f31d91737f3565be76cc0cf14afde"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 3,
+          "time": 0,
+          "intensity": 0.5
+        },
+        "sampleCount": 120,
+        "samplesSha256": "886909d1b599635e25f0d71e763ce5a0d60c5f51faf01fc5c2592b69baa4f76c"
+      }
+    },
+    "alerted_crowd_clears": {
+      "baseline": {
+        "events": [
+          {
+            "t": 16,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0.5,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 36.5,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0.5,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 71.51666666666667,
+            "phase": 2,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 2,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          },
+          {
+            "t": 76.53333333333333,
+            "phase": 3,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 79.55,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          }
+        ],
+        "final": {
+          "phase": 0,
+          "time": 0.44999999999999996,
+          "intensity": 0
+        },
+        "sampleCount": 160,
+        "samplesSha256": "0df3cc9f388e0c9a9b77c735be7e20191565d8561d00f29fc1c28cb5bcbbecc7"
+      },
+      "candidate": {
+        "events": [
+          {
+            "t": 43.78333333333333,
+            "phase": 0,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 0,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": false
+          },
+          {
+            "t": 64.28333333333333,
+            "phase": 1,
+            "phaseTime": 0,
+            "intensity": 0,
+            "alarm": 0,
+            "wave": 1,
+            "journey": 1,
+            "progress": 30,
+            "relaxFor": 20.5,
+            "replenishmentAllowed": true
+          }
+        ],
+        "final": {
+          "phase": 1,
+          "time": 15.716666666667027,
+          "intensity": 0
+        },
+        "sampleCount": 160,
+        "samplesSha256": "77b7c1a172157487c164afc96ad4101a034d3f05eb8120a6df6163687ef63cf4"
+      }
+    },
+    "lab_unchanged": {
+      "baseline": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      }
+    },
+    "completed_run": {
+      "baseline": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      }
+    },
+    "not_started": {
+      "baseline": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      },
+      "candidate": {
+        "events": [],
+        "final": {
+          "phase": 1,
+          "time": 0,
+          "intensity": 0
+        },
+        "sampleCount": 40,
+        "samplesSha256": "82d8132b70704210a4c176c04e87256c63c338b5c7d2128282ae70c116e3b144"
+      }
+    }
+  },
+  "checks": [
+    "baseline premature recovery reproduced",
+    "persistent pressure and downed survivor hold FADE",
+    "existing awake-crowd input holds FADE and can settle",
+    "three continuous calm seconds",
+    "full recovery after combat ends",
+    "pressure interruption returns to FADE",
+    "forced alarm behavior preserved without consuming recovery",
+    "normal time and movement exits preserved",
+    "preparation/lab/not-started/completion/pause preserved",
+    "12 timestep/RNG boundary cases",
+    "deterministic repeat",
+    "only mission director block changed; all other HTML and WGSL exact"
+  ],
+  "sweep": [
+    {
+      "dt": 0.008333333333333333,
+      "random": 0,
+      "calmGateSeconds": 3.0083333333333333,
+      "recoverySeconds": 17.008333333333333,
+      "desired": 17
+    },
+    {
+      "dt": 0.008333333333333333,
+      "random": 0.5,
+      "calmGateSeconds": 3.0083333333333333,
+      "recoverySeconds": 20.508333333333333,
+      "desired": 20.5
+    },
+    {
+      "dt": 0.008333333333333333,
+      "random": 0.999,
+      "calmGateSeconds": 3.0083333333333333,
+      "recoverySeconds": 24,
+      "desired": 23.993000000000002
+    },
+    {
+      "dt": 0.016666666666666666,
+      "random": 0,
+      "calmGateSeconds": 3.0166666666666666,
+      "recoverySeconds": 17,
+      "desired": 17
+    },
+    {
+      "dt": 0.016666666666666666,
+      "random": 0.5,
+      "calmGateSeconds": 3.0166666666666666,
+      "recoverySeconds": 20.5,
+      "desired": 20.5
+    },
+    {
+      "dt": 0.016666666666666666,
+      "random": 0.999,
+      "calmGateSeconds": 3.0166666666666666,
+      "recoverySeconds": 24,
+      "desired": 23.993000000000002
+    },
+    {
+      "dt": 0.03333333333333333,
+      "random": 0,
+      "calmGateSeconds": 3.033333333333333,
+      "recoverySeconds": 17,
+      "desired": 17
+    },
+    {
+      "dt": 0.03333333333333333,
+      "random": 0.5,
+      "calmGateSeconds": 3.033333333333333,
+      "recoverySeconds": 20.5,
+      "desired": 20.5
+    },
+    {
+      "dt": 0.03333333333333333,
+      "random": 0.999,
+      "calmGateSeconds": 3.033333333333333,
+      "recoverySeconds": 24,
+      "desired": 23.993000000000002
+    },
+    {
+      "dt": 0.1,
+      "random": 0,
+      "calmGateSeconds": 3,
+      "recoverySeconds": 17.1,
+      "desired": 17
+    },
+    {
+      "dt": 0.1,
+      "random": 0.5,
+      "calmGateSeconds": 3,
+      "recoverySeconds": 20.5,
+      "desired": 20.5
+    },
+    {
+      "dt": 0.1,
+      "random": 0.999,
+      "calmGateSeconds": 3,
+      "recoverySeconds": 24,
+      "desired": 23.993000000000002
+    }
+  ],
+  "passed": true,
+  "fullTrace": {
+    "sha256": "9d9133f8219aa97a54b3d109fcfcc4e20f966e26dbbf15f13b7b6ff9ca7bb870",
+    "bytes": 780924,
+    "localPath": "encounter-pacing/candidate-cpu.json",
+    "reproduce": "node tools/check_recovery_pacing.cjs baseline.html index.html candidate-cpu.json"
+  },
+  "baselineCommit": "d72ef66ddd988b7a7e760a40525436cfcc73f213",
+  "candidateStatus": "CPU control-flow evidence; completed Windows qualification is recorded in recovery-windows-summary.json",
+  "reference": {
+    "url": "https://tront.xyz/deadends/",
+    "sourceSha256": "209a9d39f79649304c278ed229a0fcba52c7a610ce6c7113cbd048c46f82837e",
+    "inspectedLines": "1038-1100",
+    "principle": "Low-intensity-only transition from FADE to RELAX; automatic pressure pauses while existing combat resolves",
+    "primaryDesignSource": "https://cdn.cloudflare.steamstatic.com/apps/valve/2009/ai_systems_of_l4d_mike_booth.pdf",
+    "designPages": [
+      80,
+      81,
+      82
+    ]
+  }
+}

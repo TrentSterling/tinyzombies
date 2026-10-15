@@ -11,21 +11,23 @@
 */
 'use strict';
 const canvas=document.getElementById('game'), boot=document.getElementById('boot');
-const diagnostics={version:'Tiny Zombies / NO ONE LEFT / V9.0',errors:[],notes:[],startedAt:new Date().toISOString()};
+const diagnostics={version:'Tiny Zombies / NO ONE LEFT / V9.1',errors:[],notes:[],audio:{pipeBeeps:0},startedAt:new Date().toISOString()};
 let stopped=false,device,adapter,context,inFlight=0;
 function fail(e){stopped=true;const msg=e?.stack||e?.message||String(e);diagnostics.errors.push(msg);console.error(e);boot.hidden=false;boot.innerHTML='<h1>THE GPU STOPPED.</h1><p>This prototype requires WebGPU. No silent CPU or WebGL fallback.</p><p>Try a WebGPU-enabled desktop browser with hardware acceleration. If local-file WebGPU is unavailable, serve this same file on localhost or HTTPS.</p><textarea aria-label="Diagnostic report" readonly></textarea><p>Copy the report above. Reload to retry.</p>';boot.querySelector('textarea').value=JSON.stringify(diagnostics,null,2);}
 window.addEventListener('error',e=>fail(e.error||e.message));
 window.addEventListener('unhandledrejection',e=>fail(e.reason));
 const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
+// Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
-const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:false,hideUI:false,reticle:1,tactical:false};
+const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:false,hideUI:false,reticle:1,tactical:false,help:false};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
-let keys=new Set(),mouse={x:.62,y:.38,left:false,right:false,middle:false},pendingGrenade=0,pendingDash=0,frame=0,time=0,last=0,fps=60,cpuMs=0,gpuMs=null;
+let keys=new Set(),mouse={x:.62,y:.38,left:false,right:false,middle:false},pendingGrenade=0,pendingPipeBomb=0,pendingDash=0,frame=0,time=0,last=0,fps=60,cpuMs=0,gpuMs=null;
 let counters=new Uint32Array(96),playerValues=new Float32Array(3072),readBusy=false,readCountdown=0,resetRequested=false,clearBloodRequested=false;
 let frameCallback,resources={},allocatedBytes=0;
+let helpResume=false,toolHint='',toolHintUntil=0;
 let pendingChoice=0,carryMods=new Array(8).fill(0),lastBannerSound=0;
 const L7={"pos":0,"motion":4,"look":8,"timers":12,"bomb":16,"blast":20,"aux":24,"bombStart":28,"shots":32,"goal":64,"skill":68,"wave":72,"tools":76,"mission":80,"buddy":84,"rescue":88,"buddyLook":92,"buddyShot":96,"weapons":100,"escape":104,"lure":108,"feedback":112,"aimPoint":116,"aimNormal":120,"gunOrigin":124,"gunAim":128,"ballistic":132,"allyAim":136,"bullets":140,"critFx":284,"supplies":428,"modsA":432,"modsB":436,"relay":440,"cell":444,"mission5":448,"director":452,"alarm":456,"banner":460,"chooser":464,"runStats":468,"record":472,"orders":476,"lastInput":480,"stageRecord":484,"objectivePoint":488,"cardIDs":492,"spare5":496,"noise":500,"sweepPrev":504,"sweepNext":508,"fxControl":512,"trails6":516,"heat6":1668,"team7":1732,"extraBullets7":2116,"extraCrit7":2148,"player7":2180,"pace7":2184,"journey7":2188,"squad7":2192,"rules7":2196,"radio7":2200,"stateFloats":2220,"buddyStride":128};
 const L8={melee:2204,meleeDir:2208,anim:2212,progress:2216};
@@ -774,14 +776,19 @@ fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
 
  S.feedback.x=0.0;S.weapons.z=max(0.0,S.weapons.z-dt);S.weapons.w=max(0.0,S.weapons.w-dt*6.0);
  S.escape.w=max(0.0,S.escape.w-dt);S.lure.w=max(0.0,S.lure.w-dt);
- for(var ci=38u;ci<41u;ci++){atomicStore(&C[ci],0u);}atomicStore(&C[53],0u);atomicStore(&C[54],0u);
+ for(var ci=38u;ci<41u;ci++){atomicStore(&C[ci],0u);}atomicStore(&C[53],0u);atomicStore(&C[54],0u);atomicStore(&C[71],0u);
  if(S.weapons.y>0.0){S.weapons.y=max(0.0,S.weapons.y-dt);if(S.weapons.y==0.0){S.weapons.x=magazineSize(S.modsA.y);}}
  if(S.goal.w==0.0&&S.pos.w>0.0&&u.config.z>.5){
   if((u.v3.z>.5||S.weapons.x<=0.0)&&S.weapons.y<=0.0&&S.weapons.x<magazineSize(S.modsA.y)){S.weapons.y=reloadDuration(S.modsA.x);}
   if(u.v3.y>.5&&S.weapons.z<=0.0){S.weapons.z=max(.45,.85-S.modsB.x*.12);S.weapons.w=1.0;S.meleeDir8.w=1.0;S.anim8.z=.30;}
-  if(u.v3.w>.5&&S.lure.w<=0.0){let goalPoint=S.pos.xz+safe2(u.aim.xy)*min(length(u.aim.xy),9.0);S.lure=vec4f(goalPoint,6.0+S.modsB.y*2.0,12.0);S.wave.y=max(S.wave.y,4.0);}
+  if(u.v3.w>.5&&S.lure.w<=0.0&&S.spare5.w<=0.0&&(u.run.y>.5||S.supplies.x>=1.0)){
+   let throwDir=safe2(u.aim.xy);let throwRange=min(length(u.aim.xy),9.0);let clearRange=max(0.0,min(throwRange,wallRay(S.pos.xz,throwDir,throwRange+.30)-.30));
+   let goalPoint=S.pos.xz+throwDir*clearRange;let fuse=6.0+S.modsB.y*2.0;
+   S.lure=vec4f(goalPoint,fuse,12.0);S.spare5=vec4f(S.spare5.x,S.pos.x,S.pos.z,fuse);
+   S.supplies.x=max(0.0,S.supplies.x-1.0);S.runStats.y+=1.0;S.wave.y=max(S.wave.y,4.0);atomicAdd(&C[63],1u);
+  }
  }
- if(S.lure.z>0.0){let old=S.lure.z;S.lure.z=max(0.0,S.lure.z-dt);if(old>0.0&&S.lure.z==0.0){S.escape.w=.4;}}
+ if(S.lure.z>0.0){S.lure.z=max(0.0,S.lure.z-dt);}
 
  S.feedback.z=max(0.0,S.feedback.z-dt);
  let slammed=atomicLoad(&C[62]);atomicStore(&C[62],0u);atomicStore(&C[59],0u);
@@ -818,12 +825,14 @@ if(pr.p.w==1.0&&pr.data.x>0.0&&length(p.xz-pr.p.xz)<.8&&S.pos.w>0.0&&S.pos.w<96.
   let num=select(1u,8u,mode==2u);for(var i=0u;i<num;i++){S.shots[i]=vec4f(0,0,0,select(2.0,3.0,mode==2u)+u.run.z*.6);}
  }
  if(grenade>.5&&S.timers.z<=0.0&&S.bomb.z<=0.0&&(u.run.y>.5||S.supplies.x>=1.0)){S.supplies.x=max(0.0,S.supplies.x-1.0);S.runStats.y+=1.0;let destinationPoint=S.pos.xz+safe2(aim)*min(length(aim),11.0);S.bomb=vec4f(destinationPoint,.45,0);S.bombStart=vec4f(S.pos.xyz,0);S.timers.z=max(1.0,1.85-u.run.w*.12);}
- if(S.bomb.z>0.0){S.bomb.z-=dt;if(S.bomb.z<=0.0){S.blast=vec4f(S.bomb.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;}}
+ if(S.bomb.z>0.0){S.bomb.z-=dt;if(S.bomb.z<=0.0){S.blast=vec4f(S.bomb.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;atomicAdd(&C[81],1u);}}
  if(S.goal.w==0.0&&S.pos.w>0.0&&u.config.z>.5){
   if(u.controls.y>.5&&S.skill.x<=0.0&&(u.run.y>.5||S.supplies.x>=1.0)){S.supplies.x=max(0.0,S.supplies.x-1.0);S.runStats.y+=1.0;S.tools.x=1.0;S.skill.x=3.8;S.look.z=1.0;S.mission.w=wallRay(S.pos.xz+dir*.2,dir,14.0);}
   if(u.controls.z>.5&&S.skill.y<=0.0&&(u.run.y>.5||S.supplies.x>=2.0)){S.supplies.x=max(0.0,S.supplies.x-2.0);S.runStats.y+=2.0;let destinationPoint=S.pos.xz+dir*min(10.0,length(aim));S.tools=vec4f(S.tools.x,.95,destinationPoint);S.skill.y=7.0;}
  }
  if(S.tools.y>0.0){let old=S.tools.y;S.tools.y=max(0.0,S.tools.y-dt);if(old>.20&&S.tools.y<=.20){S.blast=vec4f(S.tools.zw,.5,4.5);S.aux.w=1.0;}}
+ // Reuse the existing blast/destruction pipeline. Defer a simultaneous blast by one frame.
+ if(S.spare5.w>0.0&&S.lure.z<=0.0&&S.aux.w<.5){S.blast=vec4f(S.lure.xy,.45,3.8+u.worldInfo.w*.25);S.aux.w=1.0;S.spare5.w=0.0;S.escape.w=.4;S.noise=vec4f(S.lure.xy,3.0,30.0);atomicAdd(&C[67],1u);}
  if(S.pos.w<=0.0&&S.player7.x==0.0&&S.goal.w==0.0){S.player7=vec4f(45,0,0,S.player7.w);S.radio7=vec4f(0,4,4,-1);}
  if(S.player7.x>0.0&&u.inputMove.z>.5&&S.timers.x<=0.0){S.shots[0]=vec4f(0,0,0,2.2);S.timers.x=.28;S.aux.y=1.0;S.look.z=1.0;S.ballistic.x+=1.0;S.ballistic.z=1.0;}atomicStore(&C[12],u32(max(0.0,S.pos.w)));
 }
@@ -994,11 +1003,12 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
  for(var ti=0u;ti<3u;ti++){let ally=S.team7[ti];if(ally.vital.z<.5){continue;}let d=length(ally.p.xz-z.p.xz);nearTeam=min(nearTeam,d);if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;}}
  z.v.w=max(0.0,z.v.w-dt);if(distance<select(select(21.0,16.0,S.wave.x<.5),43.0,S.wave.x>1.5)||z.extraData.y>.01||nearTeam<12.0||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
  if(distance>52.0&&nearTeam>15.0&&z.v.w<=0.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
- let awake=z.v.w>0.0||distance<14.0||nearTeam<11.0;if(awake){atomicAdd(&C[53],1u);}
+ var awake=z.v.w>0.0||distance<14.0||nearTeam<11.0;
  if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;}
- if(S.lure.z>0.0&&length(S.lure.xy-z.p.xz)<15.0){let ld=safe2(S.lure.xy-z.p.xz);let ln=length(S.lure.xy-z.p.xz);var visible=true;for(var li=1u;li<min(30u,u32(ln*2.0));li++){if(solid(vec3f(z.p.x+ld.x*f32(li)*.5,.55,z.p.z+ld.y*f32(li)*.5))>0u){visible=false;break;}}if(visible){goalPoint=S.lure.xy;}}
+ if(S.lure.z>0.0&&S.spare5.w-S.lure.z>=.45&&length(S.lure.xy-z.p.xz)<15.0){let ld=safe2(S.lure.xy-z.p.xz);let ln=length(S.lure.xy-z.p.xz);var visible=true;for(var li=1u;li<min(30u,u32(ln*2.0));li++){if(solid(vec3f(z.p.x+ld.x*f32(li)*.5,.55,z.p.z+ld.y*f32(li)*.5))>0u){visible=false;break;}}if(visible){goalPoint=S.lure.xy;awake=true;z.v.w=max(z.v.w,6.0);atomicAdd(&C[71],1u);}}
+ if(awake){atomicAdd(&C[53],1u);}
  let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);
  // Short direct line-of-sight segments preserve natural motion inside a room.
  var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;k<steps;k++){if(solid(vec3f(z.p.x+direct.x*f32(k)*.5,.55,z.p.z+direct.y*f32(k)*.5))>0u){sight=false;break;}}
@@ -1343,7 +1353,7 @@ const integrateShader=COMMON+`
  if(abs(p.x)>95.8){p.x=clamp(p.x,-95.8,95.8);q.v.x*=-.3;}if(abs(p.z)>95.8){p.z=clamp(p.z,-95.8,95.8);q.v.z*=-.3;}
  let bloody=q.c.w<1.5&&q.c.x>q.c.y*1.5;
  if(bloody && wallID>0u){atomicMax(&WallPaint[wallID-1u],(u32(S.aux.x*16.0)<<8u)|220u);if(q.c.w<.5){q.p.w=0.0;}}
- if(grounded&&bloody&&(q.a.w<0.0||(q.a.x-q.a.w>.12&&length(q.v.xz)>.9))){let radius=select(1,2,q.c.w<.5);stain(p.xz,radius,select(180u,255u,q.c.w<.5));if(q.a.w<0.0){atomicAdd(&C[13],1u);}q.a.w=q.a.x;if(q.c.w<.5){q.p.w=min(q.p.w,.22);q.v=vec4f(q.v.xyz*.25,q.v.w);}}
+ if(grounded&&bloody&&(q.a.w<0.0||(q.a.x-q.a.w>.12&&length(q.v.xz)>.9))){let radius=select(0,1,q.c.w<.5);stain(p.xz,radius,select(180u,255u,q.c.w<.5));if(q.a.w<0.0){atomicAdd(&C[13],1u);}q.a.w=q.a.x;if(q.c.w<.5){q.p.w=min(q.p.w,.22);q.v=vec4f(q.v.xyz*.25,q.v.w);}}
  if(grounded&&q.a.x>1.1&&length(q.v.xyz)<.9){q.v=vec4f(0,0,0,q.v.w);}
  q.p=vec4f(p,q.p.w);B[i]=q;
 }
@@ -1494,7 +1504,13 @@ fn friend7(id:u32){
   model(S.pos.xyz,S.look.xy,S.anim8.x,0,true,S.look.w*.25,select(-1.0,-3.0,S.player7.x>0.0));
   if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}
   if(S.weapons.w>.02){for(var k=0u;k<11u;k++){let a=(f32(k)-5.0)*.13;let d=vec2f(S.look.x*cos(a)-S.look.y*sin(a),S.look.x*sin(a)+S.look.y*cos(a));let p=S.pos.xz+d*(1.7-S.weapons.w*.35);box(vec3f(p.x,.10,p.y),vec3f(.07,.07,.07),vec3f(.65,.95,.94),1,S.weapons.w*2.0);}}
-  if(S.lure.z>0.0){box(vec3f(S.lure.x,.16,S.lure.y),vec3f(.3),vec3f(.14,.7,.9),1,.8);for(var k=0u;k<16u;k++){let a=f32(k)*.3927;let r=fract(S.aux.x*1.6)*2.5;box(vec3f(S.lure.x+cos(a)*r,.02,S.lure.y+sin(a)*r),vec3f(.07,.018,.07),vec3f(.15,.7,1),1,.4);}}
+  if(S.lure.z>0.0){
+    let t=clamp((S.spare5.w-S.lure.z)/.45,0.0,1.0);let xz=mix(S.spare5.yz,S.lure.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*2.8,xz.y);
+    let pulse=.45+.55*abs(sin(S.aux.x*(5.0+12.0*(1.0-S.lure.z/max(1.0,S.spare5.w)))));
+    box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);
+    box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);
+    if(t>=1.0){for(var k=0u;k<12u;k++){let a=f32(k)*.523599;let r=.55+fract(S.aux.x*1.6)*.55;box(vec3f(S.lure.x+cos(a)*r,.02,S.lure.y+sin(a)*r),vec3f(.045,.014,.045),vec3f(1,.45,.08),1,.35);}}
+   }
   if(u.run.y<.5&&S.cell.w<2.0){var pos=S.cell.xyz+vec3f(0,.34,0);if(S.cell.w==1.0){pos=S.pos.xyz+vec3f(-.38,.62,0);}
    box(pos,vec3f(.50,.56,.44),vec3f(.09,.35,.40),1,0);box(pos+vec3f(0,.02,.228),vec3f(.30,.34,.022),vec3f(.20,.93,1),1,1.1);box(pos+vec3f(0,.32,0),vec3f(.38,.08,.26),vec3f(.63,.66,.5),1,0);
    if(S.cell.w==0.0){for(var k=0u;k<12u;k++){let a=f32(k)*.5236;box(pos+vec3f(cos(a)*.85,-.31,sin(a)*.85),vec3f(.11,.025,.11),vec3f(.18,.9,1),1,.7);}}
@@ -1884,7 +1900,7 @@ struct PointLight{p:vec4f,c:vec4f};
  if(i==0u){l=PointLight(vec4f(S.gunOrigin.xyz+S.gunAim.xyz*.80,4.0),vec4f(1,.30,.035,S.look.z*1.8));}
  if(i==1u){l=PointLight(vec4f(S.blast.x,.8,S.blast.y,6),vec4f(1,.23,.025,S.blast.z*6.0));}
  if(i==2u){l=PointLight(vec4f(S.buddy.x,.7,S.buddy.z,3.5),vec4f(.85,.32,1,S.buddyLook.w*1.4));}
- if(i==3u){l=PointLight(vec4f(S.lure.x,.4,S.lure.y,5),vec4f(.06,.48,1,select(0.0,1.2+.4*sin(S.aux.x*14.0),S.lure.z>0.0)));}
+ if(i==3u){l=PointLight(vec4f(S.lure.x,.4,S.lure.y,5),vec4f(1,.31,.04,select(0.0,.8+.5*abs(sin(S.aux.x*14.0)),S.lure.z>0.0)));}
  if(i==4u||i==5u){let j=i-4u;let p=select(u.goals.xy,u.goals.zw,j==1u);l=PointLight(vec4f(p.x,1.0,p.y,4.5),vec4f(select(vec3f(1,.33,.055),vec3f(.10,1,.46),S.goal[j]>=2.4),1.8));}
  if(i==6u){l=PointLight(vec4f(u.route.z,1.5,u.route.w,6.0),vec4f(.08,.70,.68,1.8));}
  if(i>=17u){var found=0u;for(var p=0u;p<u32(u.worldInfo.y);p++){let pr=P[p];if(pr.data.x<=0.0){continue;}if(pr.p.w==6.0||pr.p.w==4.0){if(found==i-17u){if(pr.p.w==6.0){l=PointLight(vec4f(pr.p.xyz,5.2),vec4f(select(vec3f(.16,.45,1),vec3f(1,.32,.06),pr.data.w>.6),1.7));}else{l=PointLight(vec4f(pr.p.xyz,4.0),vec4f(1,.08,.015,select(0.0,2.0*abs(sin(S.aux.x*22.0)),pr.data.y==1.0)));}break;}found++;}}}
@@ -2163,8 +2179,29 @@ fn sdfGlyph(code:u32,uv:vec2f)->f32{
 // ---- GPU-resident simulation host -------------------------------------------------
 
 let audio=null,noiseBuffer=null,audioGain=null,nextSound=0,nextBoom=0,lastCritSound=0;
+let nextPipeBeep=0,lastPipeExplosion=0,lastGrenadeExplosion=0;
 function enableAudio(){if(audio||settings.muted)return;try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audio=new AC();audioGain=audio.createGain();audioGain.gain.value=.17;audioGain.connect(audio.destination);noiseBuffer=audio.createBuffer(1,audio.sampleRate*.4,audio.sampleRate);let a=noiseBuffer.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=(Math.random()*2-1);audio.resume();}catch(e){diagnostics.notes.push('Audio unavailable: '+e.message);}}
 function sound(kind){if(!audio||settings.muted||audio.state!=='running')return;let t=audio.currentTime;let dur=kind===3?.23:kind===2?.30:kind===1?.14:.055;let src=audio.createBufferSource(),filter=audio.createBiquadFilter(),gain=audio.createGain();src.buffer=noiseBuffer;filter.type='lowpass';filter.frequency.setValueAtTime(kind===3?7800:kind===2?650:kind===1?2400:4200,t);filter.frequency.exponentialRampToValueAtTime(140,t+dur);gain.gain.setValueAtTime(kind===2?1.2:kind===1?.95:.6,t);gain.gain.exponentialRampToValueAtTime(.001,t+dur);src.connect(filter);filter.connect(gain);gain.connect(audioGain);src.start(t);src.stop(t+dur);let osc=audio.createOscillator(),g=audio.createGain();osc.frequency.setValueAtTime(kind===3?1250:kind===2?105:kind===1?170:250,t);osc.frequency.exponentialRampToValueAtTime(35,t+dur);g.gain.setValueAtTime(.4,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);osc.connect(g);g.connect(audioGain);osc.start(t);osc.stop(t+dur);}
+function pipeBeep(remaining){
+ if(!audio||settings.muted||audio.state!=='running')return;
+ const t=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain();osc.type='square';osc.frequency.value=remaining<1.5?1480:remaining<3?1080:760;
+ gain.gain.setValueAtTime(.10,t);gain.gain.exponentialRampToValueAtTime(.001,t+.065);osc.connect(gain);gain.connect(audioGain);osc.start(t);osc.stop(t+.07);diagnostics.audio.pipeBeeps++;
+}
+function updateBombAudio(){
+ const clock=playerValues[24]||0,fuse=playerValues[110]||0,total=playerValues[499]||0;
+ if(settings.paused||!settings.started){nextPipeBeep=clock;return;}
+ if(counters[67]>lastPipeExplosion)sound(2);if(counters[81]>lastGrenadeExplosion)sound(2);
+ lastPipeExplosion=counters[67];lastGrenadeExplosion=counters[81];
+ if(fuse>0&&total-fuse>=.45&&clock>=nextPipeBeep){pipeBeep(fuse);nextPipeBeep=clock+(fuse>3?.65:fuse>1.5?.35:.16);}
+ if(fuse<=0)nextPipeBeep=clock;
+}
+function ordnanceHint(pipe){
+ if(pipe&&playerValues[110]>0)toolHint='A pipe bomb is already active.';
+ else if(pipe&&playerValues[111]>0)toolHint='Pipe bomb ready in '+Math.ceil(playerValues[111])+'s.';
+ else if(!settings.lab&&playerValues[428]<1)toolHint='Find ordnance to throw another bomb.';
+ else return;
+ toolHintUntil=time+2.2;
+}
 let lastMasonry7=0,lastDoor7=0;
 function impactTone7(door=false){if(!audio||settings.muted||audio.state!=='running')return;const t=audio.currentTime,d=door?.12:.052,src=audio.createBufferSource(),f=audio.createBiquadFilter(),g=audio.createGain();src.buffer=noiseBuffer;f.type=door?'lowpass':'bandpass';f.frequency.value=door?650:2500;f.Q.value=1.2;g.gain.setValueAtTime(door?.22:.10,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);src.connect(f);f.connect(g);g.connect(audioGain);src.start(t);src.stop(t+d);}
 function missionTone(code){if(!audio||settings.muted||audio.state!=='running')return;const start=audio.currentTime;const seq=code===11?[230,230,180]:code===7?[440,220]:code===4||code===5?[440,660,880]:[540,720];seq.forEach((hz,i)=>{let osc=audio.createOscillator(),g=audio.createGain(),t=start+i*.10;osc.type='triangle';osc.frequency.value=hz;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.26,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.16);osc.connect(g);g.connect(audioGain);osc.start(t);osc.stop(t+.17);});}
@@ -2177,7 +2214,9 @@ function bindInput(){
  canvas.addEventListener('wheel',e=>{e.preventDefault();settings.zoom=Math.max(16,Math.min(62,settings.zoom*Math.exp(e.deltaY*.001)));},{passive:false});
  window.addEventListener('keydown',e=>{if(['Tab','Space','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.code))e.preventDefault();keys.add(e.code);if(e.repeat)return;
   switch(e.code){
-   case 'Space':pendingGrenade=1;settings.started=true;enableAudio();if(playerValues[428]>=1&&time>nextBoom){nextBoom=time+1.5;setTimeout(()=>sound(2),450);}break;
+   case 'Space':if(settings.paused)break;pendingGrenade=1;settings.started=true;enableAudio();ordnanceHint(false);break;
+   case 'KeyB':if(settings.paused)break;pendingPipeBomb=1;settings.started=true;enableAudio();ordnanceHint(true);break;
+   case 'Slash':e.preventDefault();if(settings.help){settings.help=false;settings.paused=!helpResume;}else{helpResume=!settings.paused;settings.help=true;settings.paused=true;}mouse.left=mouse.right=mouse.middle=false;break;
    case 'ShiftLeft':case 'ShiftRight':pendingDash=1;break;
    case 'KeyL':settings.practice=true;settings.lab=!settings.lab;seedRequested=true;break;
    case 'KeyN':seedRequested=true;runSeed=(runSeed+104729)>>>0;stage=1;upgrades=[0,0,0];carryMods.fill(0);break;
@@ -2188,7 +2227,7 @@ function bindInput(){
    case 'KeyT':settings.practice=true;settings.demo=!settings.demo;settings.started=true;break;
    case 'Tab':settings.tactical=true;break;
    case 'F3':e.preventDefault();settings.stats=!settings.stats;break;
-   case 'Escape':settings.paused=!settings.paused;mouse.left=mouse.right=mouse.middle=false;break;
+   case 'Escape':if(settings.help){settings.help=false;settings.paused=!helpResume;}else settings.paused=!settings.paused;mouse.left=mouse.right=mouse.middle=false;break;
    case 'Backspace':e.preventDefault();resetRequested=true;break;
    case 'F1':e.preventDefault();settings.hideUI=!settings.hideUI;break;
    case 'Delete':clearBloodRequested=true;break;
@@ -2268,7 +2307,7 @@ function buildComputeBindings(){
 function pass(enc,name,binding,count,extra={}){const p=enc.beginComputePass({label:name,...extra});p.setPipeline(compute[name]);p.setBindGroup(0,binding);p.dispatchWorkgroups(Math.max(1,count));p.end();}
 function clearParticles(){if(!device||!pA)return;const e=device.createCommandEncoder();e.clearBuffer(pA);e.clearBuffer(pB);e.clearBuffer(pHeads);device.queue.submit([e.finish()]);}
 function relaxNav(enc,iterations,stamped=false){const opts=stamped?{timestampWrites:{querySet:tsQuery,beginningOfPassWriteIndex:6,endOfPassWriteIndex:7}}:{};const p=enc.beginComputePass({label:'clearance-aware flow-field relaxation',...opts});p.setPipeline(compute.navRelax);for(let i=0;i<iterations;i++){p.setBindGroup(0,bindings.navRelax[i&1]);p.dispatchWorkgroups(Math.ceil(NAV_SIZE/64));}p.end();}
-function reset(){lastMasonry7=lastDoor7=0;
+function reset(){lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExplosion=lastGrenadeExplosion=0;pendingPipeBomb=pendingGrenade=pendingDash=0;toolHint='';toolHintUntil=0;settings.help=false;diagnostics.audio.pipeBeeps=0;
  pendingChoice=0;keys.clear();mouse.left=mouse.right=mouse.middle=false;lastBannerSound=0;
  device.queue.writeBuffer(W,0,world.blocks);device.queue.writeBuffer(O,0,world.occ);device.queue.writeBuffer(Props,0,world.props);device.queue.writeBuffer(Groups,0,world.groups);
  device.queue.writeBuffer(Chunks,0,world.chunks);device.queue.writeBuffer(Fracture,0,fractureData8(world));
@@ -2340,7 +2379,7 @@ const FIELD_MODS=[
  {name:'Field Medic',a:'Medkits heal more',b:'Help your squad'},
  {name:'Impact Liner',a:'Reduce contact damage',b:'Melee is still risky'},
  {name:'Room Maker',a:'Wider, faster shove',b:'Punch an escape route'},
- {name:'Long Distraction',a:'Lure lasts two seconds longer',b:'Open another way'},
+ {name:'Long Distraction',a:'Pipe bomb lures for 2s longer',b:'Open another way'},
  {name:'Crowd Breaker',a:'Stronger shotgun knockback',b:'Make breathing room'},
  {name:'Scavenger',a:'Earn ordnance with fewer kills',b:'Use your surroundings'}
 ];
@@ -2375,6 +2414,12 @@ function hud(){
   // Low-profile resource marks below the character, not another equipment inventory panel.
   for(let i=0;i<8;i++)rect(cx-38*k+i*7.5*k,cy+r+15*k,4.5*k,3*k,i<ord?COL9.gold:COL9.dim);
   for(let i=0;i<3;i++)uiQuad9(cx+35*k+i*10*k,cy+r+8*k,10*k,10*k,i<kits?COL9.green:COL9.dim,135);
+  if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,13*k)/2,cy+r+34*k,13*k,COL9.gold);
+  if(playerValues[110]>0){
+   const fuse=playerValues[110],total=playerValues[499]||6,t=clamp9((total-fuse)/.45,0,1),bx=playerValues[497]+(playerValues[108]-playerValues[497])*t,bz=playerValues[498]+(playerValues[109]-playerValues[498])*t;
+   const [sx,sy]=screenPoint(bx,bz,.55+Math.sin(t*Math.PI)*2.8);const label='Pipe bomb '+fuse.toFixed(1)+'s';
+   if(sx>40&&sx<width-40&&sy>24&&sy<height-30){disk9(sx,sy-10*k,10*k,clamp9(fuse/total,0,1),COL9.gold);text(label,sx-textWidth9(label,12*k)/2,sy-40*k,12*k,COL9.gold);}
+  }
   if(reload>0){const lbl='Reloading';text(lbl,cx-textWidth9(lbl,13*k)/2,cy+r+25*k,13*k,COL9.gold);}
   if(playerValues[L7.player7]>0){
    // Downed is a local, quiet critical state; never a full-width error console.
@@ -2455,12 +2500,15 @@ function hud(){
   centre('NO ONE LEFT',height*.378,18*k,COL9.violet);
   centre('Click to play',height*.485,23*k,COL9.gold);
   if(savedCheckpoint)centre('Enter to continue leg '+savedCheckpoint.stage,height*.544,17*k,COL9.green);
-  centre('WASD move  /  Mouse fire  /  E interact',height*.61,14*k,COL9.soft);
+  centre('Move with WASD, aim and fire with the mouse.',height*.585,15*k,COL9.soft);
+  centre('B throws a pipe bomb. Space throws a grenade.',height*.63,15*k,COL9.gold);
+  centre('Press ? for all controls.',height*.675,13*k,COL9.soft);
  }
- if(settings.paused&&settings.started&&!choosing&&!won&&!dead){
-  panel9(width*.37,height*.395,width*.26,height*.18,.91);
-  centre('Paused',height*.415,36*k,COL9.white);
-  centre('Esc to resume',height*.496,15*k,COL9.soft);
+ if(settings.paused&&settings.started&&!settings.help&&!choosing&&!won&&!dead){
+  panel9(width*.23,height*.365,width*.54,height*.27,.91);
+  centre('Paused',height*.39,36*k,COL9.white);
+  centre('B throws a pipe bomb. Space throws a grenade.',height*.49,15*k,COL9.gold);
+  centre('Esc resumes. Press ? for all controls.',height*.55,15*k,COL9.soft);
  }
  if(choosing&&!dead){
   panel9(0,0,width,height,.80);centre('Choose an upgrade',height*.20,31*k,COL9.white);
@@ -2487,7 +2535,12 @@ function hud(){
    for(let i=0;i<3;i++){let px=width*(.24+i*.18);panel9(px-16*k,height*.495,width*.17,70*k,.94);text(options[i],px,height*.515,17*k,i===0?COL9.gold:COL9.white);}
   }
  }
- if(active&&!settings.tactical)aimHUD();
+ if(settings.help){
+  const x=width*.18,y=height*.20,w=width*.64;panel9(x,y,w,height*.64,.96);centre('Controls',y+20*k,28*k,COL9.white);
+  const lines=['Move with WASD or the arrow keys. Aim with the mouse.','Left click fires; right click fires the shotgun. R reloads.','B throws an attracting pipe bomb. Space throws a grenade.','Shift dashes. Z or middle click uses melee.','E interacts. Hold H to heal. Hold Tab for the field map.','F cuts a wall. C throws a vortex. These use ordnance.','M mutes audio. Backspace restarts the current run.','Press ? or Esc to close these controls.'];
+  lines.forEach((line,i)=>centre(line,y+(72+i*31)*k,14*k,i===2?COL9.gold:COL9.soft));
+ }
+ if(active&&!settings.tactical&&!settings.help&&!settings.paused)aimHUD();
  device.queue.writeBuffer(glyphBuffer,0,glyphMemory,0,glyphCount*48);
 }
 
@@ -2508,7 +2561,7 @@ function updateUniforms(dt){
  uniformData.set([keys.has('KeyE')?1:0,keys.has('KeyF')?1:0,keys.has('KeyC')?1:0,keys.has('KeyQ')&&(settings.lab||playerValues[70]>.01)?1:0],56);
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
  uniformData.set([world.count,world.propCount,runSeed,upgrades[2]],64);uniformData.set(world.generators,68);uniformData.set([...world.start,...world.exit],72);
- uniformData.set([keys.has('KeyX')?1:0,(keys.has('KeyZ')||mouse.middle)?1:0,keys.has('KeyR')?1:0,keys.has('KeyB')?1:0],76);
+ uniformData.set([keys.has('KeyX')?1:0,(keys.has('KeyZ')||mouse.middle)?1:0,keys.has('KeyR')?1:0,pendingPipeBomb],76);pendingPipeBomb=0;
  uniformData.set([keys.has('KeyH')?1:0,keys.has('KeyJ')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
  device.queue.writeBuffer(U,0,uniformData);
 }
@@ -2578,6 +2631,7 @@ function drawFrame(now){
  if(sample){sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,384)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(384,12288)));sampleBuffer.unmap();if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}readBusy=false;}).catch(e=>{readBusy=false;fail(e);});}
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  if(settings.started&&!settings.paused&&!settings.demo&&playerValues[67]===0&&playerValues[3]>0&&playerValues[101]<=0&&playerValues[100]>0&&(mouse.left||mouse.right)&&time>=nextSound){sound(mouse.right?1:0);nextSound=time+(mouse.right?.23:.040);}
+ updateBombAudio();
  frameCallback=requestAnimationFrame(drawFrame);
  }catch(e){fail(e);}
 }
@@ -2588,7 +2642,7 @@ async function snapshot(particleCount=0){
  if(count)result.particles=Array.from(new Float32Array(await readBuffer(pA,0,count*64)));
  return result;
 }
-function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:false,tactical:'hold Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={minigunInterval:.040,shotgunInterval:.23,ordinaryTerrainDamage:1.4,concreteHP:4,critChance:.01,critFleshRadius:1.25,critTerrainRadius:.60,magazine:120,roundsFired:counters[41],impacts:counters[42],heVoxelsRemoved:counters[43],heKills:counters[44],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[67],attracted:counters[71],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 async function main(){
  if(!navigator.gpu)throw new Error('navigator.gpu is unavailable. Secure context: '+window.isSecureContext+'. WebGPU is mandatory.');
  adapter=await navigator.gpu.requestAdapter({powerPreference:'high-performance'});if(!adapter)throw new Error('No WebGPU adapter was returned by this browser.');

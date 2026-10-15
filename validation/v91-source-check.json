@@ -1,0 +1,40 @@
+{
+  "kind": "CPU-only source and host behavior validation",
+  "baseline_sha256": "c487bdb1aabeddb7c0ee6edcb2d059aabb2c32ea1be5cfa7a0c34717da3a4fc4",
+  "candidate_sha256": "4248fc595511b5e5eed88422d2c46ea623bb792b4b7a3ed007ca445521af4355",
+  "candidate_bytes": 374166,
+  "javascript_syntax": "passed",
+  "changed_shader_modules": [
+    "lights",
+    "begin",
+    "zombies",
+    "integrate",
+    "boxes"
+  ],
+  "exact_preservation": [
+    "particle emission",
+    "particle integration except floor radius",
+    "pair solver",
+    "particle grid",
+    "wall drips",
+    "persistent blood rendering and minimap",
+    "NVIDIA scratch fix",
+    "state layout and entity budgets"
+  ],
+  "isolated_floor_cells": {
+    "droplet": {
+      "before": 21,
+      "after": 9
+    },
+    "gore": {
+      "before": 9,
+      "after": 1
+    }
+  },
+  "controls": "passed: separate B/Space, no repeat throws, pause and help restoration",
+  "audio_scheduler": "passed with stubs: landing delay, sample deduplication, pause, distinct pipe/grenade events",
+  "gpu_compilation": "pending",
+  "gpu_execution": "pending",
+  "audible_output": "pending",
+  "visual_validation": "pending"
+}

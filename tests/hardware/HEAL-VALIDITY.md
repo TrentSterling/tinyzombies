@@ -42,4 +42,4 @@ Use a dedicated, authorized, exact-hash test profile and keep actual video with 
 
 This correction prevents the demonstrated medical action from creating a mixed human state. It does not repair an arbitrary pre-existing synthetic positive-HP/down-timer snapshot or change leaper acquisition, rescue eligibility, global scheduling, medical target selection, extraction or combat timing.
 
-The separate inherited case where a human can self-medkit while successfully reviving a teammate is outside this patch. The source cancels self-medkit progress only for an eligible, unblocked revive; a future correction must retain its threat-blocked exception. No full source-parity, GPU performance or live-release claim is made here.
+The inherited human self-medkit/manual-revive conflict was outside this patient-validity patch. The subsequent dependent correction is documented in `REVIVE-PRIORITY.md`, including the threat-blocked exception and the legitimate precharged-kit completion boundary. No full source-parity, GPU performance or live-release claim is made here.

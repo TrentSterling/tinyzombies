@@ -7,7 +7,7 @@ const m=makeModel(file,5),source=m.world.source13,g=m.host.run('CHAPTER_GEOMETRY
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]),mix=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),unit=v=>{let d=Math.max(Math.hypot(...v),.0001);return v.map(x=>x/d);};
 const checks=[];function check(name,f){try{checks.push({name,passed:true,...f()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
-const pinnedRuntimeSha256='87bf5cfcf83d39c44298a977f7d739a0621805e2034790b52327ece68cfc739d';
+const pinnedRuntimeSha256='2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70';
 const capturedDoorStates=[m.world.startDoor13,m.world.gate13,m.world.final13].map(i=>({index:i,rawY:m.world.props[i*16+1],rawOpen:m.world.props[i*16+5],modelY:m.props[i*16+1],modelOpen:m.props[i*16+5]}));
 const closeDoor=i=>{m.props[i*16+1]=1;m.props[i*16+5]=1;m.dynamic();};const openDoor=i=>{m.openDoor(i);m.dynamic();};
 for(const i of [m.world.startDoor13,m.world.gate13,m.world.final13])m.openDoor(i);m.dynamic();

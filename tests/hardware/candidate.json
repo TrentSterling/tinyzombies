@@ -1,10 +1,10 @@
 {
-  "harnessVersion": "heal-validity-v1",
-  "runtimeSha256": "87bf5cfcf83d39c44298a977f7d739a0621805e2034790b52327ece68cfc739d",
+  "harnessVersion": "revive-priority-v1",
+  "runtimeSha256": "2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: full-pipeline bot healing interrupted by natural patient downing/death, valid heal and rescue takeover, retained crawl/pin/extraction cases and fresh matched five-chapter persistence. CPU updater and controlled begin-only fixture are separate evidence, not earned gameplay.",
+  "acceptance": "Deferred: ordinary-input simultaneous self-medkit/manual rescue, threat-blocked exception and first-frame completion boundary, retained bot patient validity/crawl/pin/extraction and fresh matched five-chapter persistence. CPU source/ordered adapters are separate evidence, not earned gameplay.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "5f459814c4471385a1cdc256ba24761b3a1f653f",
+  "dependencyCommit": "84199cab543e9e07a5c9a65432592dde47d47767",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
 }

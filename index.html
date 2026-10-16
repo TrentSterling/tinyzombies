@@ -2332,7 +2332,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    a.ai=vec4f(2,0,-1,0);a.movement=vec4f(0);a.flags.y=0.0;
    let manualRevive20=select(i32(id)==manual,S.mission5.y==1.0&&S.mission5.z==f32(id),u.run.x<=5.0);
    let manualDrag20=i32(id)==manual&&S.squad7.y==f32(id);
-   if((manualRevive20||manualDrag20)&&S.player7.x==0.0&&S.flags12.w==0.0){a.vital.z=1.0;if(S.squad7.y==f32(id)){if(distance(a.p.xz,S.pos.xz)>63.0/64.0){a=moveBuddy7(a,S.pos.xz,1000.0,58.0/64.0);}a.vital.x=0.0;a.flags.y=3.0;}else if(u.controls.x>.5&&distance(a.p.xz,S.pos.xz)<90.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),S.pos.xyz+vec3f(0,.4,0),.02)&&threatNear7(a.p.xz,48.0/64.0)<.5){a.vital.x+=dt;if(a.vital.x>=2.35){a.p.w=35.0;a.vital.x=0.0;a.vital.y=3.0;atomicAdd(&C[74],1u);}}else{a.vital.x=0.0;}}
+   if((manualRevive20||manualDrag20)&&S.player7.x==0.0&&S.flags12.w==0.0){a.vital.z=1.0;if(S.squad7.y==f32(id)){if(distance(a.p.xz,S.pos.xz)>63.0/64.0){a=moveBuddy7(a,S.pos.xz,1000.0,58.0/64.0);}a.vital.x=0.0;a.flags.y=3.0;}else if(u.controls.x>.5&&distance(a.p.xz,S.pos.xz)<90.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),S.pos.xyz+vec3f(0,.4,0),.02)&&threatNear7(a.p.xz,48.0/64.0)<.5){if(u.run.x<=5.0&&S.heal12.y<0.0){S.heal12.x=0.0;S.supplies.w=0.0;}a.vital.x+=dt;if(a.vital.x>=2.35){a.p.w=35.0;a.vital.x=0.0;a.vital.y=3.0;atomicAdd(&C[74],1u);}}else{a.vital.x=0.0;}}
   }else{
    a.flags.y=2.0;
    if(a.ai.w<=0.0||a.plan.y==0u){

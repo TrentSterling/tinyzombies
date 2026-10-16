@@ -6,7 +6,7 @@ function fragment(s,n){const i=s.indexOf(n);assert(i>=0,n);let start=s.indexOf('
 const shader=html.slice(html.indexOf('const buddyShader='),html.indexOf('const squadNav7Shader=')),full=fragment(shader,'@compute @workgroup_size(1) fn update()');
 let code=full.slice(full.indexOf('{')+1,-1).replace(/\b(\d+)u\b/g,'$1').replace(/\bvar\b/g,'let').replace('let claims:array<i32,4>','let claims=new Array(4)').replace(/atomicExchange\(&C\[([^\]]+)\],([^\)]+)\)/g,'exchange($1,$2)').replace(/atomicAdd\(&C\[([^\]]+)\],([^\)]+)\)/g,'increment($1,$2)');
 // Mechanical vector operators on paths exercised here. Untranslated vector coercion throws.
-code=code.replaceAll('a.p.xyz+vec3f(0,.4,0)','add(a.p.xyz,vec3f(0,.4,0))').replaceAll('t.xyz+vec3f(0,.4,0)','add(t.xyz,vec3f(0,.4,0))');
+code=code.replaceAll('a.p.xyz+vec3f(0,.4,0)','add(a.p.xyz,vec3f(0,.4,0))').replaceAll('t.xyz+vec3f(0,.4,0)','add(t.xyz,vec3f(0,.4,0))').replaceAll('S.pos.xyz+vec3f(0,.4,0)','add(S.pos.xyz,vec3f(0,.4,0))');
 code=code.replace('floor(a.p.xz+HALF)','floor(add(a.p.xz,HALF))').replace('grid+vec2i(xx,zz)','add(grid,vec2i(xx,zz))').replace('any(c<vec2i(0))','any(less(c,vec2i(0)))').replace('any(c>=vec2i(NG))','any(greaterEqual(c,vec2i(NG)))');
 // WGSL struct/vector assignment is by value; preserve this at mutable local boundaries.
 code=code.replace('let a=S.team7[id];','let a=clone(S.team7[id]);').replace('let mag=S.botMag13[id];let reserve=S.botReserve13[id];let life=S.botLife13[id];','let mag=clone(S.botMag13[id]);let reserve=clone(S.botReserve13[id]);let life=clone(S.botLife13[id]);').replace('S.team7[0].p=S.buddy;','S.team7[0].p=clone(S.buddy);');
@@ -24,7 +24,7 @@ function vn(n,...xs){const a=v(...xs);a.dim=n;return a;}
 function clone(x){if(Array.isArray(x))return v(...x);return Object.fromEntries(Object.entries(x).map(([k,val])=>[k,Array.isArray(val)?v(...val):val]));}
 function actor(x,hp){let a={};for(const k of ['p','look','ai','destination7','pack','memory','nav','movement','plan','stats','vital','intent','aim','pathInfo','misc','flags'])a[k]=v(0);a.p=v(x,.35,0,hp);a.memory=v(-1,0,0,hp);a.vital=v(0,0,1,0);a.pack=v(30,30,0,1);return a;}
 function make({think=.2,patient='human',dt=1/60}={}){
- const S={};for(const k of ['weapons','supplies','escape','buddyShot','goal','chooser','radio7','player7','rescue','journey7','squad7','controlEdges12','edges12','flags12','botFuel15','botStamina13','botControl13','aux','blast','runStats','upgrades14','orders','order13','botPour15','mission5','buddyLook','allyAim','feedback'])S[k]=v(0);
+ const S={};for(const k of ['heal12','weapons','supplies','escape','buddyShot','goal','chooser','radio7','player7','rescue','journey7','squad7','controlEdges12','edges12','flags12','botFuel15','botStamina13','botControl13','aux','blast','runStats','upgrades14','orders','order13','botPour15','mission5','buddyLook','allyAim','feedback'])S[k]=v(0);
  S.pos=v(0,.35,0,patient==='human'?0:100);S.player7=v(patient==='human'?40:0,0,0,0);S.journey7.x=1;S.squad7.y=-1;S.aux.x=10;S.rescue.z=1;S.team7=[actor(.5,100),actor(1,patient==='bot'?0:100),actor(2,100)];
  const medic=S.team7[0];medic.ai=v(3,5,patient==='human'?-1:1,think);medic.plan=v(5,1,0,0);medic.vital.x=2.29;medic.destination7=v(0,.35,0,patient==='human'?-1:1);S.buddy=clone(medic.p);
  for(let i=1;i<3;i++){S.team7[i].ai=v(0,0,-1,10);S.team7[i].plan=v(0,1,0,0);}

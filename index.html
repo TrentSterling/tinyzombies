@@ -873,7 +873,7 @@ fn axeStep14(){
 
 @compute @workgroup_size(64) fn update(@builtin(local_invocation_id) li:vec3u,@builtin(workgroup_id) wi:vec3u){
  let lane=li.x;let j=wi.x;let actor=j/9u;let pellet=j%9u;let human=actor==0u;
- var damage=0.0;var o=S.gunOrigin.xyz;var dir=S.gunAim.xyz;var weapon=u32(S.gear12.w);var serial=u32(S.ballistic.x);
+ var damage=0.0;var o=S.gunOrigin.xyz;var dir=S.gunAim.xyz;var weapon=u32(S.edges12.y);var serial=u32(S.ballistic.x);
  if(human){damage=S.shots[min(pellet,7u)].w;let interval=gunStats14(weapon,S.upgrades14.x).y;let at=clamp(1.0-(interval-S.reload12.w)/max(u.clock.x,.00001),0.0,1.0);dir=arc6(S.sweepPrev.xyz,S.sweepNext.xyz,at);}
  else{let a=S.team7[actor-1u];weapon=u32(S.botMag13[actor-1u].w);if(a.p.w<=0.0){weapon=2u;}damage=a.aim.w;if(weapon!=1u&&pellet>0u){damage=0.0;}o=a.p.xyz+vec3f(0,select(.5,.22,a.p.w<=0.0),0);dir=safe3(a.aim.xyz-o);serial=u32(a.stats.z);}
  let bits=S.upgrades14[actor];let stats=gunHit14(weapon,bits);if(pellet>=u32(stats.z)){damage=0.0;}let maxT=stats.y/64.0;
@@ -1175,7 +1175,7 @@ fn chapterMission13(dt:f32){
  for(var k=0u;k<u32(u.worldInfo.y);k++){let p=P[k];if(p.p.w!=7.0||(p.aux.x==7.0&&S.cell.w==1.0)){continue;}if((u32(p.data.y)&1u)==0u&&distance(p.p.xz,S.pos.xz)<78.0/64.0){interactAt(p.p.xz,5.0,f32(k));}}
  let inside=safeHouse13(S.pos.xz);let door=P[finalDoor];let edge=length(max(abs(S.pos.xz-door.p.xz)-door.aux.xz*.5-vec2f(7.0/64.0),vec2f(0)));
  if(edge<=140.0/64.0&&(inside||door.data.y>.5)){S.mission5.y=7.0;S.mission5.z=f32(finalDoor);}
- if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5){S.mission5.w=0.0;}
+ if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5||S.flags12.w>0.0){S.mission5.w=0.0;}
  if(u.controls.x>.5&&S.pos.w>0.0&&S.player7.x<=0.0&&S.flags12.w==0.0){
   if(S.mission5.y==3.0&&u.run.x==1.0){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;S.mission5.w=S.relay.y;
    if(S.relay.y>=4.2){P[gate].data.y=0.0;P[gate].p.y=3.4;S.relay.z=1.0;S.mission5.w=0.0;}
@@ -1188,7 +1188,7 @@ fn chapterMission13(dt:f32){
    else if(kind==3u){used=S.items12.y<3.0;if(used){S.items12.y+=1.0;}}
    else if(kind==4u||kind==5u){let bit=select(1u,2u,kind==5u);S.upgrades14.x=f32(u32(S.upgrades14.x)|bit);let gun=select(0u,1u,kind==5u);let stats=gunStats14(gun,S.upgrades14.x);S.mag12[gun]=stats.x;S.reserve12[gun]=max(S.reserve12[gun],stats.w);S.gear12=vec4f(f32(gun),f32(gun),S.gear12.x,f32(gun));S.reload12.x=0.0;S.flags12.x=1.0;}
     else if(kind==6u){S.upgrades14.x=f32(u32(S.upgrades14.x)^4u);S.gear12=vec4f(2,2,S.gear12.x,2);S.reload12.x=0.0;S.flags12.x=1.0;S.axe14=vec4f(0);used=false;}
-    else if(kind==7u){used=S.cell.w!=1.0;if(used){S.cell.w=1.0;S.gear12=vec4f(2,2,S.gear12.x,2);P[k].data.y=15.0;}}else{used=false;}
+    else if(kind==7u){used=S.cell.w!=1.0;if(used){S.cell.w=1.0;if(S.gear12.w!=2.0){S.reload12.x=0.0;S.heal12.x=0.0;S.reload12.w=max(.15,S.reload12.w);}S.gear12=vec4f(2,2,S.gear12.x,2);S.axe14.x=0.0;P[k].data.y=15.0;}}else{used=false;}
    if(used){P[k].data.y=f32(u32(P[k].data.y)|1u);S.runStats.x+=1.0;}S.lastInput.w=1.0;
   }
   if(S.mission5.y==7.0&&S.lastInput.w<.5){if(door.data.y>.5){P[finalDoor].data.y=0.0;P[finalDoor].p.y=3.4;S.escape.x=0.0;}else if(inside){S.escape.x=.0001;}S.lastInput.w=1.0;}
@@ -1451,7 +1451,7 @@ z.v.x=(p.x-z.p.x)/max(dt,.0001);z.v.y=(p.z-z.p.z)/max(dt,.0001);z.p=vec4f(p,z.p.
  var impulse=vec3f(-direct.x,1,-direct.y)*3.0;
  var heHurt=false;
    for(var j=0u;j<72u;j++){let shot=S.shots13[j];if(shot.origin.w<=0.0||shot.tag.x!=3.0||u32(shot.tag.y)!=i){continue;}
-   damage+=shot.origin.w;let actor=j/18u;var weapon=u32(S.gear12.w);if(actor>0u){weapon=u32(S.botMag13[actor-1u].w);if(S.team7[actor-1u].p.w<=0.0){weapon=2u;}}
+   damage+=shot.origin.w;let actor=j/18u;var weapon=u32(S.edges12.y);if(actor>0u){weapon=u32(S.botMag13[actor-1u].w);if(S.team7[actor-1u].p.w<=0.0){weapon=2u;}}
    if(kind==4.0&&(gunKnock14(weapon,S.upgrades14[actor])>=80.0||shot.tag.w==3.0)&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}let knock=select(gunKnock14(weapon,S.upgrades14[actor]),165.0,shot.tag.w==3.0)/64.0*select(1.0,.2,kind==2.0);let away=safe2(shot.dir.xz);z.history.z+=away.x*knock;z.history.w+=away.y*knock;z.combat13.y=max(z.combat13.y,select(.085,0.0,kind==2.0));
    impulse=shot.dir.xyz*4.5+vec3f(0,2,0);
   }

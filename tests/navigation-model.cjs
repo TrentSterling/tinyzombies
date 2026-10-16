@@ -35,7 +35,7 @@ function makeModel(file,stage=1){
  function passCell(x,z){
   if(x<1||z<1||x>=NG-1||z>=NG-1)return false;const px=x+.5-half,pz=z+.5-half;
   for(const dz of [-.25,.25])for(const dx of [-.25,.25])if(solid(px+dx,.36,pz+dz))return false;
-  const g=props.subarray(world.gate13*16,world.gate13*16+16);if(stage<=2&&g[5]>.5&&Math.abs(px-g[0])<g[8]/2+.25&&Math.abs(pz-g[2])<g[10]/2+.25)return false;
+  const g=props.subarray(world.gate13*16,world.gate13*16+16);if(world.source13&&g[5]>.5&&Math.abs(px-g[0])<g[8]/2+.25&&Math.abs(pz-g[2])<g[10]/2+.25)return false;
   if(!blocked(px,pz,.30))return true;
   for(const d of world.doors7){const p=props.subarray(d.index*16,d.index*16+16);if(p[4]>0&&p[14]<.5&&Math.abs(px-p[0])<p[8]/2+.55&&Math.abs(pz-p[2])<p[10]/2+.55)return true;}
   return false;

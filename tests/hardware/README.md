@@ -1,6 +1,6 @@
 # Last Train hardware qualification
 
-This harness is a new Chapter 3 acceptance route, adapted from the qualified Chapters 1–2 ordinary-input route. CPU checks are not gameplay or shader compilation. The candidate is not qualified until a real hardware run and visual inspection pass.
+This harness is a new Chapter 3 acceptance route, adapted from the qualified Chapters 1–2 ordinary-input route. CPU checks are not gameplay or shader compilation. Each changed runtime requires a real hardware run and visual inspection. The pinned runtime passed the acceptance scope described below; rerunning this harness does not extend that scope automatically.
 
 ## Transfer and prerequisites
 
@@ -42,3 +42,11 @@ Inspect the video/screenshots for the north exit, solid trains, panel/objective 
 The main route tests human power operation. Explicit X-order bot operation, naturally occurring pin/down/revive behavior, leaving range during a partial hold, and negative seal/occupancy/reopening cases need separately observed ordinary-input scenarios. Source/CPU tests cover their rules; do not label unobserved scenarios as hardware-passed. A bot-order retry must begin from the earned Chapter-3 entry, never injected state. Pause releases input; it is not proof of continuous E across a pause.
 
 No Chapter 4–5 gameplay or full five-chapter parity is claimed. Keep publication behind independent review and hardware acceptance.
+
+## Recorded acceptance for the pinned runtime
+
+On 2026-10-16, the exact pinned HTML passed hardware compilation and the main Last Train route using an existing byte-matched, naturally earned Burnout checkpoint. A separate fresh-profile run earned Chapters 1–2 again; a focused continuation/retry/reload check qualified that run's actual earned save. These were separate ordinary-input routes, not one uninterrupted three-chapter playthrough. The shortened regression wrapper's missing legacy field was a harness failure, retained in the private evidence, rather than a demonstrated game failure.
+
+The Last Train run observed a 1.9998-second power hold, closed gate at 14.9665 elapsed seconds and open gate at 15.0168, all four survivors alive at extraction, and correct completed-save reload/entry retry. Additional ordinary-input scenarios qualified an explicit bot X order and canceling a partial seal by moving away. All 37 compute pipelines compiled, all 43 audio clips decoded, allocation limits stayed unchanged, and accepted runs had no browser/device errors or new GPU faults.
+
+Chapter 3 revive-first, down/pin interruptions and door-occupancy/reopening remain hardware-unobserved; a bounded natural-combat attempt did not produce those scenarios and is not counted as a pass. CPU/source checks cover their rules. Recordings are silent, with no subjective listening or long-session stability claim. Runtime edits require renewed qualification.

@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "baselineSha256": "517446909154b42d695fc14717cbfdb1cdb7482a970f1b12cbdde4051f3b5e58",
+  "candidateSha256": "f4fada3a7b8f97b9d6caca470371fdd722f9392d2ed9c09968d2f69c4a2f9397",
+  "candidateBytes": 399012,
+  "addedRenderCuboids": 3,
+  "existingSourceBytesPreserved": true,
+  "audioClips": 43,
+  "audioBytes": 736350,
+  "audioHashesPreserved": true
+}

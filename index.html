@@ -1500,6 +1500,7 @@ fn model(base:vec3f,dir:vec2f,phase:f32,variant:f32,player:bool,flash:f32,typ:f3
  part(base,vec3f(0,.3125,0),vec3f(.375,.25,.375),select(skin*.8,select(vec3f(.41,.27,.12),vec3f(.37,.11,.46),typ< -1.5),player),face,0);
  if(typ!=4.0){part(base,vec3f(-.125,.09375+max(0.0,sin(phase))*.05*walk,-stride),vec3f(.125,.1875,.1875),legs,face,0);part(base,vec3f(.125,.09375+max(0.0,-sin(phase))*.05*walk,stride),vec3f(.125,.1875,.1875),legs,face,0);}
  part(base,vec3f(-.3125,.31+stride*.3+.14*reload,.12+.06*reload),vec3f(.125,.1875,.1875),skin,face,0);part(base,vec3f(.3125,.31-stride*.3+.10*punch,.12+.38*punch),vec3f(.125,.1875,.1875),skin,face,0);
+ if(player){let hair=vec3f(.065,.045,.03);part(base,vec3f(0,1.0625,-.15625),vec3f(.125,.125,.1875),hair,face,0);part(base,vec3f(0,1.125,0),vec3f(.125,.25,.1875),hair,face,0);part(base,vec3f(0,1.0625,.15625),vec3f(.125,.125,.1875),hair,face,0);}
  if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),top,face,0);part(base,vec3f(0,.6875,-.25),vec3f(.5,.5,.125),top,face,0);part(base,vec3f(0,.68,.255),vec3f(.375,.125,.02),vec3f(.035,.045,.04),face,0);}
  else{let eye=select(vec3f(.95,.095,.065),vec3f(1,.63,.065),typ==1.0);part(base,vec3f(-.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(0,.53,.252),vec3f(.1875,.0625,.016),skin*.38,face,0);}
  if(typ==2.0){part(base,vec3f(0,.375,.23),vec3f(.5,.1875,.0625),vec3f(.42,.30,.18),face,0);}if(typ==3.0){part(base,vec3f(0,.38,.23),vec3f(.3125,.25,.125),vec3f(.63,.17,.15),face,.2);}

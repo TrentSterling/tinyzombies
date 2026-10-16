@@ -2199,6 +2199,12 @@ const AT7:u32=1u; const LOAD7:u32=2u; const CLEAR7:u32=4u; const KIT7:u32=8u; co
 // action ids: 1 move,2 reload,3 clear,4 revive,5 heal ally,6 heal self,
 // 7 take kit,8 evade,9 cover,10 seek kit,11 regroup. Four bits per plan step.
 fn teamTarget7(id:i32)->vec4f {if(id<0||id>2){return S.pos;}return S.team7[u32(id)].p;}
+// Retained medical plans must revalidate their patient before spending a kit.
+fn validHealPatient21(patientId21:i32,healer:u32,healerHP:f32)->bool {
+ if(patientId21< -1||patientId21>2){return false;}
+ if(patientId21== -1){return S.pos.w>0.0&&S.player7.x<=0.0;}
+ let patient=u32(patientId21);return select(S.team7[patient].p.w,healerHP,patient==healer)>0.0&&S.botLife13[patient].y<.5;
+}
 fn clearSegment7(a:vec3f,b:vec3f,pad:f32)->bool {
  let delta=b-a;let d=length(delta);if(d<.05){return true;}let steps=min(112u,u32(ceil(d/.35)));let dir=delta/f32(max(1u,steps));
  for(var n=1u;n<steps;n++){let q=a+dir*f32(n);if(blocked(q,vec3f(pad,.06,pad))){return false;}}return true;
@@ -2395,10 +2401,11 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
        a.stats.x+=1.0;a.vital.x=0.0;complete=true;atomicAdd(&C[74],1u);S.radio7=vec4f(f32(id),3.0,2.0,a.ai.z);
      }if(a.ai.z<0.0){S.player7.y=a.vital.x;}
     }else{a.plan.y=0u;a.vital.x=0.0;}}
-   if(action==5u||action==6u){let tid=select(i32(a.ai.z),i32(id),action==6u);let t=teamTarget7(tid);let close=tid==i32(id)||(distance(t.xz,a.p.xz)<92.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),t.xyz+vec3f(0,.4,0),.02));
+   if(action==5u||action==6u){let tid=select(i32(a.ai.z),i32(id),action==6u);
+    if(!validHealPatient21(tid,id,a.p.w)){a.vital.x=0.0;a.plan.y=0u;}else{let t=teamTarget7(tid);let close=tid==i32(id)||(distance(t.xz,a.p.xz)<92.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),t.xyz+vec3f(0,.4,0),.02));
     if(a.pack.w<=0.0){a.plan.y=0u;}else if(t.w>=100.0){complete=true;}else if(close&&a.memory.y<1.0&&a.p.w>=a.memory.w&&threatNear7(a.p.xz,95.0/64.0)<.5){a.vital.x+=dt;if(a.vital.x>=select(2.3,1.9,tid==i32(id))){a.pack.w-=1.0;if(tid<0){S.pos.w=min(100.0,S.pos.w+65.0);S.feedback.z=max(S.feedback.z,0.0);}else if(tid==i32(id)){a.p.w=min(100.0,a.p.w+65.0);}else{S.team7[u32(tid)].p.w=min(100.0,t.w+65.0);if(tid==0){S.buddy.w=S.team7[0].p.w;}}
       a.stats.y+=1.0;a.vital.x=0.0;complete=true;atomicAdd(&C[75],1u);S.radio7=vec4f(f32(id),3.0,3.0,f32(tid));}}
-    else{a.vital.x=0.0;a.plan.y=0u;}}
+    else{a.vital.x=0.0;a.plan.y=0u;}}}
    if(action==8u){var away=goalPoint;let hazard=danger7(a.p.xz);if(hazard.w==0.0&&a.ai.x==4.0){let t=i32(a.memory.x);if(t>=0){away=a.p.xz+safe2(a.p.xz-Z[u32(t)].p.xz)*3.0;}else{complete=true;}}
     a=moveBuddy7(a,away,204.0/64.0*1.42,.5);if(a.ai.x==6.0){complete=danger7(a.p.xz).w==0.0;}else{complete=a.memory.y<1.0;}a.flags.z=.25;
    }

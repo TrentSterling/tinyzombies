@@ -1,10 +1,10 @@
 {
-  "harnessVersion": "downed-crawl-v1",
-  "runtimeSha256": "ddca875c0148eade077b4822a5cece61673a72d7d820b5843def2ae990336ccc",
+  "harnessVersion": "heal-validity-v1",
+  "runtimeSha256": "87bf5cfcf83d39c44298a977f7d739a0621805e2034790b52327ece68cfc739d",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: current-layout controlled crawl fixtures, natural human downing/crawl/pistol/rescue, live pin restrictions, plus matched five-chapter extraction/carry/retry/reload regression. Controlled fixtures and automatic chapter routes do not certify natural downing or pins.",
+  "acceptance": "Deferred: full-pipeline bot healing interrupted by natural patient downing/death, valid heal and rescue takeover, retained crawl/pin/extraction cases and fresh matched five-chapter persistence. CPU updater and controlled begin-only fixture are separate evidence, not earned gameplay.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "fb3f5ecc140649f75eebc7e00ae9b3411ff9ea4f",
+  "dependencyCommit": "5f459814c4471385a1cdc256ba24761b3a1f653f",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
 }

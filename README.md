@@ -4,23 +4,19 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
-## Unreleased DEAD ENDS port checkpoint
+## DEAD ENDS Chapters 1–2
 
-This branch continues the owner-requested port of [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) into Tiny Zombies' boxel presentation. PR11 (`868e36c`), controls (`933b008`) and combat (`858f13d`) checkpoints are preserved. The live URL remains PR11; this candidate has not been deployed.
+This release ports the first two chapters of [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) into Tiny Zombies' boxel presentation. It includes source-style gear and weapon handling, finite squad supplies, rescue and navigation behavior, weapon upgrades, source props and the Burnout fuel/shutter objective. The player mohawk and all 43 recorded SFX assets are preserved, with the default 2,048 infected and 32,768 particle allocations.
 
-This slice adds source cache visibility/claims, catch-up and extraction priorities, task commitment and stable rescue ownership. Squad movement resolves blocked goals to nearby walkable points, retains reachable waypoints, respects wall clearance beside doors and routes around hazards. Captured gate-wall, freight-room rescue and street-corner rescue stalls now pass bounded regression checks. Healing channels reset when changing tasks.
+The hardware-qualified runtime is `4cf2a21aba68c2a1285423705d0f9770d8060502`, with HTML SHA-256 `5f5c1527d04dfd19491d24f68aabcf6935098f4591e061c387dc8e966da3780a`.
 
-The R7 heavy rifle and automatic shotgun have source pickup, magazine, reload, damage, pellet and penetration behavior. The fire axe has a visible boxel model, timed locked-angle sweep, three-target limit, reduced third hit and ordinary door damage. Upgrades carry across the separate DEAD ENDS checkpoint. The base combat, sprint, gear, finite squad ammunition, medkits, revive/drag and contextual orders from the preceding checkpoints remain.
+Ordinary keyboard/pointer testing earned Chapter 1 extraction and its checkpoint. A subsequent run resumed that byte-verified, naturally earned checkpoint through normal Enter input, then completed both Burnout fuel pickups and pours, the 11-second shutter event and extraction with all four survivors alive. Entry continue/retry/reload and completed-save reload/entry retry preserved the expected seed, health, supplies and upgrades. These were adaptive recorded routes across separate runs, not a single uninterrupted playthrough or frame-identical benchmark. No gameplay-state injection, teleporting or population reduction supplied the wins. No browser/device errors or new GPU faults were observed in the accepted runs.
 
-The exact HTML passed 56 explicit GPU contract assertions. An ordinary keyboard/pointer run earned Mercer extraction at 108.80 simulated seconds, with 4 living survivors, 5 human downings and 5 actual squad revives. Enter then continued from that earned save into Burnout; Backspace retry and a page reload followed by Enter restored the same boundary health, items and upgrades. No win injection, teleport, population reduction or difficulty reduction was used for that run. The fixture suite is separately labelled and does not supply the earned win.
+The safehouse navigation fix retains physical wall, prop and closed-door collision. A failed nearby coarse search can retry on a bounded half-metre grid using the same scratch storage. Portable CPU checks cover all three captured stuck positions, integrated movement, collision rejection and search budgets, plus fuel/weapon regressions. Run `node tests/navigation.test.cjs` and `node tests/burnout-fuel.test.cjs`. Their 24 and 18 checks supplement hardware testing; they do not compile or execute WGSL.
 
-Windows Chrome 155 / RTX 5070 Ti completed the run without device errors or new GPU faults; owned browser/server/monitor cleanup completed. Default allocations remain 2,048 infected and 32,768 particles, with the source Chapter 1 initial population and active cap. See [the exact evidence and limitations](validation/deadends-slice3-review.json). Failed runs and the compact silent gameplay/transition clip are retained locally for review.
+This is a two-chapter slice, not complete DEAD ENDS parity. Burnout completion stops at an explicit Chapter 3 review boundary. Chapters 3–5, co-op, device controls and broader source behavior remain unfinished or unqualified. The accepted recordings are silent, and no audio-listening or long-session stability claim is made.
 
-Keep this slice unreleased pending review. Full awareness, tactical positions, director behavior, bot consumable/fuel tasks, source props/destruction and special visuals remain partial. Axe damage to crates, shelves and windows is not equivalent. Burnout entry is qualified, but its full gameplay is not; Chapters 3-5, co-op and device controls remain outside this slice. These results do not claim complete DEAD ENDS parity.
-
-The mohawk and all 43 recorded SFX assets are byte-identical to PR11. Recorded events remain partially mapped; the tests were muted and make no listening-quality claim. Source distances use 64 pixels per world metre and the bounded GPU pipeline remains in place.
-
-The sections below record earlier releases. Their old controls and performance claims apply to those historical artifacts.
+The [earlier slice-3 review](validation/deadends-slice3-review.json) describes a historical prerelease runtime, not the current release hash. The sections below likewise record earlier releases; their controls, qualification scope and performance observations apply only to those historical artifacts.
 
 ## Live preparation and doorway pursuit
 

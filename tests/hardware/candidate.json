@@ -1,6 +1,8 @@
 {
-  "harnessVersion": "last-train-v1",
-  "runtimeSha256": "4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed",
-  "shippedRollback": "f895f7c09aaf564593896374e8f701960f669a4d",
-  "acceptance": "Chapter 3 normal-input earned entry, power, extraction and persistence; no Chapter 4 gameplay"
+  "harnessVersion": "deadweight-v1",
+  "runtimeSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f",
+  "shippedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
+  "acceptance": "Deferred: earned Chapter 5 winch, squad extraction, final campaign progress/records/checkpoint removal and exact same-tab retry; matched Chapters 1\u20134 regression separately; no Chapter 6",
+  "hardwareStatus": "not-run",
+  "dependencyCommit": "1683d5a461f0d55d850f5ad2fd00abed14e40214"
 }

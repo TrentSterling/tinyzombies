@@ -2306,10 +2306,10 @@ fn localPath15(id:u32,origin:vec2f,goal:vec2f)->u32 {
   var at=256u;var low=1e8;for(var j=0u;j<n;j++){if(nodes[j].used==0u&&nodes[j].f<low){low=nodes[j].f;at=j;}}
   if(at==256u){break;}nodes[at].used=1u;expanded++;let c=nodes[at].cell;let rem=length(vec2f(c-finish))*.5;if(rem<nearest){nearest=rem;bestID=at;}
   if(all(c==finish)){bestID=at;break;}
-  let from=select((vec2f(c)+.5)*.5-HALF,origin,at==0u);
+  let edgeStart15=select((vec2f(c)+.5)*.5-HALF,origin,at==0u);
   for(var k=0u;k<8u;k++){
    let offset=array<vec2i,8>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1),vec2i(1,1),vec2i(-1,1),vec2i(1,-1),vec2i(-1,-1))[k];let cell=c+offset;
-   if(any(cell<vec2i(1))||any(cell>=vec2i(NG*2-1))){continue;}let point=(vec2f(cell)+.5)*.5-HALF;if(!localEdge15(from,point)){continue;}
+   if(any(cell<vec2i(1))||any(cell>=vec2i(NG*2-1))){continue;}let point=(vec2f(cell)+.5)*.5-HALF;if(!localEdge15(edgeStart15,point)){continue;}
    var hazard=0.0;for(var q=0u;q<16u;q++){let acid=S.acid13[q];let fire=S.heat6[q];if(acid.w>S.aux.x&&distance(point,acid.xy)<acid.z+22.0/64.0){hazard+=14.0;}if(fire.w>S.aux.x&&distance(point,fire.xy)<fire.z+22.0/64.0){hazard+=18.0;}}
    let cost=nodes[at].g+select(.5,.707107,k>=4u)+hazard;var found=256u;for(var j=0u;j<n;j++){if(all(nodes[j].cell==cell)){found=j;break;}}
    if(found<256u){if(cost>=nodes[found].g){continue;}}else{if(n>=256u){continue;}found=n;n++;}

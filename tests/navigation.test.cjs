@@ -8,7 +8,7 @@ function check(name,fn){try{const details=fn();checks.push({name,passed:true,...
 const starts=[[29.753629684448242,-18.020959854125977],[29.603023529052734,-18.96685028076172],[29.03496551513672,-18.39631462097168]];
 const goals=[[35.17354965209961,-16.90965461730957],[33.8125,-17.40625],[35.453125,-17.40625]];
 check('reviewed WGSL local-edge reference remains synchronized',()=>{assert.equal(sha(fragment(m.host.html,'fn localEdge15(')),'fd1db12dabc01f33eb39cb433b69610d8488b5001e9ac25a74e502c2d0343f00');});
-check('reviewed WGSL local-search reference remains synchronized',()=>{assert.equal(sha(fragment(m.host.html,'fn localPath15(')),'450204dab2ac7cf16e2e6558fd287280a6d81c106cf193a8b74d8694212c168f');});
+check('reviewed WGSL local-search reference remains synchronized',()=>{assert.equal(sha(fragment(m.host.html,'fn localPath15(')),'d4b16db79d567d97e905ad9d0c6bd0715c3ddfb873d79970a75e555bcbfe5903');});
 check('fallback is bounded and retains exact physical body/scratch sizes',()=>{
  assert(m.host.html.includes('if(count==0u&&d<12.0){count=localPath15(id,a.p.xz,destination7);}'));
  assert(m.host.html.includes('nodes:array<Node7,256>'));assert(m.host.html.includes('reverse:array<vec2i,128>'));

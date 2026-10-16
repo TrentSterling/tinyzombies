@@ -1238,7 +1238,7 @@ fn powerPanel16(dt:f32){
  if(S.relay.x<.5&&S.pos.w>0.0&&S.player7.x<=0.0){
   let ready=S.mission5.y==3.0&&u.controls.x>.5&&S.flags12.w==0.0;
   if(ready){S.botPour15.w+=dt;}else{S.botPour15.w=0.0;}
-  S.mission5.w=S.botPour15.w;if(S.botPour15.w>=2.0){startPower16();S.mission5.w=0.0;}
+  S.mission5.w=S.botPour15.w;if(S.botPour15.w>=2.0){startPower16();S.mission5.w=0.0;S.escape.y=0.0;}
  }
 }
 // DEADWEIGHT uses the same independent holds, with source human-first interaction order.
@@ -1247,7 +1247,7 @@ fn winchPanel19(dt:f32){
  if(S.pos.w>0.0&&S.player7.x<=0.0){
   let ready=S.mission5.y==3.0&&u.controls.x>.5&&S.flags12.w==0.0;
   if(ready){S.botPour15.w+=dt;}else{S.botPour15.w=0.0;}
-  S.mission5.w=S.botPour15.w;if(S.botPour15.w>=2.4){startPower16();S.mission5.w=0.0;}
+  S.mission5.w=S.botPour15.w;if(S.botPour15.w>=2.4){startPower16();S.mission5.w=0.0;S.escape.y=0.0;}
  }
  for(var id=0u;id<3u;id++){
   if(S.relay.x>.5){break;}let a=S.team7[id];if(a.p.w<=0.0){continue;}
@@ -1283,8 +1283,8 @@ fn alarmPanel18(dt:f32){
   let opening=S.mission5.y==3.0&&S.relay.z<.5;let silencing=S.mission5.y==9.0&&S.relay.x>.5;
   if((opening||silencing)&&u.controls.x>.5&&S.flags12.w==0.0){S.botPour15.w+=dt;}else{S.botPour15.w=0.0;}
   S.mission5.w=S.botPour15.w;
-  if(opening&&S.botPour15.w>=2.3){startAlarm18();S.mission5.w=0.0;}
-  else if(silencing&&S.botPour15.w>=1.8){silenceAlarm18();S.mission5.w=0.0;}
+  if(opening&&S.botPour15.w>=2.3){startAlarm18();S.mission5.w=0.0;S.escape.y=0.0;}
+  else if(silencing&&S.botPour15.w>=1.8){silenceAlarm18();S.mission5.w=0.0;S.escape.y=0.0;}
  }
  for(var id=0u;id<3u;id++){
   let a=S.team7[id];if(a.p.w<=0.0){continue;}
@@ -1297,6 +1297,23 @@ fn alarmPanel18(dt:f32){
   if(opening&&S.botPour15[id]>=2.3){startAlarm18();}
   else if(silencing&&S.botPour15[id]>=1.8){silenceAlarm18();S.orders.x=0.0;S.team7[id].plan.y=0u;}
  }
+}
+// Mirror source interactHold for extraction without replacing objective-specific timers.
+// escape.y is unused by source chapters; legacy extraction retains its own lane below.
+fn sourceInteractHold20(dt:f32){
+ if(S.pos.w<=0.0||S.player7.x>0.0){return;}
+ let kind=S.mission5.y;
+ if(u.controls.x<.5||S.flags12.w>0.0||kind==0.0||kind==8.0){S.escape.y=0.0;return;}
+ if(kind==5.0){let pickup=u32(P[u32(S.mission5.z)].aux.x);if(pickup==4u||pickup==5u||pickup==6u){S.escape.y=0.0;return;}}
+ S.escape.y+=dt;
+}
+fn beginExtraction20(inside:bool,occupied:bool,allInside:bool,edge:f32,finalDoor:u32,wasClosed:bool){
+ if(S.mission5.y==7.0&&!wasClosed&&P[finalDoor].data.y<.5&&S.escape.x==0.0&&inside&&!occupied&&edge<=140.0/64.0&&u.controls.x>.5&&S.pos.w>0.0&&S.player7.x<=0.0&&S.flags12.w==0.0&&S.escape.y>=select(1.6,.18,allInside)){
+  S.escape.x=.0001;S.escape.y=0.0;
+ }
+ // Existing unused squad lane reports prompt state, without changing allocation/layout.
+ S.squad7.w=select(4.0,0.0,allInside);
+ if(occupied){S.squad7.w=2.0;}if(S.escape.x>0.0&&S.escape.x<1.0){S.squad7.w=3.0;}if(P[finalDoor].data.y>.5){S.squad7.w=1.0;}
 }
 fn chapterMission13(dt:f32){
  var alarmPulse18=false;if(u.run.x==4.0){alarmPulse18=alarmTick18(dt);}
@@ -1314,12 +1331,12 @@ fn chapterMission13(dt:f32){
  let gate=u32(S.chapter13.x);let finalDoor=u32(S.chapter13.y);let gateDone=P[gate].data.y<.5;
  let alarmActive18=u.run.x==4.0&&S.relay.x>.5;
  S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint.xy=select(u.goals.xy,chapterDoor16(u.run.x),gateDone);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x!=2.0){S.cell.w=0.0;}if(alarmActive18){S.objectivePoint.xy=u.goals.zw;}
- for(var k=0u;k<3u;k++){if(S.team7[k].p.w<=0.0&&S.botLife13[k].y<.5&&(u.run.x<4.0||S.squad7.y!=f32(k))&&distance(S.team7[k].p.xz,S.pos.xz)<90.0/64.0){S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
+ var nearestRevive20=90.0/64.0;for(var k=0u;k<3u;k++){let d=distance(S.team7[k].p.xz,S.pos.xz);if(S.team7[k].p.w<=0.0&&S.botLife13[k].y<.5&&S.squad7.y!=f32(k)&&d<nearestRevive20){nearestRevive20=d;S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
  if(!gateDone){if(u.run.x<4.0){interactAt(u.goals.xy,3.0,f32(gate));}if(u.run.x==2.0&&S.cell.w!=1.0&&S.relay.x<.5&&distance(S.pos.xz,u.goals.xy)<950.0/64.0){var best=1e9;for(var k=0u;k<u32(u.worldInfo.y);k++){let q=P[k];if(q.p.w==7.0&&q.aux.x==7.0&&q.data.y!=15.0){let d=distance(q.p.xz,S.pos.xz);if(d<best){best=d;S.objectivePoint.xy=q.p.xz;}}}}}
  for(var k=u32(S.rules7.x);k<u32(S.rules7.x+S.rules7.y);k++){if(k==gate||k==finalDoor){continue;}let d=P[k];if(d.data.x>0.0){interactAt(d.p.xz,8.0,f32(k));}}
  for(var k=0u;k<u32(u.worldInfo.y);k++){let p=P[k];if(p.p.w!=7.0||(p.aux.x==7.0&&S.cell.w==1.0)){continue;}if((u32(p.data.y)&1u)==0u&&distance(p.p.xz,S.pos.xz)<78.0/64.0){interactAt(p.p.xz,5.0,f32(k));}}
  let inside=safeHouse13(S.pos.xz);let door=P[finalDoor];let edge=length(max(abs(S.pos.xz-door.p.xz)-door.aux.xz*.5-vec2f(7.0/64.0),vec2f(0)));
- if(edge<=140.0/64.0&&(inside||door.data.y>.5)){S.mission5.y=7.0;S.mission5.z=f32(finalDoor);}
+ if(edge<=140.0/64.0&&inside&&S.mission5.y!=1.0){S.mission5.y=7.0;S.mission5.z=f32(finalDoor);}
  if(u.run.x==4.0||u.run.x==5.0){
   // Source control actions outrank supplies/doors but never a downed, non-dragged squadmate.
   var revive18=-1.0;var nearest18=90.0/64.0;
@@ -1329,13 +1346,15 @@ fn chapterMission13(dt:f32){
   else if(!gateDone&&distance(S.pos.xz,u.goals.xy)<115.0/64.0){S.mission5.y=3.0;S.mission5.z=f32(gate);}
   else if(S.mission5.y==1.0){S.mission5.y=0.0;S.mission5.z=-1.0;}
  }
+ if(door.data.y>.5&&edge<=140.0/64.0){S.mission5.y=7.0;S.mission5.z=f32(finalDoor);}
+ sourceInteractHold20(dt);
  if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5||S.flags12.w>0.0){S.mission5.w=0.0;}
  powerPanel16(dt);alarmPanel18(dt);winchPanel19(dt);
  if(u.controls.x>.5&&S.pos.w>0.0&&S.player7.x<=0.0&&S.flags12.w==0.0){
   if(S.mission5.y==3.0&&u.run.x==1.0){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;S.mission5.w=S.relay.y;
    if(S.relay.y>=4.2){P[gate].data.y=0.0;P[gate].p.y=3.4;S.relay.z=1.0;S.mission5.w=0.0;}
   }
-  if(S.mission5.y==3.0&&u.run.x==2.0&&S.cell.w==1.0&&S.relay.x<.5){S.mission5.w+=dt;if(S.mission5.w>=2.1){S.cell.w=0.0;S.relay.w+=1.0;S.mission5.w=0.0;if(S.relay.w>=2.0){S.relay.x=1.0;S.relay.y=0.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}}}
+  if(S.mission5.y==3.0&&u.run.x==2.0&&S.cell.w==1.0&&S.relay.x<.5){S.mission5.w+=dt;if(S.mission5.w>=2.1){S.cell.w=0.0;S.relay.w+=1.0;S.mission5.w=0.0;S.escape.y=0.0;if(S.relay.w>=2.0){S.relay.x=1.0;S.relay.y=0.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}}}
   if(S.mission5.y==5.0&&S.lastInput.w<.5){let k=u32(S.mission5.z);let kind=u32(P[k].aux.x);var used=true;
    if(kind==0u){let cap=select(240.0,140.0,(u32(S.upgrades14.x)&1u)!=0u);let clip=gunStats14(0u,S.upgrades14.x).x;used=!(S.reserve12.x>=cap&&S.reserve12.y>=56.0&&S.mag12.x>=clip&&S.mag12.y>=8.0);if(used){S.reserve12.x=cap;S.reserve12.y=56.0;S.mag12=vec4f(clip,8,15,0);S.reload12.x=0.0;}}
    else if(kind==1u){used=S.items12.z<2.0;if(used){S.items12.z+=1.0;}}
@@ -1346,8 +1365,11 @@ fn chapterMission13(dt:f32){
     else if(kind==7u){used=S.cell.w!=1.0;if(used){S.cell.w=1.0;if(S.gear12.w!=2.0){S.reload12.x=0.0;S.heal12.x=0.0;S.reload12.w=max(.15,S.reload12.w);}S.gear12=vec4f(2,2,S.gear12.x,2);S.axe14.x=0.0;P[k].data.y=15.0;}}else{used=false;}
    if(used){P[k].data.y=f32(u32(P[k].data.y)|1u);S.runStats.x+=1.0;}S.lastInput.w=1.0;
   }
-  if(S.mission5.y==7.0&&S.lastInput.w<.5){if(door.data.y>.5){P[finalDoor].data.y=0.0;P[finalDoor].p.y=3.4;S.escape.x=0.0;}else if(inside){S.escape.x=.0001;}S.lastInput.w=1.0;}
+  if(S.mission5.y==7.0&&door.data.y>.5&&S.goal.z<.5){P[finalDoor].data.y=0.0;P[finalDoor].p.y=3.4;S.escape.x=0.0;S.escape.y=0.0;}
+  if(S.mission5.y==7.0){S.lastInput.w=1.0;}
  }
+ // Source lastInteract is global across selected actions; keep legacy pickup/door edges separate.
+ if(S.pos.w>0.0&&S.player7.x<=0.0){S.goal.z=select(0.0,1.0,u.controls.x>.5&&S.flags12.w==0.0);}
  if(u.controls.x<.5){S.lastInput.w=0.0;}if((u.run.x==2.0||u.run.x==3.0||u.run.x==5.0)&&S.relay.x>.5&&!gateDone){S.relay.y+=dt;if(S.relay.y>=select(select(11.0,15.0,u.run.x==3.0),17.0,u.run.x==5.0)){P[gate].data.y=0.0;P[gate].p.y=3.4;S.relay.z=1.0;if(u.run.x==3.0||u.run.x==5.0){S.relay.x=0.0;}}}
  if(u.run.x==4.0){if(S.relay.x>.5){S.relay.y+=dt;if(alarmPulse18){queueWave13(19.0,true,true);S.alarm.z=max(S.alarm.z,7.0);}}directorStep13(dt);}
  var occupied=all(abs(S.pos.xz-door.p.xz)<door.aux.xz*.5+vec2f(.25));var allInside=inside;var present=0u;
@@ -1356,6 +1378,7 @@ fn chapterMission13(dt:f32){
  }
  for(var i=0u;i<u32(u.config.x);i++){let z=Z13[i];if(z.p.w>0.0&&all(abs(z.p.xz-door.p.xz)<door.aux.xz*.5+vec2f(footprint(z.extraData.z)))){occupied=true;}}
  S.squad7.z=f32(present);
+ beginExtraction20(inside,occupied,allInside,edge,finalDoor,door.data.y>.5);
  if(S.escape.x>0.0&&S.escape.x<1.0){if(!inside||S.pos.w<=0.0||S.flags12.w>0.0||occupied||edge>164.0/64.0){S.escape.x=0.0;}else{S.escape.x=min(1.0,S.escape.x+dt/.6);if(S.escape.x>=1.0){P[finalDoor].data.y=1.0;P[finalDoor].p.y=1.0;}}}
  if(P[finalDoor].data.y>.5&&allInside){for(var k=0u;k<3u;k++){if(S.team7[k].p.w<=0.0&&S.team7[k].memory.w>0.0&&S.botLife13[k].y<.5){S.runStats.w+=1.0;}}S.goal.w=1.0;S.stageRecord.x=S.aux.x;}
  if(u.controlEdges12.y>S.lastInput.x&&S.player7.x==0.0&&S.flags12.w==0.0){
@@ -2298,7 +2321,9 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   if(life.w>0.0&&a.p.w>0.0){a.movement=vec4f(0);a.aim.w=0.0;S.botLife13[id]=life;S.team7[id]=a;continue;}
    if(a.p.w<=0.0){
    a.ai=vec4f(2,0,-1,0);a.movement=vec4f(0);a.flags.y=0.0;
-   if(i32(id)==manual&&S.player7.x==0.0&&S.flags12.w==0.0){a.vital.z=1.0;if(S.squad7.y==f32(id)){if(distance(a.p.xz,S.pos.xz)>63.0/64.0){a=moveBuddy7(a,S.pos.xz,1000.0,58.0/64.0);}a.vital.x=0.0;a.flags.y=3.0;}else if(u.controls.x>.5&&nearest<90.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),S.pos.xyz+vec3f(0,.4,0),.02)&&threatNear7(a.p.xz,48.0/64.0)<.5){a.vital.x+=dt;if(a.vital.x>=2.35){a.p.w=35.0;a.vital.x=0.0;a.vital.y=3.0;atomicAdd(&C[74],1u);}}else{a.vital.x=0.0;}}
+   let manualRevive20=select(i32(id)==manual,S.mission5.y==1.0&&S.mission5.z==f32(id),u.run.x<=5.0);
+   let manualDrag20=i32(id)==manual&&S.squad7.y==f32(id);
+   if((manualRevive20||manualDrag20)&&S.player7.x==0.0&&S.flags12.w==0.0){a.vital.z=1.0;if(S.squad7.y==f32(id)){if(distance(a.p.xz,S.pos.xz)>63.0/64.0){a=moveBuddy7(a,S.pos.xz,1000.0,58.0/64.0);}a.vital.x=0.0;a.flags.y=3.0;}else if(u.controls.x>.5&&distance(a.p.xz,S.pos.xz)<90.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),S.pos.xyz+vec3f(0,.4,0),.02)&&threatNear7(a.p.xz,48.0/64.0)<.5){a.vital.x+=dt;if(a.vital.x>=2.35){a.p.w=35.0;a.vital.x=0.0;a.vital.y=3.0;atomicAdd(&C[74],1u);}}else{a.vital.x=0.0;}}
   }else{
    a.flags.y=2.0;
    if(a.ai.w<=0.0||a.plan.y==0u){
@@ -2420,7 +2445,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   if(a.p.w>0.0){life.x=0.0;}mag[weapon]=a.pack.x;S.botMag13[id]=mag;S.botReserve13[id]=reserve;S.botLife13[id]=life;S.botItems13[id].z=a.pack.w;a.memory.w=a.p.w;S.team7[id]=a;
  }
  S.buddy=S.team7[0].p;S.buddyLook=S.team7[0].look;S.allyAim=S.team7[0].aim;S.buddyShot.w=S.team7[0].aim.w;S.rescue.x=S.team7[0].flags.y;S.rescue.y=S.team7[0].vital.x;S.rescue.z=S.team7[0].vital.z;
- S.squad7.x=f32(healthy);if(manual>=0){S.mission5.y=1.0;S.mission5.z=f32(manual);S.rescue.y=S.team7[u32(manual)].vital.x;}
+ S.squad7.x=f32(healthy);if(u.run.x>5.0&&manual>=0){S.mission5.y=1.0;S.mission5.z=f32(manual);S.rescue.y=S.team7[u32(manual)].vital.x;}else if(u.run.x<=5.0&&S.mission5.y==1.0){S.rescue.y=S.team7[u32(S.mission5.z)].vital.x;}
  if(S.player7.x>0.0){S.player7.x=max(0.0,S.player7.x-dt);S.player7.z+=dt;if(S.player7.x==0.0||(healthy==0u&&S.player7.z>2.0)){S.goal.w=2.0;}}
 }
 `;
@@ -3380,10 +3405,11 @@ function hud(){
   if(interaction>0&&!settings.lab){
    let label=['','E  Revive','E  Take cell','E  Start relay','E  Install cell','E  Supplies','E  Release','E  Safehouse','E  Door'][interaction]||'E  Use';
    if(interaction===8){let d=world.doors7.find(q=>q.index===Math.round(playerValues[450]));if(d?.startDoor)label='E  Open door';}
-   if(world.source13){if(interaction===9)label='E  Hold to silence alarm';if(interaction===3)label=stage===5?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(17-playerValues[441]))+' seconds':'E  Hold to start winch'):stage===4?'E  Hold to open shutter':stage===3?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(15-playerValues[441]))+' seconds':'E  Hold to restore power'):stage!==2?'E  Force service gate':playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(11-playerValues[441]))+' seconds':playerValues[447]===1?'E  Hold to pour fuel':'Find fuel cans: '+Math.round(playerValues[443])+' / 2';if(interaction===7)label='E  Seal red door';if(interaction===5){const kind=world.sourcePickups13.find(p=>p.index===Math.round(playerValues[450]))?.kind;label=kind==='rifle14'?'E  Take heavy rifle':kind==='auto14'?'E  Take auto shotgun':kind==='axe24'?'E  Swap axe / pistol':kind==='fuel'?'E  Carry fuel can':'E  Take supplies';}}else if(interaction===7&&playerValues[64]<2.4)label='Relays offline';
+   if(world.source13){if(interaction===9)label='E  Hold to silence alarm';if(interaction===3)label=stage===5?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(17-playerValues[441]))+' seconds':'E  Hold to start winch'):stage===4?'E  Hold to open shutter':stage===3?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(15-playerValues[441]))+' seconds':'E  Hold to restore power'):stage!==2?'E  Force service gate':playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(11-playerValues[441]))+' seconds':playerValues[447]===1?'E  Hold to pour fuel':'Find fuel cans: '+Math.round(playerValues[443])+' / 2';if(interaction===7){const state=Math.round(playerValues[L7.squad7+3]);label=state===1?'E  Open safehouse door':state===2?'Clear the doorway':state===3?'Sealing the door':state===4?'E  Hold 1.6s: teammates outside':'E  Hold to seal red door';}if(interaction===5){const kind=world.sourcePickups13.find(p=>p.index===Math.round(playerValues[450]))?.kind;label=kind==='rifle14'?'E  Take heavy rifle':kind==='auto14'?'E  Take auto shotgun':kind==='axe24'?'E  Swap axe / pistol':kind==='fuel'?'E  Carry fuel can':'E  Take supplies';}}else if(interaction===7&&playerValues[64]<2.4)label='Relays offline';
    const s=14*k,x=cx-textWidth9(label,s)/2,y=cy-r-43*k,w=textWidth9(label,s)+22*k;
    panel9(x-11*k,y-4*k,w,27*k,.76);text(label,x,y,s,interaction===1?COL9.violet:COL9.white);
    let prog=0;switch(interaction){case 1:prog=playerValues[89]/2.4;break;case 2:case 3:case 4:prog=playerValues[451]/.8;break;case 5:prog=playerValues[451]/1.4;break;case 7:prog=playerValues[104];break;}
+   if(world.source13&&interaction===7){const state=Math.round(playerValues[L7.squad7+3]);prog=state===3?playerValues[L7.escape]:state===0||state===4?playerValues[L7.escape+1]/(state===4?1.6:.18):0;}
    if(world.source13&&interaction===3)prog=playerValues[451]/(stage===5?2.4:stage===4?2.3:stage===3?2:stage===2?2.1:4.2);if(world.source13&&interaction===9)prog=playerValues[451]/1.8;if(prog>0.01)rect(x-11*k,y+22*k,w*clamp9(prog,0,1),2.5*k,COL9.gold);
   }
   // Supplies in the nearby world only. They are visible without reading an inventory list.

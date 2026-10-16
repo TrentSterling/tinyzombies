@@ -1,10 +1,10 @@
-# DEADWEIGHT candidate qualification
+# Extraction-hold candidate qualification
 
-Hardware testing is deferred. This candidate adds the authored Chapter 5 bridge and campaign ending on top of the reviewed CODE RED backup. Neither chapter has earned hardware acceptance yet. CPU checks, source construction and navigation models are not shader compilation or gameplay. The separate fire-cadence candidate is not included.
+Hardware testing is deferred. This candidate corrects held-E initiation and rescue/reopening priorities at the final safehouse across all five chapters. The opening hold is 0.18 seconds with every living survivor inside, or 1.6 seconds with someone outside, followed by the existing autonomous 0.6-second seal. See `EXTRACTION-HOLD.md` for the exact contract, test route and retained limits. CPU checks are not shader compilation or gameplay. The separate fire-cadence candidate is not included.
 
 ## Exact transfer and dependency
 
-Use this candidate in a separate test worktree. Preserve shipped rollback `bd6bc8c9157eea06e351beeaf94049ebaea68323` and the Chapter 4 parent `1683d5a461f0d55d850f5ad2fd00abed14e40214`. Transfer the full checkout, including `index.html`, all 43 `assets/audio/*.flac` files and `tests/hardware`. `candidate.json` pins the runtime; the wrapper verifies local and served bytes, including reloads. Use this committed harness rather than an older local copy.
+Use this candidate in a separate test worktree. Preserve deployed rollback `022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9`, earlier hardware-qualified rollback `bd6bc8c9157eea06e351beeaf94049ebaea68323`, and the original chapter candidate `247aa55a5647954d8da995ad94782a22443af710`. This branch fast-forwards its original base to the identical-tree deployed merge before adding the extraction commit. The deployed Chapters 4–5 were published by owner request with GPU testing deferred; their deployment does not establish hardware acceptance. Transfer the full checkout, including `index.html`, all 43 `assets/audio/*.flac` files and `tests/hardware`. `candidate.json` pins the runtime; the wrapper verifies local and served bytes, including reloads. Use this committed harness rather than an older local copy.
 
 The test computer/browser must be authorized and available before execution. Use its separately started approved Chrome test profile and loopback HTTP server. The harness does not install software, start Chrome/server, change flags/permissions, clear/import saves or publish. Node 22+ with built-in WebSocket is required.
 
@@ -12,7 +12,7 @@ Set `TINY_CDP_URL`, `TINY_QA_URL`, `TINY_QA_INPUT` (default `index.html`) and `T
 
 ## Three matched routes
 
-1. `TINY_QA_ROUTE=regression`: fresh dedicated profile/origin, no resume report. Retains accepted Chapters 1–3 input paths, then verifies earned Chapter 4 entry/reload/retry and stops. Keep its accepted wrapper and route report.
+1. `TINY_QA_ROUTE=regression`: fresh dedicated profile/origin, no resume report. Retains the prior Chapters 1–3 navigation paths, with a new extraction controller at each final door, then verifies earned Chapter 4 entry/reload/retry and stops. Keep its accepted wrapper and route report.
 2. `TINY_QA_ROUTE=code-red`: requires that naturally earned map-3 save on the same origin/profile. Set `TINY_QA_RESUME_REPORT` to the accepted route report and optionally `TINY_QA_RESUME_WRAPPER` (otherwise sibling `report.json`). Plays the hospital shutter/alarm/rifle-equivalent auto shotgun route, extracts, and now verifies map-4 → Chapter 5 entry/reload/retry. It does not stop at the old unported boundary.
 3. Default `TINY_QA_ROUTE=deadweight`: requires the accepted CODE RED wrapper/report and matching naturally earned map-4 save, again on the same origin/profile. Verifies Chapter 5 entry/carry/seed/totals, active retry/reload, winch and final extraction/persistence.
 
@@ -43,6 +43,6 @@ The retained route opens the north hospital door, operates the shutter from `(-4
 - Hold/timer eligibility remains variable-step. Correct scalar timing is not full fixed-step equivalence. CODE RED's f32 phase clock has ordinary one-frame boundary quantization at some rates.
 - Old checkpoints have no aggregate down count. They stay playable and can set chapter-local records, but final campaign best comparison is skipped rather than inventing zero downs. New runs carry known down totals. Ranking is survivors, fewer downs, then lower time; kills never break ties. Time uses the existing sampled boundary-time policy, not an independently reconstructed source tick timeline.
 - Final progress uses only the isolated Tiny source-port progress/checkpoint keys. Original DEAD ENDS storage and prior Tiny keys stay untouched. If persistence fails, the UI warns and same-tab retry remains usable; reload can restore a checkpoint whose removal failed.
-- Existing final seal initiation behavior is retained. This batch does not claim full source parity for every shared combat, extraction, mode, networking or AI behavior.
+- The new initiation contract and remaining inherited extraction differences are listed in `EXTRACTION-HOLD.md`. This batch does not claim full source parity for every shared combat, extraction, mode, networking or AI behavior.
 
 Record the real adapter, all 37 compute pipelines, 43 decoded audio files, unchanged counts/allocations and browser/GPU errors. No hardware performance or live-release claim is made until matched evidence exists.

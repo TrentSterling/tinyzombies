@@ -1,0 +1,6 @@
+{
+  "harnessVersion": "last-train-v1",
+  "runtimeSha256": "4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed",
+  "shippedRollback": "f895f7c09aaf564593896374e8f701960f669a4d",
+  "acceptance": "Chapter 3 normal-input earned entry, power, extraction and persistence; no Chapter 4 gameplay"
+}

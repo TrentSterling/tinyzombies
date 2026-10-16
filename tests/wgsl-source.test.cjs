@@ -1,0 +1,12 @@
+'use strict';
+// Lexical guard only; shader compilation still requires an actual WebGPU adapter.
+// Reserved tokens: https://www.w3.org/TR/2026/CRD-WGSL-20260921/#reserved-words
+const path=require('node:path'),assert=require('node:assert/strict');
+const {loadHost}=require('./deadends-cpu-host.cjs');
+const h=loadHost(process.argv[2]||path.join(__dirname,'../index.html'));
+const reserved=new Set(["NULL","Self","abstract","active","alignas","alignof","as","asm","asm_fragment","async","attribute","auto","await","become","cast","catch","class","co_await","co_return","co_yield","coherent","column_major","common","compile","compile_fragment","concept","const_cast","consteval","constexpr","constinit","crate","debugger","decltype","delete","demote","demote_to_helper","do","dynamic_cast","enum","explicit","export","extends","extern","external","fallthrough","filter","final","finally","friend","from","fxgroup","get","goto","groupshared","highp","impl","implements","import","inline","instanceof","interface","layout","lowp","macro","macro_rules","match","mediump","meta","mod","module","move","mut","mutable","namespace","new","nil","noexcept","noinline","nointerpolation","non_coherent","noncoherent","noperspective","null","nullptr","of","operator","package","packoffset","partition","pass","patch","pixelfragment","precise","precision","premerge","priv","protected","pub","public","readonly","ref","regardless","register","reinterpret_cast","require","resource","restrict","self","set","shared","sizeof","smooth","snorm","static","static_assert","static_cast","std","subroutine","super","target","template","this","thread_local","throw","trait","try","type","typedef","typeid","typename","typeof","union","unless","unorm","unsafe","unsized","use","using","varying","virtual","volatile","wgsl","where","with","writeonly","yield"]);
+const names=[...h.script.matchAll(/const ([A-Za-z_][A-Za-z_0-9]*Shader)\s*=/g)].map(m=>m[1]);
+const failures=[];
+for(const name of names){const code=h.run(name).replace(/\/\*[\s\S]*?\*\//g,'').replace(/\/\/[^\n]*/g,'');const hits=[...new Set((code.match(/[A-Za-z_][A-Za-z_0-9]*/g)||[]).filter(x=>reserved.has(x)))];if(hits.length)failures.push({name,hits});}
+const result={method:'Evaluated shader strings, comments stripped, lexical reserved-token scan only. Not a compiler or GPU test.',candidateSha256:h.sha256,shadersChecked:names.length,reservedWords:reserved.size,failures,passed:failures.length===0};
+console.log(JSON.stringify(result,null,2));assert(names.length>=37);assert.equal(failures.length,0);

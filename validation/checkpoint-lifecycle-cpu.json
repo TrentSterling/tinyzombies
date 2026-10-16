@@ -1,0 +1,130 @@
+{
+  "method": "Exact host parser, keyboard/pointer handlers and frame transition/reset blocks in a Node VM. GPU is forbidden; win/death states are explicit readback fixtures. Browser results are separate.",
+  "baselineSha256": "42d7d28e07ed2a80d64d274b374f7effbbce06c36da390af42cf88bd0e19f20f",
+  "candidateSha256": "517446909154b42d695fc14717cbfdb1cdb7482a970f1b12cbdde4051f3b5e58",
+  "reproduced": {
+    "staleCheckpointAfterN": true,
+    "reloadContinuesOldLeg": 3,
+    "queuedChoiceAfterNStartsWrongLeg": 2
+  },
+  "allShaderModulesExact": true,
+  "hostOutsideAllowedLinesExact": true,
+  "audioClipsUnchanged": 43,
+  "cases": [
+    {
+      "name": "new-campaign-title",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-active",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-paused",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-help",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-downed",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-dead",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-chooser",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-legWin",
+      "passed": true
+    },
+    {
+      "name": "new-campaign-finalWin",
+      "passed": true
+    },
+    {
+      "name": "interrupted-before-reset-frame",
+      "passed": true
+    },
+    {
+      "name": "input-order-choice-then-N",
+      "passed": true
+    },
+    {
+      "name": "input-order-N-then-choice",
+      "passed": true
+    },
+    {
+      "name": "input-order-N-then-pointer",
+      "passed": true
+    },
+    {
+      "name": "input-order-Enter-N-Enter",
+      "passed": true
+    },
+    {
+      "name": "input-order-N-Backspace",
+      "passed": true
+    },
+    {
+      "name": "input-order-N-repeat",
+      "passed": true
+    },
+    {
+      "name": "repeated-N-seed-0",
+      "passed": true
+    },
+    {
+      "name": "repeated-N-seed-73129",
+      "passed": true
+    },
+    {
+      "name": "repeated-N-seed-4294967295",
+      "passed": true
+    },
+    {
+      "name": "continue-retry-preserved-leg-2",
+      "passed": true
+    },
+    {
+      "name": "continue-retry-preserved-leg-3",
+      "passed": true
+    },
+    {
+      "name": "leg-transitions-and-final-completion",
+      "passed": true
+    },
+    {
+      "name": "interrupted-pending-leg-advance-keeps-last-checkpoint",
+      "passed": true
+    },
+    {
+      "name": "storage-remove-failure-clears-memory-and-reports",
+      "passed": true,
+      "durableDeletion": "Unavailable when storage rejects deletion; existing stored value remains, warning recorded"
+    },
+    {
+      "name": "final-advance-storage-failure-clears-memory",
+      "passed": true
+    },
+    {
+      "name": "practice-preserves-existing-save-until-explicit-N",
+      "passed": true
+    },
+    {
+      "name": "lab-preserves-existing-save-until-explicit-N",
+      "passed": true
+    },
+    {
+      "name": "malformed-save-parser-unchanged",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "completedUtc": "2026-10-16T01:16:08.322Z"
+}

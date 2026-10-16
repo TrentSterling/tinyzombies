@@ -1,7 +1,8 @@
 {
-  "harnessVersion": "code-red-v1",
-  "runtimeSha256": "0499ba8885ae5997512457e4bac4fdcd7179b1ec9a97682b607165a50db02b22",
+  "harnessVersion": "deadweight-v1",
+  "runtimeSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f",
   "shippedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
-  "acceptance": "Deferred: earned Chapter 4 shutter/alarm, squad extraction and checkpoint/retry/reload; fresh Chapters 1\u20133 regression separately; stop before Chapter 5",
-  "hardwareStatus": "not-run"
+  "acceptance": "Deferred: earned Chapter 5 winch, squad extraction, final campaign progress/records/checkpoint removal and exact same-tab retry; matched Chapters 1\u20134 regression separately; no Chapter 6",
+  "hardwareStatus": "not-run",
+  "dependencyCommit": "1683d5a461f0d55d850f5ad2fd00abed14e40214"
 }

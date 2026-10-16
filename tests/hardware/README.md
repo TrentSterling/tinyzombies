@@ -1,36 +1,48 @@
-# CODE RED candidate qualification
+# DEADWEIGHT candidate qualification
 
-Hardware testing is deferred. This candidate extends the source-backed campaign through Chapter 4 and stops before Chapter 5. CPU checks, source capture and navigation models are not shader compilation or gameplay acceptance. The separate fire-cadence candidate is not included.
+Hardware testing is deferred. This candidate adds the authored Chapter 5 bridge and campaign ending on top of the reviewed CODE RED backup. Neither chapter has earned hardware acceptance yet. CPU checks, source construction and navigation models are not shader compilation or gameplay. The separate fire-cadence candidate is not included.
 
-## Exact transfer
+## Exact transfer and dependency
 
-Use the reviewed candidate commit in a separate test worktree. Preserve shipped rollback `bd6bc8c9157eea06e351beeaf94049ebaea68323` and all existing history. Transfer the complete checkout, including `index.html`, 43 `assets/audio/*.flac` files, and `tests/hardware`. `candidate.json` pins the runtime hash; the wrapper verifies local and served bytes, including reloads. Never substitute an older private harness.
+Use this candidate in a separate test worktree. Preserve shipped rollback `bd6bc8c9157eea06e351beeaf94049ebaea68323` and the Chapter 4 parent `1683d5a461f0d55d850f5ad2fd00abed14e40214`. Transfer the full checkout, including `index.html`, all 43 `assets/audio/*.flac` files and `tests/hardware`. `candidate.json` pins the runtime; the wrapper verifies local and served bytes, including reloads. Use this committed harness rather than an older local copy.
 
-The test computer/browser must be authorized and available before execution. Use its separately started approved Chrome test profile and loopback HTTP server. The harness does not install software, start Chrome/server, change flags/permissions, clear/import saves, or publish. Node 22+ with built-in WebSocket is required.
+The test computer/browser must be authorized and available before execution. Use its separately started approved Chrome test profile and loopback HTTP server. The harness does not install software, start Chrome/server, change flags/permissions, clear/import saves or publish. Node 22+ with built-in WebSocket is required.
 
 Set `TINY_CDP_URL`, `TINY_QA_URL`, `TINY_QA_INPUT` (default `index.html`) and `TINY_QA_OUTPUT` (new/empty private evidence directory), then run `node tests/hardware/cdp-qa.mjs`. Endpoints must be loopback HTTP. `TINY_ROUTE_WALL_MS` defaults to 20 minutes; expiry means incomplete observation, not a demonstrated game defect.
 
-## Two matched routes
+## Three matched routes
 
-1. Default `TINY_QA_ROUTE=code-red`: requires an existing naturally earned Last Train map-3 save on the same origin/profile. Set `TINY_QA_RESUME_REPORT` to its accepted `route-report.json` and optionally `TINY_QA_RESUME_WRAPPER` to its accepted wrapper (otherwise sibling `report.json`). The wrapper hash, acceptance, timestamps and existing raw save must match. No save is written/imported to establish entry. This mode marks Chapters 1–3 as not played in the current run.
-2. `TINY_QA_ROUTE=regression`: run from a fresh dedicated profile/origin, without a resume report, to earn Chapters 1–3 again. The original accepted movement/combat paths are retained. The former Chapter-3 terminal check now verifies earned continuation/reload/retry into Chapter 4, then stops. Its accepted report can supply route 1 on that same origin/profile.
+1. `TINY_QA_ROUTE=regression`: fresh dedicated profile/origin, no resume report. Retains accepted Chapters 1–3 input paths, then verifies earned Chapter 4 entry/reload/retry and stops. Keep its accepted wrapper and route report.
+2. `TINY_QA_ROUTE=code-red`: requires that naturally earned map-3 save on the same origin/profile. Set `TINY_QA_RESUME_REPORT` to the accepted route report and optionally `TINY_QA_RESUME_WRAPPER` (otherwise sibling `report.json`). Plays the hospital shutter/alarm/rifle-equivalent auto shotgun route, extracts, and now verifies map-4 → Chapter 5 entry/reload/retry. It does not stop at the old unported boundary.
+3. Default `TINY_QA_ROUTE=deadweight`: requires the accepted CODE RED wrapper/report and matching naturally earned map-4 save, again on the same origin/profile. Verifies Chapter 5 entry/carry/seed/totals, active retry/reload, winch and final extraction/persistence.
 
-The wrapper opens/closes only its own tab and uses ordinary keyboard/pointer input plus read-only telemetry. Screenshots, JPEG screencast frames, diagnostics, runtime hash, adapter identity and route reports are recorded. Evidence may contain a local save and machine metadata; keep it private unless separately reviewed for sharing. Audio decode is not a listening test.
+Each continuation checks the prior wrapper acceptance, report digest, chronology and exact existing raw checkpoint. No save is imported. Each report says which earlier chapters were not played in that run. A passed continuation does not replace a fresh matched regression.
 
-## Chapter 4 route
+The wrapper opens/closes only its own tab and uses ordinary keyboard/pointer input with read-only telemetry. Screenshots, JPEG screencast frames, diagnostics, runtime hash, adapter and route reports are recorded. Evidence can contain local saves and machine metadata; keep it private unless separately reviewed. Audio decode is not a listening test.
 
-- Verify map-3 → CODE RED carry, seed, totals, active retry and reload before leaving shelter.
-- North door: approach `(-27.5,12.5)`, use E, then continue north through `(-27.5,8.5)` to let all squadmates depart.
-- Reach shutter from `(-27.5,2.5)` → `(-3.5,2.5)` → `(-4.75,5.5)`. The exact control center is blocked by an authored prop, so use this stand-off point. Idle without E, interrupt a partial hold, then hold E for 2.3 simulation seconds. Shutter opens immediately and alarm starts. Pause must freeze clock/alarm elapsed.
-- Through shutter: `(-3.5,10)` → `(-3.5,15)` → `(3.5,15)` → `(4.5,15.5)` → `(7.5,15.5)` → auto shotgun `(8.05,14.22)`. These bends respect Ward C's original crate and connector wall.
-- Continue via `(8,15.5)` → `(12.5,15.5)` → `(14.5,16.5)` → `(20.5,16.5)` → `(20.5,-5.5)` → relay stand-off `(21.5,-5.5)`. Idle, interrupt a hold, then hold E for 1.8 seconds. Alarm must stop; inspect queue/pressure evidence. The relay remains actionable if its decorative prop is destroyed.
-- Final approach: `(20.5,-7.5)` → `(29.5,-7.5)` → gather at `(35,-7.5)` → seal at `(31.9,-7.5)`. All four survivors must be alive and strictly inside source bounds; red door must close and victory must be earned. Alarm silence is not an extra extraction prerequisite in the runtime.
-- Verify map-4 completion, exact entry chain/totals, reload and retry restoring map-3 entry carry. Repeated Enter must stop at the explicit Chapter-5 boundary.
+## Chapter 5 acceptance route
 
-The 360-source-tick ALARM phase includes shelter staging, rather than six seconds since activation. CPU f32 tests cover phase boundaries, activation/silence on a pulse tick and long runs. Render-step interaction/eligibility remains quantized; ordinary f32 rounding may place an exact nominal-time boundary one render frame later at some refresh rates. Do not infer full fixed-step gameplay equivalence from pulse counts.
+- Enter from the earned CODE RED map-4 checkpoint. Verify original carry, seed, kills/time/known downs and retries before leaving Toll.
+- Approach `(-30.5,17)`, open the east Toll door with E, depart through `(-28.5,17)` and `(-26.5,17)`, then turn at `(-21.5,17)` → `(-21.5,.5)` → `(1.5,.5)`.
+- At `(1.5,3.5)`, idle without E, interrupt a partial hold, then continuously hold E for 2.4 simulation seconds. One EVENT is requested. Pause must freeze the independent opening timer.
+- Release E and move away to `(3,.5)`. Observe the gate remaining closed before 17 elapsed seconds and opening at/after 17. Then cross `(5,.5)` → `(21.5,.5)`. The 17-second winch activity does not imply 17 seconds of forced director pressure; EVENT pressure is 12 seconds.
+- Reach Checkpoint via `(21.5,-16)` → `(19,-16)` → `(16.5,-16)` and take the heavy rifle at `(14.4,-15.94)`. Exit through the same original east connector to `(17.5,-16)` → `(21.5,-16.5)`.
+- Approach west final door `(29.5,-16.5)` → `(31.9,-16.5)`, gather at `(35,-16.5)`, then return to `(31.9,-16.5)` and seal only with all four alive and inside.
+- Verify campaign totals and final clear, no Chapter 6, active checkpoint removed, repeated Enter unchanged, exact same-tab entry retry, and reload returning to the menu without the completed checkpoint. Progress/records must survive reload. The harness retries before reloading because final entry is intentionally retained only in memory.
 
-## Required additional observations
+## Chapter 4 regression route
 
-From earned entry, separately test explicit X-order shutter and relay operation, changing an order while near the other control, revive-first/down/pin interruption, already-FADE silence, destroyed decorative relay, and alarm-active extraction. Verify final seal cancellation, occupied-door rejection and outside-living-bot reopening. Natural combat may not produce every case; unobserved cases stay unqualified.
+The retained route opens the north hospital door, operates the shutter from `(-4.75,5.5)` with a 2.3-second hold, detours through Ward C's connector/auto shotgun, and silences the relay from `(21.5,-5.5)` with a 1.8-second hold. The global 360-source-tick alarm includes shelter staging. A relay-free extraction is allowed by runtime conditions; it is a separate acceptance case. The source control centers are blocked by retained props, so keep the reviewed stand-off points.
 
-Inspect actual frames for hospital layout/label, north exit, Ward C connector/auto shotgun, prompts, alarm pressure and all-squad extraction. Record real adapter, all 37 compute pipelines, 43 decoded audio files, unchanged counts/allocations and browser/GPU errors. No performance, live-release or full-five-chapter claim is made until the corresponding evidence exists.
+## Remaining required observations and known limits
+
+- Explicit X-order winch, shutter and relay operation; ordinary followers must not operate simply by proximity. Revive-first/down/pin interruptions, order-target changes, destroyed relay and alarm-active extraction need separate earned observations.
+- Seal cancellation, occupied-door rejection and outside-living-bot reopening remain required. Natural combat may not create these cases; unobserved cases stay unqualified.
+- Inspect actual frames for east Toll departure, static river/deck/road markings, original connector/rifle, prompts and all-squad extraction. The 3D adaptation retains full voxel boundary walls and collision; ground colors/markings use the source's final bridge masks and tint, with a mean deck base instead of its 2D pixel noise. No water animation is added.
+- Dense CPU sweeps pass the human route. Eight of nine final formation plans have clear continuous edges; one coarse shortcut grazes the doorway. All fixed-anchor scalar movement cases arrive via physical collision/replanning. This is not an earned squad outcome.
+- Hold/timer eligibility remains variable-step. Correct scalar timing is not full fixed-step equivalence. CODE RED's f32 phase clock has ordinary one-frame boundary quantization at some rates.
+- Old checkpoints have no aggregate down count. They stay playable and can set chapter-local records, but final campaign best comparison is skipped rather than inventing zero downs. New runs carry known down totals. Ranking is survivors, fewer downs, then lower time; kills never break ties. Time uses the existing sampled boundary-time policy, not an independently reconstructed source tick timeline.
+- Final progress uses only the isolated Tiny source-port progress/checkpoint keys. Original DEAD ENDS storage and prior Tiny keys stay untouched. If persistence fails, the UI warns and same-tab retry remains usable; reload can restore a checkpoint whose removal failed.
+- Existing final seal initiation behavior is retained. This batch does not claim full source parity for every shared combat, extraction, mode, networking or AI behavior.
+
+Record the real adapter, all 37 compute pipelines, 43 decoded audio files, unchanged counts/allocations and browser/GPU errors. No hardware performance or live-release claim is made until matched evidence exists.

@@ -1,0 +1,1 @@
+{"insertion": " if(player){let hair=vec3f(.065,.045,.03);part(base,vec3f(0,1.0625,-.15625),vec3f(.125,.125,.1875),hair,face,0);part(base,vec3f(0,1.125,0),vec3f(.125,.25,.1875),hair,face,0);part(base,vec3f(0,1.0625,.15625),vec3f(.125,.125,.1875),hair,face,0);}\n", "anchor": " if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),top,face,0);"}

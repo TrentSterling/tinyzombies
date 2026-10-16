@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Tiny Zombies fire-phase GPU contract</title>
+<style>body{background:#102027;color:#dfebd9;font:16px/1.5 monospace;margin:3rem;max-width:70rem}pre{white-space:pre-wrap}</style>
+<h1>Fire-phase GPU contract</h1><p>This checks the actual production WGSL phase helper with 30/60/120 Hz and jittered simulation-time inputs. It does not run the game or measure rendering performance.</p><pre id="result">Running…</pre>
+<script type="module">
+const result={method:'Isolated WebGPU dispatch of the exact runtime fire-phase helper; host masks use the extracted production clock. Not gameplay, full entity simulation, or a render-rate benchmark.',passed:false,errors:[],scenarios:[]};
+let device;const buffers=[];
+const assert=(ok,message)=>{if(!ok)throw Error(message)};
+try{
+ const [runtime,manifest]=await Promise.all([fetch('../../index.html',{cache:'no-store'}).then(r=>{assert(r.ok,'runtime response');return r.arrayBuffer()}),fetch('candidate.json',{cache:'no-store'}).then(r=>r.json())]);
+ const sha=[...new Uint8Array(await crypto.subtle.digest('SHA-256',runtime))].map(x=>x.toString(16).padStart(2,'0')).join('');result.runtimeSha256=sha;assert(sha===manifest.runtimeSha256,'runtime differs from candidate manifest');
+ const html=new TextDecoder().decode(runtime),clock=html.match(/function fireMask17\(dt\)\{([\s\S]*?)\n\}/),helper=html.match(/fn firePhase17\(mask:f32,phase:u32\)->bool \{[^}]+\}/);assert(clock&&helper,'production clock/helper absent');
+ const rows=[],expected=[],groups=[];
+ const scenarios=[...[30,60,120].map(hz=>({name:hz+'Hz input trace',dts:Array(hz*10).fill(1/hz)})),{name:'jitter and pauses',dts:Array.from({length:1200},(_,n)=>[1/30,1/47,1/60,1/90,1/120,1/144,1/240,0][n%8])},{name:'fractional pause/resume',dts:[1/120,0,0,1/120,1/30,0,1/180,1/180,1/180]}];
+ for(const scenario of scenarios){
+  const advance=new Function('let firePhase17=0,fireRemainder17=0;'+clock[0]+';return fireMask17;')();let elapsed=0,previous=0;const start=rows.length;
+  for(const dt of scenario.dts){
+   const mask=advance(dt);elapsed+=dt;const end=Math.floor(elapsed*60+1e-7);let wantMask=0;for(let tick=previous+1;tick<=end;tick++)wantMask|=1<<(tick%12);previous=end;assert(mask===wantMask,'host mask mismatch in '+scenario.name);
+   for(let actor=0;actor<16;actor++){const phase=actor<12?12-actor:(actor-12)*3;rows.push({mask,phase});expected.push((wantMask&(1<<(phase%12)))?1:0);}
+  }
+  groups.push({name:scenario.name,start,end:rows.length,frames:scenario.dts.length,simSeconds:elapsed});
+ }
+ const adapter=await navigator.gpu?.requestAdapter({powerPreference:'high-performance'});assert(adapter,'WebGPU adapter unavailable');result.adapter={vendor:adapter.info?.vendor,architecture:adapter.info?.architecture,device:adapter.info?.device,description:adapter.info?.description};
+ device=await adapter.requestDevice();device.pushErrorScope('validation');device.addEventListener('uncapturederror',e=>result.errors.push(String(e.error)));device.lost.then(info=>{if(info.reason!=='destroyed')result.errors.push('Device lost: '+info.message)});
+ const code=helper[0]+`\nstruct Case17 {mask:f32,phase:u32};
+ @group(0) @binding(0) var<storage,read> cases:array<Case17>;
+ @group(0) @binding(1) var<storage,read_write> hits:array<u32>;
+ @compute @workgroup_size(64) fn check(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=arrayLength(&cases)){return;}hits[i]=select(0u,1u,firePhase17(cases[i].mask,cases[i].phase));}`;
+ const module=device.createShaderModule({label:'extracted production firePhase17',code}),info=await module.getCompilationInfo();result.shaderMessages=info.messages.map(x=>({type:x.type,line:x.lineNum,message:x.message}));assert(!info.messages.some(x=>x.type==='error'),'WGSL compilation failed');
+ const pipeline=await device.createComputePipelineAsync({layout:'auto',compute:{module,entryPoint:'check'}});
+ const bytes=new ArrayBuffer(rows.length*8),f=new Float32Array(bytes),u=new Uint32Array(bytes);rows.forEach((r,n)=>{f[n*2]=r.mask;u[n*2+1]=r.phase});
+ const make=(size,usage)=>{const b=device.createBuffer({size,usage});buffers.push(b);return b};
+ const input=make(bytes.byteLength,GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_DST),output=make(rows.length*4,GPUBufferUsage.STORAGE|GPUBufferUsage.COPY_SRC),read=make(rows.length*4,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ);
+ device.queue.writeBuffer(input,0,bytes);const binding=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:{buffer:input}},{binding:1,resource:{buffer:output}}]});
+ const enc=device.createCommandEncoder(),pass=enc.beginComputePass();pass.setPipeline(pipeline);pass.setBindGroup(0,binding);pass.dispatchWorkgroups(Math.ceil(rows.length/64));pass.end();enc.copyBufferToBuffer(output,0,read,0,rows.length*4);device.queue.submit([enc.finish()]);await read.mapAsync(GPUMapMode.READ);
+ const actual=new Uint32Array(read.getMappedRange());let mismatches=0;for(let n=0;n<expected.length;n++)if(actual[n]!==expected[n])mismatches++;
+ for(const g of groups){let failures=0,pulses=0;for(let n=g.start;n<g.end;n++){if(actual[n]!==expected[n])failures++;pulses+=actual[n];}result.scenarios.push({name:g.name,frames:g.frames,simSeconds:g.simSeconds,actorCases:g.end-g.start,pulses,mismatches:failures});}
+ read.unmap();result.actorCases=rows.length;result.mismatches=mismatches;result.helper=helper[0];assert(mismatches===0,'GPU phase mismatches');await device.queue.onSubmittedWorkDone();const validation=await device.popErrorScope();assert(!validation,'WebGPU validation: '+validation?.message);assert(result.errors.length===0,'WebGPU error');result.passed=true;
+}catch(e){result.errors.push(e?.stack||String(e));}
+finally{for(const b of buffers)b.destroy();device?.destroy();window.__fireCadenceResult=result;document.getElementById('result').textContent=JSON.stringify(result,null,2);document.title=(result.passed?'PASS':'FAIL')+' · Tiny fire-phase GPU contract';}
+</script></html>

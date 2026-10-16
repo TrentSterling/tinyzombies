@@ -1,10 +1,10 @@
 # Last Train hardware qualification
 
-This harness is a new Chapter 3 acceptance route, adapted from the qualified Chapters 1–2 ordinary-input route. CPU checks are not gameplay or shader compilation. Each changed runtime requires a real hardware run and visual inspection. The pinned runtime passed the acceptance scope described below; rerunning this harness does not extend that scope automatically.
+This harness is a Chapter 3 acceptance route, adapted from the qualified Chapters 1–2 ordinary-input route. CPU checks are not gameplay or shader compilation. Each changed runtime requires a real hardware run and visual inspection. The current fire-cadence candidate needs renewed qualification; the prior release's accepted scope is recorded below. See [the fire contract instructions](FIRE-CADENCE.md) for the added isolated GPU check.
 
 ## Transfer and prerequisites
 
-1. Use the exact reviewed candidate commit in a separate test worktree. Keep the existing shipped commit `f895f7c09aaf564593896374e8f701960f669a4d` available for rollback/comparison. Do not overwrite an unrelated worktree.
+1. Use the exact reviewed candidate commit in a separate test worktree. Keep the existing shipped commit `bd6bc8c9157eea06e351beeaf94049ebaea68323` available for rollback/comparison. Do not overwrite an unrelated worktree.
 2. Transfer the whole candidate checkout, including `index.html`, all 43 `assets/audio/*.flac` files, and this `tests/hardware` directory. Do not substitute an old private harness. `candidate.json` pins the required HTML SHA-256; both local and served bytes are verified, including reloads.
 3. The operator must already have authorization for the test computer/browser. Use its approved, separately started Chrome test profile and loopback HTTP server. This script does not install software, start Chrome, change flags, start a server, alter permissions, import saves, or publish anything.
 4. Node with built-in `WebSocket` is required (Node 22 or newer). No package installation is needed.
@@ -43,9 +43,9 @@ The main route tests human power operation. Explicit X-order bot operation, natu
 
 No Chapter 4–5 gameplay or full five-chapter parity is claimed. Keep publication behind independent review and hardware acceptance.
 
-## Recorded acceptance for the pinned runtime
+## Recorded prior-release acceptance (HTML 4f35b2ab)
 
-On 2026-10-16, the exact pinned HTML passed hardware compilation and the main Last Train route using an existing byte-matched, naturally earned Burnout checkpoint. A separate fresh-profile run earned Chapters 1–2 again; a focused continuation/retry/reload check qualified that run's actual earned save. These were separate ordinary-input routes, not one uninterrupted three-chapter playthrough. The shortened regression wrapper's missing legacy field was a harness failure, retained in the private evidence, rather than a demonstrated game failure.
+On 2026-10-16, prior-release HTML SHA-256 4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed passed hardware compilation and the main Last Train route using an existing byte-matched, naturally earned Burnout checkpoint. A separate fresh-profile run earned Chapters 1–2 again; a focused continuation/retry/reload check qualified that run's actual earned save. These were separate ordinary-input routes, not one uninterrupted three-chapter playthrough. The shortened regression wrapper's missing legacy field was a harness failure, retained in the private evidence, rather than a demonstrated game failure.
 
 The Last Train run observed a 1.9998-second power hold, closed gate at 14.9665 elapsed seconds and open gate at 15.0168, all four survivors alive at extraction, and correct completed-save reload/entry retry. Additional ordinary-input scenarios qualified an explicit bot X order and canceling a partial seal by moving away. All 37 compute pipelines compiled, all 43 audio clips decoded, allocation limits stayed unchanged, and accepted runs had no browser/device errors or new GPU faults.
 

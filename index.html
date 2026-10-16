@@ -26,6 +26,13 @@ if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')|
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
 let keys=new Set(),mouse={x:.62,y:.38,left:false,right:false,middle:false},pendingGrenade=0,pendingPipeBomb=0,pendingDash=0,frame=0,time=0,last=0,fps=60,cpuMs=0,gpuMs=null;
+// Fire uses crossed source 60 Hz phases, independently of rendering. dt is capped at 1/30.
+let firePhase17=0,fireRemainder17=0;
+function fireMask17(dt){
+ if(dt<=0)return 0;fireRemainder17+=Math.min(dt,1/30)*60;
+ const ticks=Math.min(2,Math.floor(fireRemainder17+1e-9));fireRemainder17=Math.max(0,fireRemainder17-ticks);let mask=0;
+ for(let n=0;n<ticks;n++){firePhase17=(firePhase17+1)%12;mask|=1<<firePhase17;}return mask;
+}
 let counters=new Uint32Array(96),playerValues=new Float32Array(4096),readBusy=false,readCountdown=0,runEpoch16=0,resetRequested=false,clearBloodRequested=false;
 let frameCallback,resources={},allocatedBytes=0;
 let helpResume=false,toolHint='',toolHintUntil=0;
@@ -387,6 +394,7 @@ fn infectedHP13(kind:f32,seed:u32)->f32 {if(kind==0.0){return 54.0+rnd(seed)*29.
 fn infectedDamage13(kind:f32)->u32 {return array<u32,7>(7u,8u,25u,8u,7u,6u,25u)[u32(kind)];}
 fn hazardPoint15(p:vec2f,acid:array<vec4f,16>,fire:array<vec4f,16>,now:f32,pad:f32)->bool {for(var k=0u;k<16u;k++){if((acid[k].w>now&&distance(p,acid[k].xy)<acid[k].z+pad)||(fire[k].w>now&&distance(p,fire[k].xy)<fire[k].z+pad)){return true;}}return false;}
 fn fireRadius13(f:vec4f,now:f32,life:f32)->f32 {let t=clamp((max(8.0,life)-f.w+now)/.72,0.0,1.0);return f.z*(.12+.88*(1.0-(1.0-t)*(1.0-t)));}
+fn firePhase17(mask:f32,phase:u32)->bool {return (u32(mask)&(1u<<(phase%12u)))!=0u;}
 fn hash(a:u32)->u32 { var x=a; x=(x^(x>>16u))*2246822519u; x=(x^(x>>13u))*3266489917u; return x^(x>>16u); }
 fn rnd(a:u32)->f32 { return f32(hash(a)&16777215u)/16777216.0; }
 fn safe2(v:vec2f)->vec2f { return v/max(length(v),0.0001); }
@@ -990,7 +998,7 @@ fn equipment12(dt:f32){
    else if(S.throw12.z<=0.0){S.throw12=flame;S.throwFrom12=S.flightStarts12[k];}
   }
  }
- for(var fi=0u;fi<16u;fi++){let f=S.heat6[fi];let d=distance(S.pos.xz,f.xy);if(f.w>S.aux.x&&d<fireRadius13(f,S.aux.x,S.heatLife15[fi])-4.0/64.0&&S.feedback.z<=0.0&&u32(u.clock.z)%12u==0u){if(wallRay(f.xy,safe2(S.pos.xz-f.xy),d)>=d-.05){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-9.0*.2);}else{S.pos.w=max(0.0,S.pos.w-9.0);}S.feedback.z=.37;S.look.w=1.0;S.heal12.x=0.0;}}}
+ for(var fi=0u;fi<16u;fi++){let f=S.heat6[fi];let d=distance(S.pos.xz,f.xy);if(f.w>S.aux.x&&d<fireRadius13(f,S.aux.x,S.heatLife15[fi])-4.0/64.0&&S.feedback.z<=0.0&&firePhase17(u.meta12.w,0u)){if(wallRay(f.xy,safe2(S.pos.xz-f.xy),d)>=d-.05){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-9.0*.2);}else{S.pos.w=max(0.0,S.pos.w-9.0);}S.feedback.z=.37;S.look.w=1.0;S.heal12.x=0.0;}}}
  if(S.pos.w<=0.0&&S.player7.x==0.0&&S.goal.w==0.0){S.player7=vec4f(40,0,0,S.player7.w);}
  for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x&&distance(S.pos.xz,acid.xy)<acid.z+.25&&S.feedback.z<=0.0){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-1.6);}else{S.pos.w=max(0.0,S.pos.w-8.0);}S.feedback.z=.37;S.heal12.x=0.0;}}
  let down=S.player7.x>0.0;
@@ -1516,7 +1524,7 @@ if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let a
  if(S.aux.w>0.0){let d=length(z.p.xz-S.blast.xy);if(d<S.blast.w){if(kind==4.0&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}damage+=500.0*(1.0-.7*d/S.blast.w);let away=safe2(z.p.xz-S.blast.xy);z.history.z+=away.x*(500.0/64.0)*select(1.0,.2,kind==2.0);z.history.w+=away.y*(500.0/64.0)*select(1.0,.2,kind==2.0);impulse=vec3f(away.x,1.1,away.y)*(5.0+(1.0-d/S.blast.w)*8.0);}}
  var burning=false;
  for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];let d=length(z.p.xz-fire.xy);if(fire.w>S.aux.x&&d<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+radius*.5){var clear=true;for(var n=1u;n<32u;n++){let t=f32(n)*.125;if(t>=d){break;}let p=fire.xy+safe2(z.p.xz-fire.xy)*t;if(solid(vec3f(p.x,.5,p.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(p)])&4u)!=0u){clear=false;break;}}burning=burning||clear;}}
- if(burning&&(u32(u.clock.z)+i)%12u==0u){damage+=19.0;}
+ if(burning&&firePhase17(u.meta12.w,12u-i%12u)){damage+=19.0;}
  if(damage>0.0){z.p.w-=damage;z.extraData.y=1.0;z.v.w=max(z.v.w,8.0);
   if(z.p.w<=0.0){atomicAdd(&C[0],1u);if(heHurt){atomicAdd(&C[44],1u);}z.v.w=select(18.0,5.0,S.wave.x>1.5)+rnd(i+u32(S.aux.x*100.0))*4.0;event(z.p.xyz,impulse,vec3f(.29,.55,.35),select(0u,9u,kind==6.0),128u,i+atomicLoad(&C[18])*153u);
     event(z.p.xyz+vec3f(0,select(.55,1.2,kind==6.0),0),impulse*.55,vec3f(.66,.012,.029),7u,select(48u,96u,kind==6.0),i+atomicLoad(&C[18])*917u);
@@ -2184,7 +2192,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;
   let sprint=S.botFuel15[id]<.5&&distance(a.p.xz,S.pos.xz)>290.0/64.0&&a.memory.x<0.0&&a.pack.z<=0.0&&S.botStamina13[id]>4.0;
   let botSpeed=204.0/64.0*select(1.0,1.42,sprint)*select(1.0,.9,S.botFuel15[id]>.5);S.botStamina13[id]=clamp(S.botStamina13[id]+select(23.0,-29.0,sprint)*dt,0.0,100.0);
-  for(var f=0u;f<16u;f++){let fire=S.heat6[f];let d=distance(a.p.xz,fire.xy);if(fire.w>S.aux.x&&u32(u.clock.z)%12u==(id+1u)*3u&&d<fireRadius13(fire,S.aux.x,S.heatLife15[f])-4.0/64.0&&a.vital.y<=0.0&&clearSegment7(vec3f(fire.x,.5,fire.y),a.p.xyz+vec3f(0,.5,0),.01)){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-9.0);}else{life.x=max(.0001,life.x-1.8);}a.vital.y=.37;}}
+  for(var f=0u;f<16u;f++){let fire=S.heat6[f];let d=distance(a.p.xz,fire.xy);if(fire.w>S.aux.x&&firePhase17(u.meta12.w,(id+1u)*3u)&&d<fireRadius13(fire,S.aux.x,S.heatLife15[f])-4.0/64.0&&a.vital.y<=0.0&&clearSegment7(vec3f(fire.x,.5,fire.y),a.p.xyz+vec3f(0,.5,0),.01)){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-9.0);}else{life.x=max(.0001,life.x-1.8);}a.vital.y=.37;}}
   for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x&&distance(a.p.xz,acid.xy)<acid.z+.25&&a.vital.y<=0.0){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-8.0);}else{life.x=max(.0001,life.x-1.6);}a.vital.y=.37;}}
   if(S.aux.w>0.0&&S.botControl13.w==0.0&&a.p.w>0.0&&a.vital.y<=0.0){let d=distance(a.p.xz,S.blast.xy);if(d<S.blast.w*.65){a.p.w=max(0.0,a.p.w-20.0*(1.0-d/S.blast.w));a.vital.y=.37;}}
 
@@ -3106,7 +3114,7 @@ function buildComputeBindings(){
 function pass(enc,name,binding,count,extra={}){const p=enc.beginComputePass({label:name,...extra});p.setPipeline(compute[name]);p.setBindGroup(0,binding);p.dispatchWorkgroups(Math.max(1,count));p.end();}
 function clearParticles(){if(!device||!pA)return;const e=device.createCommandEncoder();e.clearBuffer(pA);e.clearBuffer(pB);e.clearBuffer(pHeads);device.queue.submit([e.finish()]);}
 function relaxNav(enc,iterations,stamped=false){const opts=stamped?{timestampWrites:{querySet:tsQuery,beginningOfPassWriteIndex:6,endOfPassWriteIndex:7}}:{};const p=enc.beginComputePass({label:'clearance-aware flow-field relaxation',...opts});p.setPipeline(compute.navRelax);for(let i=0;i<iterations;i++){p.setBindGroup(0,bindings.navRelax[i&1]);p.dispatchWorkgroups(Math.ceil(NAV_SIZE/64));}p.end();}
-function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExplosion=lastGrenadeExplosion=0;pendingPipeBomb=pendingGrenade=pendingDash=0;toolHint='';toolHintUntil=0;settings.help=false;diagnostics.audio.pipeBeeps=0;
+function reset(){runEpoch16++;firePhase17=fireRemainder17=0;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExplosion=lastGrenadeExplosion=0;pendingPipeBomb=pendingGrenade=pendingDash=0;toolHint='';toolHintUntil=0;settings.help=false;diagnostics.audio.pipeBeeps=0;
  pendingChoice=0;keys.clear();mouse.left=mouse.right=mouse.middle=false;lastBannerSound=0;
  device.queue.writeBuffer(W,0,world.blocks);device.queue.writeBuffer(O,0,world.occ);device.queue.writeBuffer(Props,0,world.props);device.queue.writeBuffer(Groups,0,world.groups);
  device.queue.writeBuffer(Chunks,0,world.chunks);device.queue.writeBuffer(Fracture,0,fractureData8(world));
@@ -3369,7 +3377,7 @@ function updateUniforms(dt){
  uniformData.set([input12.selected,input12.seq,input12.attack,input12.reload],84);
  uniformData.set([input12.release,input12.blocked?1:0,(keys.has('ShiftLeft')||keys.has('ShiftRight'))?1:0,keys.has('Space')?1:0],88);
  uniformData.set([input12.drag,input12.order,input12.cancel,(settings.tactical||settings.help||settings.paused)?1:0],92);
- uniformData.set([input12.previous,input12.lastGun,input12.throwable,0],96);
+ uniformData.set([input12.previous,input12.lastGun,input12.throwable,fireMask17(dt)],96);
  device.queue.writeBuffer(U,0,uniformData);
 }
 function stamp(start,end){if(!stampThisFrame)return {};let timestampWrites={querySet:tsQuery};if(start!==null)timestampWrites.beginningOfPassWriteIndex=start;if(end!==null)timestampWrites.endOfPassWriteIndex=end;return {timestampWrites};}

@@ -4,19 +4,27 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
-## DEAD ENDS Chapters 1–3
+## DEAD ENDS Chapters 1–5
 
-This release ports the first three chapters of [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) into Tiny Zombies' boxel presentation. Last Train adds the authored subway, north-facing departure, solid trains, Maintenance heavy rifle, two-second power-panel hold and autonomous 15-second gate opening. Squad extraction, entry carry and retry/reload continue through Chapter 3. The player mohawk, all 43 recorded SFX assets and default 2,048 infected / 32,768 particle allocations are preserved.
+The published campaign contains five authored chapters from [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html): Mercer, Burnout, Last Train, Code Red and Deadweight. Code Red adds the hospital shutter and alarm; Deadweight adds the bridge winch and campaign ending. The player mohawk, all 43 recorded SFX assets and default 2,048 infected / 32,768 particle allocations are preserved.
 
-The hardware-qualified HTML SHA-256 is `4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed`. The preceding shipped rollback is `f895f7c09aaf564593896374e8f701960f669a4d`.
+Chapters 1–3 have bounded hardware qualification on the earlier three-chapter build described below. Chapters 4–5 are published with GPU playtesting deferred: their CPU checks, source construction and navigation models do not establish shader compilation, gameplay or hardware performance. The current five-chapter runtime has not earned matched hardware acceptance. See the [hardware qualification plan and remaining cases](tests/hardware/README.md).
+
+Full source parity remains incomplete. Shared combat, extraction, AI, co-op, device controls and broader source behavior still have unfinished or unqualified cases; publishing all five authored chapters does not qualify every behavior.
+
+## Earlier Chapters 1–3 hardware qualification
+
+The earlier three-chapter release added Last Train's authored subway, north-facing departure, solid trains, Maintenance heavy rifle, two-second power-panel hold and autonomous 15-second gate opening. Squad extraction, entry carry and retry/reload continued through Chapter 3.
+
+That hardware-qualified build's HTML SHA-256 is `4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed`; it is not the current five-chapter runtime. Its preceding shipped rollback is `f895f7c09aaf564593896374e8f701960f669a4d`.
 
 Ordinary keyboard/pointer testing resumed a byte-matched, naturally earned Burnout checkpoint, then passed Last Train entry retry/reload, the north door, interrupted and fresh power holds, paused and autonomous countdown, Maintenance rifle, all-four extraction, completed-save reload and original-entry retry. Separate scenarios passed explicit bot X-order operation and canceling a partial seal by moving away. A separate fresh-profile run earned Chapters 1–2, including their fuel and extraction contracts; a focused persistence run verified that actual earned checkpoint. These are adaptive recorded routes across separate runs, not a single uninterrupted playthrough or frame-identical benchmark. No gameplay-state injection, teleporting or population reduction supplied the wins.
 
 On Windows Chrome 155 / RTX 5070 Ti, all 37 compute pipelines compiled and all 43 audio clips decoded. The Last Train run recorded 1,071 telemetry samples at approximately 60 FPS with median reported GPU time 1.84 ms. Accepted runs had no browser/device errors or new GPU faults. Those bounded observations do not establish a general performance guarantee or long-session stability.
 
-Portable checks pass 62 Last Train cases, 8 delayed-readback/checkpoint cases, 24 navigation cases and 18 fuel/weapon cases. Run `node tests/last-train.test.cjs`, `node tests/checkpoint-readback.test.cjs`, `node tests/navigation.test.cjs` and `node tests/burnout-fuel.test.cjs`. The shader-name scan and hardware-route geometry checks are `node tests/wgsl-source.test.cjs` and `node tests/hardware-route.test.cjs`. CPU checks do not compile or execute WGSL. The [hardware harness instructions](tests/hardware/README.md) describe the exact normal-input route and remaining scope.
+That release's portable checks passed 62 Last Train cases, 8 delayed-readback/checkpoint cases, 24 navigation cases and 18 fuel/weapon cases. The current checkout retains `node tests/last-train.test.cjs`, `node tests/checkpoint-readback.test.cjs`, `node tests/navigation.test.cjs` and `node tests/burnout-fuel.test.cjs`, with additional Chapter 4–5 coverage in `node tests/code-red.test.cjs`, `node tests/code-red-navigation.test.cjs`, `node tests/deadweight.test.cjs` and `node tests/deadweight-navigation.test.cjs`. The shader-name scan and hardware-route geometry checks are `node tests/wgsl-source.test.cjs` and `node tests/hardware-route.test.cjs`. CPU checks do not compile or execute WGSL.
 
-This is a three-chapter slice. Completion stops at an explicit Chapter 4 boundary; Chapters 4–5, co-op, device controls and broader source behavior remain unfinished or unqualified. Chapter 3 revive-first, down/pin interruption and door-occupancy/reopening were not independently observed on hardware. A bounded natural-combat attempt did not produce them and is not counted as a pass; Chapter 1–2 rescues do not qualify those Chapter 3 cases. Recordings are silent, with no audio-listening claim.
+That earlier slice stopped at an explicit Chapter 4 boundary. Chapter 3 revive-first, down/pin interruption and door-occupancy/reopening were not independently observed on hardware. A bounded natural-combat attempt did not produce them and is not counted as a pass; Chapter 1–2 rescues do not qualify those Chapter 3 cases. Recordings are silent, with no audio-listening claim.
 
 The sections below and [earlier slice-3 review](validation/deadends-slice3-review.json) record historical releases. Their controls, scope and performance observations apply to those earlier artifacts, not the current runtime.
 
@@ -24,13 +32,13 @@ The sections below and [earlier slice-3 review](validation/deadends-slice3-revie
 
 Nearby zombies wander during preparation, react to sight and noise, gather at closed doors and batter them, then enter when opened. Shooting and squad defense work before departure; automatic horde waves and respawns still wait for departure. This follows direct inspection of DEAD ENDS gameplay. The approved recorded SFX and default populations are preserved.
 
-The doorway, combat, collision and normal-controls checks passed on Windows Chrome 155 / RTX 5070 Ti with no GPU faults. [Watch the before/after comparison](https://chatgpt.com/api/library/files/libfile_d97cee8451e88191a4e64b81e637f997/download) or read the [methods and limitations](validation/doorway-review.md). Broader encounter pacing is a separate pass.
+The doorway, combat, collision and normal-controls checks passed on Windows Chrome 155 / RTX 5070 Ti with no GPU faults. The public [methods and limitations](validation/doorway-review.md) describe those historical checks. Broader encounter pacing is a separate pass.
 
 ## Combat audio
 
 Combat uses 43 compact CC0 recordings and recording-derived layers: rifle/shotgun attacks, wet hits/deaths, creature vocals, material breaks, firework blasts and mechanical cues. The 719 KiB bank predecodes asynchronously, plays immediately from cache, and retains the bounded 32-source spatial mix and pipe countdown timing. Missing or late assets never block gameplay or replay old events.
 
-The exact runtime passed Windows Chrome 155 / RTX 5070 Ti loading, failure/delay, decode, combat, timing, controls and saturation checks. Six matched scenes per build plus stress ran at approximately 60 FPS with no clipped samples or GPU faults. The horde recording contains 35 kills and recorded death/impact/debris layers. [Watch the horde recording](https://chatgpt.com/api/library/files/libfile_cdcd3ba023288191933758bb7c483600/download), read [the release review](validation/recorded-audio-review.md), or inspect [source credits](assets/audio/CREDITS.md). The user approved the selected-sample preview; no agent listening or long-session audio stability claim is made.
+The exact runtime passed Windows Chrome 155 / RTX 5070 Ti loading, failure/delay, decode, combat, timing, controls and saturation checks. Six matched scenes per build plus stress ran at approximately 60 FPS with no clipped samples or GPU faults. The horde scenario recorded 35 kills and death/impact/debris layers. Read the public [release review](validation/recorded-audio-review.md) for methods and limitations, or inspect [source credits](assets/audio/CREDITS.md). The user approved the selected-sample preview; no agent listening or long-session audio stability claim is made.
 
 Earlier procedural-mix and fixed-cue-cache measurements remain in the historical [audio report](validation/audio-release-review.md) and [cache report](validation/audio-cache-review.md).
 

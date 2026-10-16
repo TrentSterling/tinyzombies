@@ -2094,7 +2094,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
  var dir=safe2(delta);let head=vec3f(a.p.x,.42,a.p.z);var sight=travel<30.0&&travelClear14(a.p.xz,resolved);
  if(!sight){
   let count=u32(a.pathInfo.x);var id=u32(a.pathInfo.y);
-  while(id<count&&distance(a.p.xz,a.route[id].xz)<28.0/64.0){id++;}a.pathInfo.y=f32(id);
+  while(id<count&&distance(a.p.xz,a.route[id].xz)<select(28.0/64.0,a.route[id].w,a.route[id].w>0.0)){id++;}a.pathInfo.y=f32(id);
   if(id<count){for(var n=id+1u;n<min(count,id+5u);n++){if(clearSegment7(head,vec3f(a.route[n].x,.42,a.route[n].z),.25)&&danger7(a.route[n].xz).w==0.0){id=n;}else{break;}}a.pathInfo.y=f32(id);dir=safe2(a.route[id].xz-a.p.xz);}else{
    dir=vec2f(0);
   }
@@ -2293,6 +2293,33 @@ struct Node7{cell:vec2i, parent:i32, used:u32, g:f32, f:f32, pad:vec2f};
 // Each one-invocation A* workgroup owns a separate 9216-byte scratch region.
 var<workgroup> nodes:array<Node7,256>;
 var<workgroup> reverse:array<vec2i,128>;
+// A lost metre-cell lane gets one bounded half-metre retry, using the same scratch.
+// Fine edges retain the physical .24m body and sample every .125m; no door/wall bypass.
+fn localEdge15(a:vec2f,b:vec2f)->bool {
+ let d=distance(a,b);if(d>1.25){return false;}let n=max(1u,u32(ceil(d/.125)));
+ for(var k=0u;k<=n;k++){let p=mix(a,b,f32(k)/f32(n));if(blocked(vec3f(p.x,.36,p.y),vec3f(.24,.29,.24))){return false;}}return true;
+}
+fn localPath15(id:u32,origin:vec2f,goal:vec2f)->u32 {
+ let start=vec2i(floor((origin+HALF)*2.0));let finish=vec2i(floor((goal+HALF)*2.0));let d=distance(origin,goal);
+ var n=1u;nodes[0]=Node7(start,-1,0,0,d,vec2f(0));var bestID=0u;var nearest=d;var expanded=0u;
+ for(var step=0u;step<192u;step++){
+  var at=256u;var low=1e8;for(var j=0u;j<n;j++){if(nodes[j].used==0u&&nodes[j].f<low){low=nodes[j].f;at=j;}}
+  if(at==256u){break;}nodes[at].used=1u;expanded++;let c=nodes[at].cell;let rem=length(vec2f(c-finish))*.5;if(rem<nearest){nearest=rem;bestID=at;}
+  if(all(c==finish)){bestID=at;break;}
+  let from=select((vec2f(c)+.5)*.5-HALF,origin,at==0u);
+  for(var k=0u;k<8u;k++){
+   let offset=array<vec2i,8>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1),vec2i(1,1),vec2i(-1,1),vec2i(1,-1),vec2i(-1,-1))[k];let cell=c+offset;
+   if(any(cell<vec2i(1))||any(cell>=vec2i(NG*2-1))){continue;}let point=(vec2f(cell)+.5)*.5-HALF;if(!localEdge15(from,point)){continue;}
+   var hazard=0.0;for(var q=0u;q<16u;q++){let acid=S.acid13[q];let fire=S.heat6[q];if(acid.w>S.aux.x&&distance(point,acid.xy)<acid.z+22.0/64.0){hazard+=14.0;}if(fire.w>S.aux.x&&distance(point,fire.xy)<fire.z+22.0/64.0){hazard+=18.0;}}
+   let cost=nodes[at].g+select(.5,.707107,k>=4u)+hazard;var found=256u;for(var j=0u;j<n;j++){if(all(nodes[j].cell==cell)){found=j;break;}}
+   if(found<256u){if(cost>=nodes[found].g){continue;}}else{if(n>=256u){continue;}found=n;n++;}
+   nodes[found]=Node7(cell,i32(at),0,cost,cost+length(vec2f(cell-finish))*.5,vec2f(0));
+  }
+ }
+ var num=0u;var at=i32(bestID);while(at>0&&num<128u){reverse[num]=nodes[u32(at)].cell;num++;at=nodes[u32(at)].parent;}if(at>0){atomicAdd(&C[86],expanded);return 0u;}
+ let count=min(num,16u);for(var k=0u;k<count;k++){let p=(vec2f(reverse[num-1u-k])+.5)*.5-HALF;S.team7[id].route[k]=vec4f(p.x,0,p.y,.125);}
+ atomicAdd(&C[86],expanded);return count;
+}
 @compute @workgroup_size(1) fn update(@builtin(workgroup_id) wi:vec3u){
  let id=wi.x;if(id>=3u||u.run.y>.5||u.clock.x<=0.0||S.goal.w>0.0){return;}let a=S.team7[id];
  if(a.p.w<=0.0||a.pathInfo.z>0.0){return;}var destination7=a.destination7.xz;
@@ -2322,7 +2349,8 @@ let d=distance(a.p.xz,destination7);
  }
  var num=0u;var at=i32(bestID);
  while(at>0&&num<128u){reverse[num]=nodes[u32(at)].cell;num++;at=nodes[u32(at)].parent;}
- let count=min(num,16u);for(var k=0u;k<count;k++){let p=vec2f(reverse[num-1u-k])+.5-HALF;S.team7[id].route[k]=vec4f(p.x,0,p.y,0);}
+ var count=min(num,16u);for(var k=0u;k<count;k++){let p=vec2f(reverse[num-1u-k])+.5-HALF;S.team7[id].route[k]=vec4f(p.x,0,p.y,0);}
+ if(count==0u&&d<12.0){count=localPath15(id,a.p.xz,destination7);}
  S.team7[id].pathInfo.x=f32(count);S.team7[id].pathInfo.y=0.0;S.team7[id].pathInfo.w+=1.0;atomicAdd(&C[86],expanded);if(count==0u){atomicAdd(&C[87],1u);}
 }
 `;

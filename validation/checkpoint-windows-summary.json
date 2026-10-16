@@ -1,0 +1,290 @@
+{
+  "baselineCommit": "1debc6cdf7b4a5cb0d6772f3e20d849f890c20eb",
+  "baselineSha256": "42d7d28e07ed2a80d64d274b374f7effbbce06c36da390af42cf88bd0e19f20f",
+  "candidateSha256": "517446909154b42d695fc14717cbfdb1cdb7482a970f1b12cbdde4051f3b5e58",
+  "candidateBytes": 398767,
+  "browser": "Chrome 155.0.8059.41",
+  "adapter": "NVIDIA GeForce RTX 5070 Ti",
+  "driver": "32.0.15.9186 / 591.86",
+  "resolution": [
+    1280,
+    720
+  ],
+  "counts": {
+    "zombies": 2048,
+    "particles": 32768
+  },
+  "checkpointBrowserCases": 19,
+  "functionalBrowserChecksPassed": true,
+  "initialDocumentResponseHashPassed": true,
+  "testCopiesRehashedAfterRun": true,
+  "postRunCachedResourceLookup": {
+    "passed": false,
+    "reason": "CDP Page.getResourceContent reported uncached resource after reload; not used as identity evidence. Initial Network.getResponseBody hash and unchanged served source copies are retained."
+  },
+  "sessions": [
+    {
+      "gpuFaults": [],
+      "start": "2026-10-16T01:16:12.2158682Z",
+      "end": "2026-10-16T01:16:33.1915071+00:00",
+      "remainingOwnedProcesses": [],
+      "remainingProfileProcesses": []
+    },
+    {
+      "remainingOwnedProcesses": [],
+      "end": "2026-10-16T01:18:15.9743988+00:00",
+      "start": "2026-10-16T01:17:49.9964595Z",
+      "remainingProfileProcesses": [],
+      "gpuFaults": []
+    },
+    {
+      "end": "2026-10-16T01:20:37.2748997+00:00",
+      "gpuFaults": [],
+      "remainingOwnedProcesses": [],
+      "start": "2026-10-16T01:19:19.350123Z",
+      "remainingProfileProcesses": []
+    }
+  ],
+  "harnessCorrections": [
+    "Drain in-flight frames and readbacks before manually stepping queued host transitions.",
+    "Register the diagnostic document bootstrap on each reload-owning CDP session."
+  ],
+  "naturalPlay": {
+    "method": "Normal play through original input handlers after a clean URL-seed reset. No position, HP, actor or objective writes. Route steering is automated; completion is not assumed. All approved populations remain active.",
+    "completedCampaign": false,
+    "endedOnDowning": true,
+    "elapsedSeconds": 52.31768035888672,
+    "waypointsReached": 15,
+    "framesCaptured": 523,
+    "medianFps": 60.00138545942857,
+    "phaseChanges": [
+      {
+        "t": 0.01666666753590107,
+        "phase": 0,
+        "hp": 100,
+        "intensity": 0,
+        "awakeEnemies": 0
+      },
+      {
+        "t": 1.1499673128128052,
+        "phase": 1,
+        "hp": 100,
+        "intensity": 0.8999999761581421,
+        "awakeEnemies": 157
+      },
+      {
+        "t": 6.1665568351745605,
+        "phase": 2,
+        "hp": 100,
+        "intensity": 0.8999999761581421,
+        "awakeEnemies": 165
+      },
+      {
+        "t": 11.216606140136719,
+        "phase": 3,
+        "hp": 100,
+        "intensity": 0.6200000047683716,
+        "awakeEnemies": 141
+      }
+    ],
+    "after": {
+      "position": [
+        26.136234283447266,
+        0,
+        -24.757959365844727,
+        0
+      ],
+      "mission": [
+        4,
+        0,
+        -1,
+        0
+      ],
+      "objectiveText": "Safehouse",
+      "down": 44.69998550415039,
+      "team": [
+        {
+          "hp": 54,
+          "active": 1
+        },
+        {
+          "hp": 80,
+          "active": 1
+        },
+        {
+          "hp": 74,
+          "active": 1
+        }
+      ],
+      "ammo": 108
+    },
+    "routeMilestones": [
+      {
+        "target": [
+          -60.8,
+          52
+        ],
+        "t": 0.36666667461395264,
+        "hp": 100,
+        "objective": "Violet",
+        "arrived": true
+      },
+      {
+        "target": [
+          -59,
+          52
+        ],
+        "t": 1.1666673421859741,
+        "hp": 100,
+        "objective": "Violet",
+        "arrived": true
+      },
+      {
+        "target": [
+          -54,
+          52
+        ],
+        "t": 2.1499686241149902,
+        "hp": 100,
+        "objective": "Violet",
+        "arrived": true
+      },
+      {
+        "target": [
+          -54,
+          48
+        ],
+        "t": 3.1165671348571777,
+        "hp": 100,
+        "objective": "Violet",
+        "arrived": true
+      },
+      {
+        "target": [
+          -40.8,
+          48
+        ],
+        "t": 9.133234977722168,
+        "hp": 100,
+        "objective": "Relay A",
+        "arrived": true
+      },
+      {
+        "target": [
+          -52,
+          48
+        ],
+        "t": 11.216606140136719,
+        "hp": 100,
+        "objective": "Relay A",
+        "arrived": true
+      },
+      {
+        "target": [
+          -52,
+          8
+        ],
+        "t": 18.766475677490234,
+        "hp": 100,
+        "objective": "Relay A",
+        "arrived": true
+      },
+      {
+        "target": [
+          -48.8,
+          8
+        ],
+        "t": 22.21652603149414,
+        "hp": 86,
+        "objective": "Cell",
+        "arrived": true
+      },
+      {
+        "target": [
+          -48,
+          0
+        ],
+        "t": 23.816551208496094,
+        "hp": 86,
+        "objective": "Cell",
+        "arrived": true
+      },
+      {
+        "target": [
+          1,
+          0
+        ],
+        "t": 33.00003433227539,
+        "hp": 73,
+        "objective": "Cell",
+        "arrived": true
+      },
+      {
+        "target": [
+          1,
+          -8
+        ],
+        "t": 34.600128173828125,
+        "hp": 73,
+        "objective": "Cell",
+        "arrived": true
+      },
+      {
+        "target": [
+          -4,
+          -8
+        ],
+        "t": 38.216915130615234,
+        "hp": 59,
+        "objective": "Relay B",
+        "arrived": true
+      },
+      {
+        "target": [
+          1,
+          -8
+        ],
+        "t": 39.33356857299805,
+        "hp": 59,
+        "objective": "Relay B",
+        "arrived": true
+      },
+      {
+        "target": [
+          1,
+          -28
+        ],
+        "t": 44.00051498413086,
+        "hp": 59,
+        "objective": "Relay B",
+        "arrived": true
+      },
+      {
+        "target": [
+          11.2,
+          -28
+        ],
+        "t": 49.13410949707031,
+        "hp": 38,
+        "objective": "Safehouse",
+        "arrived": true
+      },
+      {
+        "target": [
+          48,
+          -28
+        ],
+        "t": 52.11757278442383,
+        "hp": 0,
+        "objective": "Safehouse",
+        "arrived": false
+      }
+    ]
+  },
+  "scopePreservation": {
+    "allShaderSourcesExact": true,
+    "audioClipsUnchanged": 43,
+    "audioBytes": 736350,
+    "originalV9Sha256": "787cdb9b13b91e27313e550826580e4030ce314fb571299ec171ddf051f99349"
+  }
+}

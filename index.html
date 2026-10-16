@@ -34,6 +34,7 @@ const L8={melee:2204,meleeDir:2208,anim:2212,progress:2216};
 const OPERATION_LEGS=3;
 const checkpointKey="tiny-zombies-v5-checkpoint";
 let savedCheckpoint=null;try{const raw=localStorage.getItem(checkpointKey);if(raw){let v=JSON.parse(raw);if(v&&v.version===5&&Number.isInteger(v.stage)&&v.stage>=2&&v.stage<=3&&Number.isInteger(v.seed)&&v.seed>=0&&v.seed<=4294967295&&Array.isArray(v.mods)&&v.mods.length===8&&v.mods.every(x=>Number.isInteger(x)&&x>=0&&x<=3)&&Array.isArray(v.upgrades)&&v.upgrades.length===3&&v.upgrades.every(x=>Number.isInteger(x)&&x>=0&&x<=3)){savedCheckpoint=v;}}}catch(e){}
+function clearCheckpoint(){savedCheckpoint=null;try{localStorage.removeItem(checkpointKey);}catch(e){diagnostics.notes.push('Checkpoint reset storage unavailable: '+e.message);}}
 const verts=[];
 function face(n,a,b,c,d){for(const q of [a,b,c,a,c,d])verts.push(...q,...n);}
 face([0,0,1],[-.5,-.5,.5],[.5,-.5,.5],[.5,.5,.5],[-.5,.5,.5]);
@@ -2388,7 +2389,7 @@ function ordnanceHint(pipe){
 function bindInput(){
  const setMouse=e=>{let r=canvas.getBoundingClientRect();mouse.x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));mouse.y=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));};
  canvas.addEventListener('pointermove',setMouse);
- canvas.addEventListener('pointerdown',e=>{e.preventDefault();setMouse(e);if(playerValues[464]>.5){pendingChoice=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));mouse.left=mouse.right=false;return;}if(playerValues[67]===1){advanceRequested=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));return;}if(e.button===0)mouse.left=true;if(e.button===2)mouse.right=true;if(e.button===1)mouse.middle=true;settings.started=true;enableAudio();canvas.focus();});
+ canvas.addEventListener('pointerdown',e=>{e.preventDefault();setMouse(e);if(seedRequested)return;if(playerValues[464]>.5){pendingChoice=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));mouse.left=mouse.right=false;return;}if(playerValues[67]===1){advanceRequested=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));return;}if(e.button===0)mouse.left=true;if(e.button===2)mouse.right=true;if(e.button===1)mouse.middle=true;settings.started=true;enableAudio();canvas.focus();});
  window.addEventListener('pointerup',e=>{if(e.button===0)mouse.left=false;if(e.button===2)mouse.right=false;if(e.button===1)mouse.middle=false;});
  canvas.addEventListener('contextmenu',e=>e.preventDefault());
  canvas.addEventListener('wheel',e=>{e.preventDefault();settings.zoom=Math.max(16,Math.min(62,settings.zoom*Math.exp(e.deltaY*.001)));},{passive:false});
@@ -2399,8 +2400,8 @@ function bindInput(){
    case 'Slash':e.preventDefault();if(settings.help){settings.help=false;settings.paused=!helpResume;}else{helpResume=!settings.paused;settings.help=true;settings.paused=true;}mouse.left=mouse.right=mouse.middle=false;break;
    case 'ShiftLeft':case 'ShiftRight':pendingDash=1;break;
    case 'KeyL':settings.practice=true;settings.lab=!settings.lab;seedRequested=true;break;
-   case 'KeyN':seedRequested=true;runSeed=(runSeed+104729)>>>0;stage=1;upgrades=[0,0,0];carryMods.fill(0);break;
-   case 'Digit1':case 'Digit2':case 'Digit3':if(playerValues[464]>.5){pendingChoice=+e.code.slice(-1);mouse.left=mouse.right=false;}else if(playerValues[67]===1)advanceRequested=+e.code.slice(-1);break;
+   case 'KeyN':clearCheckpoint();seedRequested=true;advanceRequested=0;runSeed=(runSeed+104729)>>>0;stage=1;upgrades=[0,0,0];carryMods.fill(0);break;
+   case 'Digit1':case 'Digit2':case 'Digit3':if(seedRequested)break;if(playerValues[464]>.5){pendingChoice=+e.code.slice(-1);mouse.left=mouse.right=false;}else if(playerValues[67]===1)advanceRequested=+e.code.slice(-1);break;
    case 'Enter':if(!settings.started&&savedCheckpoint){stage=savedCheckpoint.stage;runSeed=savedCheckpoint.seed>>>0;carryMods=savedCheckpoint.mods.map(x=>Math.max(0,Math.min(3,Number(x)||0)));upgrades=savedCheckpoint.upgrades||[0,0,0];seedRequested=true;settings.started=true;}break;
    case 'F6':{e.preventDefault();settings.practice=true;let opts=[256,512,1024,2048,4096,8192];settings.zombies=opts[(opts.indexOf(settings.zombies)+1)%opts.length];break;}
    case 'KeyG':settings.pool=({8192:16384,16384:32768,32768:65536,65536:8192})[settings.pool]||8192;clearParticles();break;
@@ -2787,7 +2788,7 @@ function drawFrame(now){
  if(stopped)return;if(inFlight>=2){frameCallback=requestAnimationFrame(drawFrame);return;}try{
  const start=performance.now();let elapsed=last?Math.min(.10,(now-last)/1000):1/60;last=now;
  if(elapsed>0)fps=fps*.95+Math.min(240,1/elapsed)*.05;
- if(seedRequested||advanceRequested){if(advanceRequested){if(stage>=OPERATION_LEGS){stage=1;carryMods.fill(0);upgrades=[0,0,0];try{localStorage.removeItem(checkpointKey);savedCheckpoint=null;}catch(e){}}else{carryMods=Array.from(playerValues.slice(432,440));upgrades[advanceRequested-1]++;stage++;}runSeed=(runSeed+7919)>>>0;settings.started=true;if(stage>1&&!settings.practice&&!settings.lab){try{savedCheckpoint={version:5,stage,seed:runSeed,mods:carryMods,upgrades};localStorage.setItem(checkpointKey,JSON.stringify(savedCheckpoint));}catch(e){diagnostics.notes.push('Checkpoint storage unavailable: '+e.message);}}}world=makeWorld();resetRequested=true;seedRequested=false;advanceRequested=0;}
+ if(seedRequested||advanceRequested){if(advanceRequested){if(stage>=OPERATION_LEGS){stage=1;carryMods.fill(0);upgrades=[0,0,0];clearCheckpoint();}else{carryMods=Array.from(playerValues.slice(432,440));upgrades[advanceRequested-1]++;stage++;}runSeed=(runSeed+7919)>>>0;settings.started=true;if(stage>1&&!settings.practice&&!settings.lab){try{savedCheckpoint={version:5,stage,seed:runSeed,mods:carryMods,upgrades};localStorage.setItem(checkpointKey,JSON.stringify(savedCheckpoint));}catch(e){diagnostics.notes.push('Checkpoint storage unavailable: '+e.message);}}}world=makeWorld();resetRequested=true;seedRequested=false;advanceRequested=0;}
  if(resetRequested){reset();resetRequested=false;}
  sizeTargets();updateAudioState9();
  let dt=settings.paused||!settings.started||playerValues[464]>.5?0:Math.min(1/30,elapsed)*(keys.has('KeyQ')&&(settings.lab||playerValues[70]>.01)?.20:1);time+=dt;frame++;

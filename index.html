@@ -31,32 +31,33 @@ let frameCallback,resources={},allocatedBytes=0;
 let helpResume=false,toolHint='',toolHintUntil=0;
 let pendingChoice=0,carryMods=new Array(8).fill(0),lastBannerSound=0;
 const L7={"pos":0,"motion":4,"look":8,"timers":12,"bomb":16,"blast":20,"aux":24,"bombStart":28,"shots":32,"goal":64,"skill":68,"wave":72,"tools":76,"mission":80,"buddy":84,"rescue":88,"buddyLook":92,"buddyShot":96,"weapons":100,"escape":104,"lure":108,"feedback":112,"aimPoint":116,"aimNormal":120,"gunOrigin":124,"gunAim":128,"ballistic":132,"allyAim":136,"bullets":140,"critFx":284,"supplies":428,"modsA":432,"modsB":436,"relay":440,"cell":444,"mission5":448,"director":452,"alarm":456,"banner":460,"chooser":464,"runStats":468,"record":472,"orders":476,"lastInput":480,"stageRecord":484,"objectivePoint":488,"cardIDs":492,"spare5":496,"noise":500,"sweepPrev":504,"sweepNext":508,"fxControl":512,"trails6":516,"heat6":1668,"team7":1732,"extraBullets7":2116,"extraCrit7":2148,"player7":2180,"pace7":2184,"journey7":2188,"squad7":2192,"rules7":2196,"radio7":2200,"stateFloats":2220,"buddyStride":128};
-const L13={shots:2540,botMag:3692,botReserve:3704,botItems:3716,botLife:3728,director:3740,chapter:3744,queue:3748,acid:3764,order:3828,botControl:3832,botStamina:3836,upgrades:3840,botCommit:3844,axe:3856,axeHits:3860,axeProps:3864,stateFloats:3872,zombieFloats:28,zombieBytes:112};
+const L13={shots:2540,botMag:3692,botReserve:3704,botItems:3716,botLife:3728,director:3740,chapter:3744,queue:3748,acid:3764,order:3828,botControl:3832,botStamina:3836,upgrades:3840,botCommit:3844,axe:3856,axeHits:3860,axeProps:3864,botFuel:3872,botPour:3876,heatLife:3880,stateFloats:3896,zombieFloats:28,zombieBytes:112};
 const L8={melee:2204,meleeDir:2208,anim:2212,progress:2216};
 const OPERATION_LEGS=5;
 // Source chapter-boundary carry. The prior Tiny save key stays untouched for rollback.
 const checkpointKey='tiny-zombies-deadends-checkpoint-v1';
 let savedCheckpoint=null,chapterCarry13=null,checkpointWritten13=false,checkpointStatus13='';
-let campaignKills13=0,campaignTime13=0;
+let campaignKills13=0,campaignTime13=0,chapterEntry15=null,completedBoundary15=false;
 function parseCheckpoint13(raw){
- try{const v=JSON.parse(raw);if(!v||v.schema!==1||v.map!==1||v.difficulty!==1||!Number.isInteger(v.seed)||v.seed<0||v.seed>4294967295||!Array.isArray(v.carry)||v.carry.length!==4||![v.leg,v.kills,v.time].every(x=>Number.isFinite(x)&&x>=0))return null;
+ try{const v=JSON.parse(raw);if(!v||v.schema!==1||![1,2].includes(v.map)||v.difficulty!==1||!Number.isInteger(v.seed)||v.seed<0||v.seed>4294967295||!Array.isArray(v.carry)||v.carry.length!==4||![v.leg,v.kills,v.time].every(x=>Number.isFinite(x)&&x>=0))return null;
   const bounded=(x,lo,hi,f)=>Number.isFinite(x)?Math.max(lo,Math.min(hi,x)):f;
+  if(v.map===2&&(!v.entry||v.entry.map!==1||!parseCheckpoint13(JSON.stringify(v.entry))))return null;
   return {...v,stage:v.map+1,carry:v.carry.map(p=>({hp:bounded(p?.hp,0,100,65),dead:!!p?.dead,meds:Math.floor(bounded(p?.meds,0,9,1)),bombs:Math.floor(bounded(p?.bombs,0,9,1)),molotovs:Math.floor(bounded(p?.molotovs,0,9,1)),weapon:Math.floor(bounded(p?.weapon,0,2,0)),upgrades:Math.floor(bounded(p?.upgrades,0,7,0))}))};
  }catch{return null;}
 }
 try{savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}
-function clearCheckpoint(){savedCheckpoint=null;chapterCarry13=null;campaignKills13=campaignTime13=0;try{localStorage.removeItem(checkpointKey);}catch(e){diagnostics.notes.push('Checkpoint reset storage unavailable: '+e.message);}}
+function clearCheckpoint(){savedCheckpoint=null;chapterCarry13=null;chapterEntry15=null;completedBoundary15=false;campaignKills13=campaignTime13=0;try{localStorage.removeItem(checkpointKey);}catch(e){diagnostics.notes.push('Checkpoint reset storage unavailable: '+e.message);}}
 function saveBoundary13(){
- if(checkpointWritten13||!world.source13||stage!==1||playerValues[67]!==1||settings.practice||settings.lab)return;
+ if(checkpointWritten13||!world.source13||stage>2||playerValues[67]!==1||settings.practice||settings.lab)return;
  checkpointWritten13=true;
  const carry=[{hp:playerValues[3],dead:false,meds:playerValues[L12.items+2],bombs:playerValues[L12.items],molotovs:playerValues[L12.items+1],weapon:playerValues[L12.gear+3],upgrades:playerValues[L13.upgrades]}];
  for(let i=0;i<3;i++)carry.push({hp:playerValues[L7.team7+i*128+3],dead:playerValues[L13.botLife+i*4+1]>.5,meds:playerValues[L13.botItems+i*4+2],bombs:playerValues[L13.botItems+i*4],molotovs:playerValues[L13.botItems+i*4+1],weapon:playerValues[L13.botMag+i*4+3],upgrades:playerValues[L13.upgrades+i+1]});
- const v={schema:1,map:1,difficulty:1,leg:1,kills:campaignKills13+counters[0],time:campaignTime13+playerValues[24],seed:(runSeed+7919)>>>0,savedAt:Date.now(),carry};
- savedCheckpoint={...v,stage:2};checkpointStatus13='CHECKPOINT SAVED';
+ const v={schema:1,map:stage,difficulty:1,leg:stage,kills:campaignKills13+counters[0],time:campaignTime13+playerValues[24],seed:(runSeed+7919)>>>0,savedAt:Date.now(),carry};
+ if(stage===2)v.entry=chapterEntry15;savedCheckpoint={...v,stage:stage+1};checkpointStatus13='CHECKPOINT SAVED';
  try{localStorage.setItem(checkpointKey,JSON.stringify(v));}catch(e){checkpointStatus13='STORAGE UNAVAILABLE; CONTINUE IN THIS TAB';diagnostics.notes.push(e.message);}
 }
 function continueBoundary13(){
- if(!savedCheckpoint||savedCheckpoint.map!==1||(settings.started&&stage!==1))return false;
+ if(!savedCheckpoint)return false;if(savedCheckpoint.map===2){completedBoundary15=true;checkpointStatus13='BURNOUT CHECKPOINT SAVED';cancelInput12();return true;}if(settings.started&&stage!==1)return false;chapterEntry15=JSON.parse(JSON.stringify(savedCheckpoint));completedBoundary15=false;
  stage=2;runSeed=savedCheckpoint.seed;chapterCarry13=savedCheckpoint.carry.map(p=>({...p}));campaignKills13=savedCheckpoint.kills;campaignTime13=savedCheckpoint.time;carryMods.fill(0);upgrades=[0,0,0];seedRequested=true;settings.started=true;cancelInput12();return true;
 }
 function applyCarry13(st){
@@ -127,7 +128,7 @@ const BURNOUT13={"sourceCommit":"a547496c931a047c832a21d35165026df091025b","seed
 
 function makeWorld13(){
  const source=stage===2?BURNOUT13:MERCER13;
- const cells=new Map(),groups=new Uint32Array(GROUP_WORDS8),props=new Float32Array(MAX_PROPS*16),objectGroups8=[],doors7=[],sourceDoors13=[],sourcePickups13=[];
+ const cells=new Map(),groups=new Uint32Array(GROUP_WORDS8),props=new Float32Array(MAX_PROPS*16),objectGroups8=[],doors7=[],sourceDoors13=[],sourcePickups13=[],sourceProps15=[];
  let group=0,propCount=0;
  const tx=x=>x/64-42,tz=y=>y/64-27;
  const start=[tx(source.players[0].x),tz(source.players[0].y)],buddy=[tx(source.players[1].x),tz(source.players[1].y)];
@@ -136,15 +137,16 @@ function makeWorld13(){
  const floor=(x,y)=>x>=0&&x<84&&y>=0&&y<54&&source.grid[y][x]!=='0';
  // Source grid walls are structural. Only the exposed boundary needs voxel faces.
  for(let y=0;y<54;y++)for(let x=0;x<84;x++)if(!floor(x,y)&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>floor(x+dx,y+dy)))boxM(x-42,0,y-27,1,2,1,0,0);
- const solidProps=source.props.filter(p=>!['door','shelterDoor','finalDoor19','gate'].includes(p.type));
- for(const p of solidProps){if(!p.solid)continue;let h=.7,mat=1;if(['car','bus','police'].includes(p.type)){h=.85;mat=4;}if(['shelterRear','fence'].includes(p.type)){h=2;mat=5;}if(p.type==='shelf'){h=1.35;}if(p.type==='barrel'){
-   props.set([tx(p.x+p.w/2),0,tz(p.y+p.h/2),0,6,0,0,0,0,0,0,0,0,0,0,0],propCount++*16);continue;
-  }let g=0;if(p.hp>0){g=++group;objectGroups8.push(g);}boxM(tx(p.x),0,tz(p.y),p.w/64,h,p.h/64,mat,g);
- }
+  const solidProps=source.props.filter(p=>!['door','shelterDoor','finalDoor19','gate'].includes(p.type));
+  for(const p of solidProps){if(!p.solid)continue;let h=.7,mat=1;if(['car','bus','police'].includes(p.type)){h=.85;mat=4;}if(['shelterRear','fence'].includes(p.type)){h=2;mat=5;}if(p.type==='shelf')h=1.35;
+   if(p.hp>0||p.alarm){const index=propCount++,kind=p.type==='barrel'?1:p.type==='pump'?2:p.type==='breachWindow24'?3:p.type==='shelf'?4:p.type==='crate'?5:p.type==='police'?6:7;
+    props.set([tx(p.x+p.w/2),h/2,tz(p.y+p.h/2),10,p.hp||1000000,0,p.alarm?1:0,0,p.w/64,h,p.h/64,p.id,kind,0,p.hp||0,-1],index*16);sourceProps15.push({index,...p});
+   }else boxM(tx(p.x),0,tz(p.y),p.w/64,h,p.h/64,mat,0);
+  }
  const doorFirst7=propCount;let gate13=-1,final13=-1,startDoor13=-1;
  for(const p of source.props.filter(p=>['door','shelterDoor','finalDoor19','gate'].includes(p.type))){
   const index=propCount++,w=Math.max(.25,p.w/64),d=Math.max(.25,p.h/64),x=tx(p.x+p.w/2),z=tz(p.y+p.h/2),protectedDoor=p.type!=='door';
-  props.set([x,p.open?3.4:1,z,9,protectedDoor?1000000:p.hp,p.open?0:1,0,0,w,2,d,0,0,0,protectedDoor?1:0,0],index*16);
+  props.set([x,(p.open||p.open14||!p.solid)?3.4:1,z,9,protectedDoor?1000000:p.hp,(p.open||p.open14||!p.solid)?0:1,0,0,w,2,d,0,0,0,protectedDoor?1:0,0],index*16);
   doors7.push({x,z,w,d,index,prep:p.type==='shelterDoor'});sourceDoors13.push({index,...p});
   if(p.type==='gate')gate13=index;if(p.type==='finalDoor19')final13=index;if(p.type==='shelterDoor')startDoor13=index;
  }
@@ -173,7 +175,7 @@ function makeWorld13(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {source13:source,sourceSeed13:source.seed,initialZ13,sourceDoors13,gate13,final13,startDoor13,sourcePickups13,flow9:null,objectGroups8,extraBarrels8:[],chapter8:{name:source.map.name,location:source.map.district,theme:0},doors7,doorFirst7,caches:sourcePickups13,switches:[],cellPoint:[0,0],blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges:[],seed:runSeed,roomCount:7,start,generators,exit,buddy,rescueRoom:0,slabs:[],gateIndex:-1,buildings:[],yards:[],occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {source13:source,sourceSeed13:source.seed,initialZ13,sourceDoors13,sourceProps15,gate13,final13,startDoor13,sourcePickups13,flow9:null,objectGroups8,extraBarrels8:[],chapter8:{name:source.map.name,location:source.map.district,theme:0},doors7,doorFirst7,caches:sourcePickups13,switches:[],cellPoint:[0,0],blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges:[],seed:runSeed,roomCount:7,start,generators,exit,buddy,rescueRoom:0,slabs:[],gateIndex:-1,buildings:[],yards:[],occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 function makeWorld(){
  if(!settings.lab&&stage<=2)return makeWorld13();
@@ -308,7 +310,7 @@ const COMMON=`
 struct Uniforms { vp:mat4x4f, light:mat4x4f, clock:vec4f, inputMove:vec4f, aim:vec4f, config:vec4f, screen:vec4f, camera:vec4f, controls:vec4f, run:vec4f, worldInfo:vec4f, goals:vec4f, route:vec4f, v3:vec4f, v5:vec4f, gear12:vec4f, input12:vec4f, controlEdges12:vec4f, meta12:vec4f };
 struct Bullet3 { origin:vec4f, dir:vec4f, hit:vec4f, tag:vec4f };
 struct Buddy7 { p:vec4f, look:vec4f, ai:vec4f, destination7:vec4f, pack:vec4f, memory:vec4f, nav:vec4f, movement:vec4f, plan:vec4u, stats:vec4f, vital:vec4f, intent:vec4f, aim:vec4f, pathInfo:vec4f, misc:vec4f, flags:vec4f, route:array<vec4f,16> };
-struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2> };
+struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16> };
 struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f };
 struct Particle { p:vec4f, v:vec4f, c:vec4f, a:vec4f };
 struct Block { p:vec4f, extraData:vec4f };
@@ -353,7 +355,8 @@ fn reloadDuration(reloadUpgrade:f32)->f32 {return max(.85,1.65-reloadUpgrade*.22
 fn footprint(kind:f32)->f32 {return array<f32,7>(14.0,12.0,28.0,17.0,16.0,19.0,28.0)[u32(kind)]/64.0;}
 fn infectedHP13(kind:f32,seed:u32)->f32 {if(kind==0.0){return 54.0+rnd(seed)*29.0;}return array<f32,7>(68.0,52.0,730.0,140.0,155.0,180.0,730.0)[u32(kind)];}
 fn infectedDamage13(kind:f32)->u32 {return array<u32,7>(7u,8u,25u,8u,7u,6u,25u)[u32(kind)];}
-fn fireRadius13(f:vec4f,now:f32)->f32 {let t=clamp((8.0-f.w+now)/.72,0.0,1.0);return f.z*(.12+.88*(1.0-(1.0-t)*(1.0-t)));}
+fn hazardPoint15(p:vec2f,acid:array<vec4f,16>,fire:array<vec4f,16>,now:f32,pad:f32)->bool {for(var k=0u;k<16u;k++){if((acid[k].w>now&&distance(p,acid[k].xy)<acid[k].z+pad)||(fire[k].w>now&&distance(p,fire[k].xy)<fire[k].z+pad)){return true;}}return false;}
+fn fireRadius13(f:vec4f,now:f32,life:f32)->f32 {let t=clamp((max(8.0,life)-f.w+now)/.72,0.0,1.0);return f.z*(.12+.88*(1.0-(1.0-t)*(1.0-t)));}
 fn hash(a:u32)->u32 { var x=a; x=(x^(x>>16u))*2246822519u; x=(x^(x>>13u))*3266489917u; return x^(x>>16u); }
 fn rnd(a:u32)->f32 { return f32(hash(a)&16777215u)/16777216.0; }
 fn safe2(v:vec2f)->vec2f { return v/max(length(v),0.0001); }
@@ -773,7 +776,7 @@ fn world3(o:vec3f,d:vec3f,limit:f32,picking:bool)->Hit3 {
 }
 fn prop3(o:vec3f,d:vec3f,pr:Prop,id:u32,limit:f32)->Hit3 {
  if(pr.data.x<=0.0||pr.p.w<0.0){return miss3(limit);}let p=pr.p.xyz;
- if(pr.p.w==4.0||pr.p.w==5.0||pr.p.w==9.0){return box3(o,d,p,pr.aux.xyz*.5,limit,4u,id);}
+ if(pr.p.w==4.0||pr.p.w==5.0||pr.p.w==9.0||pr.p.w==10.0){return box3(o,d,p,pr.aux.xyz*.5,limit,4u,id);}
  if(pr.p.w==0.0){return box3(o,d,p+vec3f(0,.4,0),vec3f(.258,.4,.258),limit,4u,id);}
  if(pr.p.w==1.0){return box3(o,d,p+vec3f(0,.18,0),vec3f(.25,.16,.2),limit,4u,id);}
  if(pr.p.w==3.0){return box3(o,d,p+vec3f(0,.07,0),vec3f(1.3,.07,.7),limit,4u,id);}
@@ -863,7 +866,7 @@ fn axeStep14(){
  }
  for(var j=0u;j<5u;j++){
   let a=angle+mix(a0,a1,f32(j)/4.0);let dir=vec3f(cos(a),0,sin(a));var hit=world3(o,dir,80.0/64.0,false);for(var k=0u;k<u32(u.worldInfo.y);k++){hit=closer3(hit,prop3(o,dir,Props[k],k,hit.t));}
-  if(hit.kind!=4u||Props[hit.id].p.w!=9.0||Props[hit.id].more.z>.5){continue;}if(any(S.axeProps14[0]==vec4u(hit.id))||any(S.axeProps14[1]==vec4u(hit.id))){continue;}
+  if(hit.kind!=4u){continue;}let pr=Props[hit.id];if((pr.p.w!=9.0&&pr.p.w!=10.0)||(pr.p.w==9.0&&pr.more.z>.5)||(pr.p.w==10.0&&(pr.more.x<3.0||pr.more.x>5.0))){continue;}if(any(S.axeProps14[0]==vec4u(hit.id))||any(S.axeProps14[1]==vec4u(hit.id))){continue;}
   for(var k=0u;k<8u;k++){if(S.axeProps14[k/4u][k%4u]==0xffffffffu){S.axeProps14[k/4u][k%4u]=hit.id;S.bullets[j]=Bullet3(vec4f(o,82),vec4f(dir,hit.t),vec4f(o+dir*hit.t,0),vec4f(4,f32(hit.id),0,3));break;}}
  }
 }
@@ -882,9 +885,9 @@ fn axeStep14(){
   var hit=miss3(maxT);let eligible=damage>0.0&&u.clock.x>0.0&&n<u32(stats.w)&&chain;
   if(eligible){hit=sceneAfter13(o,dir,maxT,lane,after);}
   `+reduceRay+`
-  let h=rayHits[0];let applies=eligible&&(n==0u||h.kind==3u);after=h.t+.0001;chain=h.kind==3u;
+  let h=rayHits[0];let applies=eligible;after=h.t+.0001;chain=h.kind==3u;
   if(lane==0u&&applies){
-   let value=damage*pow(.6,f32(n))*select(1.0,mix(1.0,.5,clamp(h.t/maxT,0.0,1.0)),weapon==1u);
+   let value=select(gunHit14(weapon,bits).x,damage*select(1.0,.6,n>0u)*select(1.0,mix(1.0,.5,clamp(h.t/maxT,0.0,1.0)),weapon==1u),h.kind==3u);
    var shot=Bullet3(vec4f(o,value),vec4f(dir,h.t),vec4f(o+dir*h.t,0),vec4f(f32(h.kind),f32(h.id),0,1));
    S.shots13[actor*18u+pellet*2u+n]=shot;
    if(n==0u){
@@ -953,11 +956,11 @@ fn equipment12(dt:f32){
   }
   var flame=S.flights12[k];
   if(flame.z>0.0){flame.z=max(0.0,flame.z-dt);S.flights12[k]=flame;
-   if(flame.z==0.0){let ix=u32(S.fxControl.x)%16u;S.heat6[ix]=vec4f(flame.xy,130.0/64.0,S.aux.x+8.0);S.fxControl.x=f32((ix+1u)%16u);}
+   if(flame.z==0.0){let ix=u32(S.fxControl.x)%16u;S.heat6[ix]=vec4f(flame.xy,130.0/64.0,S.aux.x+8.0);S.heatLife15[ix]=8.0;S.fxControl.x=f32((ix+1u)%16u);}
    else if(S.throw12.z<=0.0){S.throw12=flame;S.throwFrom12=S.flightStarts12[k];}
   }
  }
- for(var fi=0u;fi<16u;fi++){let f=S.heat6[fi];let d=distance(S.pos.xz,f.xy);if(f.w>S.aux.x&&d<fireRadius13(f,S.aux.x)-4.0/64.0&&S.feedback.z<=0.0&&u32(u.clock.z)%12u==0u){if(wallRay(f.xy,safe2(S.pos.xz-f.xy),d)>=d-.05){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-9.0*.2);}else{S.pos.w=max(0.0,S.pos.w-9.0);}S.feedback.z=.37;S.look.w=1.0;S.heal12.x=0.0;}}}
+ for(var fi=0u;fi<16u;fi++){let f=S.heat6[fi];let d=distance(S.pos.xz,f.xy);if(f.w>S.aux.x&&d<fireRadius13(f,S.aux.x,S.heatLife15[fi])-4.0/64.0&&S.feedback.z<=0.0&&u32(u.clock.z)%12u==0u){if(wallRay(f.xy,safe2(S.pos.xz-f.xy),d)>=d-.05){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-9.0*.2);}else{S.pos.w=max(0.0,S.pos.w-9.0);}S.feedback.z=.37;S.look.w=1.0;S.heal12.x=0.0;}}}
  if(S.pos.w<=0.0&&S.player7.x==0.0&&S.goal.w==0.0){S.player7=vec4f(40,0,0,S.player7.w);}
  for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x&&distance(S.pos.xz,acid.xy)<acid.z+.25&&S.feedback.z<=0.0){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-1.6);}else{S.pos.w=max(0.0,S.pos.w-8.0);}S.feedback.z=.37;S.heal12.x=0.0;}}
  let down=S.player7.x>0.0;
@@ -1157,13 +1160,19 @@ fn chapterMission13(dt:f32){
  for(var i=0u;i<u32(u.config.x);i++){var z=Z13[i];if(z.extraData.z!=3.0||z.special13.w<0.0){continue;}z.special13.z=max(0.0,z.special13.z-dt);if(z.special13.z==0.0){var slot=16u;for(var k=0u;k<16u;k++){if(S.acid13[k].w<=S.aux.x&&slot==16u){slot=k;}}if(slot<16u){S.acid13[slot]=vec4f(z.sense13.xy,71.0/64.0,S.aux.x+5.8);}z.special13.w=-1.0;}Z13[i]=z;}
  if(u.run.x==1.0&&S.orders.x>.5&&S.order13.x==5.0){let a=S.team7[u32(S.order13.z)];let g=u32(S.chapter13.x);if(a.p.w>0.0&&S.botLife13[u32(S.order13.z)].w==0.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&P[g].data.y>.5){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;if(S.relay.y>=4.2){P[g].data.y=0.0;P[g].p.y=3.4;S.relay.z=1.0;S.orders.x=0.0;}}}
  directorStep13(dt);let scream=atomicExchange(&C[55],0u);if(scream>0u){queueWave13(30.0,true,true);S.alarm.z=12.0;}
+  if(u.run.x==2.0){for(var id=0u;id<3u;id++){
+  let a=S.team7[id];let ready=S.botFuel15[id]>.5&&a.p.w>0.0&&S.botLife13[id].w==0.0&&a.ai.x==7.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&S.relay.x<.5;
+  if(ready){S.botPour15[id]+=dt;if(S.botPour15[id]>=2.1){S.botFuel15[id]=0.0;S.botPour15[id]=0.0;S.relay.w+=1.0;S.team7[id].plan.y=0u;if(S.relay.w>=2.0){S.relay.x=1.0;S.relay.y=0.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}}}else{S.botPour15[id]=0.0;}
+ }}
+ let carAlarm=atomicExchange(&C[90],0u);if(carAlarm>0u){queueWave13(15.0,false,true);queueWave13(24.0,true,true);S.alarm.z=12.0;}
+
  let oldKind=S.mission5.y;let oldIndex=S.mission5.z;S.mission5.y=0.0;S.mission5.z=-1.0;S.objectivePoint.w=999.0;
  let gate=u32(S.chapter13.x);let finalDoor=u32(S.chapter13.y);let gateDone=P[gate].data.y<.5;
  S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint.xy=select(u.goals.xy,vec2f(31.0,select(-17.5,-19.5,u.run.x==2.0)),gateDone);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x==1.0){S.cell.w=0.0;}
  for(var k=0u;k<3u;k++){if(S.team7[k].p.w<=0.0&&S.botLife13[k].y<.5&&distance(S.team7[k].p.xz,S.pos.xz)<90.0/64.0){S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
- if(!gateDone){interactAt(u.goals.xy,3.0,f32(gate));}
+ if(!gateDone){interactAt(u.goals.xy,3.0,f32(gate));if(u.run.x==2.0&&S.cell.w!=1.0&&S.relay.x<.5&&distance(S.pos.xz,u.goals.xy)<950.0/64.0){var best=1e9;for(var k=0u;k<u32(u.worldInfo.y);k++){let q=P[k];if(q.p.w==7.0&&q.aux.x==7.0&&q.data.y!=15.0){let d=distance(q.p.xz,S.pos.xz);if(d<best){best=d;S.objectivePoint.xy=q.p.xz;}}}}}
  for(var k=u32(S.rules7.x);k<u32(S.rules7.x+S.rules7.y);k++){if(k==gate||k==finalDoor){continue;}let d=P[k];if(d.data.x>0.0){interactAt(d.p.xz,8.0,f32(k));}}
- for(var k=0u;k<u32(u.worldInfo.y);k++){let p=P[k];if(p.p.w!=7.0){continue;}if((u32(p.data.y)&1u)==0u&&distance(p.p.xz,S.pos.xz)<78.0/64.0){interactAt(p.p.xz,5.0,f32(k));}}
+ for(var k=0u;k<u32(u.worldInfo.y);k++){let p=P[k];if(p.p.w!=7.0||(p.aux.x==7.0&&S.cell.w==1.0)){continue;}if((u32(p.data.y)&1u)==0u&&distance(p.p.xz,S.pos.xz)<78.0/64.0){interactAt(p.p.xz,5.0,f32(k));}}
  let inside=safeHouse13(S.pos.xz);let door=P[finalDoor];let edge=length(max(abs(S.pos.xz-door.p.xz)-door.aux.xz*.5-vec2f(7.0/64.0),vec2f(0)));
  if(edge<=140.0/64.0&&(inside||door.data.y>.5)){S.mission5.y=7.0;S.mission5.z=f32(finalDoor);}
  if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5){S.mission5.w=0.0;}
@@ -1413,7 +1422,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
   // The existing art animation channel mirrors the explicit tell timer.
   z.extraData.w=z.combat13.w;
 if(S.tools.y>.20){let delta=S.tools.zw-z.p.xz;let d=length(delta);if(d<6.0){velocity+=safe2(delta)*(6.0-d)*2.2;}}
- for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==0.0&&pr.data.y>.44&&length(pr.p.xz-z.p.xz)<3.1){damage+=25.0;}
+ for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==10.0&&pr.more.w==S.aux.x&&pr.more.x<=2.0){let r=select(195.0,230.0,pr.more.x==2.0)/64.0;let d=length(pr.p.xz-z.p.xz);if(d<r){damage+=select(360.0,430.0,pr.more.x==2.0)*(1.0-d/r*.7);z.history.z+=safe2(z.p.xz-pr.p.xz).x*500.0/64.0*select(1.0,.2,kind==2.0);z.history.w+=safe2(z.p.xz-pr.p.xz).y*500.0/64.0*select(1.0,.2,kind==2.0);if(kind==4.0&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}}}if(pr.p.w==0.0&&pr.data.y>.44&&length(pr.p.xz-z.p.xz)<3.1){damage+=25.0;}
   if(pr.p.w==2.0&&pr.data.x>0.0&&all(abs(pr.p.xz-z.p.xz)<vec2f(1.15,.65))&&fract(S.aux.x*.32+pr.data.w)>.83){damage+=50.0;}
   if(pr.p.w==3.0&&pr.data.x>0.0&&all(abs(pr.p.xz-z.p.xz)<vec2f(1.2,.65))){velocity.x+=1.8;}
  }
@@ -1443,13 +1452,13 @@ z.v.x=(p.x-z.p.x)/max(dt,.0001);z.v.y=(p.z-z.p.z)/max(dt,.0001);z.p=vec4f(p,z.p.
  var heHurt=false;
    for(var j=0u;j<72u;j++){let shot=S.shots13[j];if(shot.origin.w<=0.0||shot.tag.x!=3.0||u32(shot.tag.y)!=i){continue;}
    damage+=shot.origin.w;let actor=j/18u;var weapon=u32(S.gear12.w);if(actor>0u){weapon=u32(S.botMag13[actor-1u].w);if(S.team7[actor-1u].p.w<=0.0){weapon=2u;}}
-   if(kind==4.0&&weapon==1u&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}let knock=select(gunKnock14(weapon,S.upgrades14[actor]),165.0,shot.tag.w==3.0)/64.0*select(1.0,.2,kind==2.0);let away=safe2(shot.dir.xz);z.history.z+=away.x*knock;z.history.w+=away.y*knock;z.combat13.y=max(z.combat13.y,select(.085,0.0,kind==2.0));
+   if(kind==4.0&&(gunKnock14(weapon,S.upgrades14[actor])>=80.0||shot.tag.w==3.0)&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}let knock=select(gunKnock14(weapon,S.upgrades14[actor]),165.0,shot.tag.w==3.0)/64.0*select(1.0,.2,kind==2.0);let away=safe2(shot.dir.xz);z.history.z+=away.x*knock;z.history.w+=away.y*knock;z.combat13.y=max(z.combat13.y,select(.085,0.0,kind==2.0));
    impulse=shot.dir.xyz*4.5+vec3f(0,2,0);
   }
 if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let across=abs(dot(delta,vec2f(-S.look.y,S.look.x)));if(along>0.0&&along<14.0&&across<.8){damage+=40.0;impulse=vec3f(S.look.x,.6,S.look.y)*13.0;}}
- if(S.aux.w>0.0){let d=length(z.p.xz-S.blast.xy);if(d<S.blast.w){damage+=500.0*(1.0-.7*d/S.blast.w);let away=safe2(z.p.xz-S.blast.xy);z.history.z+=away.x*(500.0/64.0)*select(1.0,.2,kind==2.0);z.history.w+=away.y*(500.0/64.0)*select(1.0,.2,kind==2.0);impulse=vec3f(away.x,1.1,away.y)*(5.0+(1.0-d/S.blast.w)*8.0);}}
+ if(S.aux.w>0.0){let d=length(z.p.xz-S.blast.xy);if(d<S.blast.w){if(kind==4.0&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}damage+=500.0*(1.0-.7*d/S.blast.w);let away=safe2(z.p.xz-S.blast.xy);z.history.z+=away.x*(500.0/64.0)*select(1.0,.2,kind==2.0);z.history.w+=away.y*(500.0/64.0)*select(1.0,.2,kind==2.0);impulse=vec3f(away.x,1.1,away.y)*(5.0+(1.0-d/S.blast.w)*8.0);}}
  var burning=false;
- for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];let d=length(z.p.xz-fire.xy);if(fire.w>S.aux.x&&d<fireRadius13(fire,S.aux.x)+radius*.5){var clear=true;for(var n=1u;n<32u;n++){let t=f32(n)*.125;if(t>=d){break;}let p=fire.xy+safe2(z.p.xz-fire.xy)*t;if(solid(vec3f(p.x,.5,p.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(p)])&4u)!=0u){clear=false;break;}}burning=burning||clear;}}
+ for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];let d=length(z.p.xz-fire.xy);if(fire.w>S.aux.x&&d<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+radius*.5){var clear=true;for(var n=1u;n<32u;n++){let t=f32(n)*.125;if(t>=d){break;}let p=fire.xy+safe2(z.p.xz-fire.xy)*t;if(solid(vec3f(p.x,.5,p.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(p)])&4u)!=0u){clear=false;break;}}burning=burning||clear;}}
  if(burning&&(u32(u.clock.z)+i)%12u==0u){damage+=19.0;}
  if(damage>0.0){z.p.w-=damage;z.extraData.y=1.0;z.v.w=max(z.v.w,8.0);
   if(z.p.w<=0.0){atomicAdd(&C[0],1u);if(heHurt){atomicAdd(&C[44],1u);}z.v.w=select(18.0,5.0,S.wave.x>1.5)+rnd(i+u32(S.aux.x*100.0))*4.0;event(z.p.xyz,impulse,vec3f(.29,.55,.35),select(0u,9u,kind==6.0),128u,i+atomicLoad(&C[18])*153u);
@@ -1701,13 +1710,13 @@ fn scorch6(pos:vec3f,r:f32,seconds:f32){
   let delta=vec3f(f32(x),f32(y),f32(z))*.25;let dist=length(delta);if(dist>r){continue;}
   let id=occAt(cell+vec3i(x,y,z));if(id>0u){atomicMax(&WP[${MAX_WORLD}u+id-1u],(u32(S.aux.x*16.0)<<8u)|u32((1.0-dist/r)*250.0));}
  }}}
- if(seconds>0.0){let index=u32(S.fxControl.x)%16u;S.heat6[index]=vec4f(pos.x,pos.z,r*.73,S.aux.x+seconds);S.fxControl.x=f32((index+1u)%16u);}
+ if(seconds>0.0){let index=u32(S.fxControl.x)%16u;S.heat6[index]=vec4f(pos.x,pos.z,r*.73,S.aux.x+seconds);S.heatLife15[index]=seconds;S.fxControl.x=f32((index+1u)%16u);}
  atomicAdd(&C[60],1u);
 }
 @compute @workgroup_size(1) fn update(){
  if(u.clock.x<=0.0||S.chooser.x>.5){return;}
- for(var j=0u;j<12u;j++){var sh=S.bullets[min(j,8u)];if(j==11u){sh=S.extraShot12;}else if(j>=9u){sh=S.extraBullets7[j-9u];}if(sh.origin.w>0.0&&sh.tag.w>=2.0&&sh.tag.x>0.0){scorch6(sh.hit.xyz,.85,select(1.3,0.0,sh.hit.y>1.7));}}
- if(S.aux.w>.5){scorch6(vec3f(S.blast.x,.18,S.blast.y),min(3.4,S.blast.w*.78),4.0);}
+ for(var j=0u;j<12u;j++){var sh=S.bullets[min(j,8u)];if(j==11u){sh=S.extraShot12;}else if(j>=9u){sh=S.extraBullets7[j-9u];}if(sh.origin.w>0.0&&sh.tag.w>=2.0&&sh.tag.x>0.0){scorch6(sh.hit.xyz,.85,select(1.3,0.0,sh.hit.y>1.7||u.run.x<=2.0));}}
+ if(S.aux.w>.5){scorch6(vec3f(S.blast.x,.18,S.blast.y),min(3.4,S.blast.w*.78),select(4.0,0.0,u.run.x<=2.0));}
  for(var j=0u;j<u32(u.worldInfo.y);j++){let pr=Props[j];if(pr.p.w==0.0&&pr.data.y>=.499){scorch6(pr.p.xyz+vec3f(0,.15,0),2.5,5.0);}}
  if(floor(S.aux.x*7.0)>floor((S.aux.x-u.clock.x)*7.0)){
   for(var i=0u;i<16u;i++){let f=S.heat6[i];if(f.w>S.aux.x){event(vec3f(f.x,.04,f.y),vec3f(f.z,0,0),vec3f(.22),8u,12u,i*199u+u32(S.aux.x*1301.0));}}
@@ -1877,6 +1886,7 @@ fn friend7(id:u32){
   part(p.xyz,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.07*sin(S.aux.x*7.0),busy&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
  }
  modelSize=vec3f(1);modelProne=0.0;
+ if(S.botFuel15[id]>.5){box(p.xyz+vec3f(-.32,.55,0),vec3f(.35,.46,.26),vec3f(.72,.22,.07),1,0);}
  let origin=p.xyz+vec3f(0,select(.50,.22,down),0);var gun=vec3f(dir.x,0,dir.y);if(aim.w>0.0||look.w>.03){gun=safe3(aim.xyz-origin);}let glen=select(.64,.90,id==1u);
  let visualOrigin=origin-gun*look.w*.055-vec3f(0,select(0.0,.12,S.team7[id].pack.z>0.0),0);
  beam6(visualOrigin+gun*.15,visualOrigin+gun*.44,vec3f(.31,.35,.35),.115,0);beam6(visualOrigin+gun*.447,visualOrigin+gun*(glen+.23),vec3f(.17,.22,.24),.085,0);
@@ -1897,7 +1907,7 @@ fn friend7(id:u32){
     box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);
     box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);
   }
-  if(u.run.y<.5&&S.cell.w<2.0){var pos=S.cell.xyz+vec3f(0,.34,0);if(S.cell.w==1.0){pos=S.pos.xyz+vec3f(-.38,.62,0);}
+  if(u.run.y<.5&&S.cell.w<2.0&&(u.run.x>2.0||S.cell.w==1.0)){var pos=S.cell.xyz+vec3f(0,.34,0);if(S.cell.w==1.0){pos=S.pos.xyz+vec3f(-.38,.62,0);}
    box(pos,vec3f(.50,.56,.44),vec3f(.09,.35,.40),1,0);box(pos+vec3f(0,.02,.228),vec3f(.30,.34,.022),vec3f(.20,.93,1),1,1.1);box(pos+vec3f(0,.32,0),vec3f(.38,.08,.26),vec3f(.63,.66,.5),1,0);
    if(S.cell.w==0.0){for(var k=0u;k<12u;k++){let a=f32(k)*.5236;box(pos+vec3f(cos(a)*.85,-.31,sin(a)*.85),vec3f(.11,.025,.11),vec3f(.18,.9,1),1,.7);}}
   }
@@ -1950,7 +1960,8 @@ fn friend7(id:u32){
     box(console,vec3f(.18,.26,.18),select(vec3f(.15,1,.48),vec3f(1,.36,.09),pr.data.y>.5),1,.75);
   }
   // Mission silhouettes share the existing cube renderer and fixed palettes.
-  if(pr.p.w==7.0){
+  if(pr.p.w==7.0&&pr.aux.x==7.0&&pr.data.y!=15.0){box(p+vec3f(0,.3,0),vec3f(.42,.55,.30),vec3f(.72,.22,.07),1,0);box(p+vec3f(0,.6,0),vec3f(.25,.08,.20),vec3f(.94,.70,.21),1,.2);}
+  if(pr.p.w==7.0&&pr.aux.x!=7.0){
    let unopened=pr.data.x>0.0;let col=select(vec3f(.19,.30,.29),vec3f(.11,.57,.60),unopened);
    box(p+vec3f(0,.09,0),vec3f(1.45,.18,1.04),vec3f(.18,.23,.22),1,0);
    box(p+vec3f(0,.38,0),vec3f(1.12,.50,.78),col,1,0);box(p+vec3f(0,select(.72,.65,unopened),select(-.34,0.0,unopened)),vec3f(1.18,.13,.86),col*.8,1,0);
@@ -1962,6 +1973,15 @@ fn friend7(id:u32){
    let slab=Props[u32(pr.aux.x)];let across=slab.p.x-p.x;box(vec3f(p.x+across*.5,.045,p.z),vec3f(abs(across),.025,.07),vec3f(.78,.56,.14),1,0);box(vec3f(slab.p.x,.045,(p.z+slab.p.z)*.5),vec3f(.07,.025,abs(slab.p.z-p.z)),vec3f(.78,.56,.14),1,0);
   }
   if(pr.p.w==4.0&&pr.more.z>.5&&pr.data.x>0.0){let warning=pr.data.y==1.0;let c=select(vec3f(.72,.56,.20),vec3f(1,.22,.04),warning);for(var k=0u;k<16u;k++){let x=pr.p.x-pr.aux.x*.5+f32(k)*pr.aux.x/15.0;for(var side=0u;side<2u;side++){let z=pr.p.z+select(-1.45,1.45,side==1u);box(vec3f(x,.013,z),vec3f(.18,.025,.20),c,1,select(.15,1.0,warning));}}}
+
+  if(pr.p.w==10.0){
+   if(pr.data.x>0.0){let kind=u32(pr.more.x);var color=vec3f(.40,.36,.27);if(kind==1u){color=vec3f(.62,.17,.10);}if(kind==2u){color=vec3f(.76,.24,.12);}if(kind==3u){color=vec3f(.22,.42,.45);}if(kind==6u){color=vec3f(.19,.27,.35);}box(p,pr.aux.xyz,color,1,0);
+    if(kind==1u){box(p,pr.aux.xyz*vec3f(1.03,.20,1.03),vec3f(.85,.61,.23),1,0);}
+    if(kind==2u){box(p+vec3f(0,.42,0),vec3f(pr.aux.x*.85,.4,pr.aux.z*.70),vec3f(.80,.80,.69),1,0);box(p+vec3f(0,.45,pr.aux.z*.36),vec3f(.33,.18,.025),vec3f(.08,.16,.14),1,.2);}
+    if(pr.more.y>S.aux.x){box(p+vec3f(0,pr.aux.y*.5+.08,0),vec3f(.5,.12,.25),vec3f(1,.10,.02),3,1.0+abs(sin(S.aux.x*18.0)));}
+   }else{box(vec3f(p.x,.035,p.z),pr.aux.xyz*vec3f(1,.08,1),vec3f(.16,.15,.13),1,0);}
+   if(pr.data.y>0.0&&pr.more.x<=2.0){box(p,vec3f(pr.data.y*2.0),vec3f(1,.31,.025),3,pr.data.y*5.0);}
+  }
 
   if(pr.p.w==0.0&&pr.data.x>0.0){box(p+vec3f(0,.375,0),vec3f(.5,.75,.5),vec3f(.62,.17,.10),1,0);box(p+vec3f(0,.46,0),vec3f(.516,.18,.516),vec3f(.85,.61,.23),1,0);box(p+vec3f(0,.775,0),vec3f(.4,.05,.4),vec3f(.24,.28,.27),1,0);}
   if(pr.p.w==0.0&&pr.data.y>0.0){box(p+vec3f(0,.5,0),vec3f(pr.data.y*1.6),vec3f(1,.31,.025),1,pr.data.y*5.0);}
@@ -2014,6 +2034,7 @@ var<workgroup> codes:array<u32,128>;
 var<workgroup> lens:array<u32,128>;
 var<workgroup> closed:array<u32,128>;
 fn travelClear14(a:vec2f,b:vec2f)->bool {
+ if(hazardPoint15(mix(a,b,.5),S.acid13,S.heat6,S.aux.x,25.0/64.0)){return false;}
  let d=distance(a,b);let n=max(1u,min(256u,u32(ceil(d/.125))));
  for(var k=1u;k<=n;k++){let q=mix(a,b,f32(k)/f32(n));if(blocked(vec3f(q.x,.36,q.y),vec3f(.24,.29,.24))){return false;}}return true;
 }
@@ -2106,9 +2127,9 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   var a=S.team7[id];if(S.journey7.x<.5&&a.vital.z<.5){continue;}a.aim.w=0.0;a.look.z=max(0.0,a.look.z-dt);a.look.w=max(0.0,a.look.w-dt*9.0);a.memory.z=max(0.0,a.memory.z-dt);a.vital.y=max(0.0,a.vital.y-dt);a.ai.w-=dt;a.pathInfo.z-=dt;a.movement.z=0.0;
   var mag=S.botMag13[id];var reserve=S.botReserve13[id];var life=S.botLife13[id];var weapon=u32(mag.w);
   a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;
-  let sprint=distance(a.p.xz,S.pos.xz)>290.0/64.0&&a.memory.x<0.0&&a.pack.z<=0.0&&S.botStamina13[id]>4.0;
-  let botSpeed=204.0/64.0*select(1.0,1.42,sprint);S.botStamina13[id]=clamp(S.botStamina13[id]+select(23.0,-29.0,sprint)*dt,0.0,100.0);
-  for(var f=0u;f<16u;f++){let fire=S.heat6[f];let d=distance(a.p.xz,fire.xy);if(fire.w>S.aux.x&&u32(u.clock.z)%12u==(id+1u)*3u&&d<fireRadius13(fire,S.aux.x)-4.0/64.0&&a.vital.y<=0.0&&clearSegment7(vec3f(fire.x,.5,fire.y),a.p.xyz+vec3f(0,.5,0),.01)){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-9.0);}else{life.x=max(.0001,life.x-1.8);}a.vital.y=.37;}}
+  let sprint=S.botFuel15[id]<.5&&distance(a.p.xz,S.pos.xz)>290.0/64.0&&a.memory.x<0.0&&a.pack.z<=0.0&&S.botStamina13[id]>4.0;
+  let botSpeed=204.0/64.0*select(1.0,1.42,sprint)*select(1.0,.9,S.botFuel15[id]>.5);S.botStamina13[id]=clamp(S.botStamina13[id]+select(23.0,-29.0,sprint)*dt,0.0,100.0);
+  for(var f=0u;f<16u;f++){let fire=S.heat6[f];let d=distance(a.p.xz,fire.xy);if(fire.w>S.aux.x&&u32(u.clock.z)%12u==(id+1u)*3u&&d<fireRadius13(fire,S.aux.x,S.heatLife15[f])-4.0/64.0&&a.vital.y<=0.0&&clearSegment7(vec3f(fire.x,.5,fire.y),a.p.xyz+vec3f(0,.5,0),.01)){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-9.0);}else{life.x=max(.0001,life.x-1.8);}a.vital.y=.37;}}
   for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x&&distance(a.p.xz,acid.xy)<acid.z+.25&&a.vital.y<=0.0){if(a.p.w>0.0){a.p.w=max(0.0,a.p.w-8.0);}else{life.x=max(.0001,life.x-1.6);}a.vital.y=.37;}}
   if(S.aux.w>0.0&&S.botControl13.w==0.0&&a.p.w>0.0&&a.vital.y<=0.0){let d=distance(a.p.xz,S.blast.xy);if(d<S.blast.w*.65){a.p.w=max(0.0,a.p.w-20.0*(1.0-d/S.blast.w));a.vital.y=.37;}}
 
@@ -2118,6 +2139,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   let touches=atomicExchange(&C[64u+id],0u);let slam=atomicExchange(&C[68u+id],0u);
   if(a.p.w<=0.0&&a.vital.y<=0.0&&touches>0u){life.x=max(.0001,life.x-f32(touches)*.2);a.vital.y=.37;}if(a.p.w>0.0&&a.vital.y<=0.0&&(touches>0u||slam>0u)){a.p.w=max(0.0,a.p.w-f32(touches)-select(0.0,30.0,slam>0u));a.vital.y=.37;if(a.p.w==0.0){a.vital.x=0.0;a.flags.y=0.0;S.radio7=vec4f(f32(id),3.0,1.0,0);}}
   if(a.p.w<=0.0&&a.memory.w>0.0){life.x=40.0;mag.z=15.0;mag.w=2.0;weapon=2u;a.pack.x=15.0;a.pack.z=0.0;a.flags.x=0.0;}if(a.p.w>0.0&&life.z>.5){mag.w=0.0;weapon=0u;a.pack.x=mag.x;a.pack.z=0.0;}life.z=select(0.0,1.0,a.p.w<=0.0);if(a.p.w>0.0){healthy++;}if(distance(a.p.xz,S.pos.xz)<28.0){a.vital.z=1.0;}a.pack.z=max(0.0,a.pack.z-dt);if(a.pack.z==0.0&&a.flags.x>.5){let take=min(select(a.pack.y-a.pack.x,1.0,weapon==1u),reserve[weapon]);a.pack.x+=take;reserve[weapon]-=take;a.flags.x=0.0;if(weapon==1u&&a.pack.x<a.pack.y&&reserve[weapon]>0.0){a.pack.z=gunStats14(weapon,S.upgrades14[id+1u]).z;a.flags.x=1.0;}}
+  if(S.botFuel15[id]>.5&&weapon!=2u){mag[weapon]=a.pack.x;weapon=2u;mag.w=2.0;a.pack.x=mag.z;a.pack.y=15.0;a.pack.z=0.0;}
   if(life.w>0.0&&a.p.w>0.0){a.movement=vec4f(0);a.aim.w=0.0;S.botLife13[id]=life;S.team7[id]=a;continue;}
    if(a.p.w<=0.0){
    a.ai=vec4f(2,0,-1,0);a.movement=vec4f(0);a.flags.y=0.0;
@@ -2125,11 +2147,12 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
   }else{
    a.flags.y=2.0;
    if(a.ai.w<=0.0||a.plan.y==0u){
-    a.ai.w=.32;let hazard=danger7(a.p.xz);var goal=0u;var destination7=vec4f(S.pos.xyz,-1);var goalScore=select(140.0,710.0,distance(a.p.xz,S.pos.xz)>450.0/64.0);
+    a.ai.w=.32;let hazard=danger7(a.p.xz);var goal=0u;var destination7=vec4f(S.pos.xyz,-1);var goalScore=select(140.0,710.0,distance(a.p.xz,S.pos.xz)>select(450.0,1100.0,S.botFuel15[id]>.5)/64.0);
     var formation=sourceAdvance14(id);destination7.x=formation.x;destination7.z=formation.y;
     let anchorInside=S.pos.x>=31.0&&S.pos.x<39.0&&S.pos.z>=select(-21.0,-23.0,u.run.x==2.0)&&S.pos.z<select(-14.0,-15.0,u.run.x==2.0);
     if(anchorInside){goal=11u;goalScore=880.0;let sid=id+1u;formation=walkGoal14(vec2f(31.0+(180.0+f32(sid%2u)*105.0)/64.0,select(-21.0,-23.0,u.run.x==2.0)+(140.0+f32(sid/2u)*90.0)/64.0));destination7=vec4f(formation.x,0,formation.y,-1);}
     if(S.orders.x>.5&&S.order13.z==f32(id)&&goalScore<590.0){goal=7u;destination7=vec4f(S.orders.y,0,S.orders.z,-1);goalScore=590.0;if(S.order13.x==2.0){let t=u32(S.order13.y);if(S.team7[t].p.w<=0.0&&S.botLife13[t].y<.5){goal=2u;destination7=vec4f(S.team7[t].p.xyz,f32(t));goalScore=1020.0;}}}
+    if(S.botFuel15[id]>.5&&goalScore<700.0){goal=7u;destination7=vec4f(u.goals.x,0,u.goals.y,-1);goalScore=700.0;}
     if(a.pack.x<=0.0&&goalScore<650.0){goal=9u;goalScore=650.0;destination7=a.p;destination7.w=f32(id);}
     for(var ti=0u;ti<4u;ti++){
      let q=teamTarget7(i32(ti)-1);if(claims[ti]==i32(id)){goal=2u;destination7=vec4f(q.xyz,f32(i32(ti)-1));goalScore=1100.0;}
@@ -2142,7 +2165,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
      if(medic==i32(id)){goal=select(3u,4u,i32(ti)-1==i32(id));destination7=vec4f(q.xyz,f32(i32(ti)-1));goalScore=600.0;break;}
     }}
     var cache=-1;var ammoCache=-1;var cd=880.0/64.0;var ad=880.0/64.0;
-    for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var p=P[pi];let bit=1u<<(id+1u);if(p.p.w!=7.0||(u32(p.data.y)&bit)!=0u||p.aux.x==7.0){continue;}let d=distance(p.p.xz,a.p.xz);
+    for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var p=P[pi];let bit=1u<<(id+1u);if(p.p.w!=7.0||(u32(p.data.y)&bit)!=0u||(p.aux.x==7.0&&S.botFuel15[id]>.5)){continue;}let d=distance(p.p.xz,a.p.xz);
      if(d<690.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),p.p.xyz+vec3f(0,.4,0),.02)){p.aux.y=f32(u32(p.aux.y)|bit);P[pi]=p;}
      if((u32(p.aux.y)&bit)==0u||danger7(p.p.xz).w>0.0||(p.data.w>S.aux.x&&p.data.z!=f32(id+1u))){continue;}
      if(p.aux.x==1.0&&d<cd){cd=d;cache=i32(pi);}if(p.aux.x==0.0&&d<ad){ad=d;ammoCache=i32(pi);}
@@ -2164,7 +2187,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     var clear=pressure<1.0;if(goal==2u||goal==3u){clear=threatNear7(destination7.xz,2.1)<.5;}
     var facts=0u;if(distance(destination7.xz,a.p.xz)<1.1){facts|=AT7;}if(a.pack.x>0.0&&a.pack.z==0.0){facts|=LOAD7;}if(clear){facts|=CLEAR7|SAFE7;}if(a.pack.w>0.0){facts|=KIT7;}if(cache>=0&&cd<1.0){facts|=CACHE7;}
     var commitment=S.botCommit14[id];let changed=a.ai.x!=f32(goal)||a.ai.z!=destination7.w;let finished=a.plan.z>=a.plan.y||a.plan.y==0u;
-    var valid=true;if(a.ai.x==5.0||a.ai.x==10.0){let ix=u32(max(0.0,a.ai.z));valid=(u32(P[ix].data.y)&(1u<<(id+1u)))==0u;}if(a.ai.x==4.0){valid=a.p.w<70.0&&(a.pack.w>0.0||cache>=0);}if(a.ai.x==2.0){valid=teamTarget7(i32(a.ai.z)).w<=0.0;}
+    var valid=true;if(a.ai.x==5.0||a.ai.x==10.0){let ix=u32(max(0.0,a.ai.z));valid=(u32(P[ix].data.y)&(1u<<(id+1u)))==0u;}if(a.ai.x==4.0){valid=a.p.w<70.0&&(a.pack.w>0.0||cache>=0);}if(a.ai.x==2.0){let tid=i32(a.ai.z);valid=teamTarget7(tid).w<=0.0&&select(S.player7.x>0.0&&S.goal.w==0.0,(S.botLife13[u32(clamp(tid,0,2))].y<.5),(tid>=0))&&claims[u32(tid+1)]==i32(id);}
     let urgent=(goal==2u||goal==6u)&&goalScore>=commitment.z;
     let replacePlan=!valid||a.intent.z>7.0||(!changed&&(finished||S.aux.x>=commitment.x))||(changed&&(urgent||goalScore>=commitment.z+20.0||finished||(S.aux.x>=commitment.x&&S.aux.x>=commitment.y)));
     if(replacePlan){if(changed||!valid){a.vital.x=0.0;}a=goap7(a,facts,goal,distance(a.p.xz,destination7.xz));a.intent.x=f32(facts);a.intent.y=f32(goal);a.ai.x=f32(goal);a.ai.z=destination7.w;a.destination7=destination7;commitment=vec4f(S.aux.x+2.1,S.aux.x+.85,goalScore,S.aux.x+.95);a.pathInfo.z=0.0;}
@@ -2203,15 +2226,16 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     if(used){if(kind==0u){reserve.x=select(240.0,140.0,(u32(S.upgrades14[id+1u])&1u)!=0u);reserve.y=56.0;mag.x=gunStats14(0u,S.upgrades14[id+1u]).x;mag.y=8.0;mag.z=15.0;a.pack.x=mag[weapon];a.pack.z=0.0;}
      else if(kind==1u){used=a.pack.w<2.0;if(used){a.pack.w+=1.0;}}
      else if(kind==2u){used=S.botItems13[id].x<4.0;if(used){S.botItems13[id].x=min(4.0,S.botItems13[id].x+2.0);}}
-     else if(kind==3u){used=S.botItems13[id].y<3.0;if(used){S.botItems13[id].y+=1.0;}}else if(kind==4u||kind==5u){let bit=select(1u,2u,kind==5u);S.upgrades14[id+1u]=f32(u32(S.upgrades14[id+1u])|bit);weapon=select(0u,1u,kind==5u);mag.w=f32(weapon);let stats=gunStats14(weapon,S.upgrades14[id+1u]);mag[weapon]=stats.x;reserve[weapon]=max(reserve[weapon],stats.w);a.pack.x=mag[weapon];a.pack.y=stats.x;a.pack.z=0.0;}else{used=false;}
+     else if(kind==3u){used=S.botItems13[id].y<3.0;if(used){S.botItems13[id].y+=1.0;}}else if(kind==4u||kind==5u){let bit=select(1u,2u,kind==5u);S.upgrades14[id+1u]=f32(u32(S.upgrades14[id+1u])|bit);weapon=select(0u,1u,kind==5u);mag.w=f32(weapon);let stats=gunStats14(weapon,S.upgrades14[id+1u]);mag[weapon]=stats.x;reserve[weapon]=max(reserve[weapon],stats.w);a.pack.x=mag[weapon];a.pack.y=stats.x;a.pack.z=0.0;}else if(kind==7u){used=S.botFuel15[id]<.5;if(used){S.botFuel15[id]=1.0;S.botPour15[id]=0.0;q.data.y=15.0;mag[weapon]=a.pack.x;weapon=2u;mag.w=2.0;a.pack.x=mag.z;a.pack.y=15.0;a.pack.z=0.0;a.plan.y=0u;}}else{used=false;}
      if(used){q.data.y=f32(u32(q.data.y)|bit);P[ix]=q;a.stats.w+=1.0;atomicAdd(&C[84],1u);}
     }S.orders.x=0.0;
    }}
   // Fire is concurrent with moving/covering, but not healing or reviving. Downed pistols remain useful.
   var destination7=i32(a.memory.x);if(destination7<0||destination7>=i32(u.config.x)||Z[u32(max(0,destination7))].p.w<=0.0){destination7=-1;}
   if(a.p.w<=0.0&&a.look.z<=0.0){var best=10.0;for(var j=0u;j<u32(u.config.x);j++){let z=Z[j];let d=distance(z.p.xz,a.p.xz);if(z.p.w>0.0&&d<best&&clearSegment7(a.p.xyz+vec3f(0,.22,0),z.p.xyz+vec3f(0,.6,0),.03)){best=d;destination7=i32(j);}}}
-  if(id==1u&&a.p.w>0.0&&destination7>=0&&a.pack.z==0.0){let d=distance(a.p.xz,Z[u32(destination7)].p.xz);var desired=weapon;if(d<400.0/64.0&&mag.y+reserve.y>0.0){desired=1u;}else if(d>530.0/64.0&&mag.x+reserve.x>0.0){desired=0u;}if(desired!=weapon){mag[weapon]=a.pack.x;weapon=desired;mag.w=f32(desired);a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;a.look.z=max(.15,a.look.z);}}
-   let busy=a.ai.y==4.0||a.ai.y==5.0||a.ai.y==6.0||a.ai.y==7.0;
+  if(id==1u&&S.botFuel15[id]<.5&&a.p.w>0.0&&destination7>=0&&a.pack.z==0.0){let d=distance(a.p.xz,Z[u32(destination7)].p.xz);var desired=weapon;if(d<400.0/64.0&&mag.y+reserve.y>0.0){desired=1u;}else if(d>530.0/64.0&&mag.x+reserve.x>0.0){desired=0u;}if(desired!=weapon){mag[weapon]=a.pack.x;weapon=desired;mag.w=f32(desired);a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;a.look.z=max(.15,a.look.z);}}
+   let busy=a.ai.y==4.0||a.ai.y==5.0||a.ai.y==6.0||a.ai.y==7.0||(S.botFuel15[id]>.5&&a.ai.x==7.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0);
+  if(!busy&&destination7>=0&&a.p.w>0.0&&S.botFuel15[id]<.5&&weapon==2u&&mag.x>0.0){mag.z=a.pack.x;weapon=0u;mag.w=0.0;a.pack.x=mag.x;a.pack.y=gunStats14(0u,S.upgrades14[id+1u]).x;a.pack.z=0.0;a.look.z=max(.15,a.look.z);}
   if(destination7<0&&length(a.movement.xy)>.1){let look=safe2(a.movement.xy);a.look.x=look.x;a.look.y=look.y;}
   if(destination7>=0&&a.vital.z>.5){let z=Z[u32(destination7)];let aim=z.p.xyz+vec3f(0,.65,0)*zScale(z.extraData.z);let dir=safe2(aim.xz-a.p.xz);a.look.x=dir.x;a.look.y=dir.y;
    if(!busy&&a.look.z<=0.0&&a.pack.z<=0.0&&(a.pack.x>0.0||a.p.w<=0.0)&&distance(z.p.xz,a.p.xz)<gunHit14(select(weapon,2u,a.p.w<=0.0),S.upgrades14[id+1u]).y/64.0&&clearSegment7(a.p.xyz+vec3f(0,select(.5,.22,a.p.w<=0.0),0),aim,.025)){
@@ -2276,7 +2300,7 @@ var<workgroup> reverse:array<vec2i,128>;
  if(blocked(vec3f(destination7.x,.36,destination7.y),vec3f(.24,.29,.24))){var best=1e9;let intended=destination7;let cell=vec2i(floor(intended+HALF));for(var z=-5;z<=5;z++){for(var x=-5;x<=5;x++){let c=cell+vec2i(x,z);let p=vec2f(c)+.5-HALF;let score=distance(p,intended);if(score<best&&passCell7(c)&&!blocked(vec3f(p.x,.36,p.y),vec3f(.24,.29,.24))){best=score;destination7=p;}}}}
 let d=distance(a.p.xz,destination7);
  // No graph search is needed for a short, genuinely clear local segment.
- if(d<12.0){var clear=true;let n=max(1u,u32(ceil(d/.40)));for(var k=1u;k<=n;k++){let p=mix(a.p.xz,destination7,f32(k)/f32(n));if(blocked(vec3f(p.x,.36,p.y),vec3f(.24,.29,.24))){clear=false;break;}}
+ if(d<12.0){var clear=!hazardPoint15(mix(a.p.xz,destination7,.5),S.acid13,S.heat6,S.aux.x,25.0/64.0);let n=max(1u,u32(ceil(d/.40)));for(var k=1u;k<=n;k++){let p=mix(a.p.xz,destination7,f32(k)/f32(n));if(blocked(vec3f(p.x,.36,p.y),vec3f(.24,.29,.24))){clear=false;break;}}
   if(clear){S.team7[id].route[0]=vec4f(destination7.x,0,destination7.y,0);S.team7[id].pathInfo=vec4f(1,0,.9,a.pathInfo.w);return;}}
 
  S.team7[id].pathInfo.z=.9;
@@ -2330,7 +2354,7 @@ const doors7Shader=COMMON+`
   }
   if(d.data.y>.5&&attackers>0u&&distance(d.p.xz,S.pos.xz)<18.0&&floor(S.aux.x*4.0)>floor((S.aux.x-u.clock.x)*4.0)){atomicAdd(&C[91],1u);}
   var damage=0.0;if(d.data.y>.5){damage+=u.clock.x*min(10.0,f32(attackers)*1.7);}
-  for(var j=0u;j<12u;j++){var sh=S.bullets[min(j,8u)];if(j==11u){sh=S.extraShot12;}else if(j>=9u){sh=S.extraBullets7[j-9u];}if(sh.origin.w<=0.0){continue;}if(sh.tag.x==4.0&&u32(sh.tag.y)==i){damage+=sh.origin.w;}}
+  for(var j=0u;j<77u;j++){var sh=S.shots13[min(j,71u)];if(j>=72u){sh=S.bullets[j-72u];if(sh.tag.w!=3.0){continue;}}if(sh.origin.w<=0.0){continue;}if(sh.tag.x==4.0&&u32(sh.tag.y)==i){damage+=sh.origin.w;}}
   if(S.aux.w>0.0&&distance(S.blast.xy,d.p.xz)<S.blast.w){damage+=500.0;}
   if(S.tools.x>0.0){let delta=d.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);if(along>0.0&&along<14.0&&abs(dot(delta,vec2f(-S.look.y,S.look.x)))<max(d.aux.x,d.aux.z)*.5+1.1){damage+=80.0;}}
   if(d.data.y>.5&&meleeInside8(d.p.xyz,d.aux.xyz*.5,S.melee8,S.meleeDir8)){damage+=9.5;atomicAdd(&C[91],1u);}
@@ -2365,7 +2389,7 @@ const crowdShader=COMMON+`
 const dynamicShader=COMMON+`
 @group(0) @binding(1) var<storage,read> P:array<Prop>;
 @group(0) @binding(2) var<storage,read_write> O:array<atomic<u32>>;
-@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask|select(mask<<16u,0u,pr.p.w==9.0));}}}
+@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0&&pr.p.w!=10.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask|select(mask<<16u,0u,pr.p.w==9.0));}}}
 `;
 const lightsShader=COMMON+`
 struct PointLight{p:vec4f,c:vec4f};
@@ -2429,13 +2453,38 @@ const collapseShader=COMMON+`
 @compute @workgroup_size(64) fn evaluate(@builtin(global_invocation_id) gid:vec3u){let g=gid.x;if(g==0u||g>=${MAX_GROUPS}u){return;}let initial=atomicLoad(&G[g*4u]);let current=atomicLoad(&G[g*4u+1u]);if(initial>0u&&f32(current)<max(1.0,f32(initial)*.50)&&atomicLoad(&G[g*4u+2u])==0u){atomicStore(&G[g*4u+2u],1u);atomicAdd(&C[23],1u);}}
 `;
 const propsShader=COMMON+`
-@group(0) @binding(1) var<storage,read> S:State;
+@group(0) @binding(1) var<storage,read_write> S:State;
 @group(0) @binding(2) var<storage,read_write> C:array<atomic<u32>>;
 @group(0) @binding(3) var<storage,read_write> P:array<Prop>;
 @group(0) @binding(4) var<storage,read_write> E:array<Event>;
 @group(0) @binding(5) var<storage,read> G:array<u32>;
 `+EMIT+`
+fn sourceProps15(){
+ if(u.clock.x<=0.0||S.goal.w>0.0){return;}
+ atomicStore(&C[52],0u);
+ var pending:array<u32,192>;var head=0u;var tail=0u;
+ for(var i=0u;i<u32(u.worldInfo.y);i++){
+  var p=P[i];if(p.p.w!=10.0){continue;}p.data.y=max(0.0,p.data.y-u.clock.x);if(p.data.x<=0.0){P[i]=p;continue;}var hurt=0.0;
+  for(var n=0u;n<77u;n++){var sh=S.shots13[min(n,71u)];if(n>=72u){sh=S.bullets[n-72u];if(sh.tag.w!=3.0){continue;}}if(sh.origin.w>0.0&&sh.tag.x==4.0&&u32(sh.tag.y)==i){hurt+=sh.origin.w;}}
+  if(S.aux.w>0.0&&distance(p.p.xz,S.blast.xy)<S.blast.w){hurt+=500.0;}
+  if(hurt>0.0&&p.data.z>.5){p.data.z=0.0;p.more.y=S.aux.x+13.0;atomicAdd(&C[90],1u);}
+  if(p.more.z>0.0){p.data.x=max(0.0,p.data.x-hurt);}
+  if(p.data.x==0.0){pending[tail]=i;tail++;}P[i]=p;
+ }
+ // Each prop can enter once because HP is zeroed before it is queued; at most 192 entries.
+ for(var step=0u;step<192u&&head<tail;step++){
+  let id=pending[head];head++;var p=P[id];let boom=p.more.x==1.0||p.more.x==2.0;
+  p.data.y=.5;p.more.w=select(-1.0,S.aux.x,boom);P[id]=p;for(var k=0u;k<3u;k++){S.team7[k].pathInfo.z=0.0;}
+  event(p.p.xyz,vec3f(0,select(3.0,6.0,boom),0),select(vec3f(.40,.35,.28),vec3f(1,.3,.025),boom),select(5u,2u,boom),select(18u,96u,boom),id*153u+atomicLoad(&C[18]));
+  if(!boom){continue;}atomicAdd(&C[52],1u);let r=select(195.0,230.0,p.more.x==2.0)/64.0;let damage=select(360.0,430.0,p.more.x==2.0);
+  if(p.more.x==2.0){let ix=u32(S.fxControl.x)%16u;S.heat6[ix]=vec4f(p.p.xz,135.0/64.0,S.aux.x+11.0);S.heatLife15[ix]=11.0;S.fxControl.x=f32((ix+1u)%16u);}
+  for(var who=0u;who<4u;who++){var q=S.pos;var inv=S.feedback.z;var dead=S.goal.w==2.0;if(who>0u){q=S.team7[who-1u].p;inv=S.team7[who-1u].vital.y;dead=S.botLife13[who-1u].y>.5;}let d=distance(q.xz,p.p.xz);if(!dead&&inv<=0.0&&d<r*.65){let amount=20.0*(1.0-d/r);if(who==0u){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-amount*.2);}else{S.pos.w=max(0.0,S.pos.w-amount);}S.feedback.z=.37;}else{let k=who-1u;if(q.w<=0.0){S.botLife13[k].x=max(.0001,S.botLife13[k].x-amount*.2);}else{S.team7[k].p.w=max(0.0,q.w-amount);}S.team7[k].vital.y=.37;}}}
+  for(var j=0u;j<u32(u.worldInfo.y);j++){var q=P[j];if(q.data.x<=0.0||distance(q.p.xz,p.p.xz)>=r){continue;}if(q.p.w==10.0&&q.more.z>0.0){q.data.x=max(0.0,q.data.x-damage);P[j]=q;if(q.data.x==0.0&&tail<192u){pending[tail]=j;tail++;}}else if(q.p.w==9.0&&q.more.z<.5){q.data.x=max(0.0,q.data.x-damage);P[j]=q;}}
+ }
+}
+
 @compute @workgroup_size(1) fn update(){
+ if(u.run.x<=2.0&&u.run.y<.5){sourceProps15();return;}
  // One bounded owner makes barrel-chain state deterministic (no in-dispatch races).
  atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];
   if(pr.p.w==5.0){pr.p.y=3.0-S.escape.x*2.0;P[i]=pr;continue;}
@@ -2812,7 +2861,7 @@ function updateAudioWorld9(z,count,props){
   if(clock>=audioNextVoice9[e.i]&&clock>=audioNextVocal9){const r=audioHash9(e.i+Math.floor(clock)*7919+runSeed);playAudio9(r<.42?'breath':'growl','zombie',r<.42?.105:e.kind===2||e.kind===6?.20:.15,[e.x,e.z],e.i,.025+r*.075,e.kind===1?1.25:e.kind===2||e.kind===6?.75:1);audioNextVoice9[e.i]=clock+3+r*3.8;audioNextVocal9=clock+.42+r*.34;}
  }
  let explosions=0,first=null;
- for(let i=0;i<world.propCount;i++){const o=i*16,hp=props[o+4];if(props[o+3]===0&&audioPropHP9[i]>0&&hp<=0&&Math.hypot(props[o]-playerValues[0],props[o+2]-playerValues[2])<30){explosions++;first??=[props[o],props[o+2]];if(explosions<=3)playAudio9(explosions===1?'explosion':'chain','explosion',explosions===1?.48:.28,[props[o],props[o+2]],i,(explosions-1)*(.055+audioHash9(i^runSeed)*.045));}audioPropHP9[i]=hp;}
+ for(let i=0;i<world.propCount;i++){const o=i*16,hp=props[o+4];if((props[o+3]===0||(props[o+3]===10&&props[o+12]<=2))&&audioPropHP9[i]>0&&hp<=0&&Math.hypot(props[o]-playerValues[0],props[o+2]-playerValues[2])<30){explosions++;first??=[props[o],props[o+2]];if(explosions<=3)playAudio9(explosions===1?'explosion':'chain','explosion',explosions===1?.48:.28,[props[o],props[o+2]],i,(explosions-1)*(.055+audioHash9(i^runSeed)*.045));}audioPropHP9[i]=hp;}
  if(explosions){d.barrels+=explosions;if(explosions>1)playAudio9('debris','debris',.16,first,explosions,.17);}
  d.readbacks++;d.sampleMs=Math.max(d.sampleMs,performance.now()-started);
 }
@@ -2864,7 +2913,7 @@ function bindInput(){
   if(playerValues[464]>.5){pendingChoice=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));cancelInput12();return;}
   if(playerValues[67]===1){saveBoundary13();continueBoundary13();return;}
   if(settings.paused||settings.help||settings.tactical)return;
-  if(!settings.started){settings.started=true;enableAudio();canvas.focus();cancelInput12();return;}
+  if(completedBoundary15)return;if(!settings.started){settings.started=true;enableAudio();canvas.focus();cancelInput12();return;}
   pointerButtons12(e);settings.started=true;enableAudio();canvas.focus();try{canvas.setPointerCapture(e.pointerId);}catch{}
  });
  window.addEventListener('pointerup',pointerButtons12);
@@ -2891,7 +2940,7 @@ function bindInput(){
    case 'Tab':settings.tactical=!settings.tactical;cancelInput12();break;
    case 'F3':e.preventDefault();settings.stats=!settings.stats;break;
    case 'Escape':if(settings.tactical){settings.tactical=false;}else if(settings.help){settings.help=false;settings.paused=!helpResume;}else settings.paused=!settings.paused;cancelInput12();break;
-   case 'Backspace':e.preventDefault();resetRequested=true;cancelInput12();break;
+   case 'Backspace':e.preventDefault();if(completedBoundary15&&savedCheckpoint?.map===2){chapterEntry15=parseCheckpoint13(JSON.stringify(savedCheckpoint.entry));stage=2;runSeed=chapterEntry15.seed;chapterCarry13=chapterEntry15.carry.map(p=>({...p}));campaignKills13=chapterEntry15.kills;campaignTime13=chapterEntry15.time;completedBoundary15=false;settings.started=true;settings.paused=false;seedRequested=true;}else resetRequested=true;cancelInput12();break;
    case 'F1':e.preventDefault();settings.hideUI=!settings.hideUI;break;
    case 'Delete':clearBloodRequested=true;break;
    case 'KeyM':settings.muted=!settings.muted;if(!audio)enableAudio();updateAudioState9();break;
@@ -3060,11 +3109,11 @@ function aimBeacon9(x,y,color,sz=24){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,133);}
 function arrow9(x,y,angle,color,sz=18){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,134,Math.round((angle+Math.PI)/Math.PI/2*65535));}
 function pulse9(x,y,prog,color,r=23){disk9(x,y,r,1,COL9.shadow);disk9(x,y,r,prog,color);}
 function clamp9(v,a,b){return Math.min(b,Math.max(a,v));}
-function shortObjective9(){if(world.source13)return playerValues[442]>.5?"Red door":"Service gate";let m=Math.round(playerValues[448]||0);return ['Violet','Relay A','Cell','Relay B','Safehouse'][Math.min(4,Math.max(0,m))];}
+function shortObjective9(){if(world.source13){if(playerValues[442]>.5)return "Red door";if(stage===2){if(playerValues[440]>.5)return "Shutter "+Math.max(0,Math.ceil(11-playerValues[441]))+"s";return playerValues[447]===1?"Carry fuel / pistol only":"Fuel "+Math.round(playerValues[443])+"/2";}return "Service gate";}let m=Math.round(playerValues[448]||0);return ['Violet','Relay A','Cell','Relay B','Safehouse'][Math.min(4,Math.max(0,m))];}
 function panel9(x,y,w,h,alpha=.78){rect(x,y,w,h,[.012,.031,.041,alpha]);}
 function hud(){
  glyphCount=0;
- const choosing=playerValues[464]>.5,won=playerValues[67]===1,dead=playerValues[67]===2;
+ const choosing=playerValues[464]>.5,won=playerValues[67]===1||completedBoundary15,dead=playerValues[67]===2;
  const k=clamp9(height/900,.72,1.15),clock=playerValues[24]||0,active=settings.started&&!choosing&&!won&&!dead;
  const eq=Math.round(playerValues[L12.gear]||0),gun=Math.round(playerValues[L12.gear+3]||0),gs=gun===0&&(playerValues[L13.upgrades]&1)?{clip:14,reload:1.55}:gun===1&&(playerValues[L13.upgrades]&2)?{clip:8,reload:.34}:GUN12[gun],hp=clamp9((playerValues[3]||0)/100,0,1),ammo=Math.round(playerValues[L12.mag+gun]||0),cap=gs.clip,reload=playerValues[L12.reload]||0,rd=gs.reload;
  const ord=Math.round(playerValues[L12.items]||0),kits=Math.round(playerValues[L12.items+2]||0),stock=eq<3?ammo:Math.round(playerValues[L12.items+eq-3]||0),reserve=gun===2?'INF':Math.round(playerValues[L12.reserve+gun]||0);
@@ -3128,11 +3177,11 @@ function hud(){
   if(interaction>0&&!settings.lab){
    let label=['','E  Revive','E  Take cell','E  Start relay','E  Install cell','E  Supplies','E  Release','E  Safehouse','E  Door'][interaction]||'E  Use';
    if(interaction===8){let d=world.doors7.find(q=>q.index===Math.round(playerValues[450]));if(d?.startDoor)label='E  Open door';}
-   if(world.source13){if(interaction===3)label='E  Force service gate';if(interaction===7)label='E  Seal red door';if(interaction===5){const kind=world.sourcePickups13.find(p=>p.index===Math.round(playerValues[450]))?.kind;label=kind==='rifle14'?'E  Take heavy rifle':kind==='auto14'?'E  Take auto shotgun':kind==='axe24'?'E  Swap axe / pistol':'E  Take supplies';}}else if(interaction===7&&playerValues[64]<2.4)label='Relays offline';
+   if(world.source13){if(interaction===3)label=stage!==2?'E  Force service gate':playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(11-playerValues[441]))+' seconds':playerValues[447]===1?'E  Hold to pour fuel':'Find fuel cans: '+Math.round(playerValues[443])+' / 2';if(interaction===7)label='E  Seal red door';if(interaction===5){const kind=world.sourcePickups13.find(p=>p.index===Math.round(playerValues[450]))?.kind;label=kind==='rifle14'?'E  Take heavy rifle':kind==='auto14'?'E  Take auto shotgun':kind==='axe24'?'E  Swap axe / pistol':kind==='fuel'?'E  Carry fuel can':'E  Take supplies';}}else if(interaction===7&&playerValues[64]<2.4)label='Relays offline';
    const s=14*k,x=cx-textWidth9(label,s)/2,y=cy-r-43*k,w=textWidth9(label,s)+22*k;
    panel9(x-11*k,y-4*k,w,27*k,.76);text(label,x,y,s,interaction===1?COL9.violet:COL9.white);
    let prog=0;switch(interaction){case 1:prog=playerValues[89]/2.4;break;case 2:case 3:case 4:prog=playerValues[451]/.8;break;case 5:prog=playerValues[451]/1.4;break;case 7:prog=playerValues[104];break;}
-   if(world.source13&&interaction===3)prog=playerValues[451]/4.2;if(prog>0.01)rect(x-11*k,y+22*k,w*clamp9(prog,0,1),2.5*k,COL9.gold);
+   if(world.source13&&interaction===3)prog=playerValues[451]/(stage===2?2.1:4.2);if(prog>0.01)rect(x-11*k,y+22*k,w*clamp9(prog,0,1),2.5*k,COL9.gold);
   }
   // Supplies in the nearby world only. They are visible without reading an inventory list.
   const mask=Math.round(playerValues[486]||0);
@@ -3169,12 +3218,12 @@ function hud(){
   a.forEach((v,i)=>text(v,x,y+i*23*k,fs,i===0?COL9.gold:COL9.soft));
  }
  if(settings.demo&&active&&!settings.tactical&&!settings.hideUI){text('Auto demo',12*k,height-29*k,12*k,COL9.soft);}
- if(!settings.started){
+ if(!settings.started&&!completedBoundary15){
   panel9(width*.23,height*.27,width*.54,height*.45,.78);
   centre('TINY ZOMBIES',height*.30,46*k,COL9.white);
   centre('NO ONE LEFT',height*.378,18*k,COL9.violet);
   centre('Click to play',height*.485,23*k,COL9.gold);
-  if(savedCheckpoint)centre('Enter to continue Chapter '+savedCheckpoint.stage,height*.544,17*k,COL9.green);
+  if(savedCheckpoint)centre(savedCheckpoint.map===2?'Enter to view Burnout completion':'Enter to continue Chapter '+savedCheckpoint.stage,height*.544,17*k,COL9.green);
   centre('Move with WASD, aim and fire with the mouse.',height*.585,15*k,COL9.soft);
   centre('1 / 2 / 3 guns. G throwable. F medkit. Q last gun.',height*.63,15*k,COL9.gold);
   centre('Press ? for all controls.',height*.675,13*k,COL9.soft);
@@ -3201,7 +3250,7 @@ function hud(){
   centre('Overrun',height*.344,51*k,COL9.red);
   centre('Backspace  Retry     N  New run',height*.502,17*k,COL9.white);
  }
-  if(won){panel9(width*.18,height*.28,width*.64,height*.48,.90);centre('Safehouse secured',height*.315,39*k,COL9.green);centre(checkpointStatus13||'CHAPTER COMPLETE',height*.445,16*k,COL9.white);centre(stage===1?'Enter  Continue to Burnout':'Next chapter is not ported yet',height*.54,18*k,COL9.gold);}
+  if(won){panel9(width*.18,height*.28,width*.64,height*.48,.90);centre('Safehouse secured',height*.315,39*k,COL9.green);centre(checkpointStatus13||'CHAPTER COMPLETE',height*.445,16*k,COL9.white);centre(stage===1&&!completedBoundary15?'Enter  Continue to Burnout':'Burnout complete / Chapter 3 not ported',height*.54,18*k,COL9.gold);if(stage===2||completedBoundary15)centre('Backspace  Retry Burnout    N  New run',height*.63,16*k,COL9.white);}
  if(settings.help){
   const x=width*.18,y=height*.20,w=width*.64;panel9(x,y,w,height*.64,.96);centre('Controls',y+20*k,28*k,COL9.white);
   const lines=['Move with WASD or arrows. Aim with the mouse.','LMB fires or uses selected gear. RMB / Space shoves.','1 / 2 / 3 guns. R reloads. Q returns to the last gun.','4 / G cycles throwables. 5 / F selects a medkit.','Medkit: hold LMB to heal yourself; RMB heals an ally.','Shift holds sprint. V toggles dragging. X orders the squad.','E interacts. Tab toggles map. Wheel cycles gear; Ctrl zooms.','M mutes. Backspace restarts. ? shows help; Esc pauses.'];

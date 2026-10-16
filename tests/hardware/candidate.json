@@ -1,10 +1,10 @@
 {
-  "harnessVersion": "extraction-hold-v1",
-  "runtimeSha256": "88550dc8eb1dac76d8e74decef9714799a8e6c4a38917dc1329bc65c0786556c",
+  "harnessVersion": "leaper-pin-v1",
+  "runtimeSha256": "dcce514a9d9d326be7b419c4e0ec332ff53a9527adb6e17a608097358cb2bf01",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: positive subthreshold E tap rejection, pause/interruption, measured all-inside 0.18-second initiation and autonomous 0.6-second seal in all five chapters; outside 1.6-second hold, rescue/down/pin/occupied door and bot reopening separately; carry/retry/reload/final progress regression",
+  "acceptance": "Deferred: natural human leaper pin must suppress directional motion, facing changes and new reload while preserving existing reload completion and permitted equipment selection; rescue/grace and five-chapter extraction/carry/retry/reload regression. Existing automated route does not certify natural pin coverage.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
+  "dependencyCommit": "b38093b3ff8dc7374b93ffd49117e34089e1a4e1",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
 }

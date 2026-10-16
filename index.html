@@ -881,6 +881,8 @@ const aim3Shader=COMMON+rayBindings+`
 `+reduceRay+`
  if(lane==0u){hit=rayHits[0];var p=flat;if(hit.kind>0u){p=o+d*hit.t;}
   S.aimPoint=vec4f(p,f32(hit.kind));S.aimNormal=vec4f(hit.n,f32(hit.id));
+  // A live leaper pin suppresses effective aim, including the rendered weapon.
+  if(S.flags12.w>0.0){let held=safe2(S.look.xy);let side=vec2f(-held.y,held.x);S.gunOrigin=vec4f(S.pos.xyz+vec3f(held.x*.28+side.x*.13,select(.46,.22,S.player7.x>0.0),held.y*.28+side.y*.13),0);return;}
   let facing=safe2(p.xz-S.pos.xz);let side=vec2f(-facing.y,facing.x);
   let grip=S.pos.xyz+vec3f(facing.x*.28+side.x*.13,select(.46,.22,S.player7.x>0.0),facing.y*.28+side.y*.13);
   let requested=safe3(p-grip);var previous=S.sweepNext.xyz;
@@ -1039,7 +1041,7 @@ fn equipment12(dt:f32){
  if(u.input12.x>S.equipAck12.w||(u.inputMove.z<.5&&u.inputMove.w<.5)){S.flags12.x=0.0;S.equipAck12.w=u.input12.x;}
  let fresh=u.gear12.z>S.equipAck12.y&&u.gear12.z>u.controlEdges12.z;
  S.equipAck12.y=u.gear12.z;
- if(u.gear12.w>S.equipAck12.z){S.equipAck12.z=u.gear12.w;if(!down&&u.controlEdges12.w<.5){reloadGun12();}}
+ if(u.gear12.w>S.equipAck12.z){S.equipAck12.z=u.gear12.w;if(!down&&S.flags12.w==0.0&&u.controlEdges12.w<.5){reloadGun12();}}
  if(!down&&S.reload12.x>0.0){
   S.reload12.x=max(0.0,S.reload12.x-dt);
   if(S.reload12.x==0.0){let w=u32(S.reload12.z);let stat=gunStats14(w,S.upgrades14.x);
@@ -1131,7 +1133,8 @@ fn equipment12(dt:f32){
  let downed=S.player7.x>0.0;
  if((S.pos.w<=0.0&&!downed)||u.config.z<.5||S.goal.w>0.0||S.chooser.x>.5){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;}
  if(S.pos.w<=0.0||downed){mv=vec2f(0);fire=0.0;alt=0.0;grenade=0.0;dash=0.0;S.motion.w=0.0;}
- let dir=safe2(aim);if(length(dir)>.1){S.look.x=dir.x;S.look.y=dir.y;}
+ if(S.flags12.w>0.0){mv=vec2f(0);}
+ let dir=safe2(aim);if(S.flags12.w==0.0&&length(dir)>.1){S.look.x=dir.x;S.look.y=dir.y;}
  S.motion.w=0.0;
  let speed=select(1.0,.4,S.flags12.w>0.0)*select(205.0/64.0,205.0/64.0*1.42,S.flags12.z>.5)*select(1.0,.67,S.squad7.y>=0.0)*select(1.0,.9,S.cell.w==1.0)*select(1.0,.15,S.heal12.x>0.0);
  mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;

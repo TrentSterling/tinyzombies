@@ -4,6 +4,19 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Unreleased controls and equipment port
+
+This branch begins the owner-requested port of [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) into Tiny Zombies' boxel presentation. The live URL remains the preserved PR11 release. This candidate has not been deployed.
+
+Selected gear, last-gun switching, sprint stamina, shove inputs, gun magazines/reserves/reloads, pump shell interruption, throwable release latches and medkit use now follow the inspected source. The carbine starts at 30/180, pump at 8/48 and pistol at 15/9999. The pump emits nine pellets. Downed controls use the pistol without directional crawling; revival restores 35 health and the carbine with a release latch. The existing supply caches replenish inventory directly, replacing legacy cards that would conflict with the fixed weapon statistics.
+
+This is a staged port. Enemy health/damage balance, penetration, shove damage/stun and special interruptions, complete consumable effects, contextual squad orders, squad behavior, director, five source chapters/events, source campaign carry, device controls and co-op remain outstanding. An earlier candidate of this slice reached relay B in the default-population browser test with natural downings and rescues, but ended in an overrun before extraction. Campaign equivalence and earned-checkpoint continuation are not claimed. Keep this branch unreleased until those integration gaps are reviewed.
+
+The 3D camera, aim/collision path, mohawk, voxel art and 43 recorded SFX assets remain. Source distances use 64 pixels per world metre; the weapon/equipment visuals use boxels and the existing bounded GPU pipeline. Pistol sound currently reuses a pitched rifle recording. Raw source snapshots, browser captures and qualification logs are retained locally, outside the repository.
+
+The sections below record earlier releases. Their old controls and performance claims apply to those historical artifacts.
+
+
 ## Live preparation and doorway pursuit
 
 Nearby zombies wander during preparation, react to sight and noise, gather at closed doors and batter them, then enter when opened. Shooting and squad defense work before departure; automatic horde waves and respawns still wait for departure. This follows direct inspection of DEAD ENDS gameplay. The approved recorded SFX and default populations are preserved.
@@ -58,7 +71,7 @@ Paired GPU particle buffers and impact counts matched across isolated impacts an
 
 Serve this directory over localhost, for example `python -m http.server 8000`, and open `http://localhost:8000/` in a WebGPU-capable desktop browser with hardware acceleration. Public hosting requires HTTPS. Keep `assets/audio/` beside the HTML for recorded sound; the files load from the same host. No package installation, build step, third-party runtime or WebGL fallback is required.
 
-Click to start. Move with WASD or arrow keys and aim with the mouse. Left click fires the rifle; right click fires the shotgun; R reloads. B throws a pipe bomb and Space throws a grenade. Shift dashes; Z or middle click uses melee. E interacts, H heals, Tab shows the field map, F cuts a wall and C throws a vortex. Mouse wheel zooms, Escape pauses, ? shows controls, Backspace restarts, M mutes, and T toggles demo mode. F3 shows statistics and F2 exports diagnostics.
+Click to start. Move with WASD or arrow keys and aim with the mouse. LMB fires or uses selected gear; RMB or Space shoves. Select guns with 1/2/3, reload with R, and return to the last gun with Q. 4/G/C cycles throwables; 5/F/H selects a medkit. Hold LMB to heal yourself or RMB to heal a nearby ally. Hold Shift to sprint, E to interact, V to toggle dragging, and X to issue or clear the existing squad order. Tab toggles the field map. Wheel cycles available gear; Ctrl-wheel zooms. Escape pauses, ? shows controls, Backspace restarts, N starts a new campaign, M mutes, F3 shows statistics, and F2 exports diagnostics.
 
 ## V9 compatibility repair
 

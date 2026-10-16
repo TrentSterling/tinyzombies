@@ -4,6 +4,20 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## DEAD ENDS Chapters 1–2
+
+This release ports the first two chapters of [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) into Tiny Zombies' boxel presentation. It includes source-style gear and weapon handling, finite squad supplies, rescue and navigation behavior, weapon upgrades, source props and the Burnout fuel/shutter objective. The player mohawk and all 43 recorded SFX assets are preserved, with the default 2,048 infected and 32,768 particle allocations.
+
+The hardware-qualified runtime is `4cf2a21aba68c2a1285423705d0f9770d8060502`, with HTML SHA-256 `5f5c1527d04dfd19491d24f68aabcf6935098f4591e061c387dc8e966da3780a`.
+
+Ordinary keyboard/pointer testing earned Chapter 1 extraction and its checkpoint. A subsequent run resumed that byte-verified, naturally earned checkpoint through normal Enter input, then completed both Burnout fuel pickups and pours, the 11-second shutter event and extraction with all four survivors alive. Entry continue/retry/reload and completed-save reload/entry retry preserved the expected seed, health, supplies and upgrades. These were adaptive recorded routes across separate runs, not a single uninterrupted playthrough or frame-identical benchmark. No gameplay-state injection, teleporting or population reduction supplied the wins. No browser/device errors or new GPU faults were observed in the accepted runs.
+
+The safehouse navigation fix retains physical wall, prop and closed-door collision. A failed nearby coarse search can retry on a bounded half-metre grid using the same scratch storage. Portable CPU checks cover all three captured stuck positions, integrated movement, collision rejection and search budgets, plus fuel/weapon regressions. Run `node tests/navigation.test.cjs` and `node tests/burnout-fuel.test.cjs`. Their 24 and 18 checks supplement hardware testing; they do not compile or execute WGSL.
+
+This is a two-chapter slice, not complete DEAD ENDS parity. Burnout completion stops at an explicit Chapter 3 review boundary. Chapters 3–5, co-op, device controls and broader source behavior remain unfinished or unqualified. The accepted recordings are silent, and no audio-listening or long-session stability claim is made.
+
+The [earlier slice-3 review](validation/deadends-slice3-review.json) describes a historical prerelease runtime, not the current release hash. The sections below likewise record earlier releases; their controls, qualification scope and performance observations apply only to those historical artifacts.
+
 ## Live preparation and doorway pursuit
 
 Nearby zombies wander during preparation, react to sight and noise, gather at closed doors and batter them, then enter when opened. Shooting and squad defense work before departure; automatic horde waves and respawns still wait for departure. This follows direct inspection of DEAD ENDS gameplay. The approved recorded SFX and default populations are preserved.
@@ -58,7 +72,7 @@ Paired GPU particle buffers and impact counts matched across isolated impacts an
 
 Serve this directory over localhost, for example `python -m http.server 8000`, and open `http://localhost:8000/` in a WebGPU-capable desktop browser with hardware acceleration. Public hosting requires HTTPS. Keep `assets/audio/` beside the HTML for recorded sound; the files load from the same host. No package installation, build step, third-party runtime or WebGL fallback is required.
 
-Click to start. Move with WASD or arrow keys and aim with the mouse. Left click fires the rifle; right click fires the shotgun; R reloads. B throws a pipe bomb and Space throws a grenade. Shift dashes; Z or middle click uses melee. E interacts, H heals, Tab shows the field map, F cuts a wall and C throws a vortex. Mouse wheel zooms, Escape pauses, ? shows controls, Backspace restarts, M mutes, and T toggles demo mode. F3 shows statistics and F2 exports diagnostics.
+Click to start. Move with WASD or arrow keys and aim with the mouse. LMB fires or uses selected gear; RMB or Space shoves. Select guns with 1/2/3, reload with R, and return to the last gun with Q. 4/G/C cycles throwables; 5/F/H selects a medkit. Hold LMB to heal yourself or RMB to heal a nearby ally. Hold Shift to sprint, E to interact, V to toggle dragging, and X to issue or clear the existing squad order. Tab toggles the field map. Wheel cycles available gear; Ctrl-wheel zooms. Escape pauses, ? shows controls, Backspace restarts, N starts a new campaign, M mutes, F3 shows statistics, and F2 exports diagnostics.
 
 ## V9 compatibility repair
 

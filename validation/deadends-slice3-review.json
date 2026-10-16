@@ -1,0 +1,1306 @@
+{
+  "status": "Unreleased Chapter 1 playable slice for review; not full DEAD ENDS parity.",
+  "sourceCommit": "a547496c931a047c832a21d35165026df091025b",
+  "sourceRuntime": "29.2",
+  "html": {
+    "sha256": "66c45ecfaca95d888264e88e52cdf7c24fa0d76ef8ec7f86491bd516432008f0",
+    "bytes": 525885
+  },
+  "baselines": {
+    "baseline/pr11-mohawk": "868e36c86cdd4811ef080ec59138348a853329bb",
+    "baseline/parity1-controls": "933b008de323456065944d8a167452edde59d352",
+    "baseline/parity2-combat": "858f13dad7bb26a0f36766b5af638f2cd816ac2a"
+  },
+  "contracts": {
+    "passed": true,
+    "count": 56,
+    "method": "Explicit GPU-buffer fixtures in an isolated diagnostic copy. These are contract tests, not ordinary gameplay qualification.",
+    "checks": [
+      {
+        "name": "base gun 0 exact body damage",
+        "passed": true,
+        "actual": 53
+      },
+      {
+        "name": "base gun 0 stops at first body",
+        "passed": true,
+        "actual": 83
+      },
+      {
+        "name": "base gun 2 exact body damage",
+        "passed": true,
+        "actual": 49
+      },
+      {
+        "name": "base gun 2 stops at first body",
+        "passed": true,
+        "actual": 83
+      },
+      {
+        "name": "pump emits nine first-hit pellets",
+        "passed": true,
+        "actual": 9
+      },
+      {
+        "name": "pump penetrates a second body",
+        "passed": true,
+        "actual": 9
+      },
+      {
+        "name": "pump damage agrees with hit falloff",
+        "passed": true,
+        "actual": [
+          531.6127319335938,
+          618.2293701171875,
+          198.38725662231445,
+          111.77061080932617
+        ]
+      },
+      {
+        "name": "penetrated damage is attenuated",
+        "passed": true,
+        "actual": [
+          198.38725662231445,
+          111.77061080932617
+        ]
+      },
+      {
+        "name": "shove damage kind 0",
+        "passed": true,
+        "actual": 71
+      },
+      {
+        "name": "shove stun kind 0",
+        "passed": true,
+        "actual": 0.6499999761581421
+      },
+      {
+        "name": "shove damage kind 2",
+        "passed": true,
+        "actual": 718
+      },
+      {
+        "name": "shove stun kind 2",
+        "passed": true,
+        "actual": 1.0499999523162842
+      },
+      {
+        "name": "shove cancels tell kind 2",
+        "passed": true,
+        "actual": [
+          0,
+          1.0499999523162842,
+          3.5,
+          0,
+          0,
+          0,
+          0,
+          -1
+        ]
+      },
+      {
+        "name": "shove damage kind 5",
+        "passed": true,
+        "actual": 71
+      },
+      {
+        "name": "shove stun kind 5",
+        "passed": true,
+        "actual": 1.0499999523162842
+      },
+      {
+        "name": "shove cancels tell kind 5",
+        "passed": true,
+        "actual": [
+          0,
+          1.0499999523162842,
+          5,
+          0,
+          0,
+          0,
+          0,
+          -1
+        ]
+      },
+      {
+        "name": "runner contact deals 8",
+        "passed": true,
+        "actual": 8
+      },
+      {
+        "name": "contact cooldown starts at .9",
+        "passed": true,
+        "actual": 0.8999999761581421
+      },
+      {
+        "name": "overlap does not deal damage each frame",
+        "passed": true,
+        "actual": 0
+      },
+      {
+        "name": "fire tick deals 19",
+        "passed": true,
+        "actual": 64
+      },
+      {
+        "name": "pipe source blast falloff",
+        "passed": true,
+        "actual": [
+          408.8503723144531,
+          409.20000000000005
+        ]
+      },
+      {
+        "name": "ally medkit waits for 2.3 second channel",
+        "passed": true,
+        "actual": [
+          0.942028820514679,
+          0,
+          100,
+          0
+        ]
+      },
+      {
+        "name": "ally medkit heals 65 and consumes exactly one",
+        "passed": true,
+        "actual": [
+          95,
+          0
+        ]
+      },
+      {
+        "name": "damage interrupts ally medkit without consumption",
+        "passed": true,
+        "actual": [
+          0,
+          1
+        ]
+      },
+      {
+        "name": "manual rescue waits for 2.35 seconds",
+        "passed": true,
+        "actual": 2.2999985218048096
+      },
+      {
+        "name": "manual rescue restores 35 HP and invulnerability",
+        "passed": true,
+        "actual": [
+          35,
+          2.9833333492279053
+        ]
+      },
+      {
+        "name": "V toggles drag within 105px",
+        "passed": true,
+        "actual": 0
+      },
+      {
+        "name": "drag pulls patient to 58px",
+        "passed": true,
+        "actual": 0.90625
+      },
+      {
+        "name": "second V releases drag",
+        "passed": true,
+        "actual": -1
+      },
+      {
+        "name": "pinned bot still receives contact damage and enters bleed",
+        "passed": true,
+        "actual": [
+          0,
+          40
+        ]
+      },
+      {
+        "name": "elective cache chase yields to separated anchor",
+        "passed": true,
+        "actual": [
+          0,
+          11,
+          0.6592615842819214,
+          -2.830569267272949
+        ]
+      },
+      {
+        "name": "elective cache chase yields to separated anchor has source commitment",
+        "passed": true,
+        "actual": [
+          12.100000381469727,
+          10.850000381469727,
+          710,
+          10.949999809265137
+        ]
+      },
+      {
+        "name": "known nearby medkit can be collected",
+        "passed": true,
+        "actual": [
+          5,
+          10,
+          3,
+          0
+        ]
+      },
+      {
+        "name": "known nearby medkit can be collected has source commitment",
+        "passed": true,
+        "actual": [
+          12.100000381469727,
+          10.850000381469727,
+          240,
+          10.949999809265137
+        ]
+      },
+      {
+        "name": "escape outranks nearby cache",
+        "passed": true,
+        "actual": [
+          11,
+          11,
+          35.453125,
+          -18.8125
+        ]
+      },
+      {
+        "name": "escape outranks nearby cache has source commitment",
+        "passed": true,
+        "actual": [
+          12.100000381469727,
+          10.850000381469727,
+          880,
+          10.949999809265137
+        ]
+      },
+      {
+        "name": "moderate injury yields to source catch-up priority",
+        "passed": true,
+        "actual": 0
+      },
+      {
+        "name": "source coordinator retains an eligible rescuer when allies pass",
+        "passed": true,
+        "actual": [
+          1,
+          2
+        ]
+      },
+      {
+        "name": "rescue does not inherit a prior healing channel",
+        "passed": true,
+        "actual": [
+          2,
+          0.01666666753590107,
+          0
+        ]
+      },
+      {
+        "name": "heavy rifle penetrates four ordered bodies",
+        "passed": true,
+        "actual": [
+          {
+            "id": 0,
+            "damage": 76
+          },
+          {
+            "id": 1,
+            "damage": 45.60000228881836
+          },
+          {
+            "id": 2,
+            "damage": 27.360000610351562
+          },
+          {
+            "id": 3,
+            "damage": 16.41600227355957
+          }
+        ]
+      },
+      {
+        "name": "heavy rifle damage attenuates by .6 per body",
+        "passed": true,
+        "actual": [
+          {
+            "id": 0,
+            "damage": 76
+          },
+          {
+            "id": 1,
+            "damage": 45.60000228881836
+          },
+          {
+            "id": 2,
+            "damage": 27.360000610351562
+          },
+          {
+            "id": 3,
+            "damage": 16.41600227355957
+          }
+        ]
+      },
+      {
+        "name": "auto shotgun emits eight first-body pellets",
+        "passed": true,
+        "actual": [
+          {
+            "id": 0,
+            "damage": 16.251331329345703
+          },
+          {
+            "id": 1,
+            "damage": 8.783873558044434
+          },
+          {
+            "id": 0,
+            "damage": 16.259658813476562
+          },
+          {
+            "id": 1,
+            "damage": 8.85232925415039
+          },
+          {
+            "id": 0,
+            "damage": 16.26183319091797
+          },
+          {
+            "id": 1,
+            "damage": 8.856287956237793
+          },
+          {
+            "id": 0,
+            "damage": 16.263330459594727
+          },
+          {
+            "id": 1,
+            "damage": 8.85901165008545
+          },
+          {
+            "id": 0,
+            "damage": 16.263774871826172
+          },
+          {
+            "id": 1,
+            "damage": 8.859823226928711
+          },
+          {
+            "id": 0,
+            "damage": 16.26226043701172
+          },
+          {
+            "id": 1,
+            "damage": 8.85706615447998
+          },
+          {
+            "id": 0,
+            "damage": 16.258560180664062
+          },
+          {
+            "id": 2,
+            "damage": 7.892740249633789
+          },
+          {
+            "id": 0,
+            "damage": 16.253284454345703
+          },
+          {
+            "id": 1,
+            "damage": 8.787569999694824
+          }
+        ]
+      },
+      {
+        "name": "auto shotgun uses source damage and falloff",
+        "passed": true,
+        "actual": [
+          {
+            "id": 0,
+            "damage": 16.251331329345703
+          },
+          {
+            "id": 1,
+            "damage": 8.783873558044434
+          },
+          {
+            "id": 0,
+            "damage": 16.259658813476562
+          },
+          {
+            "id": 1,
+            "damage": 8.85232925415039
+          },
+          {
+            "id": 0,
+            "damage": 16.26183319091797
+          },
+          {
+            "id": 1,
+            "damage": 8.856287956237793
+          },
+          {
+            "id": 0,
+            "damage": 16.263330459594727
+          },
+          {
+            "id": 1,
+            "damage": 8.85901165008545
+          },
+          {
+            "id": 0,
+            "damage": 16.263774871826172
+          },
+          {
+            "id": 1,
+            "damage": 8.859823226928711
+          },
+          {
+            "id": 0,
+            "damage": 16.26226043701172
+          },
+          {
+            "id": 1,
+            "damage": 8.85706615447998
+          },
+          {
+            "id": 0,
+            "damage": 16.258560180664062
+          },
+          {
+            "id": 2,
+            "damage": 7.892740249633789
+          },
+          {
+            "id": 0,
+            "damage": 16.253284454345703
+          },
+          {
+            "id": 1,
+            "damage": 8.787569999694824
+          }
+        ]
+      },
+      {
+        "name": "source pickup 4 equips upgrade",
+        "passed": true,
+        "actual": [
+          1,
+          0,
+          14
+        ]
+      },
+      {
+        "name": "source pickup 5 equips upgrade",
+        "passed": true,
+        "actual": [
+          2,
+          1,
+          8
+        ]
+      },
+      {
+        "name": "source pickup 6 equips upgrade",
+        "passed": true,
+        "actual": [
+          4,
+          2,
+          15
+        ]
+      },
+      {
+        "name": "heavy rifle ammo cache refills source 140 reserve",
+        "passed": true,
+        "actual": [
+          140,
+          14
+        ]
+      },
+      {
+        "name": "R7 starts source 1.55 second reload",
+        "passed": true,
+        "actual": [
+          1.5333333015441895,
+          1.5499999523162842,
+          0,
+          0
+        ]
+      },
+      {
+        "name": "R7 reload fills 14 and consumes 14 reserve",
+        "passed": true,
+        "actual": [
+          14,
+          84
+        ]
+      },
+      {
+        "name": "axe begins .78 second swing and .86 cooldown",
+        "passed": true,
+        "actual": [
+          0.7799999713897705,
+          0.8600000143051147
+        ]
+      },
+      {
+        "name": "axe consumes no pistol ammunition",
+        "passed": true,
+        "actual": 15
+      },
+      {
+        "name": "axe sweeps at most three with reduced third hit",
+        "passed": true,
+        "actual": [
+          96,
+          96,
+          76.80000305175781
+        ]
+      },
+      {
+        "name": "axe cannot hit same actor twice during one swing",
+        "passed": true,
+        "actual": 3
+      },
+      {
+        "name": "captured gate-wall stall routes into source 290px catch-up distance",
+        "passed": true,
+        "actual": {
+          "before": [
+            6.859322295608314,
+            2.7592516223751526,
+            7.562600660907239
+          ],
+          "after": [
+            2.6203146330332285,
+            1.5198869348135031,
+            0.7043773065031805
+          ]
+        }
+      },
+      {
+        "name": "captured freight-room rescue reaches and revives patient",
+        "passed": true,
+        "actual": {
+          "patient": [
+            18.66901206970215,
+            0,
+            -14.57135009765625,
+            35
+          ],
+          "rescuer": [
+            4.471015930175781,
+            0,
+            -9.499994277954102,
+            87,
+            0,
+            1,
+            0,
+            0,
+            0,
+            11,
+            -1,
+            0.0033332817256450653,
+            21.303075790405273,
+            0,
+            -16.55739402770996,
+            -1,
+            0,
+            30,
+            0,
+            0,
+            -1,
+            0,
+            0,
+            87,
+            0,
+            0,
+            0,
+            9.133238792419434,
+            0,
+            0,
+            0,
+            0,
+            1.5414283107572988e-44,
+            1.401298464324817e-45,
+            0,
+            4.203895392974451e-45,
+            1,
+            1,
+            150,
+            0,
+            0,
+            0,
+            1,
+            0,
+            20,
+            0,
+            0.33333340287208557,
+            0,
+            0.4136403799057007,
+            0.6499999761581421,
+            -6.931878566741943,
+            0,
+            16,
+            0,
+            0.5833336114883423,
+            44,
+            24,
+            -1,
+            0,
+            0,
+            0,
+            2,
+            0,
+            3.8503429889678955
+          ]
+        }
+      },
+      {
+        "name": "captured street-corner rescue completes via resolved walk goal",
+        "passed": true,
+        "actual": {
+          "human": [
+            23.21969985961914,
+            0,
+            -17.46537208557129,
+            35
+          ],
+          "rescuer": [
+            24.28277587890625,
+            0,
+            -16.62336540222168,
+            89,
+            0.9940716624259949,
+            0.10872726887464523,
+            0,
+            0,
+            0,
+            11,
+            -1,
+            0.0033332817256450653,
+            25.121522903442383,
+            0,
+            -16.5316219329834,
+            -1,
+            30,
+            30,
+            0,
+            0,
+            -1,
+            0,
+            0,
+            89,
+            0,
+            0,
+            0,
+            36.08366775512695,
+            0,
+            0,
+            0,
+            0,
+            1.5414283107572988e-44,
+            1.401298464324817e-45,
+            1.401298464324817e-45,
+            2.802596928649634e-45,
+            2,
+            2,
+            150,
+            1,
+            0,
+            0,
+            1,
+            0,
+            23,
+            0,
+            0.31666672229766846,
+            0,
+            13.28645133972168,
+            0.6499999761581421,
+            -12.268495559692383,
+            0,
+            1,
+            0,
+            0.5833336114883423,
+            95,
+            -1,
+            -1,
+            0,
+            0,
+            0,
+            2,
+            0,
+            0.3687499165534973
+          ]
+        }
+      }
+    ]
+  },
+  "ordinaryInput": {
+    "run": "parity3-route-7",
+    "method": "Ordinary keyboard and pointer input, with read-only GPU telemetry and source-map waypoints. No teleporting, damage injection, autoplay or win-state writes.",
+    "simSeconds": 109.25350952148438,
+    "earnedExtraction": true,
+    "humanDownings": 5,
+    "squadRevives": 5,
+    "livingSurvivorsAtExtraction": 4,
+    "result": {
+      "blockedAttack": false,
+      "hazard": false,
+      "t": 109.25350952148438,
+      "frame": 6669,
+      "position": [
+        32.15158462524414,
+        0,
+        -16.866605758666992,
+        35
+      ],
+      "down": 0,
+      "goal": 1,
+      "mission": 4,
+      "interaction": 7,
+      "channel": 0,
+      "upgrades": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "gear": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "reload": [
+        0,
+        1.5499999523162842,
+        0,
+        0
+      ],
+      "mag": [
+        14,
+        0,
+        15
+      ],
+      "reserve": [
+        131,
+        31,
+        9999
+      ],
+      "items": [
+        0,
+        0,
+        0,
+        100
+      ],
+      "team": [
+        {
+          "p": [
+            34.73887634277344,
+            0,
+            -18.363317489624023,
+            58.82862854003906
+          ],
+          "action": 11,
+          "life": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mag": [
+            12,
+            8,
+            15,
+            0
+          ]
+        },
+        {
+          "p": [
+            33.045745849609375,
+            0,
+            -17.75838851928711,
+            76
+          ],
+          "action": 11,
+          "life": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mag": [
+            0,
+            2,
+            15,
+            0
+          ]
+        },
+        {
+          "p": [
+            34.60941696166992,
+            0,
+            -17.414705276489258,
+            100
+          ],
+          "action": 11,
+          "life": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mag": [
+            0,
+            8,
+            5,
+            0
+          ]
+        }
+      ],
+      "gate": 0,
+      "door": 1,
+      "director": [
+        1,
+        36.13349914550781,
+        0,
+        100
+      ],
+      "progress": 1.0000001192092896,
+      "alive": 61,
+      "visible": 0,
+      "target": null,
+      "fps": 59.99524158067631,
+      "gpuMs": 1.179648,
+      "errors": [],
+      "stopped": false
+    },
+    "checkpoint": {
+      "stage": 1,
+      "save": {
+        "schema": 1,
+        "map": 1,
+        "difficulty": 1,
+        "leg": 1,
+        "kills": 287,
+        "time": 108.80348205566406,
+        "seed": 81048,
+        "savedAt": 1792131462003,
+        "carry": [
+          {
+            "hp": 35,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 0,
+            "weapon": 0,
+            "upgrades": 5
+          },
+          {
+            "hp": 58.82862854003906,
+            "dead": false,
+            "meds": 1,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 76,
+            "dead": false,
+            "meds": 0,
+            "bombs": 1,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 100,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          }
+        ],
+        "stage": 2
+      },
+      "raw": "{\"schema\":1,\"map\":1,\"difficulty\":1,\"leg\":1,\"kills\":287,\"time\":108.80348205566406,\"seed\":81048,\"savedAt\":1792131462003,\"carry\":[{\"hp\":35,\"dead\":false,\"meds\":0,\"bombs\":0,\"molotovs\":0,\"weapon\":0,\"upgrades\":5},{\"hp\":58.82862854003906,\"dead\":false,\"meds\":1,\"bombs\":0,\"molotovs\":1,\"weapon\":0,\"upgrades\":0},{\"hp\":76,\"dead\":false,\"meds\":0,\"bombs\":1,\"molotovs\":1,\"weapon\":0,\"upgrades\":0},{\"hp\":100,\"dead\":false,\"meds\":0,\"bombs\":0,\"molotovs\":1,\"weapon\":0,\"upgrades\":0}]}",
+      "won": 1
+    },
+    "continued": {
+      "stage": 2,
+      "map": "burnout",
+      "pos": [
+        -35.8125,
+        0,
+        16.1875,
+        65
+      ],
+      "hp": [
+        65,
+        65,
+        76,
+        100
+      ],
+      "items": [
+        1,
+        1,
+        1
+      ],
+      "upgrades": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "errors": [],
+      "save": {
+        "schema": 1,
+        "map": 1,
+        "difficulty": 1,
+        "leg": 1,
+        "kills": 287,
+        "time": 108.80348205566406,
+        "seed": 81048,
+        "savedAt": 1792131462003,
+        "carry": [
+          {
+            "hp": 35,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 0,
+            "weapon": 0,
+            "upgrades": 5
+          },
+          {
+            "hp": 58.82862854003906,
+            "dead": false,
+            "meds": 1,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 76,
+            "dead": false,
+            "meds": 0,
+            "bombs": 1,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 100,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          }
+        ],
+        "stage": 2
+      }
+    },
+    "retried": {
+      "stage": 2,
+      "map": "burnout",
+      "pos": [
+        -35.8125,
+        0,
+        16.1875,
+        65
+      ],
+      "hp": [
+        65,
+        65,
+        76,
+        100
+      ],
+      "items": [
+        1,
+        1,
+        1
+      ],
+      "upgrades": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "errors": [],
+      "save": {
+        "schema": 1,
+        "map": 1,
+        "difficulty": 1,
+        "leg": 1,
+        "kills": 287,
+        "time": 108.80348205566406,
+        "seed": 81048,
+        "savedAt": 1792131462003,
+        "carry": [
+          {
+            "hp": 35,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 0,
+            "weapon": 0,
+            "upgrades": 5
+          },
+          {
+            "hp": 58.82862854003906,
+            "dead": false,
+            "meds": 1,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 76,
+            "dead": false,
+            "meds": 0,
+            "bombs": 1,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 100,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          }
+        ],
+        "stage": 2
+      }
+    },
+    "reloaded": {
+      "stage": 2,
+      "map": "burnout",
+      "pos": [
+        -35.8125,
+        0,
+        16.1875,
+        65
+      ],
+      "hp": [
+        65,
+        65,
+        76,
+        100
+      ],
+      "items": [
+        1,
+        1,
+        1
+      ],
+      "upgrades": [
+        5,
+        0,
+        0,
+        0
+      ],
+      "errors": [],
+      "save": {
+        "schema": 1,
+        "map": 1,
+        "difficulty": 1,
+        "leg": 1,
+        "kills": 287,
+        "time": 108.80348205566406,
+        "seed": 81048,
+        "savedAt": 1792131462003,
+        "carry": [
+          {
+            "hp": 35,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 0,
+            "weapon": 0,
+            "upgrades": 5
+          },
+          {
+            "hp": 58.82862854003906,
+            "dead": false,
+            "meds": 1,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 76,
+            "dead": false,
+            "meds": 0,
+            "bombs": 1,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          },
+          {
+            "hp": 100,
+            "dead": false,
+            "meds": 0,
+            "bombs": 0,
+            "molotovs": 1,
+            "weapon": 0,
+            "upgrades": 0
+          }
+        ],
+        "stage": 2
+      }
+    },
+    "continuationPassed": true,
+    "medianFps": 60.00163137522841,
+    "medianGpuMs": 2.29376
+  },
+  "hardware": {
+    "browser": "Chrome/155.0.8059.41",
+    "adapter": {
+      "vendorId": 4318,
+      "deviceId": 11269,
+      "subSysId": 339482990,
+      "revision": 161,
+      "vendorString": "",
+      "deviceString": "NVIDIA GeForce RTX 5070 Ti",
+      "driverVendor": "NVIDIA",
+      "driverVersion": "32.0.15.9186"
+    },
+    "headless": true,
+    "muted": true,
+    "sandboxAndGpuWatchdogRetained": true
+  },
+  "earnedExtractionSimSeconds": 108.80348205566406,
+  "fullBoundaryReadbackComparison": {
+    "humanGear": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        0,
+        0,
+        2,
+        0
+      ]
+    },
+    "humanMag": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        14,
+        8,
+        15
+      ]
+    },
+    "humanReserve": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        98,
+        48,
+        9999
+      ]
+    },
+    "humanItems": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        1,
+        1,
+        1
+      ]
+    },
+    "botMag": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        30,
+        8,
+        15,
+        0,
+        30,
+        8,
+        15,
+        0,
+        30,
+        8,
+        15,
+        0
+      ]
+    },
+    "botReserve": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        180,
+        48,
+        9999,
+        0,
+        180,
+        48,
+        9999,
+        0,
+        180,
+        48,
+        9999,
+        0
+      ]
+    },
+    "botItems": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+      ]
+    },
+    "upgrades": {
+      "equalAcrossContinueRetryReload": true,
+      "value": [
+        5,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "cleanup": {
+    "remainingOwnedProcesses": [],
+    "start": "2026-10-16T06:15:27.2501131Z",
+    "remainingProfileProcesses": [],
+    "gpuFaults": [],
+    "end": "2026-10-16T06:18:09.2397279+00:00"
+  },
+  "preservation": {
+    "candidate": {
+      "bytes": 525885,
+      "sha256": "66c45ecfaca95d888264e88e52cdf7c24fa0d76ef8ec7f86491bd516432008f0"
+    },
+    "original": {
+      "bytes": 368656,
+      "sha256": "787cdb9b13b91e27313e550826580e4030ce314fb571299ec171ddf051f99349"
+    },
+    "audioFiles": 43,
+    "audioByteIdenticalToPR11": true,
+    "mohawkLinesIdentical": true,
+    "mohawkLineCount": 1
+  },
+  "remainingMismatches": [
+    "Full source awareness, field of view, memory/search, tactical combat positioning and leaper isolation scoring remain incomplete.",
+    "Emergency rescue lure, bot molotov and fuel tasks, complete GOAP goal validity and arrival hysteresis remain partial.",
+    "Director stress, retirement, staged spawns and remix seeding are approximate; authored worlds use captured initial seeds.",
+    "Source prop destruction and combustible interactions remain incomplete. Axe door damage is implemented, but crate, shelf and window axe damage is not equivalent.",
+    "Special actor models retain legacy shapes. HUD and audio event mapping need review; tests were muted and make no listening-quality claim.",
+    "Burnout entry, retry and reload are qualified at the earned boundary only. Full Burnout gameplay, Chapters 3-5, co-op and device controls are not qualified or ported."
+  ],
+  "publication": "No push, PR or deployment. PR11 remains live. Private source snapshots, harnesses, full telemetry, failed runs and video remain outside the repository."
+}

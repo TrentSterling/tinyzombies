@@ -17,7 +17,7 @@ The existing movement collision, reload countdown, gear selection, bot handling,
 
 ## Cloud evidence
 
-`node tests/leaper-pin.test.cjs` executes exact production movement, pin-latch, sprint, gear, reload and downstream aim-output fragments with controlled collision and precomputed free-aim inputs, plus actual host reset. It covers 30/60/120 updates per second, jitter/pause, cardinal/diagonal/analog input, facing retention, release/re-pin, existing protection, reload consumption and completion, and all six equipment categories. Float32-rounded vector and f64 variants are included; these are adapters, not WGSL execution. An inverse normalization proves the runtime equals the extraction parent after removing exactly these four bounded blocks.
+`node tests/leaper-pin.test.cjs` executes exact production movement, pin-latch, sprint, gear, reload and downstream aim-output fragments with controlled collision and precomputed free-aim inputs, plus actual host reset. It covers 30/60/120 updates per second, jitter/pause, cardinal/diagonal/analog input, facing retention, release/re-pin, existing protection, reload consumption and completion, and all six equipment categories. Float32-rounded vector and f64 variants are included; these are adapters, not WGSL execution. An inverse normalization proves the runtime equals the extraction parent after removing exactly these four bounded blocks and the later, separately reviewed crawl restoration described in `DOWNED-CRAWL.md`.
 
 The adapter skips zero-dt steps to represent pause and simplifies sprint readiness; acquisition/follow and bot guards are lexical invariants. Release cases establish the existing grace/protection assignments, not complete GPU acquisition enforcement.
 
@@ -40,5 +40,5 @@ In a separately authorized dedicated test profile, use ordinary movement and com
 
 - Pin ownership is published across existing GPU passes. CPU fragment tests do not qualify real dispatch timing, stale claims or all simultaneous combat/rescue cases.
 - Source held physical keyboard R may start a reload when a pin clears because its old key level remains set. Tiny retains its existing command-edge-only reload behavior. The suppressed press-and-release contract is the scope here.
-- The user's requested 0.60 m/s downed crawl was lost in the earlier selected-gear source port. Current directional immobility is an inherited customization regression, not an accepted requirement. This pin patch leaves that separate restoration untouched; pin immobilization and downed crawl must remain distinct.
+- The user's requested 0.60 m/s downed crawl was lost in the earlier selected-gear source port. The pin backup preserved that inherited regression so its correction could be reviewed separately. This dependent candidate now includes the restoration described in `DOWNED-CRAWL.md`; live pin immobilization still takes priority.
 - Existing extraction geometry/occupancy and variable-step timing limits in `EXTRACTION-HOLD.md` still apply. No full-source-parity, hardware-performance or live-release claim is made.

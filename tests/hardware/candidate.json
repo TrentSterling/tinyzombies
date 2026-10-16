@@ -1,10 +1,10 @@
 {
-  "harnessVersion": "leaper-pin-v1",
-  "runtimeSha256": "dcce514a9d9d326be7b419c4e0ec332ff53a9527adb6e17a608097358cb2bf01",
+  "harnessVersion": "downed-crawl-v1",
+  "runtimeSha256": "ddca875c0148eade077b4822a5cece61673a72d7d820b5843def2ae990336ccc",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: natural human leaper pin must suppress directional motion, facing changes and new reload while preserving existing reload completion and permitted equipment selection; rescue/grace and five-chapter extraction/carry/retry/reload regression. Existing automated route does not certify natural pin coverage.",
+  "acceptance": "Deferred: current-layout controlled crawl fixtures, natural human downing/crawl/pistol/rescue, live pin restrictions, plus matched five-chapter extraction/carry/retry/reload regression. Controlled fixtures and automatic chapter routes do not certify natural downing or pins.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "b38093b3ff8dc7374b93ffd49117e34089e1a4e1",
+  "dependencyCommit": "fb3f5ecc140649f75eebc7e00ae9b3411ff9ea4f",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
 }

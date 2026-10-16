@@ -1,6 +1,7 @@
 {
-  "harnessVersion": "last-train-v1",
-  "runtimeSha256": "4f35b2ab8ab0820d99762226e95d55fe3d0b94d632b7cf63a0f0c3c8366140ed",
-  "shippedRollback": "f895f7c09aaf564593896374e8f701960f669a4d",
-  "acceptance": "Chapter 3 normal-input earned entry, power, extraction and persistence; no Chapter 4 gameplay"
+  "harnessVersion": "code-red-v1",
+  "runtimeSha256": "0499ba8885ae5997512457e4bac4fdcd7179b1ec9a97682b607165a50db02b22",
+  "shippedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
+  "acceptance": "Deferred: earned Chapter 4 shutter/alarm, squad extraction and checkpoint/retry/reload; fresh Chapters 1\u20133 regression separately; stop before Chapter 5",
+  "hardwareStatus": "not-run"
 }

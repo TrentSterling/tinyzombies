@@ -1,0 +1,87 @@
+{
+  "method": "WGSL mixed-short-circuit lexical grouping guard over all evaluated shader strings, exact two-character inverse, and exhaustive CPU truth table for this expression. Not WGSL compilation, pipeline creation, GPU execution or browser startup.",
+  "grammarSource": "https://www.w3.org/TR/WGSL/#operator-precedence-associativity",
+  "candidateSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "passed": true,
+  "checks": [
+    {
+      "name": "guard rejects ungrouped operators: a&&b||c",
+      "passed": true
+    },
+    {
+      "name": "guard rejects ungrouped operators: a||b&&c",
+      "passed": true
+    },
+    {
+      "name": "guard rejects ungrouped operators: (a&&b||c)",
+      "passed": true
+    },
+    {
+      "name": "guard rejects ungrouped operators: f(a&&b||c)",
+      "passed": true
+    },
+    {
+      "name": "guard rejects ungrouped operators: a[b&&c||d]",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: (a&&b)||c",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a&&(b||c)",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: (a||b)&&(c||d)",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: f(a&&b,c||d)",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a[b&&c]||d",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a&&b;let y=c||d",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a==b&&c!=d",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a&&b/* || ignored */",
+      "passed": true
+    },
+    {
+      "name": "guard accepts independent/grouped expressions: a&&b// || ignored\n",
+      "passed": true
+    },
+    {
+      "name": "reported prior expression fails even though JavaScript accepts its precedence",
+      "passed": true
+    },
+    {
+      "name": "exact two-character grouping is present once and legacy expression is absent",
+      "passed": true
+    },
+    {
+      "name": "all evaluated WGSL strings have grouped mixed short-circuit operators",
+      "passed": true,
+      "shadersChecked": 40
+    },
+    {
+      "name": "one exact inverse recovers the unchanged main or candidate runtime",
+      "passed": true,
+      "parentSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2"
+    },
+    {
+      "name": "all command, activity, fuel and strict radius combinations preserve intended busy semantics",
+      "passed": true,
+      "combinations": 17280
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 Status: CPU-tested candidate; hardware, shader compilation and ordinary gameplay are deferred. Depends on revive-priority backup `7b9f18df2be90d38e8b83b4c014f8f28c04e81f4`, including the prior five-fix stack and fresh five-chapter host checkpoint-chain coverage. Exact runtime bytes are pinned in `candidate.json`. No publication or desktop testing is part of this batch.
 
+A follow-on startup-only syntax correction adds the two parentheses required by WGSL around the buddy busy predicate. See `../WGSL-STARTUP-HOTFIX.md`. The original bot-priority reports remain historical at runtime `bae0595b`; new `validation/wgsl-startup-hotfix` reports cover runtime `d59ea2d5`. This changes no bot-priority or other gameplay semantics.
+
 ## One bounded correction
 
 In the final [DEAD ENDS source](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html#L1170-L1185), `nearestAction` selects another downed, nondead, nondragged survivor at strictly less than 90 pixels before gate/fuel operation. Interaction checks threats after this selection. The bot `operate` action calls that interaction path ([lines 1005–1011](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html#L1005-L1011)).

@@ -1,6 +1,7 @@
 'use strict';
 // Exact inverse of the independently scoped heal-validity delta; not a general code scrubber.
 const assert=require('node:assert/strict');
+const {withoutLogicalGrouping}=require('./wgsl-logical-grouping.cjs');
 const helper=`// Retained medical plans must revalidate their patient before spending a kit.
 fn validHealPatient21(patientId21:i32,healer:u32,healerHP:f32)->bool {
  if(patientId21< -1||patientId21>2){return false;}
@@ -9,6 +10,7 @@ fn validHealPatient21(patientId21:i32,healer:u32,healerHP:f32)->bool {
 }
 `;
 function withoutBotObjectivePriority23(html){
+ html=withoutLogicalGrouping(html);
  if(!html.includes('fn botReviveFirst23('))return html;
  const helper23=`// Bot machinery must not bypass the source's nearby revive interaction priority.
 fn botReviveFirst23(id:u32)->bool {

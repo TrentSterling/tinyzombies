@@ -1,10 +1,11 @@
 {
   "harnessVersion": "bot-objective-priority-v1",
-  "runtimeSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "runtimeSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: ordinary-input Chapter 1 bot crank / Chapter 2 bot fuel revive-first interruption, strict radius and resume, retained self-medkit/manual rescue, bot patient validity/crawl/pin/extraction and fresh matched five-chapter persistence. CPU fragment/ordered adapters are separate evidence, not earned gameplay.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "7b9f18df2be90d38e8b83b4c014f8f28c04e81f4",
+  "dependencyCommit": "9b113b2204f4e6e3685e4233d2b25815df2dcf4f",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
-  "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
+  "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710",
+  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment."
 }

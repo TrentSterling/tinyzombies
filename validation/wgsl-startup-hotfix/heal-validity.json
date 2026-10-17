@@ -1,0 +1,206 @@
+{
+  "method": "Complete production buddy update and GOAP bodies mechanically adapted to CPU JavaScript, controlled clear geometry/threats and movement helper; current mutable struct copies retained, implicit unadapted vector coercion throws. Exact host save/retry fixture and strict inverse runtime scope. No WGSL execution, natural plan acquisition, GPU ordering or gameplay claim.",
+  "candidateSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "parentSha256": "ddca875c0148eade077b4822a5cece61673a72d7d820b5843def2ae990336ccc",
+  "buddyUpdaterSha256": "48e61f57bb20b15844a4b3f66c67aa75d182a3f54c0af5f522fbab33e8dd5aec",
+  "helperSha256": "f979526be6a5e3675d91cb76b3f6fc065e67579c6d8726a3f9f269fae10febfa",
+  "passed": true,
+  "checks": [
+    {
+      "name": "only helper and execution wrapper differ from reviewed crawl runtime",
+      "passed": true
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal -1/30Hz",
+      "passed": true,
+      "think": 0.16666666666666669,
+      "downTimer": 39.96666666666667
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal 1/30Hz",
+      "passed": true,
+      "think": 0.16666666666666669,
+      "downTimer": 0
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal -1/60Hz",
+      "passed": true,
+      "think": 0.18333333333333335,
+      "downTimer": 39.983333333333334
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal 1/60Hz",
+      "passed": true,
+      "think": 0.18333333333333335,
+      "downTimer": 0
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal -1/120Hz",
+      "passed": true,
+      "think": 0.19166666666666668,
+      "downTimer": 39.99166666666667
+    },
+    {
+      "name": "newly downed patient aborts nearly committed heal 1/120Hz",
+      "passed": true,
+      "think": 0.19166666666666668,
+      "downTimer": 0
+    },
+    {
+      "name": "aborted heal replans next update and completes normal35HP rescue -1",
+      "passed": true,
+      "rescueEvents": 1,
+      "meds": 1
+    },
+    {
+      "name": "aborted heal replans next update and completes normal35HP rescue 1",
+      "passed": true,
+      "rescueEvents": 1,
+      "meds": 1
+    },
+    {
+      "name": "invalid current patient state: zero-health-human",
+      "passed": true
+    },
+    {
+      "name": "invalid current patient state: mixed-human",
+      "passed": true
+    },
+    {
+      "name": "invalid current patient state: dead-bot-zero",
+      "passed": true
+    },
+    {
+      "name": "invalid current patient state: dead-bot-positive",
+      "passed": true
+    },
+    {
+      "name": "invalid target ID cannot alias human or spend medkit -9",
+      "passed": true
+    },
+    {
+      "name": "invalid target ID cannot alias human or spend medkit -2",
+      "passed": true
+    },
+    {
+      "name": "invalid target ID cannot alias human or spend medkit 3",
+      "passed": true
+    },
+    {
+      "name": "invalid target ID cannot alias human or spend medkit 99",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once -1/30Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 1/30Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 2/30Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once -1/60Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 1/60Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 2/60Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once -1/120Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 1/120Hz",
+      "passed": true
+    },
+    {
+      "name": "valid patient receives65HP once 2/120Hz",
+      "passed": true
+    },
+    {
+      "name": "full-health patient completes without kit use -1",
+      "passed": true
+    },
+    {
+      "name": "full-health patient completes without kit use 1",
+      "passed": true
+    },
+    {
+      "name": "self heal uses current local healer HP and ignores stale ally target ID",
+      "passed": true
+    },
+    {
+      "name": "legitimately revived positive-HP bot is not rejected by transitional bleed-timer",
+      "passed": true
+    },
+    {
+      "name": "legitimately revived positive-HP bot is not rejected by transitional weapon-latch",
+      "passed": true
+    },
+    {
+      "name": "legitimately revived positive-HP bot is not rejected by transitional both",
+      "passed": true
+    },
+    {
+      "name": "ordinary healing interruption unchanged: range",
+      "passed": true
+    },
+    {
+      "name": "ordinary healing interruption unchanged: sight",
+      "passed": true
+    },
+    {
+      "name": "ordinary healing interruption unchanged: threat",
+      "passed": true
+    },
+    {
+      "name": "ordinary healing interruption unchanged: damage",
+      "passed": true
+    },
+    {
+      "name": "ordinary healing interruption unchanged: empty-kit",
+      "passed": true
+    },
+    {
+      "name": "actual replanner resets progress when the valid patient changes",
+      "passed": true
+    },
+    {
+      "name": "disabled simulation cannot spend a kit pause",
+      "passed": true
+    },
+    {
+      "name": "disabled simulation cannot spend a kit victory",
+      "passed": true
+    },
+    {
+      "name": "disabled simulation cannot spend a kit defeat",
+      "passed": true
+    },
+    {
+      "name": "disabled simulation cannot spend a kit chooser",
+      "passed": true
+    },
+    {
+      "name": "pause/resume rejects the stale patient on the resumed update",
+      "passed": true
+    },
+    {
+      "name": "invalid helper IDs return before any target-array indexing",
+      "passed": true
+    },
+    {
+      "name": "active failed heal cannot write a checkpoint and retry restores exact entry",
+      "passed": true
+    }
+  ]
+}

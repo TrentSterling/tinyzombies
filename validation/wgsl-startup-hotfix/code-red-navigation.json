@@ -1,0 +1,390 @@
+{
+  "passed": true,
+  "runtimeSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "checks": [
+    {
+      "name": "22 ordinary-body centerline segments are clear with original geometry",
+      "passed": true
+    },
+    {
+      "name": "control and relay stop short of conservative solids within human and bot reach",
+      "passed": true
+    },
+    {
+      "name": "north departure uses authored start bounds and alive-human guard",
+      "passed": true
+    },
+    {
+      "name": "authored geometry and pickup match final capture",
+      "passed": true
+    },
+    {
+      "name": "closed north start door rejects physical crossing; open allows it",
+      "passed": true
+    },
+    {
+      "name": "closed emergency shutter rejects physical crossing; open allows it",
+      "passed": true
+    },
+    {
+      "name": "closed final red door rejects physical crossing; open allows it",
+      "passed": true
+    },
+    {
+      "name": "closed shutter explicitly rejects coarse route cells",
+      "passed": true
+    },
+    {
+      "name": "all three final formation destinations lie inside and bounded planners reach the goal",
+      "passed": true
+    },
+    {
+      "name": "all three authored starts plan physically clear north departure toward formation",
+      "passed": true
+    },
+    {
+      "name": "CPU movement north departure with lookahead false",
+      "passed": true
+    },
+    {
+      "name": "CPU movement north departure with lookahead true",
+      "passed": true
+    },
+    {
+      "name": "CPU movement north all-departed with lookahead false",
+      "passed": true
+    },
+    {
+      "name": "CPU movement north all-departed with lookahead true",
+      "passed": true
+    },
+    {
+      "name": "CPU movement final formation with lookahead false",
+      "passed": true
+    },
+    {
+      "name": "CPU movement final formation with lookahead true",
+      "passed": true
+    },
+    {
+      "name": "CPU movement final grazing case with lookahead false",
+      "passed": true
+    },
+    {
+      "name": "CPU movement final grazing case with lookahead true",
+      "passed": true
+    }
+  ],
+  "movements": [
+    {
+      "name": "north departure",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.6166666666666667,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -26.668928955828047,
+          9.44159997596565
+        ],
+        [
+          -28.441601289991343,
+          10.309184981742192
+        ],
+        [
+          -26.617310052060308,
+          13.319773973306427
+        ]
+      ],
+      "goals": [
+        [
+          -26.53125,
+          8.625
+        ],
+        [
+          -28.515625,
+          9.484375
+        ],
+        [
+          -26.5,
+          12.5
+        ]
+      ]
+    },
+    {
+      "name": "north departure",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.6,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -26.666364979119194,
+          9.442028125612955
+        ],
+        [
+          -28.441622848520414,
+          10.30918691625812
+        ],
+        [
+          -26.61741377005361,
+          13.31975912451573
+        ]
+      ],
+      "goals": [
+        [
+          -26.53125,
+          8.625
+        ],
+        [
+          -28.515625,
+          9.484375
+        ],
+        [
+          -26.5,
+          12.5
+        ]
+      ]
+    },
+    {
+      "name": "north all-departed",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.9666666666666666,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -26.6256619425528,
+          7.447725592605704
+        ],
+        [
+          -28.48169006050585,
+          8.311804414214004
+        ],
+        [
+          -27.097589501242858,
+          10.590016800502196
+        ]
+      ],
+      "goals": [
+        [
+          -26.53125,
+          6.625
+        ],
+        [
+          -28.515625,
+          7.484375
+        ],
+        [
+          -26.53125,
+          9.984375
+        ]
+      ]
+    },
+    {
+      "name": "north all-departed",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.95,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -26.62652424190721,
+          7.447626181478566
+        ],
+        [
+          -28.459473957337934,
+          8.320361620284709
+        ],
+        [
+          -27.099671280905156,
+          10.586611052589964
+        ]
+      ],
+      "goals": [
+        [
+          -26.53125,
+          6.625
+        ],
+        [
+          -28.515625,
+          7.484375
+        ],
+        [
+          -26.53125,
+          9.984375
+        ]
+      ]
+    },
+    {
+      "name": "final formation",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.4833333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.691848555533745,
+          -9.483541064303944
+        ],
+        [
+          33.07437523372951,
+          -8.030799810170327
+        ],
+        [
+          34.67259977714899,
+          -8.127011670793797
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -9.8125
+        ],
+        [
+          33.8125,
+          -8.40625
+        ],
+        [
+          35.453125,
+          -8.40625
+        ]
+      ]
+    },
+    {
+      "name": "final formation",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.5333333333333332,
+      "fallbackCount": 0,
+      "maxStuck": 0.016666666666666666,
+      "positions": [
+        [
+          34.69165698297587,
+          -9.48698890237913
+        ],
+        [
+          33.07984338716297,
+          -8.02023732926987
+        ],
+        [
+          34.62500578823886,
+          -8.409346245647562
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -9.8125
+        ],
+        [
+          33.8125,
+          -8.40625
+        ],
+        [
+          35.453125,
+          -8.40625
+        ]
+      ]
+    },
+    {
+      "name": "final grazing case",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.55,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.708104600484354,
+          -9.450926190203793
+        ],
+        [
+          33.17223784255759,
+          -7.853948061837249
+        ],
+        [
+          34.62679175496687,
+          -8.460696154850583
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -9.8125
+        ],
+        [
+          33.8125,
+          -8.40625
+        ],
+        [
+          35.453125,
+          -8.40625
+        ]
+      ]
+    },
+    {
+      "name": "final grazing case",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.5833333333333333,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.707308323185416,
+          -9.45257153459299
+        ],
+        [
+          33.17223784255759,
+          -7.853948061837249
+        ],
+        [
+          34.62679175496687,
+          -8.460696154850583
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -9.8125
+        ],
+        [
+          33.8125,
+          -8.40625
+        ],
+        [
+          35.453125,
+          -8.40625
+        ]
+      ]
+    }
+  ],
+  "closedGraphNotes": [
+    {
+      "name": "north start door",
+      "point": [
+        -27.5,
+        11.5
+      ],
+      "physicallyBlocked": true,
+      "existingCpuModelPassCell": false,
+      "liveWalkFieldUnblocked": true
+    },
+    {
+      "name": "final red door",
+      "point": [
+        30.5,
+        -6.5
+      ],
+      "physicallyBlocked": true,
+      "existingCpuModelPassCell": false,
+      "liveWalkFieldUnblocked": true
+    }
+  ]
+}

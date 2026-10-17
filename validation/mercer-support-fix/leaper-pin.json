@@ -1,0 +1,353 @@
+{
+  "method": "CPU execution of exact production movement, pin-latch, sprint, gear, reload and downstream aim-output fragments with controlled collision and precomputed free-aim inputs; f64 and float32-rounded vector variants, exact host reset, lexical invariants. The rounded adapter is not a WGSL implementation. No GPU compilation, dispatch-race or earned-play claim.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "parentRuntimeSha256": "88550dc8eb1dac76d8e74decef9714799a8e6c4a38917dc1329bc65c0786556c",
+  "passed": true,
+  "checks": [
+    {
+      "name": "only reviewed pin blocks and explicit crawl restoration differ from extraction runtime",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz -1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 1,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0.5,0.5 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz -1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 1,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0.5,0.5 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz -1,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 1,1 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0.5,0.5 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0,0 f64",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz -1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 1,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0.5,0.5 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 30Hz 0,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz -1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 1,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0.5,0.5 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 60Hz 0,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz -1,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 1,1 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0.5,0.5 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "pin input/facing frozen 120Hz 0,0 f32-rounded",
+      "passed": true
+    },
+    {
+      "name": "bounded jitter and pause preserve live pin false",
+      "passed": true
+    },
+    {
+      "name": "bounded jitter and pause preserve live pin true",
+      "passed": true
+    },
+    {
+      "name": "unpinned walking retains205px/s normalized input 1,0",
+      "passed": true
+    },
+    {
+      "name": "unpinned walking retains205px/s normalized input 0,1",
+      "passed": true
+    },
+    {
+      "name": "unpinned walking retains205px/s normalized input 1,1",
+      "passed": true
+    },
+    {
+      "name": "unpinned walking retains205px/s normalized input 0.2,0.4",
+      "passed": true
+    },
+    {
+      "name": "unpinned walking retains205px/s normalized input 0,0",
+      "passed": true
+    },
+    {
+      "name": "sprint and stamina preserve eligibility 0",
+      "passed": true
+    },
+    {
+      "name": "sprint and stamina preserve eligibility 13",
+      "passed": true
+    },
+    {
+      "name": "absent claim releases immediately with original grace/protection and aim",
+      "passed": true
+    },
+    {
+      "name": "release does not shorten existing protection",
+      "passed": true
+    },
+    {
+      "name": "pin locks input without anchoring externally moved position",
+      "passed": true
+    },
+    {
+      "name": "original physical blocking still controls unpinned movement",
+      "passed": true
+    },
+    {
+      "name": "existing disabled movement retained: dead",
+      "passed": true
+    },
+    {
+      "name": "existing disabled movement retained: menu",
+      "passed": true
+    },
+    {
+      "name": "existing disabled movement retained: terminal",
+      "passed": true
+    },
+    {
+      "name": "existing disabled movement retained: chooser",
+      "passed": true
+    },
+    {
+      "name": "restored unpinned downed crawl retains facing and drag branches",
+      "passed": true
+    },
+    {
+      "name": "pinned fresh reload consumed without execution or later queue 0",
+      "passed": true
+    },
+    {
+      "name": "pinned fresh reload consumed without execution or later queue 1",
+      "passed": true
+    },
+    {
+      "name": "pinned fresh reload consumed without execution or later queue 2",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 0/0",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 0/1",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 0/2",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 13/0",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 13/1",
+      "passed": true
+    },
+    {
+      "name": "existing reload progresses/completes 13/2",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/0",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/1",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/2",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/3",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/4",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 0/5",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/0",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/1",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/2",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/3",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/4",
+      "passed": true
+    },
+    {
+      "name": "gear selection permitted 13/5",
+      "passed": true
+    },
+    {
+      "name": "gun switching during pin still cancels an in-progress reload",
+      "passed": true
+    },
+    {
+      "name": "pause leaves pin and pending reload untouched; resume consumes rejected edge",
+      "passed": true
+    },
+    {
+      "name": "real host reset clears pin, command acknowledgement and reload state",
+      "passed": true
+    },
+    {
+      "name": "pin acquisition/follow, bot immobilization and input order remain intact",
+      "passed": true
+    },
+    {
+      "name": "actual dispatch order includes downstream aim after begin",
+      "passed": true
+    },
+    {
+      "name": "pin retains all rendered orientation and sweep state through downstream aim false",
+      "passed": true
+    },
+    {
+      "name": "pin retains all rendered orientation and sweep state through downstream aim true",
+      "passed": true
+    },
+    {
+      "name": "release restores downstream free aim, gun placement and sweep writes",
+      "passed": true
+    },
+    {
+      "name": "pinned branch occurs after cursor picking and every workgroup barrier, before aim writers",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Natural pin/rescue and full dispatch ordering require hardware acceptance.",
+    "Source held keyboard R can initiate reload after release; Tiny retains existing edge-only reload inputs.",
+    "Requested0.60m/s downed crawl is restored separately; all live pin cases remain locked."
+  ]
+}

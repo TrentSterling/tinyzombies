@@ -72,6 +72,10 @@
     {
       "before": " const det=right[0]*up[2]-right[2]*up[0];const aimX=(rx*up[2]-uy*right[2])/det,aimZ=(right[0]*uy-up[0]*rx)/det;\n uniformData.set([aimX,aimZ,0,0],40);pendingGrenade=pendingDash=0;\n uniformData.set([settings.lab?settings.zombies:Math.min(settings.zombies,245),settings.pool,settings.started?1:0,0],44);\n uniformData.set([width,height,hw,hh],48);uniformData.set([...cameraEye,0],52);\n uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);\n",
       "after": " const det=right[0]*up[2]-right[2]*up[0];const aimX=(rx*up[2]-uy*right[2])/det,aimZ=(right[0]*uy-up[0]*rx)/det;\n uniformData.set([aimX,aimZ,0,0],40);pendingGrenade=pendingDash=0;\n uniformData.set([settings.lab||stage===1?campaignPopulation24():Math.min(settings.zombies,245),settings.pool,settings.started?1:0,0],44);\n uniformData.set([width,height,hw,hh],48);uniformData.set([...cameraEye,0],52);\n uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);\n"
+    },
+    {
+      "before": "atomicStore(&G[g*4u+2u],1u);atomicAdd(&C[23],1u);",
+      "after": "atomicStore(&G[g*4u+2u],1u);if(u.run.x==1.0&&u.run.y<.5){atomicStore(&G[4096u+g],1u);}atomicAdd(&C[23],1u);"
     }
   ]
 }

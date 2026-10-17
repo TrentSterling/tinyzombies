@@ -1,0 +1,12 @@
+{
+  "method": "Run corrected regression suite against the saved pre-fix 1eed01b runtime. A failing old runtime is the expected negative-control result, not a failure on the corrected candidate.",
+  "passed": true,
+  "preFixRuntimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "expectedFailedAssertions": 3,
+  "actualFailedAssertions": [
+    "next-frame failed-footing transition requeues Mercer before fracture inspection",
+    "failed-footing requeue happens once rather than every later frame",
+    "strict 50-percent threshold does not flag or requeue at equality"
+  ],
+  "correctedRuntimeReport": "mercer-support-lifecycle.json"
+}

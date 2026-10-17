@@ -1,0 +1,79 @@
+{
+  "method": "Exact candidate scalar WGSL fragments mechanically translated for CPU branch checks. No WGSL compilation, GPU execution, timing-precision or earned-gameplay claim.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "fuel pickup switch effects: gun 0",
+      "passed": true
+    },
+    {
+      "name": "fuel pickup switch effects: gun 1",
+      "passed": true
+    },
+    {
+      "name": "fuel pickup switch effects: gun 2",
+      "passed": true
+    },
+    {
+      "name": "fuel pickup cancels pending axe swing",
+      "passed": true
+    },
+    {
+      "name": "same-frame shot preserves emitted weapon: 0",
+      "passed": true
+    },
+    {
+      "name": "same-frame shot preserves emitted weapon: 1",
+      "passed": true
+    },
+    {
+      "name": "same-frame shot preserves emitted weapon: 2",
+      "passed": true
+    },
+    {
+      "name": "same-frame impact preserves knockback/pin release: 0/0",
+      "passed": true
+    },
+    {
+      "name": "same-frame impact preserves knockback/pin release: 0/1",
+      "passed": true
+    },
+    {
+      "name": "same-frame impact preserves knockback/pin release: 1/0",
+      "passed": true
+    },
+    {
+      "name": "same-frame impact preserves knockback/pin release: 1/2",
+      "passed": true
+    },
+    {
+      "name": "same-frame impact preserves knockback/pin release: 2/4",
+      "passed": true
+    },
+    {
+      "name": "fuel pickup preserves longer shot cooldown",
+      "passed": true
+    },
+    {
+      "name": "carrying fuel prevents consuming a second can",
+      "passed": true
+    },
+    {
+      "name": "pour interruption: pin",
+      "passed": true
+    },
+    {
+      "name": "pour interruption: release",
+      "passed": true
+    },
+    {
+      "name": "pour interruption: target-change",
+      "passed": true
+    },
+    {
+      "name": "two uninterrupted 2.1-second pours start exactly one event",
+      "passed": true
+    }
+  ]
+}

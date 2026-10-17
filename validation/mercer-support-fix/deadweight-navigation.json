@@ -1,0 +1,1817 @@
+{
+  "method": "CPU-only host world execution plus existing navigation reference and scalar geometry/movement checks. Not shader execution, ordinary-input gameplay, browser, GPU, or performance qualification.",
+  "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "pinnedRuntimeSha256": "2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70",
+  "sourceCaptureSha256": "56d0a926a56ec72429d376ee651f01772b3f800e5423c9aaeea2c85c96d8d9dc",
+  "passed": true,
+  "checks": [
+    {
+      "name": "embedded bridge capture matches final source",
+      "passed": true
+    },
+    {
+      "name": "18 human waypoint segments clear at 0.025m spacing, 0.24m radius",
+      "passed": true,
+      "segments": 18,
+      "totalSamples": 4939,
+      "distance": 122.90247619293422,
+      "body": {
+        "radius": 0.24,
+        "y": 0.35,
+        "halfHeight": 0.3
+      }
+    },
+    {
+      "name": "exact winch and rifle locations are physically reachable",
+      "passed": true,
+      "winch": [
+        1.5,
+        3.5
+      ],
+      "rifle": [
+        14.4,
+        -15.94
+      ]
+    },
+    {
+      "name": "east departure threshold and live human guard match source bounds",
+      "passed": true,
+      "thresholdX": -29.52
+    },
+    {
+      "name": "closed east start door rejects swept crossing and local destination; open allows crossing",
+      "passed": true,
+      "closedFirstBlocked": [
+        -30.225,
+        17
+      ],
+      "localExpanded": 192,
+      "localNodes": 217,
+      "localPath": []
+    },
+    {
+      "name": "closed winch gate rejects swept crossing and local destination; open allows crossing",
+      "passed": true,
+      "closedFirstBlocked": [
+        3.775,
+        0.5
+      ],
+      "localExpanded": 192,
+      "localNodes": 223,
+      "localPath": [
+        [
+          3.75,
+          0.75
+        ]
+      ]
+    },
+    {
+      "name": "closed west-facing final door rejects swept crossing and local destination; open allows crossing",
+      "passed": true,
+      "closedFirstBlocked": [
+        29.775,
+        -16.5
+      ],
+      "localExpanded": 192,
+      "localNodes": 212,
+      "localPath": []
+    },
+    {
+      "name": "closed winch rejects coarse cells and bounded plan goal",
+      "passed": true,
+      "expanded": 192,
+      "path": [
+        [
+          3.75,
+          0.75
+        ]
+      ]
+    },
+    {
+      "name": "seal stand-off is inside, near final edge, and does not occupy doorway",
+      "passed": true,
+      "point": [
+        31.9,
+        -16.5
+      ],
+      "edge": 1.0874999999999986,
+      "interactionMaximum": 2.1875,
+      "sealMaximum": 2.5625,
+      "occupied": false
+    },
+    {
+      "name": "return from interior rally point to seal stand-off is clear",
+      "passed": true,
+      "from": [
+        35,
+        -16.5
+      ],
+      "to": [
+        31.9,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 126
+    },
+    {
+      "name": "scalar winch hold opens physical gate only after autonomous delay at 30Hz",
+      "passed": true,
+      "holdSeconds": 2.4,
+      "delaySeconds": 17,
+      "timerBeforeOpen": 16.96666666666667,
+      "timerAfterOpen": 17.000000000000004,
+      "humanHoldReleased": true,
+      "humanRemoteDowned": true
+    },
+    {
+      "name": "scalar winch hold opens physical gate only after autonomous delay at 60Hz",
+      "passed": true,
+      "holdSeconds": 2.4,
+      "delaySeconds": 17,
+      "timerBeforeOpen": 16.98333333333365,
+      "timerAfterOpen": 17.000000000000316,
+      "humanHoldReleased": true,
+      "humanRemoteDowned": true
+    },
+    {
+      "name": "scalar winch hold opens physical gate only after autonomous delay at 120Hz",
+      "passed": true,
+      "holdSeconds": 2.4,
+      "delaySeconds": 17,
+      "timerBeforeOpen": 16.999999999999677,
+      "timerAfterOpen": 17.00833333333301,
+      "humanHoldReleased": true,
+      "humanRemoteDowned": true
+    },
+    {
+      "name": "all three final formation destinations lie inside and bounded planners reach goals",
+      "passed": true,
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ],
+      "cases": 9,
+      "continuouslyClearCases": 8,
+      "maxExpanded": 15,
+      "maxNodes": 39
+    },
+    {
+      "name": "three authored starts plan east departure toward formation",
+      "passed": true,
+      "plans": [
+        {
+          "bot": 0,
+          "from": [
+            -35.15625,
+            17.1875
+          ],
+          "goal": [
+            -26.98478471771804,
+            18.399461794295096
+          ],
+          "path": [
+            [
+              -34.5,
+              17.5
+            ],
+            [
+              -33.5,
+              17.5
+            ],
+            [
+              -32.5,
+              17.5
+            ],
+            [
+              -31.5,
+              17.5
+            ],
+            [
+              -30.5,
+              17.5
+            ],
+            [
+              -29.5,
+              17.5
+            ],
+            [
+              -28.5,
+              17.5
+            ],
+            [
+              -27.5,
+              17.5
+            ],
+            [
+              -26.5,
+              18.5
+            ]
+          ],
+          "expanded": 12,
+          "nodes": 38,
+          "reached": true,
+          "nearest": 0,
+          "arrival": 0.4375,
+          "fallback": false,
+          "edgesClear": true
+        },
+        {
+          "bot": 1,
+          "from": [
+            -35.8125,
+            17.890625
+          ],
+          "goal": [
+            -27.107181344327863,
+            16.557015860819657
+          ],
+          "path": [
+            [
+              -27.107181344327863,
+              16.557015860819657
+            ]
+          ],
+          "expanded": 0,
+          "direct": true,
+          "arrival": 0.4375,
+          "fallback": false,
+          "edgesClear": true
+        },
+        {
+          "bot": 2,
+          "from": [
+            -35.15625,
+            17.890625
+          ],
+          "goal": [
+            -30.34415971771804,
+            18.399461794295096
+          ],
+          "path": [
+            [
+              -30.34415971771804,
+              18.399461794295096
+            ]
+          ],
+          "expanded": 0,
+          "direct": true,
+          "arrival": 0.4375,
+          "fallback": false,
+          "edgesClear": true
+        }
+      ]
+    },
+    {
+      "name": "CPU scalar movement east departure lookahead false",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.8,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -27.762122236334754,
+          18.11391425398734
+        ],
+        [
+          -27.91853538626536,
+          16.391197785035736
+        ],
+        [
+          -31.17041991083067,
+          18.34391803764796
+        ]
+      ],
+      "goals": [
+        [
+          -26.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -27.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -30.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement east departure lookahead true",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.8,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -27.76375051887485,
+          18.118386544133987
+        ],
+        [
+          -27.918549538069502,
+          16.391267045410835
+        ],
+        [
+          -31.1841878784148,
+          18.326883121261464
+        ]
+      ],
+      "goals": [
+        [
+          -26.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -27.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -30.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement east all-departed lookahead false",
+      "passed": true,
+      "arrived": true,
+      "seconds": 2.2333333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -25.761059287513604,
+          18.11103709369941
+        ],
+        [
+          -25.918086244995937,
+          16.389015093864554
+        ],
+        [
+          -28.844004713482537,
+          17.73448088698531
+        ]
+      ],
+      "goals": [
+        [
+          -24.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -25.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -28.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement east all-departed lookahead true",
+      "passed": true,
+      "arrived": true,
+      "seconds": 2.2333333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0.03333333333333333,
+      "positions": [
+        [
+          -25.789570900869688,
+          18.204243416489113
+        ],
+        [
+          -25.91803849565918,
+          16.388784782359505
+        ],
+        [
+          -28.80800259657935,
+          17.713429142481314
+        ]
+      ],
+      "goals": [
+        [
+          -24.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -25.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -28.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement final formation lookahead false",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.4833333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.691848555533745,
+          -18.48354106430395
+        ],
+        [
+          33.07437523372951,
+          -17.030799810170322
+        ],
+        [
+          34.67259977714899,
+          -17.127011670793795
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement final formation lookahead true",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.5333333333333332,
+      "fallbackCount": 0,
+      "maxStuck": 0.016666666666666666,
+      "positions": [
+        [
+          34.69165698297587,
+          -18.48698890237913
+        ],
+        [
+          33.07984338716297,
+          -17.020237329269868
+        ],
+        [
+          34.62500578823886,
+          -17.409346245647637
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement final grazing case lookahead false",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.55,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.70810460048435,
+          -18.450926190203806
+        ],
+        [
+          33.17223784255759,
+          -16.853948061837254
+        ],
+        [
+          34.62679175496687,
+          -17.46069615485059
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "CPU scalar movement final grazing case lookahead true",
+      "passed": true,
+      "arrived": true,
+      "seconds": 1.5833333333333333,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.70730832318541,
+          -18.452571534592995
+        ],
+        [
+          33.17223784255759,
+          -16.853948061837254
+        ],
+        [
+          34.62679175496687,
+          -17.46069615485059
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    }
+  ],
+  "capturedDoorStates": [
+    {
+      "index": 17,
+      "rawY": 1,
+      "rawOpen": 1,
+      "modelY": 1,
+      "modelOpen": 1
+    },
+    {
+      "index": 16,
+      "rawY": 1,
+      "rawOpen": 1,
+      "modelY": 3.4000000953674316,
+      "modelOpen": 0
+    },
+    {
+      "index": 19,
+      "rawY": 3.4000000953674316,
+      "rawOpen": 0,
+      "modelY": 3.4000000953674316,
+      "modelOpen": 0
+    }
+  ],
+  "route": [
+    {
+      "index": 0,
+      "point": [
+        -35.8125,
+        17.1875
+      ],
+      "label": "authored human start"
+    },
+    {
+      "index": 1,
+      "point": [
+        -30.5,
+        17
+      ],
+      "label": "inside east Toll door interaction approach; open ordinary start door"
+    },
+    {
+      "index": 2,
+      "point": [
+        -28.5,
+        17
+      ],
+      "label": "east departure, outside authored Toll bounds"
+    },
+    {
+      "index": 3,
+      "point": [
+        -21.5,
+        17
+      ],
+      "label": "turn north along Toll approach corridor"
+    },
+    {
+      "index": 4,
+      "point": [
+        -21.5,
+        0.5
+      ],
+      "label": "turn east onto bridge centerline"
+    },
+    {
+      "index": 5,
+      "point": [
+        1.5,
+        0.5
+      ],
+      "label": "turn south toward winch"
+    },
+    {
+      "index": 6,
+      "point": [
+        1.5,
+        3.5
+      ],
+      "label": "exact winch control; hold E 2.4 seconds, then 17-second autonomous opening"
+    },
+    {
+      "index": 7,
+      "point": [
+        3,
+        0.5
+      ],
+      "label": "west gate wait point"
+    },
+    {
+      "index": 8,
+      "point": [
+        5,
+        0.5
+      ],
+      "label": "east gate crossing, only after opening"
+    },
+    {
+      "index": 9,
+      "point": [
+        21.5,
+        0.5
+      ],
+      "label": "east bridge bend"
+    },
+    {
+      "index": 10,
+      "point": [
+        21.5,
+        -16
+      ],
+      "label": "turn west toward Checkpoint source connector"
+    },
+    {
+      "index": 11,
+      "point": [
+        19,
+        -16
+      ],
+      "label": "Checkpoint connector east approach"
+    },
+    {
+      "index": 12,
+      "point": [
+        16.5,
+        -16
+      ],
+      "label": "inside Checkpoint via open source connector"
+    },
+    {
+      "index": 13,
+      "point": [
+        14.4,
+        -15.94
+      ],
+      "label": "exact Checkpoint rifle pickup; E"
+    },
+    {
+      "index": 14,
+      "point": [
+        17.5,
+        -16
+      ],
+      "label": "leave Checkpoint via same source connector"
+    },
+    {
+      "index": 15,
+      "point": [
+        21.5,
+        -16.5
+      ],
+      "label": "turn east toward final safehouse"
+    },
+    {
+      "index": 16,
+      "point": [
+        29.5,
+        -16.5
+      ],
+      "label": "final room west-door approach"
+    },
+    {
+      "index": 17,
+      "point": [
+        31.9,
+        -16.5
+      ],
+      "label": "inside final safehouse entrance"
+    },
+    {
+      "index": 18,
+      "point": [
+        35,
+        -16.5
+      ],
+      "label": "safehouse interior/formation rally anchor; wait until companions are inside"
+    }
+  ],
+  "segments": [
+    {
+      "index": 1,
+      "from": [
+        -35.8125,
+        17.1875
+      ],
+      "to": [
+        -30.5,
+        17
+      ],
+      "clear": true,
+      "samples": 214
+    },
+    {
+      "index": 2,
+      "from": [
+        -30.5,
+        17
+      ],
+      "to": [
+        -28.5,
+        17
+      ],
+      "clear": true,
+      "samples": 81
+    },
+    {
+      "index": 3,
+      "from": [
+        -28.5,
+        17
+      ],
+      "to": [
+        -21.5,
+        17
+      ],
+      "clear": true,
+      "samples": 281
+    },
+    {
+      "index": 4,
+      "from": [
+        -21.5,
+        17
+      ],
+      "to": [
+        -21.5,
+        0.5
+      ],
+      "clear": true,
+      "samples": 661
+    },
+    {
+      "index": 5,
+      "from": [
+        -21.5,
+        0.5
+      ],
+      "to": [
+        1.5,
+        0.5
+      ],
+      "clear": true,
+      "samples": 921
+    },
+    {
+      "index": 6,
+      "from": [
+        1.5,
+        0.5
+      ],
+      "to": [
+        1.5,
+        3.5
+      ],
+      "clear": true,
+      "samples": 121
+    },
+    {
+      "index": 7,
+      "from": [
+        1.5,
+        3.5
+      ],
+      "to": [
+        3,
+        0.5
+      ],
+      "clear": true,
+      "samples": 136
+    },
+    {
+      "index": 8,
+      "from": [
+        3,
+        0.5
+      ],
+      "to": [
+        5,
+        0.5
+      ],
+      "clear": true,
+      "samples": 81
+    },
+    {
+      "index": 9,
+      "from": [
+        5,
+        0.5
+      ],
+      "to": [
+        21.5,
+        0.5
+      ],
+      "clear": true,
+      "samples": 661
+    },
+    {
+      "index": 10,
+      "from": [
+        21.5,
+        0.5
+      ],
+      "to": [
+        21.5,
+        -16
+      ],
+      "clear": true,
+      "samples": 661
+    },
+    {
+      "index": 11,
+      "from": [
+        21.5,
+        -16
+      ],
+      "to": [
+        19,
+        -16
+      ],
+      "clear": true,
+      "samples": 101
+    },
+    {
+      "index": 12,
+      "from": [
+        19,
+        -16
+      ],
+      "to": [
+        16.5,
+        -16
+      ],
+      "clear": true,
+      "samples": 101
+    },
+    {
+      "index": 13,
+      "from": [
+        16.5,
+        -16
+      ],
+      "to": [
+        14.4,
+        -15.94
+      ],
+      "clear": true,
+      "samples": 86
+    },
+    {
+      "index": 14,
+      "from": [
+        14.4,
+        -15.94
+      ],
+      "to": [
+        17.5,
+        -16
+      ],
+      "clear": true,
+      "samples": 126
+    },
+    {
+      "index": 15,
+      "from": [
+        17.5,
+        -16
+      ],
+      "to": [
+        21.5,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 163
+    },
+    {
+      "index": 16,
+      "from": [
+        21.5,
+        -16.5
+      ],
+      "to": [
+        29.5,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 321
+    },
+    {
+      "index": 17,
+      "from": [
+        29.5,
+        -16.5
+      ],
+      "to": [
+        31.9,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 97
+    },
+    {
+      "index": 18,
+      "from": [
+        31.9,
+        -16.5
+      ],
+      "to": [
+        35,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 126
+    }
+  ],
+  "sealReturn": {
+    "from": [
+      35,
+      -16.5
+    ],
+    "to": [
+      31.9,
+      -16.5
+    ],
+    "clear": true,
+    "samples": 126
+  },
+  "shortcutProbes": [
+    {
+      "name": "diagonal Toll exit to north bridge bend",
+      "from": [
+        -28.5,
+        17
+      ],
+      "to": [
+        -21.5,
+        0.5
+      ],
+      "clear": false,
+      "firstBlocked": [
+        -27.328451882845187,
+        14.238493723849373
+      ],
+      "samples": 718
+    },
+    {
+      "name": "bridge midpoint directly to rifle",
+      "from": [
+        5,
+        0.5
+      ],
+      "to": [
+        14.4,
+        -15.94
+      ],
+      "clear": false,
+      "firstBlocked": [
+        8.013456464379948,
+        -4.770343007915567
+      ],
+      "samples": 759
+    },
+    {
+      "name": "east bridge bend directly to rifle",
+      "from": [
+        21.5,
+        0.5
+      ],
+      "to": [
+        14.4,
+        -15.94
+      ],
+      "clear": false,
+      "firstBlocked": [
+        18.232217573221757,
+        -7.066527196652718
+      ],
+      "samples": 718
+    },
+    {
+      "name": "rifle directly toward final approach",
+      "from": [
+        14.4,
+        -15.94
+      ],
+      "to": [
+        29.5,
+        -16.5
+      ],
+      "clear": true,
+      "samples": 606
+    }
+  ],
+  "closedGraphNotes": [
+    {
+      "name": "east start door",
+      "point": [
+        -29.5,
+        17.5
+      ],
+      "physicallyBlocked": true,
+      "existingCpuModelPassCell": false,
+      "liveWalkFieldUnblocked": true
+    },
+    {
+      "name": "west-facing final door",
+      "point": [
+        30.5,
+        -15.5
+      ],
+      "physicallyBlocked": true,
+      "existingCpuModelPassCell": false,
+      "liveWalkFieldUnblocked": true
+    }
+  ],
+  "coarseShortcutGrazes": [
+    {
+      "bot": 2,
+      "from": [
+        29.5,
+        -16.5
+      ],
+      "goal": [
+        35.453125,
+        -17.40625
+      ],
+      "path": [
+        [
+          35.453125,
+          -17.40625
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": false,
+      "edgeSweeps": [
+        {
+          "clear": false,
+          "firstBlocked": [
+            31.229123443983404,
+            -16.76322614107884
+          ],
+          "samples": 242
+        }
+      ]
+    }
+  ],
+  "finalPlan": [
+    {
+      "bot": 0,
+      "from": [
+        29.5,
+        -16.5
+      ],
+      "goal": [
+        35.453125,
+        -18.8125
+      ],
+      "path": [
+        [
+          30.5,
+          -16.5
+        ],
+        [
+          31.5,
+          -16.5
+        ],
+        [
+          32.5,
+          -17.5
+        ],
+        [
+          33.5,
+          -17.5
+        ],
+        [
+          34.5,
+          -17.5
+        ],
+        [
+          35.5,
+          -18.5
+        ]
+      ],
+      "expanded": 11,
+      "nodes": 31,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 0,
+      "from": [
+        29.5,
+        -15.5
+      ],
+      "goal": [
+        35.453125,
+        -18.8125
+      ],
+      "path": [
+        [
+          35.453125,
+          -18.8125
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 0,
+      "from": [
+        28.5,
+        -17.5
+      ],
+      "goal": [
+        35.453125,
+        -18.8125
+      ],
+      "path": [
+        [
+          29.5,
+          -16.5
+        ],
+        [
+          30.5,
+          -16.5
+        ],
+        [
+          31.5,
+          -16.5
+        ],
+        [
+          32.5,
+          -17.5
+        ],
+        [
+          33.5,
+          -17.5
+        ],
+        [
+          34.5,
+          -17.5
+        ],
+        [
+          35.5,
+          -18.5
+        ]
+      ],
+      "expanded": 15,
+      "nodes": 39,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 1,
+      "from": [
+        29.5,
+        -16.5
+      ],
+      "goal": [
+        33.8125,
+        -17.40625
+      ],
+      "path": [
+        [
+          30.5,
+          -16.5
+        ],
+        [
+          31.5,
+          -16.5
+        ],
+        [
+          32.5,
+          -16.5
+        ],
+        [
+          33.5,
+          -17.5
+        ]
+      ],
+      "expanded": 6,
+      "nodes": 20,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 1,
+      "from": [
+        29.5,
+        -15.5
+      ],
+      "goal": [
+        33.8125,
+        -17.40625
+      ],
+      "path": [
+        [
+          33.8125,
+          -17.40625
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 1,
+      "from": [
+        28.5,
+        -17.5
+      ],
+      "goal": [
+        33.8125,
+        -17.40625
+      ],
+      "path": [
+        [
+          29.5,
+          -16.5
+        ],
+        [
+          30.5,
+          -16.5
+        ],
+        [
+          31.5,
+          -16.5
+        ],
+        [
+          32.5,
+          -16.5
+        ],
+        [
+          33.5,
+          -17.5
+        ]
+      ],
+      "expanded": 9,
+      "nodes": 27,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 2,
+      "from": [
+        29.5,
+        -16.5
+      ],
+      "goal": [
+        35.453125,
+        -17.40625
+      ],
+      "path": [
+        [
+          35.453125,
+          -17.40625
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": false
+    },
+    {
+      "bot": 2,
+      "from": [
+        29.5,
+        -15.5
+      ],
+      "goal": [
+        35.453125,
+        -17.40625
+      ],
+      "path": [
+        [
+          35.453125,
+          -17.40625
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 2,
+      "from": [
+        28.5,
+        -17.5
+      ],
+      "goal": [
+        35.453125,
+        -17.40625
+      ],
+      "path": [
+        [
+          29.5,
+          -16.5
+        ],
+        [
+          30.5,
+          -16.5
+        ],
+        [
+          31.5,
+          -16.5
+        ],
+        [
+          32.5,
+          -16.5
+        ],
+        [
+          33.5,
+          -16.5
+        ],
+        [
+          34.5,
+          -16.5
+        ],
+        [
+          35.5,
+          -17.5
+        ]
+      ],
+      "expanded": 13,
+      "nodes": 35,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    }
+  ],
+  "eastPlans": [
+    {
+      "bot": 0,
+      "from": [
+        -35.15625,
+        17.1875
+      ],
+      "goal": [
+        -26.98478471771804,
+        18.399461794295096
+      ],
+      "path": [
+        [
+          -34.5,
+          17.5
+        ],
+        [
+          -33.5,
+          17.5
+        ],
+        [
+          -32.5,
+          17.5
+        ],
+        [
+          -31.5,
+          17.5
+        ],
+        [
+          -30.5,
+          17.5
+        ],
+        [
+          -29.5,
+          17.5
+        ],
+        [
+          -28.5,
+          17.5
+        ],
+        [
+          -27.5,
+          17.5
+        ],
+        [
+          -26.5,
+          18.5
+        ]
+      ],
+      "expanded": 12,
+      "nodes": 38,
+      "reached": true,
+      "nearest": 0,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 1,
+      "from": [
+        -35.8125,
+        17.890625
+      ],
+      "goal": [
+        -27.107181344327863,
+        16.557015860819657
+      ],
+      "path": [
+        [
+          -27.107181344327863,
+          16.557015860819657
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    },
+    {
+      "bot": 2,
+      "from": [
+        -35.15625,
+        17.890625
+      ],
+      "goal": [
+        -30.34415971771804,
+        18.399461794295096
+      ],
+      "path": [
+        [
+          -30.34415971771804,
+          18.399461794295096
+        ]
+      ],
+      "expanded": 0,
+      "direct": true,
+      "arrival": 0.4375,
+      "fallback": false,
+      "edgesClear": true
+    }
+  ],
+  "movements": [
+    {
+      "name": "east departure",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.8,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -27.762122236334754,
+          18.11391425398734
+        ],
+        [
+          -27.91853538626536,
+          16.391197785035736
+        ],
+        [
+          -31.17041991083067,
+          18.34391803764796
+        ]
+      ],
+      "goals": [
+        [
+          -26.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -27.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -30.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "east departure",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.8,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -27.76375051887485,
+          18.118386544133987
+        ],
+        [
+          -27.918549538069502,
+          16.391267045410835
+        ],
+        [
+          -31.1841878784148,
+          18.326883121261464
+        ]
+      ],
+      "goals": [
+        [
+          -26.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -27.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -30.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "east all-departed",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 2.2333333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          -25.761059287513604,
+          18.11103709369941
+        ],
+        [
+          -25.918086244995937,
+          16.389015093864554
+        ],
+        [
+          -28.844004713482537,
+          17.73448088698531
+        ]
+      ],
+      "goals": [
+        [
+          -24.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -25.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -28.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "east all-departed",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 2.2333333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0.03333333333333333,
+      "positions": [
+        [
+          -25.789570900869688,
+          18.204243416489113
+        ],
+        [
+          -25.91803849565918,
+          16.388784782359505
+        ],
+        [
+          -28.80800259657935,
+          17.713429142481314
+        ]
+      ],
+      "goals": [
+        [
+          -24.98478471771804,
+          18.399461794295096
+        ],
+        [
+          -25.107181344327863,
+          16.557015860819657
+        ],
+        [
+          -28.34415971771804,
+          18.399461794295096
+        ]
+      ]
+    },
+    {
+      "name": "final formation",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.4833333333333334,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.691848555533745,
+          -18.48354106430395
+        ],
+        [
+          33.07437523372951,
+          -17.030799810170322
+        ],
+        [
+          34.67259977714899,
+          -17.127011670793795
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "final formation",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.5333333333333332,
+      "fallbackCount": 0,
+      "maxStuck": 0.016666666666666666,
+      "positions": [
+        [
+          34.69165698297587,
+          -18.48698890237913
+        ],
+        [
+          33.07984338716297,
+          -17.020237329269868
+        ],
+        [
+          34.62500578823886,
+          -17.409346245647637
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "final grazing case",
+      "lookahead": false,
+      "arrived": true,
+      "seconds": 1.55,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.70810460048435,
+          -18.450926190203806
+        ],
+        [
+          33.17223784255759,
+          -16.853948061837254
+        ],
+        [
+          34.62679175496687,
+          -17.46069615485059
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    },
+    {
+      "name": "final grazing case",
+      "lookahead": true,
+      "arrived": true,
+      "seconds": 1.5833333333333333,
+      "fallbackCount": 0,
+      "maxStuck": 0,
+      "positions": [
+        [
+          34.70730832318541,
+          -18.452571534592995
+        ],
+        [
+          33.17223784255759,
+          -16.853948061837254
+        ],
+        [
+          34.62679175496687,
+          -17.46069615485059
+        ]
+      ],
+      "goals": [
+        [
+          35.453125,
+          -18.8125
+        ],
+        [
+          33.8125,
+          -17.40625
+        ],
+        [
+          35.453125,
+          -17.40625
+        ]
+      ]
+    }
+  ],
+  "limitations": [
+    "Geometry and planner references omit combat, hazards, animation, input dispatch and render feedback.",
+    "Closed/open door states are changed only in isolated CPU model, not runtime or browser.",
+    "makeModel forcibly opens gate and final even though authored winch starts closed; start door remains closed until review explicitly opens it.",
+    "Existing navigation-model passCell differs from live WGSL for closed protected doors: live WALK_OFFSET ignores door masks; physical closed doors still block movement.",
+    "Movement scenarios are scalar reference checks at fixed player anchors, not earned runtime travel.",
+    "Winch timing is translated scalar WGSL at 30/60/120Hz linked to model door state; this is not actual GPU execution or a runtime trigger.",
+    "One of nine coarse final-approach plans returns a shortcut that fails the dense sweep; all fixed-anchor scalar movement scenarios arrive, but no blanket collision-free planner claim is made."
+  ]
+}

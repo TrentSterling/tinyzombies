@@ -1,0 +1,198 @@
+{
+  "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "method": "CPU host buffers, controlled exact production fragments, reference geometry/navigation and static shader/harness checks. No WGSL compilation, GPU execution, full wreck release or gameplay/performance qualification.",
+  "passed": true,
+  "suiteCount": 24,
+  "namedChecks": 1064,
+  "suites": [
+    {
+      "suite": "bot-objective-priority",
+      "passed": true,
+      "checks": 247,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "burnout-fuel",
+      "passed": true,
+      "checks": 18,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "campaign-chain",
+      "passed": true,
+      "checks": 24,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "checkpoint-readback",
+      "passed": true,
+      "checks": 15,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "code-red",
+      "passed": true,
+      "checks": 53,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "code-red-navigation",
+      "passed": true,
+      "checks": 18,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "deadweight",
+      "passed": true,
+      "checks": 59,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "deadweight-navigation",
+      "passed": true,
+      "checks": 23,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "downed-crawl",
+      "passed": true,
+      "checks": 95,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "downed-crawl-fixture",
+      "passed": true,
+      "checks": 11,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "extraction-hardware",
+      "passed": true,
+      "checks": 43,
+      "runtimeSha256": null,
+      "exitCode": 0
+    },
+    {
+      "suite": "extraction-hold",
+      "passed": true,
+      "checks": 80,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "hardware-route",
+      "passed": true,
+      "checks": null,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "heal-validity",
+      "passed": true,
+      "checks": 45,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "last-train",
+      "passed": true,
+      "checks": 62,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "leaper-pin",
+      "passed": true,
+      "checks": 85,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "mercer-restoration",
+      "passed": true,
+      "checks": 29,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "mercer-restoration-regression",
+      "passed": true,
+      "checks": 33,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "mercer-source-blast",
+      "passed": true,
+      "checks": 11,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "mercer-support-lifecycle",
+      "passed": true,
+      "checks": 14,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "navigation",
+      "passed": true,
+      "checks": 24,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "revive-priority",
+      "passed": true,
+      "checks": 56,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "wgsl-logical-grouping",
+      "passed": true,
+      "checks": 19,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    },
+    {
+      "suite": "wgsl-source",
+      "passed": true,
+      "checks": null,
+      "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+      "exitCode": 0
+    }
+  ],
+  "supportCorrection": {
+    "reviewed": true,
+    "checks": 14,
+    "preFixFailsExpectedAssertions": 3,
+    "actualWallVoxels": 128,
+    "removedFootingVoxels": 24,
+    "connectedSurvivors": 104,
+    "result": "First failed-footing transition requeues once; release decision is selected on second frame without another hit. Full wreck mutation is not simulated."
+  },
+  "supplementalPopulationSweep": {
+    "seedCount": 32,
+    "budgetCount": 12,
+    "generatedWorlds": 416,
+    "clearSupplementalFootprints": 256224,
+    "qualifiedBy": "population-scope-equivalence.json",
+    "originalReport": "population-sweep-pre-fix.json"
+  },
+  "sourceBlastLifecycle": {
+    "checks": 11,
+    "result": "Current-frame stamp/reset, chain, 192-entry queue and guard checks passed. No end-to-end GPU destruction/nav assertion."
+  }
+}

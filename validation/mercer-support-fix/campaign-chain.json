@@ -1,0 +1,103 @@
+{
+  "method": "CPU-only exact host save/continue/retry/reset/readback callback, one fresh generated five-chapter checkpoint chain with synthetic victory/carry samples. No objectives, extraction, GPU or ordinary-input gameplay executed.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "fresh Chapter1 begins with no fabricated continuation chain",
+      "passed": true
+    },
+    {
+      "name": "Chapter1 active retry clears sampled transient state without changing entry",
+      "passed": true
+    },
+    {
+      "name": "Chapter1 generated victory saves exact current carry and cumulative totals once",
+      "passed": true
+    },
+    {
+      "name": "Chapter1→2 consumes its generated checkpoint once",
+      "passed": true
+    },
+    {
+      "name": "fresh Chapter1 delayed victory cannot complete unplayed Burnout",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 reload uses only the just-generated persisted chain",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 active retry clears sampled transient state without changing entry",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 generated victory saves exact current carry and cumulative totals once",
+      "passed": true
+    },
+    {
+      "name": "Chapter2→3 consumes its generated checkpoint once",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 reload uses only the just-generated persisted chain",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 active retry clears sampled transient state without changing entry",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 generated victory saves exact current carry and cumulative totals once",
+      "passed": true
+    },
+    {
+      "name": "Chapter3→4 consumes its generated checkpoint once",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 reload uses only the just-generated persisted chain",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 active retry clears sampled transient state without changing entry",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 generated victory saves exact current carry and cumulative totals once",
+      "passed": true
+    },
+    {
+      "name": "Chapter4→5 consumes its generated checkpoint once",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 reload uses only the just-generated persisted chain",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 active retry clears sampled transient state without changing entry",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 generated victory saves exact current carry and cumulative totals once",
+      "passed": true
+    },
+    {
+      "name": "final record contains all generated totals and final removal survives reload",
+      "passed": true
+    },
+    {
+      "name": "final Enter cannot create Chapter6 and same-tab retry restores generated Chapter5 entry",
+      "passed": true
+    },
+    {
+      "name": "repeated final completion with an exact ranking tie keeps original record",
+      "passed": true
+    },
+    {
+      "name": "new campaign preserves generated clear/record history and unrelated keys",
+      "passed": true
+    }
+  ]
+}

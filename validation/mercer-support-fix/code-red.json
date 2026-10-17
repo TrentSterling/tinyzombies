@@ -1,0 +1,228 @@
+{
+  "method": "CPU-only exact host functions, translated scalar WGSL, float32 clock arithmetic and source geometry. No actual shader compilation, GPU execution or earned gameplay.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "shutter needs continuous 2.3-second hold and opens immediately once",
+      "passed": true
+    },
+    {
+      "name": "human shutter hold resets on release",
+      "passed": true
+    },
+    {
+      "name": "human shutter hold resets on pin",
+      "passed": true
+    },
+    {
+      "name": "human shutter hold resets on no-action",
+      "passed": true
+    },
+    {
+      "name": "human shutter hold resets on revive",
+      "passed": true
+    },
+    {
+      "name": "human downed partial hold freezes, while damage alone does not reset",
+      "passed": true
+    },
+    {
+      "name": "bot downed partial hold freezes, while damage alone does not reset",
+      "passed": true
+    },
+    {
+      "name": "ordinary followers near shutter cannot activate it",
+      "passed": true
+    },
+    {
+      "name": "explicit bot order opens shutter and remains valid while alarm is active",
+      "passed": true
+    },
+    {
+      "name": "two operators do not combine partial holds",
+      "passed": true
+    },
+    {
+      "name": "ordered bot hold resets on pin",
+      "passed": true
+    },
+    {
+      "name": "ordered bot hold resets on cancel-order",
+      "passed": true
+    },
+    {
+      "name": "ordered bot hold resets on different-goal",
+      "passed": true
+    },
+    {
+      "name": "ordered bot hold resets on out-of-range",
+      "passed": true
+    },
+    {
+      "name": "nearby human revival prevents ordered operation",
+      "passed": true
+    },
+    {
+      "name": "nearby other-bot revival prevents ordered operation",
+      "passed": true
+    },
+    {
+      "name": "dead other bot does not steal the ordered action",
+      "passed": true
+    },
+    {
+      "name": "dragged other bot does not steal the ordered action",
+      "passed": true
+    },
+    {
+      "name": "at-radius other bot does not steal the ordered action",
+      "passed": true
+    },
+    {
+      "name": "relay takes 1.8 seconds, clears all forced pending waves, retains normal pending and spawned actors",
+      "passed": true
+    },
+    {
+      "name": "ordinary bot relay proximity does not silence; explicit order does",
+      "passed": true
+    },
+    {
+      "name": "relay remains usable when decorative prop is destroyed",
+      "passed": true
+    },
+    {
+      "name": "activation tick 359 uses global pulse phase",
+      "passed": true
+    },
+    {
+      "name": "activation tick 360 uses global pulse phase",
+      "passed": true
+    },
+    {
+      "name": "activation tick 361 uses global pulse phase",
+      "passed": true
+    },
+    {
+      "name": "silencing on pulse tick suppresses same-tick ALARM",
+      "passed": true
+    },
+    {
+      "name": "staging advances the pulse clock before activation",
+      "passed": true
+    },
+    {
+      "name": "pause advances no hold, alarm elapsed, tick phase, or wave",
+      "passed": true
+    },
+    {
+      "name": "human nearest alarm action honors strict radius and revive/drag priority",
+      "passed": true
+    },
+    {
+      "name": "human shutter action uses exact source radius without a decorative LOS dependency",
+      "passed": true
+    },
+    {
+      "name": "old shutter order cannot operate the remote relay",
+      "passed": true
+    },
+    {
+      "name": "silence preserves source FADE transition semantics from phase 1",
+      "passed": true
+    },
+    {
+      "name": "silence preserves source FADE transition semantics from phase 2",
+      "passed": true
+    },
+    {
+      "name": "silence preserves source FADE transition semantics from phase 3",
+      "passed": true
+    },
+    {
+      "name": "dragged patient does not block nearby supplies or ordinary door selection",
+      "passed": true
+    },
+    {
+      "name": "float32 alarm clock has exact one-hour pulse count at 30Hz",
+      "passed": true,
+      "events": 600
+    },
+    {
+      "name": "float32 alarm clock has exact one-hour pulse count at 60Hz",
+      "passed": true,
+      "events": 600
+    },
+    {
+      "name": "float32 alarm clock has exact one-hour pulse count at 120Hz",
+      "passed": true,
+      "events": 600
+    },
+    {
+      "name": "float32 bounded jitter preserves long-run global phase without pulse duplication",
+      "passed": true,
+      "frames": 1000000,
+      "events": 2673,
+      "tickError": -0.0171947218477726
+    },
+    {
+      "name": "near-integer f32 steps retain fractional debt without systematic clock gain",
+      "passed": true,
+      "events": 599,
+      "simulatedSeconds": 3599.9820828437805,
+      "tickError": -0.0064373016357421875
+    },
+    {
+      "name": "fractional boundary carry and zero-dt pause do not repeat an alarm pulse",
+      "passed": true
+    },
+    {
+      "name": "map3 checkpoint now enters CODE RED with entry carry and exact seed/totals",
+      "passed": true
+    },
+    {
+      "name": "Code Red retry and reload restore entry rather than damaged in-run values",
+      "passed": true
+    },
+    {
+      "name": "map4 save persists once and continues to Deadweight",
+      "passed": true
+    },
+    {
+      "name": "pending retry cannot strand Code Red under completion overlay",
+      "passed": true
+    },
+    {
+      "name": "terminal storage failure remains clearly reported and usable in-tab",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 HUD identifies shutter, alarm and emergency red door",
+      "passed": true
+    },
+    {
+      "name": "all source guards include Chapter4 while power and fuel remain chapter-specific",
+      "passed": true
+    },
+    {
+      "name": "X classifies active relay separately at120px and shutter at140px",
+      "passed": true
+    },
+    {
+      "name": "alarm-active extraction retains qualified seal logic with no relay prerequisite",
+      "passed": true
+    },
+    {
+      "name": "complete captured hospital world and final source additions are retained",
+      "passed": true
+    },
+    {
+      "name": "north start, west final door and strict hospital safehouse inset are source-derived",
+      "passed": true
+    },
+    {
+      "name": "fixed allocation/count budgets and audio remain untouched",
+      "passed": true
+    }
+  ]
+}

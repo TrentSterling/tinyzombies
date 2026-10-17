@@ -1,0 +1,94 @@
+{
+  "method": "Exact host geometry/occupancy/fracture metadata plus mechanically adapted current groupClear, support, collapse, world voxel-death, fracture scheduling and inspectGroup8 ground-flood/release-decision fragments. CPU only.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "real Mercer fixture preserves 104 connected survivors after 24 lethal footing hits",
+      "passed": true,
+      "group": 1,
+      "removed": 24,
+      "connectedSurvivors": 104
+    },
+    {
+      "name": "next-frame failed-footing transition requeues Mercer before fracture inspection",
+      "passed": true,
+      "inspectionFrames": [
+        1,
+        2
+      ],
+      "releaseDecision": true
+    },
+    {
+      "name": "failed-footing requeue happens once rather than every later frame",
+      "passed": true,
+      "additionalFrames": 8,
+      "failureTransitions": 1
+    },
+    {
+      "name": "strict 50-percent threshold does not flag or requeue at equality",
+      "passed": true
+    },
+    {
+      "name": "structural group zero and groups with no initial footing cannot requeue",
+      "passed": true
+    },
+    {
+      "name": "Chapter 2 retains prior dirty behavior in controlled scope fixture",
+      "passed": true,
+      "qualification": "Chapter selector on real Mercer group buffers is a negative scope control, not a world-generation claim for this chapter."
+    },
+    {
+      "name": "Chapter 3 retains prior dirty behavior in controlled scope fixture",
+      "passed": true,
+      "qualification": "Chapter selector on real Mercer group buffers is a negative scope control, not a world-generation claim for this chapter."
+    },
+    {
+      "name": "Chapter 4 retains prior dirty behavior in controlled scope fixture",
+      "passed": true,
+      "qualification": "Chapter selector on real Mercer group buffers is a negative scope control, not a world-generation claim for this chapter."
+    },
+    {
+      "name": "Chapter 5 retains prior dirty behavior in controlled scope fixture",
+      "passed": true,
+      "qualification": "Chapter selector on real Mercer group buffers is a negative scope control, not a world-generation claim for this chapter."
+    },
+    {
+      "name": "lab Chapter 1 retains prior dirty behavior in controlled scope fixture",
+      "passed": true
+    },
+    {
+      "name": "lab Chapter 2 retains prior dirty behavior in controlled scope fixture",
+      "passed": true
+    },
+    {
+      "name": "lab Chapter 5 retains prior dirty behavior in controlled scope fixture",
+      "passed": true
+    },
+    {
+      "name": "immutable-parent collapse logic reproduces the original missed notification on current geometry",
+      "passed": true,
+      "qualification": "Exact immutable-parent collapse fragment with current actual Mercer geometry. Parent Mercer itself had no destructible support groups."
+    },
+    {
+      "name": "host dispatch places support and collapse before world, then fracture",
+      "passed": true
+    }
+  ],
+  "sourceHashes": {
+    "clear": "9ba601c270a776737de7e9dd4e3a36074849443a397a16128c35075d3f30d79d",
+    "support": "a0d7707d9bc308f778da44dddf08060dd3ccb796f52601a32f809f27c5cd15a7",
+    "collapse": "6beab414395336157cf37e8d3930947f903d9fa6010b663224eb447e7d6ecc04",
+    "worldDeath": "1eff82c11b421d93a378685768909631886c303ffc25ae44533b62be38f65434",
+    "inspect": "57b91121c9fc3cc5e190ea36867f034a9ad956b2a4059aeb53d944b86efa9095",
+    "fractureUpdate": "404d3efa2c25a7f709c2b7ecf5615f1abde770d43f4ba97f052edcaa390a51a2",
+    "dispatch": "829a99a64e1872a9cca2d8626f83c89d048a78cf536b441f061c0709bfbd3584"
+  },
+  "stubs": [
+    "updatePiece8 is a no-op; fixture contains no preexisting wrecks.",
+    "inspectGroup8 records its real release decision before wreck allocation/mutation; surviving occupancy is not a claim about post-release geometry.",
+    "Event emission and dirty-mesh calls are captured only. Atomics are sequential CPU equivalents.",
+    "World death receives controlled lethal pulses; aim, projectiles and combat are not simulated."
+  ],
+  "limits": "Does not compile/execute WGSL, run full fracture release or wreck physics, rebuild navigation/meshes, render, measure GPU performance, or earn gameplay."
+}

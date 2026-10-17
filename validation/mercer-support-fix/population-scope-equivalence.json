@@ -1,0 +1,14 @@
+{
+  "method": "Exact full-runtime one-fragment inverse; the host/world/population builder and all other runtime bytes are unchanged by this support notification fix. The separately stored sweep ran against the immediately preceding runtime, not this runtime.",
+  "passed": true,
+  "sweptRuntimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "currentRuntimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "onlyRuntimeChange": {
+    "before": "atomicStore(&G[g*4u+2u],1u);atomicAdd(&C[23],1u);",
+    "after": "atomicStore(&G[g*4u+2u],1u);if(u.run.x==1.0&&u.run.y<.5){atomicStore(&G[4096u+g],1u);}atomicAdd(&C[23],1u);"
+  },
+  "qualifications": [
+    "The 32-seed sweep covers unchanged exact host world/population logic.",
+    "It does not test GPU support notification, fracture physics, rendering, or performance."
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "actual source barrel produces one current-frame wall pulse, then resets on repeated active frames",
+      "passed": true,
+      "actualPropIndex": 14,
+      "wallDamageOnExplosionFrame": 60,
+      "postExplosionFrames": 4
+    },
+    {
+      "name": "adjacent chain is fully stamped in the same frame and each prop is queued once",
+      "passed": true,
+      "explosions": 3,
+      "nonexplosiveBreaks": 1,
+      "untouchedDistant": 1
+    },
+    {
+      "name": "maximum 192-entry chain queue never overflows or duplicates IDs",
+      "passed": true,
+      "queueEntries": 192,
+      "maxSlot": 191,
+      "fixture": "Synthetic capacity stress; these positions are not a world-generation claim."
+    },
+    {
+      "name": "multiple direct lethal hits and chain reach do not enqueue duplicates",
+      "passed": true
+    },
+    {
+      "name": "nonexplosive prop break produces no blast pulse",
+      "passed": true
+    },
+    {
+      "name": "strict radius edge and stale-time exclusion for source kind 1",
+      "passed": true,
+      "radius": 3.046875
+    },
+    {
+      "name": "strict radius edge and stale-time exclusion for source kind 2",
+      "passed": true,
+      "radius": 3.59375
+    },
+    {
+      "name": "current-stamped live prop cannot damage walls",
+      "passed": true
+    },
+    {
+      "name": "world consumer is Mercer campaign scoped",
+      "passed": true
+    },
+    {
+      "name": "zero-delta and terminal producer guards preserve state; host pause skips simulation",
+      "passed": true,
+      "qualification": "sourceProps15 early-return does not itself clear C[52]; host pause suppresses all simulation. This test asserts that real guard, not an invented reset."
+    },
+    {
+      "name": "production order stamps source events before wall consumption",
+      "passed": true
+    }
+  ],
+  "method": "Exact current sourceProps15 producer and Mercer source-blast consumer mechanically adapted to JavaScript, with Float32-rounded vector storage and real production host prop fixtures plus explicit synthetic capacity fixtures.",
+  "sourceHashes": {
+    "producer": "fce84a17a8b9ca5e499ce5ea1a58a08d6c04dd513d519970e4210392e5281c24",
+    "consumer": "666db5ee6496f79d05c2ab05ce776e8a4b0b9bbc3e28e8ca6097fab9a9070f94",
+    "dispatch": "829a99a64e1872a9cca2d8626f83c89d048a78cf536b441f061c0709bfbd3584",
+    "drawFrame": "a8fa73993383fab5c590a996501741d8fdcacdfdc5515039b594420220e070d2"
+  },
+  "stubs": [
+    "Event emission is captured only; no particles/audio/rendering.",
+    "Controlled bullet hit records and distant player/team positions; no ray tracing, combat AI, or health-gameplay qualification.",
+    "Sequential Uint32Array operations stand in for atomics; sourceProps15 is a single-invocation producer, but no GPU semantics are tested.",
+    "Consumer returns computed wall damage; full world, fracture, occupancy, dynamic rebuilding and navigation are not executed in this test.",
+    "Pause/order assertions inspect actual host control flow rather than executing a GPU command stream."
+  ],
+  "limitations": [
+    "No WGSL compilation, GPU execution, rendered destruction, achieved gameplay, campaign transition, or hardware performance conclusion.",
+    "Capacity test props use synthetic line positions to exercise the queue, not generated placement or physical collision."
+  ]
+}

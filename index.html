@@ -2763,7 +2763,7 @@ const supportShader=COMMON+`
 const collapseShader=COMMON+`
 @group(0) @binding(1) var<storage,read_write> G:array<atomic<u32>>;
 @group(0) @binding(2) var<storage,read_write> C:array<atomic<u32>>;
-@compute @workgroup_size(64) fn evaluate(@builtin(global_invocation_id) gid:vec3u){let g=gid.x;if(g==0u||g>=${MAX_GROUPS}u){return;}let initial=atomicLoad(&G[g*4u]);let current=atomicLoad(&G[g*4u+1u]);if(initial>0u&&f32(current)<max(1.0,f32(initial)*.50)&&atomicLoad(&G[g*4u+2u])==0u){atomicStore(&G[g*4u+2u],1u);atomicAdd(&C[23],1u);}}
+@compute @workgroup_size(64) fn evaluate(@builtin(global_invocation_id) gid:vec3u){let g=gid.x;if(g==0u||g>=${MAX_GROUPS}u){return;}let initial=atomicLoad(&G[g*4u]);let current=atomicLoad(&G[g*4u+1u]);if(initial>0u&&f32(current)<max(1.0,f32(initial)*.50)&&atomicLoad(&G[g*4u+2u])==0u){atomicStore(&G[g*4u+2u],1u);if(u.run.x==1.0&&u.run.y<.5){atomicStore(&G[4096u+g],1u);}atomicAdd(&C[23],1u);}}
 `;
 const propsShader=COMMON+`
 @group(0) @binding(1) var<storage,read_write> S:State;

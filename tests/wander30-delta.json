@@ -1,0 +1,9 @@
+{
+ "parentSha256": "01bd4c0693ba4bc3cbef3e49ffe1b62a4b6ecaa425f01f46fb9667204325cabe",
+ "changes": [
+  {
+   "before": "if(!awake){let angle=rnd(i*919u+wanderTurn*197u)*6.2831853;dir=vec2f(cos(angle),sin(angle));}",
+   "after": "if(!awake){let angle=rnd(i*919u+wanderTurn*197u)*6.2831853;dir=vec2f(cos(angle),sin(angle));\n  // Wanderers turn away from a wall (each prefers one side) instead of grinding into it for the rest of their 5.5 s heading.\n  let reach=footprint(kind)+.45;for(var t=0u;t<3u;t++){let q=z.p.xz+dir*reach;if(solid(vec3f(q.x,.36,q.y))==0u){break;}dir=select(vec2f(-dir.y,dir.x),vec2f(dir.y,-dir.x),(i&1u)==1u);}}"
+  }
+ ]
+}

@@ -4,7 +4,7 @@ const {loadHost,sha}=require('./deadends-cpu-host.cjs'),{changes,withoutSwizzleA
 const h=loadHost(process.argv[2]||path.join(__dirname,'../index.html')),checks=[];
 function test(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const names=[...h.script.matchAll(/const ([A-Za-z_][A-Za-z_0-9]*Shader)\s*=/g)].map(m=>m[1]);
-test('all 41 composed WGSL modules have no multi-component lvalue assignments',()=>{assert.equal(names.length,41);assert.deepEqual(names.flatMap(name=>multiComponentAssignments(h.run(name)).map(hit=>({name,...hit}))),[]);return{shaders:41};});
+test('all 42 composed WGSL modules have no multi-component lvalue assignments',()=>{assert.equal(names.length,42);assert.deepEqual(names.flatMap(name=>multiComponentAssignments(h.run(name)).map(hit=>({name,...hit}))),[]);return{shaders:42};});
 test('exact six-site inverse recovers the previous runtime without changing JS',()=>{const old=withoutSwizzleAssignmentFix(h.html);assert.equal(sha(old),'85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449');assert.equal(changes.reduce((n,c)=>n+c[2],0),6);return{sites:6};});
 test('negative control catches every previous illegal write',()=>{assert.equal(multiComponentAssignments(withoutSwizzleAssignmentFix(h.html)).length,6);});
 test('guard detects compound/color/parenthesized writes but permits reads and single lanes',()=>{for(const s of ['v.xy=x;','v . rgba += x;','(v.yz) = x;','v.zw<<=x;'])assert.equal(multiComponentAssignments(s).length,1);for(const s of ['v.x=x;','x=v.xy;','v.xy==x;','// v.xy=x;\nx=v.xy;'])assert.equal(multiComponentAssignments(s).length,0);});

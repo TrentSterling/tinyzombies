@@ -1421,9 +1421,9 @@ fn chapterMission13(dt:f32){
  let oldKind=S.mission5.y;let oldIndex=S.mission5.z;S.mission5.y=0.0;S.mission5.z=-1.0;S.objectivePoint.w=999.0;
  let gate=u32(S.chapter13.x);let finalDoor=u32(S.chapter13.y);let gateDone=P[gate].data.y<.5;
  let alarmActive18=u.run.x==4.0&&S.relay.x>.5;
- S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint.xy=select(u.goals.xy,chapterDoor16(u.run.x),gateDone);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x!=2.0){S.cell.w=0.0;}if(alarmActive18){S.objectivePoint.xy=u.goals.zw;}
+ S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint=vec4f(select(u.goals.xy,chapterDoor16(u.run.x),gateDone),S.objectivePoint.zw);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x!=2.0){S.cell.w=0.0;}if(alarmActive18){S.objectivePoint=vec4f(u.goals.zw,S.objectivePoint.zw);}
  var nearestRevive20=90.0/64.0;for(var k=0u;k<3u;k++){let d=distance(S.team7[k].p.xz,S.pos.xz);if(S.team7[k].p.w<=0.0&&S.botLife13[k].y<.5&&S.squad7.y!=f32(k)&&d<nearestRevive20){nearestRevive20=d;S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
- if(!gateDone){if(u.run.x<4.0){interactAt(u.goals.xy,3.0,f32(gate));}if(u.run.x==2.0&&S.cell.w!=1.0&&S.relay.x<.5&&distance(S.pos.xz,u.goals.xy)<950.0/64.0){var best=1e9;for(var k=0u;k<u32(u.worldInfo.y);k++){let q=P[k];if(q.p.w==7.0&&q.aux.x==7.0&&q.data.y!=15.0){let d=distance(q.p.xz,S.pos.xz);if(d<best){best=d;S.objectivePoint.xy=q.p.xz;}}}}}
+ if(!gateDone){if(u.run.x<4.0){interactAt(u.goals.xy,3.0,f32(gate));}if(u.run.x==2.0&&S.cell.w!=1.0&&S.relay.x<.5&&distance(S.pos.xz,u.goals.xy)<950.0/64.0){var best=1e9;for(var k=0u;k<u32(u.worldInfo.y);k++){let q=P[k];if(q.p.w==7.0&&q.aux.x==7.0&&q.data.y!=15.0){let d=distance(q.p.xz,S.pos.xz);if(d<best){best=d;S.objectivePoint=vec4f(q.p.xz,S.objectivePoint.zw);}}}}}
  for(var k=u32(S.rules7.x);k<u32(S.rules7.x+S.rules7.y);k++){if(k==gate||k==finalDoor){continue;}let d=P[k];if(d.data.x>0.0){interactAt(d.p.xz,8.0,f32(k));}}
  for(var k=0u;k<u32(u.worldInfo.y);k++){let p=P[k];if(p.p.w!=7.0||(p.aux.x==7.0&&S.cell.w==1.0)){continue;}if((u32(p.data.y)&1u)==0u&&distance(p.p.xz,S.pos.xz)<78.0/64.0){interactAt(p.p.xz,5.0,f32(k));}}
  let inside=safeHouse13(S.pos.xz);let door=P[finalDoor];let edge=length(max(abs(S.pos.xz-door.p.xz)-door.aux.xz*.5-vec2f(7.0/64.0),vec2f(0)));
@@ -1668,7 +1668,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
   if(kind==2.0){
    if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity*=.05;if(z.combat13.w==0.0){z.special13.z=.8;}}
    else if(z.special13.z>0.0){z.special13.z=max(0.0,z.special13.z-dt);velocity=z.special13.xy*(370.0/64.0);if(z.special13.z==0.0){z.combat13.y=.45;}}
-   else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13.xy=direct;}
+   else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13=vec4f(direct,z.special13.zw);}
   }
   if(kind==5.0){
    if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity=vec2f(0);if(z.combat13.w==0.0){atomicAdd(&C[55],1u);z.combat13.z=19.0;}}
@@ -1677,7 +1677,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
   // Spitter projectile settles into a separately owned acid pool.
   if(kind==3.0&&awake&&sight&&victim<4u&&z.combat13.y<=0.0){
    if(targetDistance<165.0/64.0){velocity-=direct*(75.0/64.0);}else if(targetDistance<510.0/64.0){velocity*=.15;}
-   if(targetDistance>180.0/64.0&&targetDistance<510.0/64.0&&z.combat13.z<=0.0&&z.special13.w<0.0){let jitter=(vec2f(rnd(i+u32(S.aux.x*133.0)),rnd(i+u32(S.aux.x*191.0)))-.5)*60.0/64.0;z.sense13.xy=goalPoint+jitter;z.special13.z=.85;z.special13.w=1.0;z.combat13.z=4.8;}
+   if(targetDistance>180.0/64.0&&targetDistance<510.0/64.0&&z.combat13.z<=0.0&&z.special13.w<0.0){let jitter=(vec2f(rnd(i+u32(S.aux.x*133.0)),rnd(i+u32(S.aux.x*191.0)))-.5)*60.0/64.0;z.sense13=vec4f(goalPoint+jitter,z.sense13.zw);z.special13.z=.85;z.special13.w=1.0;z.combat13.z=4.8;}
   }
   if(kind==4.0){
    if(z.special13.w>=0.0){let who=u32(z.special13.w);var patient=S.pos;var owner=S.flags12.w;if(who>0u){patient=S.team7[who-1u].p;owner=S.botLife13[who-1u].w;}
@@ -1688,7 +1688,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
     for(var who=0u;who<4u;who++){var patient=S.pos;var pinned=S.flags12.w;var grace=S.chapter13.w;if(who>0u){patient=S.team7[who-1u].p;pinned=S.botLife13[who-1u].w;grace=S.botItems13[who-1u].w;}
      if(patient.w>0.0&&pinned==0.0&&S.aux.x>grace&&length(patient.xz-z.p.xz)<44.0/64.0){let claim=atomicCompareExchangeWeak(&C[32],0u,1u);if(claim.exchanged){z.special13.w=f32(who);z.special13.z=0.0;z.combat13.x=.8;atomicMax(&C[array<u32,4>(22u,24u,25u,29u)[who]],i+1u);break;}}
     }if(z.special13.z==0.0&&z.special13.w<0.0){z.combat13.z=4.0;z.combat13.y=.4;}
-   }else if(awake&&sight&&victim<4u&&targetDistance>155.0/64.0&&targetDistance<430.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0&&atomicLoad(&C[32])==0u){z.combat13.w=.8;z.combat13.z=5.0;z.special13.xy=direct;}
+   }else if(awake&&sight&&victim<4u&&targetDistance>155.0/64.0&&targetDistance<430.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0&&atomicLoad(&C[32])==0u){z.combat13.w=.8;z.combat13.z=5.0;z.special13=vec4f(direct,z.special13.zw);}
   }
   // The existing art animation channel mirrors the explicit tell timer.
   z.extraData.w=z.combat13.w;

@@ -1,0 +1,14 @@
+{
+  "name": "tiny-zombies-wgsl-validator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node validate.mjs"
+  },
+  "engines": {
+    "node": ">=24.12"
+  },
+  "dependencies": {
+    "naga-wasm": "30.2.0"
+  }
+}

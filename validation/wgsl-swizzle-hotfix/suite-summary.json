@@ -1,0 +1,165 @@
+{
+  "runtimeSha256": "bf9da228fac672dc349d5508dff3d46d58b3a27e025305868ed39fae8255fafe",
+  "method": "CPU/source suites; actual Naga shader-language validation recorded separately; no GPU/browser startup",
+  "passed": true,
+  "suiteCount": 26,
+  "namedChecks": 1077,
+  "suites": [
+    {
+      "suite": "bot-objective-priority.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 247
+    },
+    {
+      "suite": "burnout-fuel.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 18
+    },
+    {
+      "suite": "campaign-chain.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 24
+    },
+    {
+      "suite": "checkpoint-readback.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 15
+    },
+    {
+      "suite": "code-red-navigation.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 18
+    },
+    {
+      "suite": "code-red.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 53
+    },
+    {
+      "suite": "collapse-bindings.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 4
+    },
+    {
+      "suite": "deadweight-navigation.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 23
+    },
+    {
+      "suite": "deadweight.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 59
+    },
+    {
+      "suite": "downed-crawl-fixture.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 11
+    },
+    {
+      "suite": "downed-crawl.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 95
+    },
+    {
+      "suite": "extraction-hardware.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 43
+    },
+    {
+      "suite": "extraction-hold.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 80
+    },
+    {
+      "suite": "hardware-route.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 0
+    },
+    {
+      "suite": "heal-validity.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 45
+    },
+    {
+      "suite": "last-train.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 62
+    },
+    {
+      "suite": "leaper-pin.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 85
+    },
+    {
+      "suite": "mercer-restoration-regression.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 33
+    },
+    {
+      "suite": "mercer-restoration.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 29
+    },
+    {
+      "suite": "mercer-source-blast.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 11
+    },
+    {
+      "suite": "mercer-support-lifecycle.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 14
+    },
+    {
+      "suite": "navigation.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 24
+    },
+    {
+      "suite": "revive-priority.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 56
+    },
+    {
+      "suite": "wgsl-logical-grouping.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 19
+    },
+    {
+      "suite": "wgsl-source.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 0
+    },
+    {
+      "suite": "wgsl-swizzle-assignment.test.cjs",
+      "exitCode": 0,
+      "passed": true,
+      "checks": 9
+    }
+  ]
+}

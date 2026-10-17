@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449",
+  "runtimeSha256": "bf9da228fac672dc349d5508dff3d46d58b3a27e025305868ed39fae8255fafe",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
@@ -9,5 +9,6 @@
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710",
   "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment.",
   "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065",
-  "startupBindingCorrection": "Collapse shader reads u.run; bind uniform U at binding 0 alongside Groups and C. CPU host-layout regression only; actual GPU startup remains unverified."
+  "startupBindingCorrection": "Collapse shader reads u.run; bind uniform U at binding 0 alongside Groups and C. CPU host-layout regression only; actual GPU startup remains unverified.",
+  "startupSwizzleCorrection": "Six invalid WGSL multi-component lvalue assignments replaced by vec4f(rhs, existing.zw). All 40 composed modules pass Naga parse and semantic validation. Actual device startup remains owner playtest."
 }

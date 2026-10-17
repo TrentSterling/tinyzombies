@@ -1,0 +1,327 @@
+{
+  "method": "Naga WebAssembly parseWgsl followed by validate, CPU-only, exact composed runtime strings from deadends-cpu-host. No GPU execution or pipeline/device validation.",
+  "package": "naga-wasm@30.2.0",
+  "nagaVersion": "30.0.1",
+  "file": "index.html (pre-fix 5e8852d)",
+  "candidateSha256": "85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449",
+  "shadersChecked": 40,
+  "passed": false,
+  "failures": [
+    {
+      "name": "mission5Shader",
+      "bytes": 76840,
+      "sha256": "92c9fc39212f96f0a17659ec5cbed4b691284110c3baa26be1c6c8b636cfded5",
+      "parsed": false,
+      "validated": false,
+      "error": {
+        "kind": "parse",
+        "message": "invalid left-hand side of assignment",
+        "formatted": "error: invalid left-hand side of assignment\n    \u250c\u2500 wgsl:663:40\n    \u2502\n663 \u2502  S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint.xy=select(u.goals.xy,chapterDoor16(u.run.x),gateDone);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x!=2.0){S.cell.w=0.0;}if(alarmActive18){S.objectivePoint.xy=u.goals.zw;}\n    \u2502                                        ^^^^^^^^^^^^^^^^^^^ cannot assign to this expression\n    \u2502\n    = note: WGSL does not support assignments to swizzles\n    = note: consider assigning each component individually\n\n"
+      }
+    },
+    {
+      "name": "zombieShader",
+      "bytes": 60697,
+      "sha256": "de1151aefcb85fcbaec67deb9acde549bd00097c23378e46aae71c5f206de1e3",
+      "parsed": false,
+      "validated": false,
+      "error": {
+        "kind": "parse",
+        "message": "invalid left-hand side of assignment",
+        "formatted": "error: invalid left-hand side of assignment\n    \u250c\u2500 wgsl:520:163\n    \u2502\n520 \u2502    else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13.xy=direct;}\n    \u2502                                                                                                                                                                   ^^^^^^^^^^^^^^ cannot assign to this expression\n    \u2502\n    = note: WGSL does not support assignments to swizzles\n    = note: consider assigning each component individually\n\n"
+      }
+    }
+  ],
+  "shaders": [
+    {
+      "name": "aim3Shader",
+      "bytes": 50939,
+      "sha256": "d0f2464c73ebb5dfec1d8e504880d25342275870fd0c213069c30fa93b9e20c3",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "bullet3Shader",
+      "bytes": 54699,
+      "sha256": "032cb0a98294b6b7b7378da20ca5881f64ebb067cbaf69f23a7e5efeaeedd58a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "beginShader",
+      "bytes": 57460,
+      "sha256": "a52067a98e05c50b4be9e0618b9985467490ab137f502848e6416bb7e5d73b82",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "mission5Shader",
+      "bytes": 76840,
+      "sha256": "92c9fc39212f96f0a17659ec5cbed4b691284110c3baa26be1c6c8b636cfded5",
+      "parsed": false,
+      "validated": false,
+      "error": {
+        "kind": "parse",
+        "message": "invalid left-hand side of assignment",
+        "formatted": "error: invalid left-hand side of assignment\n    \u250c\u2500 wgsl:663:40\n    \u2502\n663 \u2502  S.mission5.x=select(3.0,4.0,gateDone);S.objectivePoint.xy=select(u.goals.xy,chapterDoor16(u.run.x),gateDone);S.goal.x=select(0.0,2.4,gateDone);S.goal.y=S.goal.x;if(u.run.x!=2.0){S.cell.w=0.0;}if(alarmActive18){S.objectivePoint.xy=u.goals.zw;}\n    \u2502                                        ^^^^^^^^^^^^^^^^^^^ cannot assign to this expression\n    \u2502\n    = note: WGSL does not support assignments to swizzles\n    = note: consider assigning each component individually\n\n"
+      }
+    },
+    {
+      "name": "initShader",
+      "bytes": 45104,
+      "sha256": "3c693ee6e1100c3afb1532490fc5a02685fa8d6cd51fe173f642f2e1ccf9beab",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "gridZShader",
+      "bytes": 42750,
+      "sha256": "67ccb652f90e857b748e68c2a1603caff35187a1ff29a80893073e05564ba5b4",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "zombieShader",
+      "bytes": 60697,
+      "sha256": "de1151aefcb85fcbaec67deb9acde549bd00097c23378e46aae71c5f206de1e3",
+      "parsed": false,
+      "validated": false,
+      "error": {
+        "kind": "parse",
+        "message": "invalid left-hand side of assignment",
+        "formatted": "error: invalid left-hand side of assignment\n    \u250c\u2500 wgsl:520:163\n    \u2502\n520 \u2502    else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13.xy=direct;}\n    \u2502                                                                                                                                                                   ^^^^^^^^^^^^^^ cannot assign to this expression\n    \u2502\n    = note: WGSL does not support assignments to swizzles\n    = note: consider assigning each component individually\n\n"
+      }
+    },
+    {
+      "name": "worldShader",
+      "bytes": 46713,
+      "sha256": "e7eb1bbd7d6904712f11f7647e8cad5b5de798298ccd95a783f1d4a34dbfcb36",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "melee8Shader",
+      "bytes": 45107,
+      "sha256": "b1f211beb6b0a278fa672f8f0f17e7cab2ed7ccd9a574c600225064ccef407c8",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "fracture8Shader",
+      "bytes": 50874,
+      "sha256": "230af0c6fc89e9684c1e2aed9cd577e808217c0dcea5786cd39798d9c7446169",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "wreckBoxes8Shader",
+      "bytes": 43513,
+      "sha256": "b5ed0a7a122a9483c0a58053ce36408da6a27a48d6bfe21fe7cdd23dc1b3f803",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "prepareSpawnShader",
+      "bytes": 42754,
+      "sha256": "855c8752bfa32f746de24d0224445783f0dcd2e65f174401657abf242f1d9f87",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "spawnShader",
+      "bytes": 46079,
+      "sha256": "cfffc11fe5294f4ba9e9f4e163a9a13a9182b2ae4dc5e6b0b57bf8a093bbe70b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "fx6Shader",
+      "bytes": 46108,
+      "sha256": "2a1336ade8c82581e060424ab31fe39f48228bc788367b32c3eb6dd6d29bbf34",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "integrateShader",
+      "bytes": 46702,
+      "sha256": "23d504aa2f269db711cbf67469ca88aac8291c366b7b36809dbedee19b3133e4",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "gridPShader",
+      "bytes": 42742,
+      "sha256": "cb83e4ee541bcc3dfec75efbb5ea7be0d2990d2a7438c524a3f6801ea1ae9177",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "solveShader",
+      "bytes": 45941,
+      "sha256": "0f570ca317c53d7c9c97ee13c8c6b47571eda92eda397b442063590d54deaa3a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "boxesShader",
+      "bytes": 67051,
+      "sha256": "680d2092cdecdc347fa4a0aac145e5c8052978cecbf5cab0131ae983c69afa77",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "finalizeShader",
+      "bytes": 42533,
+      "sha256": "95dacb972c7fc8b9f74aefb826ee76c67f935f3a2d69811c44d336f7b3e2fada",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "buddyShader",
+      "bytes": 75876,
+      "sha256": "7c906cde644803b4cf6ac7c7a1f0ed942897ad116c8ea200ba8ae57768b9fc1f",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "squadNav7Shader",
+      "bytes": 50969,
+      "sha256": "ed8729b8abfb0cc3e0f095e3bd790fb18da112d34aac96f5c64fcba2e3b948f5",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "doors7Shader",
+      "bytes": 45950,
+      "sha256": "71c3730f66e0870c1e0be434508b7dedf2a8bad86eeb05dd957238335b9aae78",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "crowdShader",
+      "bytes": 45731,
+      "sha256": "7aa3ec75a96fdd1b6f016ee2fc3da299f8163aa77128aa329190d14ff14bd442",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "dynamicShader",
+      "bytes": 43187,
+      "sha256": "85485c72e6ed0bd0c742cb131c19481c03f793d4269829b117922d5c3e74d794",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "lightsShader",
+      "bytes": 44356,
+      "sha256": "dfd57a6a9df22987f01f2b2217c8304022726cbb35c38c6ec8e31b1580c7abed",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "lightTilesShader",
+      "bytes": 543,
+      "sha256": "bc5df3a2e498735a76a7248d486b0e9edc2d5af4d636d54ab14d89a74988ed9a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "navInitShader",
+      "bytes": 44360,
+      "sha256": "0c87e6a048c051dd10018f920ae9f99e184f6ab8feb39eb5f98e095e81bcd2e4",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "navRelaxShader",
+      "bytes": 43053,
+      "sha256": "513c211550376bae97189b9dbc53f80468d94a36b4d3676361a162d74752349e",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "groupClearShader",
+      "bytes": 42501,
+      "sha256": "9624245204903cf21e54542dba2b769fe2bc3566e1acf832c9a4ea44bb570c97",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "supportShader",
+      "bytes": 42652,
+      "sha256": "9917c8401c441f20c52e4475d6b3263668a9e4ad558328a03555f6b6ebca3ed6",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "collapseShader",
+      "bytes": 42824,
+      "sha256": "a33f3d8f940960ff8442271340e1688240f5dcc2a2be293c28f25f7a0da2227e",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "propsShader",
+      "bytes": 48468,
+      "sha256": "9cdb15dca8eae646b6cd51cce4fbd331c94c64d4678d136a712c9c492a7084fa",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "dripShader",
+      "bytes": 42930,
+      "sha256": "76cfd3ccd06188584062526040ecfc78a0f7a63306ad6e4bb3b0b0ee08c9d39b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "meshResetShader",
+      "bytes": 42709,
+      "sha256": "70939811dbe4e0a1d6decb74b3a01cdeb01379eb57749962e60330ac3ba9ad3e",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "meshShader",
+      "bytes": 43748,
+      "sha256": "fed01f1026cba28ee6491d7be9547d1d9e0b61567b88d7bda3e9130a5899e16b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "faceBuildShader",
+      "bytes": 44193,
+      "sha256": "b83b72ca593efa00748290bebb4e140482691809fe123cbaa98833dfd12340f7",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "faceFinalizeShader",
+      "bytes": 42506,
+      "sha256": "7dae4ca65e8f48e2234ce00b5f16017b87db70b8f97e1496c1481bdd040839d8",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "renderShader",
+      "bytes": 53881,
+      "sha256": "71c039f16dc3b61fbdd7bcf40a0c273ff97a2bfba4137f26c35df2c488e935fa",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "postShader",
+      "bytes": 941,
+      "sha256": "5c9823c9249b9f6e6d636c748c6eed105003f00f72cf9c3448356b2bbf7be997",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "uiShader",
+      "bytes": 6917,
+      "sha256": "83169c88c13b9f31865f3d175bf013617a2c3553c7fd5d1fd69bf72458683244",
+      "parsed": true,
+      "validated": true
+    }
+  ]
+}

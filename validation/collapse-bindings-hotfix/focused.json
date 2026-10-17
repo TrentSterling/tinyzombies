@@ -1,0 +1,24 @@
+{
+  "method": "Exact production host builder with a strict CPU fixture for the collapse layout; source-use guard and old-host negative control. Not GPU reflection, compilation or browser startup.",
+  "runtimeSha256": "85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449",
+  "passed": true,
+  "checks": [
+    {
+      "name": "collapse entry point directly uses the uniform and both storage bindings",
+      "passed": true
+    },
+    {
+      "name": "only one host uniform entry differs from the released runtime",
+      "passed": true
+    },
+    {
+      "name": "actual buildComputeBindings binds U, Groups and C and repeats safely",
+      "passed": true,
+      "computePipelinesConstructed": 37
+    },
+    {
+      "name": "negative control reproduces the reported two-versus-three-entry failure",
+      "passed": true
+    }
+  ]
+}

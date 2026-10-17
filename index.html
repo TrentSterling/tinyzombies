@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:#0b1b22;color:#e1e9d2;font:16px/1.65 ui-monospace,monospace;z-index:2}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:#0b1b22;color:#e1e9d2;font:16px/1.65 ui-monospace,monospace;z-index:2}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
 </style></head><body><canvas id="game" tabindex="0" aria-label="Tiny Zombies compute prototype"></canvas><div id="boot"><h1>TINY ZOMBIES</h1><p>Preparing the quiet HUD and squad...</p></div><noscript>This game requires JavaScript and WebGPU.</noscript><script>
 /* TINY ZOMBIES — NO ONE LEFT / V9 — QUIET HUD
    Native WebGPU/WGSL. No libraries, fetches, image assets, or WASM. CPU authors the sparse world; GPU owns runtime entities and mission decisions.
@@ -3573,11 +3573,21 @@ function uiQuad9(x,y,w,h,c,code=128,p=0,q=0){
  if(glyphCount>=2048||w<=0||h<=0||!Number.isFinite(x+y+w+h))return;
  let i=glyphCount++*12;glyphFloats.set([x,y,w,h,...c],i);glyphInts[i+8]=code;glyphInts[i+9]=p;glyphInts[i+10]=q;
 }
-function rect(x,y,w,h,c){uiQuad9(x,y,w,h,c);}
+function rect(x,y,w,h,c){if(hud2d30){const s=hudScale30,ctx=hud2d30;ctx.fillStyle='rgba('+Math.round(c[0]*255)+','+Math.round(c[1]*255)+','+Math.round(c[2]*255)+','+(c[3]??1)+')';ctx.fillRect(x*s,y*s,w*s,h*s);return;}uiQuad9(x,y,w,h,c);}
 // A small, original SDF atlas generated from rasterized glyph outlines, not a downloaded font.
 // Text remains in the same WebGPU instance pass as every other HUD primitive.
-function textWidth9(str,px=17){let w=0,unit=px/32;for(const ch of String(str)){let v=ch.charCodeAt(0);w+=(FONT_ADV9[v<128?v:63]||20)*unit;}return w;}
+function textWidth9(str,px=17){if(hud2d30){const key=px.toFixed(2)+'|'+str;let w=textWidths30.get(key);if(w===undefined){hud2d30.font=fontFor30(px);w=hud2d30.measureText(String(str)).width/hudScale30;if(textWidths30.size>4000)textWidths30.clear();textWidths30.set(key,w);}return w;}let w=0,unit=px/32;for(const ch of String(str)){let v=ch.charCodeAt(0);w+=(FONT_ADV9[v<128?v:63]||20)*unit;}return w;}
+// Crisp HUD text: drawn on a 2D overlay at device resolution with real fonts, so it never inherits the WebGPU canvas's
+// render scale. Panels, rings, the map and markers stay on the GPU. Without a 2D context (tests, odd browsers) the SDF glyphs remain.
+let hud2d30=null,hudScale30=1;const textWidths30=new Map();
+function initHud2d30(){try{const c=document.createElement('canvas');c.id='hud2d';c.setAttribute('aria-hidden','true');document.body.appendChild(c);hud2d30=c.getContext('2d');document.fonts?.addEventListener?.('loadingdone',()=>textWidths30.clear());}catch(e){hud2d30=null;}}
+function sizeHud2d30(){const c=hud2d30.canvas,dpr=Math.min(2,window.devicePixelRatio||1),w=Math.max(1,Math.round((c.clientWidth||innerWidth)*dpr)),h=Math.max(1,Math.round((c.clientHeight||innerHeight)*dpr));
+ if(c.width!==w||c.height!==h){c.width=w;c.height=h;textWidths30.clear();}hudScale30=w/Math.max(1,width);hud2d30.clearRect(0,0,w,h);}
+function fontFor30(px){const display=px>=24*clamp9(height/900,.72,1.15);return display?Math.round(px*hudScale30*1.08)+'px Bangers,Impact,"Arial Black",sans-serif':'700 '+Math.round(px*hudScale30*.94)+'px Rubik,"Segoe UI",system-ui,sans-serif';}
 function text(str,x,y,px=17,col=[.89,.94,.93,1]){
+ if(hud2d30){const ctx=hud2d30,s=hudScale30,a=col[3]??1;str=String(str);ctx.font=fontFor30(px);ctx.textBaseline='middle';ctx.lineJoin='round';
+  ctx.lineWidth=Math.max(2,px*s*.16);ctx.strokeStyle='rgba(3,9,12,'+(.88*a)+')';ctx.strokeText(str,x*s,(y+px*.75)*s);
+  ctx.fillStyle='rgba('+Math.round(col[0]*255)+','+Math.round(col[1]*255)+','+Math.round(col[2]*255)+','+a+')';ctx.fillText(str,x*s,(y+px*.75)*s);return;}
  let pen=x,unit=px/32,gs=48*unit;
  for(const ch of String(str)){
   let cc=ch.charCodeAt(0),code=cc<128?cc:63;
@@ -3632,6 +3642,26 @@ function calloutsHUD30(k){
  if(callout30.chainBurst>=2&&time-callout30.chainAt<1.6){const s='CHAIN x'+callout30.chainBurst,px=24*k;text(s,width/2-textWidth9(s,px)/2,height*.24+40*k,px,COL9.red);}
 }
 function waitingNeighbors30(){let n=0;for(let c=0;c<CIV_MAX30;c++)if(Math.round(playerValues[CIV_STATE30+c*4+2])===1)n++;return n;}
+function pill30(label,cx,cy,px,col){const tw=textWidth9(label,px),w=tw+px*1.8,h=px*1.9,x=cx-w/2,y=cy-h/2,b=Math.max(2,px*.09);
+ rect(x,y,w,h,[.03,.08,.10,.92]);rect(x,y,w,b,col);rect(x,y+h-b,w,b,col);rect(x,y,b,h,col);rect(x+w-b,y,b,h,col);text(label,cx-tw/2,cy-px*.75,px,col);}
+function titleCard30(k){
+ panel9(width*.2,height*.18,width*.6,height*.62,.84);rect(width*.2,height*.18,width*.6,5*k,COL9.gold);
+ centre('TINY ZOMBIES',height*.215,78*k,COL9.white);centre('MAPLE STREET',height*.345,32*k,COL9.violet);
+ centre('Population: declining. Property values: worse.',height*.415,15*k,COL9.soft);
+ pill30('CLICK TO PLAY',width/2,height*.515,22*k,COL9.gold);
+ centre('Rescue your neighbors. Drop the houses on everyone else.',height*.6,15*k,COL9.white);
+ centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit',height*.655,13*k,COL9.soft);
+ centre('Press ? for all controls',height*.7,12*k,COL9.soft);
+}
+function evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}
+function evacCard30(k){
+ const total=world.civilians30?.length||0,saved=counters[29]|0,lost=counters[25]|0,t=Math.round(playerValues[24]||0);
+ panel9(width*.24,height*.2,width*.52,height*.6,.92);rect(width*.24,height*.2,width*.52,5*k,COL9.green);
+ centre('MAPLE STREET EVACUATED',height*.235,44*k,COL9.green);centre(saved+' / '+total+' NEIGHBORS SAVED',height*.35,34*k,COL9.gold);
+ centre(fmt(counters[0])+' put down   /   '+(counters[34]|0)+' crushed   /   '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0'),height*.455,16*k,COL9.white);
+ centre(evacQuip30(saved,lost,total),height*.52,15*k,COL9.soft);
+ pill30('ENTER   NEXT STREET',width/2,height*.635,20*k,COL9.gold);centre('N twice   New run',height*.715,12*k,COL9.soft);
+}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -3661,7 +3691,7 @@ function drawLoadout25(k,eq){
  }
 }
 function hud(){
- glyphCount=0;
+ glyphCount=0;if(hud2d30)sizeHud2d30();
  const choosing=playerValues[464]>.5,won=playerValues[67]===1||completedBoundary15,dead=playerValues[67]===2;
  const k=clamp9(height/900,.72,1.15),clock=playerValues[24]||0,active=settings.started&&!choosing&&!won&&!dead;
  const eq=Math.round(playerValues[L12.gear]||0),gun=Math.round(playerValues[L12.gear+3]||0),gs=gun===0&&(playerValues[L13.upgrades]&1)?{clip:14,reload:1.55}:gun===1&&(playerValues[L13.upgrades]&2)?{clip:8,reload:.34}:GUN12[gun],hp=clamp9((playerValues[3]||0)/100,0,1),ammo=Math.round(playerValues[L12.mag+gun]||0),cap=gs.clip,reload=playerValues[L12.reload]||0,rd=gs.reload;
@@ -3777,7 +3807,8 @@ function hud(){
   a.forEach((v,i)=>text(v,x,y+i*23*k,fs,i===0?COL9.gold:COL9.soft));
  }
  if(settings.demo&&active&&!settings.tactical&&!settings.hideUI){text('Auto demo',12*k,height-29*k,12*k,COL9.soft);}
- if(!settings.started&&!completedBoundary15){
+ if(!settings.started&&!completedBoundary15&&SANDBOX25){titleCard30(k);}
+ else if(!settings.started&&!completedBoundary15){
   panel9(width*.23,height*.27,width*.54,height*.45,.78);
   centre('TINY ZOMBIES',height*.30,46*k,COL9.white);
   centre(SANDBOX25?'MAPLE STREET':'NO ONE LEFT',height*.378,18*k,COL9.violet);
@@ -3810,7 +3841,8 @@ function hud(){
   centre('Overrun',height*.344,51*k,COL9.red);
   centre('Backspace  Retry     N twice  New run',height*.502,17*k,COL9.white);
  }
-  if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
+  if(won&&SANDBOX25){evacCard30(k);}
+  else if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
    centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
@@ -3938,7 +3970,7 @@ async function main(){
  const features=adapter.features.has('timestamp-query')?['timestamp-query']:[];
  device=await adapter.requestDevice({requiredFeatures:features});
  device.addEventListener('uncapturederror',e=>fail(e.error));device.lost.then(info=>{if(!stopped)fail(new Error('WebGPU device lost: '+info.reason+' / '+info.message));});
- context=canvas.getContext('webgpu');if(!context)throw new Error('Could not create GPUCanvasContext.');const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque'});
+ context=canvas.getContext('webgpu');initHud2d30();if(!context)throw new Error('Could not create GPUCanvasContext.');const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque'});
  U=buf('uniforms',400,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST);
  C=storage('counters',384);S=storage('GPU player and weapons',16384);
  zA=storage('zombies A',MAX_Z*ZOMBIE_BYTES13);zB=storage('zombies B',MAX_Z*ZOMBIE_BYTES13);

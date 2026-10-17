@@ -19,6 +19,10 @@ Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandb
 
 `node tests/sandbox26.test.cjs` checks start-up, rerolls, objective reachability on 16 seeds, the announcer and the evacuation flow. Gameplay and GPU behaviour need an owner playtest.
 
+## Drop the building on them
+
+Collapsing walls and buildings now crush infected. Any heavy wreck piece that is falling or flung marks the ground under it, and infected standing there die the same way they do under a dropped slab. In the sandbox a burst of crushes shows CRUSHED x12 in the middle of the screen, chained barrel and pump explosions show CHAIN x3, and the evacuation card counts the crushed. Breaking things is also loud now: a frame that breaks ten or more voxels makes a noise at the break, from 10 m for a chunk to 38 m for a collapse, and the horde comes to see.
+
 ## Neighbors to rescue (sandbox)
 
 Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.

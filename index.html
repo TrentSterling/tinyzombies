@@ -1527,6 +1527,9 @@ fn chapterMission13(dt:f32){
   return;
  }
  if(dt<=0.0||S.goal.w>0.0||u.config.z<.5){return;}
+ // Breaking things is loud: 10+ voxels broken in a frame make a noise at their centroid, 10 m for a chip, up to 38 m for a collapse.
+ let broke30=atomicExchange(&C[45],0u);let sumX30=atomicExchange(&C[37],0u);let sumZ30=atomicExchange(&C[40],0u);
+ if(u.run.x>5.0&&u.run.y<.5&&broke30>=10u){let at=vec2f(f32(sumX30),f32(sumZ30))/f32(broke30)-vec2f(96.0)+.5;let loud=clamp(10.0+f32(broke30)*.12,10.0,38.0);if(S.noise.z<=0.0||loud>=S.noise.w*.8){S.noise=vec4f(at,3.0,loud);}}
  if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}if(u.run.x<=5.0){chapterMission13(dt);return;}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);S.orders.w=max(0.0,S.orders.w-dt);
  if(u.controls.x<.5){S.lastInput.w=0.0;}
@@ -1755,6 +1758,8 @@ if(S.tools.y>.20){let delta=S.tools.zw-z.p.xz;let d=length(delta);if(d<6.0){velo
    if((kind==2.0||kind==5.0)&&z.combat13.w>0.0){z.combat13.w=0.0;z.special13.z=0.0;z.combat13.y=1.05;z.combat13.z=max(z.combat13.z,select(3.5,5.0,kind==5.0));}atomicAdd(&C[33],1u);
   }
 for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==4.0&&pr.data.x>0.0&&pr.data.y==2.0&&pr.more.y<-.7&&pr.p.y-pr.aux.y*.5<1.1&&all(abs(pr.p.xz-z.p.xz)<pr.aux.xz*.5+vec2f(.2))){damage+=200.0;atomicAdd(&C[34],1u);}}
+  // Collapses crush the horde: crush30 marks the 0.5 m cells under falling heavy wreckage with bit 28.
+  if((atomicLoad(&O[DYNAMIC_OFFSET+dynCell(z.p.xz)])&0x10000000u)!=0u){damage+=200.0;atomicAdd(&C[34],1u);}
  var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,.36,p.z);let tz=vec3f(p.x,.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
  if(!blocked(tx,h)){p.x=tx.x;}let tz2=vec3f(p.x,.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}
    if(kind==4.0&&z.special13.z>0.0&&stuck){z.special13.z=0.0;z.combat13.y=.4;z.combat13.z=4.0;}if(kind==2.0&&z.special13.z>0.0&&stuck){z.special13.z=0.0;z.combat13.y=.9;}
@@ -1815,7 +1820,7 @@ fn dirtyAt(p:vec3f){let c=vec2i(floor((p.xz+HALF)/4.0));for(var k=0u;k<5u;k++){l
  // Source barrels/pumps use Prop kind 10 and the exact explosion-frame stamp.
  if(u.run.x==1.0&&u.run.y<.5&&atomicLoad(&C[52])>0u){for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==10.0&&pr.data.x<=0.0&&pr.more.w==S.aux.x&&(pr.more.x==1.0||pr.more.x==2.0)){let delta=b.p.xyz-vec3f(pr.p.x,.4,pr.p.z);let r=select(195.0,230.0,pr.more.x==2.0)/64.0;if(length(delta)<r){damage+=60.0;impulse=normalize(delta+vec3f(.001,.4,0))*9.0;}}}}
  if(u.run.x==1.0&&u.run.y<.5&&g==0u){damage=0.0;}
- if(damage>0.0){b.p.w-=damage;if(b.p.w<=0.0){if(g>0u){atomicStore(&Groups[4096u+g],1u);}b.p.w=0.0;O[u32(b.extraData.y)]=0u;dirtyAt(b.p.xyz);atomicAdd(&C[9],1u);if(melee){atomicAdd(&C[95],1u);}if(heHurt){atomicAdd(&C[43],1u);}if(pressure>=5u){atomicAdd(&C[20],1u);}let color=select(select(vec3f(.40,.46,.43),vec3f(.5,.30,.14),b.extraData.x==1.0),vec3f(.23,.29,.29),b.extraData.x==4.0);event(b.p.xyz,impulse,color,1u,1u,i*51u+atomicLoad(&C[18]));}}
+ if(damage>0.0){b.p.w-=damage;if(b.p.w<=0.0){if(g>0u){atomicStore(&Groups[4096u+g],1u);}b.p.w=0.0;O[u32(b.extraData.y)]=0u;dirtyAt(b.p.xyz);atomicAdd(&C[9],1u);atomicAdd(&C[37],u32(b.p.x+96.0));atomicAdd(&C[40],u32(b.p.z+96.0));atomicAdd(&C[45],1u);if(melee){atomicAdd(&C[95],1u);}if(heHurt){atomicAdd(&C[43],1u);}if(pressure>=5u){atomicAdd(&C[20],1u);}let color=select(select(vec3f(.40,.46,.43),vec3f(.5,.30,.14),b.extraData.x==1.0),vec3f(.23,.29,.29),b.extraData.x==4.0);event(b.p.xyz,impulse,color,1u,1u,i*51u+atomicLoad(&C[18]));}}
  if(b.p.w>0.0){atomicAdd(&C[17],1u);}W[i]=b;
 }
 `;
@@ -2368,6 +2373,16 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);
 }
 `;
+// Falling heavy wreckage (6+ voxels, dropping or flung, bottom below 1.2 m) marks the dynamic cells under it; infected there are crushed.
+const crush30Shader=COMMON+`
+@group(0) @binding(1) var<storage,read> Wr:array<Wreck8>;
+@group(0) @binding(2) var<storage,read_write> O:array<atomic<u32>>;
+@compute @workgroup_size(64) fn crush(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=256u){return;}let w=Wr[i];
+ if(w.p.w<.5||w.extent.w<6.0||w.misc.x>=.7){return;}let falling=w.v.y< -1.5||length(w.v.xyz)>4.0;if(!falling||w.p.y-w.extent.y>1.2){return;}
+ let lo=clamp(vec2i(floor((w.p.xz-w.extent.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let hi=clamp(vec2i(floor((w.p.xz+w.extent.xz+HALF)*2.0)),vec2i(0),min(vec2i(DYNAMIC_GRID-1),lo+vec2i(15)));
+ for(var z=lo.y;z<=hi.y;z++){for(var x=lo.x;x<=hi.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],0x10000000u);}}
+}
+`;
 const finalizeShader=COMMON+`
 @group(0) @binding(1) var<storage,read_write> C:array<atomic<u32>>;
 @group(0) @binding(2) var<storage,read_write> D:array<u32>;
@@ -2911,7 +2926,7 @@ fn sourceProps15(){
   let id=pending[head];head++;var p=P[id];let boom=p.more.x==1.0||p.more.x==2.0;
   p.data.y=.5;p.more.w=select(-1.0,S.aux.x,boom);P[id]=p;for(var k=0u;k<3u;k++){S.team7[k].pathInfo.z=0.0;}
   event(p.p.xyz,vec3f(0,select(3.0,6.0,boom),0),select(vec3f(.40,.35,.28),vec3f(1,.3,.025),boom),select(5u,2u,boom),select(18u,96u,boom),id*153u+atomicLoad(&C[18]));
-  if(!boom){continue;}atomicAdd(&C[52],1u);let r=select(195.0,230.0,p.more.x==2.0)/64.0;let damage=select(360.0,430.0,p.more.x==2.0);
+  if(!boom){continue;}atomicAdd(&C[52],1u);atomicAdd(&C[46],1u);let r=select(195.0,230.0,p.more.x==2.0)/64.0;let damage=select(360.0,430.0,p.more.x==2.0);
   if(p.more.x==2.0){let ix=u32(S.fxControl.x)%16u;S.heat6[ix]=vec4f(p.p.xz,135.0/64.0,S.aux.x+11.0);S.heatLife15[ix]=11.0;S.fxControl.x=f32((ix+1u)%16u);}
   for(var who=0u;who<4u;who++){var q=S.pos;var inv=S.feedback.z;var dead=S.goal.w==2.0;if(who>0u){q=S.team7[who-1u].p;inv=S.team7[who-1u].vital.y;dead=S.botLife13[who-1u].y>.5;}let d=distance(q.xz,p.p.xz);if(!dead&&inv<=0.0&&d<r*.65){let amount=20.0*(1.0-d/r);if(who==0u){if(S.player7.x>0.0){S.player7.x=max(.0001,S.player7.x-amount*.2);}else{S.pos.w=max(0.0,S.pos.w-amount);}S.feedback.z=.37;}else{let k=who-1u;if(q.w<=0.0){S.botLife13[k].x=max(.0001,S.botLife13[k].x-amount*.2);}else{S.team7[k].p.w=max(0.0,q.w-amount);}S.team7[k].vital.y=.37;}}}
   for(var j=0u;j<u32(u.worldInfo.y);j++){var q=P[j];if(q.data.x<=0.0||distance(q.p.xz,p.p.xz)>=r){continue;}if(q.p.w==10.0&&q.more.z>0.0){q.data.x=max(0.0,q.data.x-damage);P[j]=q;if(q.data.x==0.0&&tail<192u){pending[tail]=j;tail++;}}else if(q.p.w==9.0&&q.more.z<.5){q.data.x=max(0.0,q.data.x-damage);P[j]=q;}}
@@ -3486,7 +3501,7 @@ function buildComputeBindings(){
  bindings.integrate=bg(compute.integrate,[[0,U],[1,pA],[2,pB],[3,O],[4,Paint],[5,WP],[6,C],[7,S],[8,Props]]);
  bindings.gridP=bg(compute.gridP,[[0,U],[1,pB],[2,pHeads],[3,pNext]]);
  bindings.solve=bg(compute.solve,[[0,U],[1,pB],[2,pA],[3,pHeads],[4,pNext],[5,C],[6,O]]);
- bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));bindings.civilians30=[zA,zB].map(z=>bg(compute.civilians30,[[0,U],[1,S],[2,C],[3,z],[4,zHeads],[5,O],[6,Props]]));
+ bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));bindings.crush30=device.createBindGroup({layout:compute.crush30.getBindGroupLayout(0),entries:[{binding:1,resource:{buffer:Fracture,offset:F8.pieces*4,size:WRECK_MAX8*F8.stride*4}},{binding:2,resource:{buffer:O}}]});bindings.civilians30=[zA,zB].map(z=>bg(compute.civilians30,[[0,U],[1,S],[2,C],[3,z],[4,zHeads],[5,O],[6,Props]]));
  bindings.finalize=bg(compute.finalize,[[1,C],[2,drawArgs]]);
  bindings.navInit=bg(compute.navInit,[[1,S],[2,O],[3,NavA]]);
  bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);
@@ -3602,6 +3617,16 @@ function neighborsHUD30(k){
  if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
  for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
 }
+// Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.
+const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};
+function calloutsHUD30(k){
+ const crushed=counters[34]|0,chain=counters[46]|0;
+ if(crushed<callout30.crushed||chain<callout30.chain)Object.assign(callout30,{crushed,chain,crushBurst:0,chainBurst:0});
+ if(crushed>callout30.crushed){callout30.crushBurst=time-callout30.crushAt<1.5?callout30.crushBurst+crushed-callout30.crushed:crushed-callout30.crushed;callout30.crushAt=time;callout30.crushed=crushed;}
+ if(chain>callout30.chain){callout30.chainBurst=time-callout30.chainAt<1.5?callout30.chainBurst+chain-callout30.chain:chain-callout30.chain;callout30.chainAt=time;callout30.chain=chain;}
+ if(callout30.crushBurst>=2&&time-callout30.crushAt<1.6){const s='CRUSHED x'+callout30.crushBurst,px=(26+Math.min(14,callout30.crushBurst))*k;text(s,width/2-textWidth9(s,px)/2,height*.24,px,COL9.gold);}
+ if(callout30.chainBurst>=2&&time-callout30.chainAt<1.6){const s='CHAIN x'+callout30.chainBurst,px=24*k;text(s,width/2-textWidth9(s,px)/2,height*.24+40*k,px,COL9.red);}
+}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -3652,6 +3677,7 @@ function hud(){
   rect(cx-38*k,cy+r+39*k,76*k,3*k,COL9.dim);rect(cx-38*k,cy+r+39*k,76*k*clamp9(playerValues[L12.items+3]/100,0,1),3*k,COL9.green);
   if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,12*k)/2,cy+r+67*k,12*k,COL9.gold);
   drawLoadout25(k,eq);
+  if(SANDBOX25)calloutsHUD30(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
@@ -3780,7 +3806,7 @@ function hud(){
  }
   if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
-   centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
+   centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
    else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
    if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
@@ -3833,7 +3859,7 @@ function runSimulation(enc,beginExtra={}){
  pass(enc,'bullet3',bindings.bullet3[zParity],36);
  pass(enc,'doors7',bindings.doors7[zParity],1);
  pass(enc,'props',bindings.props,1);pass(enc,'fx6',bindings.fx6,1);
- enc.clearBuffer(O,DYNAMIC_OFFSET*4,DYNAMIC_SIZE*4);pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));
+ enc.clearBuffer(O,DYNAMIC_OFFSET*4,DYNAMIC_SIZE*4);pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));pass(enc,'crush30',bindings.crush30,4);
  pass(enc,'zombies',bindings.zombies[zParity],liveGroups25());zParity=1-zParity;
  for(let it=0;it<2;it++){enc.clearBuffer(zHeads);pass(enc,'gridZ',bindings.gridZ[zParity],liveGroups25());pass(enc,'crowd',bindings.crowd[zParity],liveGroups25(),it===1?stamp(null,3):{});zParity=1-zParity;}
  pass(enc,'groupClear',bindings.groupClear,Math.ceil(MAX_GROUPS/64),stamp(4,null));pass(enc,'support',bindings.support,Math.ceil(world.count/64));pass(enc,'collapse',bindings.collapse,Math.ceil(MAX_GROUPS/64));
@@ -3921,7 +3947,7 @@ async function main(){
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
  await cp('melee8',melee8Shader);await cp('fracture8',fracture8Shader);await cp('wreckBoxes8',wreckBoxes8Shader);await cp('aim3',aim3Shader);await cp('bullet3',bullet3Shader);await cp('buddy',buddyShader);await cp('squadNav7',squadNav7Shader);await cp('doors7',doors7Shader);await cp('crowd',crowdShader);await cp('dynamic',dynamicShader);await cp('lights',lightsShader);await cp('lightTiles',lightTilesShader);
- await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');await cp('civilians30',civilians30Shader);await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
+ await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');await cp('civilians30',civilians30Shader);await cp('crush30',crush30Shader,'crush');await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
  await cp('fx6',fx6Shader);await cp('mission5',mission5Shader);await cp('begin',beginShader,'begin');await cp('init',initShader,'init');await cp('gridZ',gridZShader,'grid');await cp('world',worldShader);await cp('zombies',zombieShader);await cp('prepare',prepareSpawnShader,'prepare');await cp('spawn',spawnShader,'spawn');await cp('integrate',integrateShader,'integrate');await cp('gridP',gridPShader,'grid');await cp('solve',solveShader,'solve');await cp('boxes',boxesShader,'build');await cp('finalize',finalizeShader,'finish');
  boot.querySelector('p').textContent='Building the voxel renderer...';
  const rm=renderModule25=await shader('voxel renderer',renderShader),pm=await shader('tone map',postShader),um=await shader('GPU glyphs',uiShader);
@@ -3955,7 +3981,7 @@ async function main(){
   async inspectBuffers(){return {chunks:Array.from(new Uint32Array(await readBuffer(Chunks))),supports:Array.from(new Uint32Array(await readBuffer(Groups))),blood:Array.from(new Uint32Array(await readBuffer(Paint)))}}});
  window.__TINY_READY__=true;frameCallback=requestAnimationFrame(drawFrame);return true;
 }
-window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,civilians30:civilians30Shader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
+window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,civilians30:civilians30Shader,crush30:crush30Shader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
  window.__TINY_READY__=false;
 loadAudioBank9();
 main().catch(fail);

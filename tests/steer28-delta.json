@@ -1,0 +1,85 @@
+{
+ "parentSha256": "7990bfe007f28d3c38062aff76724b8f31ee2b18053270c09988c0ea12982852",
+ "changes": [
+  {
+   "before": "const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;",
+   "after": "const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;"
+  },
+  {
+   "before": "let source=navcell(S.pos.xz)==i;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=select(1073741823u,0u,source);}",
+   "after": "\n // Lane 0, low 16 bits: the squad (player 0, living bots +40 so the player stays preferred). Lane 1, high 16 bits: what the horde heard.\n var squad=select(65535u,0u,navcell(S.pos.xz)==i);for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&navcell(S.team7[k].p.xz)==i){squad=min(squad,40u);}}\n var heard=65535u;if(S.noise.z>0.0&&navcell(S.noise.xy)==i){heard=0u;}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}\n for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i){heard=0u;}}\n let source=squad<65535u||heard<65535u;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=squad|(heard<<16u);}"
+  },
+  {
+   "before": "@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=1073741823u;return;}let c=vec2i(i32(i%192u),i32(i/192u));var best=A[i];",
+   "after": "// Both lanes relax together from one read per neighbour; 65535 is unreachable and saturates.\n@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];var squad=own&65535u;var heard=own>>16u;"
+  },
+  {
+   "before": "continue;}best=min(best,A[u32(n.x+NG*n.y)]+select(10u,14u,j>=4u));\n }B[i]=best;\n}",
+   "after": "continue;}let v=A[u32(n.x+NG*n.y)];let w=select(10u,14u,j>=4u);squad=min(squad,min((v&65535u)+w,65535u));heard=min(heard,min((v>>16u)+w,65535u));\n }B[i]=squad|(heard<<16u);\n}\n`;\n// Publishes both lanes: the squad lane keeps its 10/14 units and INF in the nav region; the heard lane fills the old pressure region.\nconst navPublishShader=COMMON+`\n@group(0) @binding(1) var<storage,read> A:array<u32>;\n@group(0) @binding(2) var<storage,read_write> O:array<u32>;\n@compute @workgroup_size(64) fn publish(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let a=A[i];let squad=a&65535u;let heard=a>>16u;O[NAV_OFFSET+i]=select(squad,1073741823u,squad>=65535u);O[HEARD_OFFSET+i]=select(heard,1073741823u,heard>=65535u);}"
+  },
+  {
+   "before": "await cp('navRelax',navRelaxShader,'relax');",
+   "after": "await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');"
+  },
+  {
+   "before": "navRelax:navRelaxShader,",
+   "after": "navRelax:navRelaxShader,navPublish:navPublishShader,"
+  },
+  {
+   "before": "bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));",
+   "after": "bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);"
+  },
+  {
+   "before": "if(navPhase===0)enc.copyBufferToBuffer(NavA,0,O,NAV_OFFSET*4,NAV_SIZE*4);",
+   "after": "if(navPhase===0)pass(enc,'navPublish',bindings.navPublish,Math.ceil(NAV_SIZE/64));"
+  },
+  {
+   "before": "device.queue.writeBuffer(NavA,0,world.navSeed);device.queue.writeBuffer(NavB,0,world.navSeed);",
+   "after": "const packed25=new Uint32Array(NAV_SIZE);for(let c=0;c<NAV_SIZE;c++)packed25[c]=Math.min(world.navSeed[c],65535)|0xffff0000;device.queue.writeBuffer(NavA,0,packed25);device.queue.writeBuffer(NavB,0,packed25);device.queue.writeBuffer(O,PRESS_OFFSET*4,new Uint32Array(NAV_SIZE).fill(0x3fffffff));"
+  },
+  {
+   "before": "fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {",
+   "after": "fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {"
+  },
+  {
+   "before": "let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[NAV_OFFSET+here]);",
+   "after": "let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[base+here]);"
+  },
+  {
+   "before": "let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[NAV_OFFSET+cell]);if(v>=cost){continue;}",
+   "after": "let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[base+cell]);if(v>=cost){continue;}"
+  },
+  {
+   "before": "  if(score<best){best=score;result=aim;}\n }return result;\n}",
+   "after": "  if(score<best){best=score;result=aim;}\n }\n // Smooth the 8-way choice with the downhill gradient; walls and unreached cells read as uphill.\n if(cost<1073741800u&&any(result!=vec2f(0))){let up=f32(cost)+20.0;var g=vec2f(0);\n  for(var k=0u;k<4u;k++){let d=array<vec2i,4>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1))[k];let n=c+d;var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))){let raw=atomicLoad(&O[base+u32(n.x+NG*n.y)]);if(raw<1073741800u){v=min(up,f32(raw));}}g-=vec2f(d)*v;}\n  if(length(g)>.5){result=safe2(result+safe2(g)*.8);}}\n return result;\n}"
+  },
+  {
+   "before": "let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);",
+   "after": "let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard));\n // No route to what was heard (or already there): fall back to hunting the squad.\n if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}"
+  },
+  {
+   "before": " if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;}",
+   "after": " // Heard but not hunting: infected far from the squad walk to the sound along the heard lane, around walls and through breaches.\n var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}\n if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;heard=true;}"
+  },
+  {
+   "before": "lureDistance=d;goalPoint=pipe.xy;awake=true;",
+   "after": "lureDistance=d;goalPoint=pipe.xy;heard=true;awake=true;"
+  },
+  {
+   "before": "var sep=vec2f(0);var forwardSpace=1.0;var steerCount=0u;",
+   "after": "var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;"
+  },
+  {
+   "before": "if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){forwardSpace=min(forwardSpace,clamp((ahead-rr+.05)/.7,0.0,1.0));}",
+   "after": "if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){let space=clamp((ahead-rr+.05)/.7,0.0,1.0);if(space<forwardSpace){forwardSpace=space;leaderSpeed=clamp(dot(other.v.xy,dir),0.0,speed);}}"
+  },
+  {
+   "before": "let wanted=dir*speed*mix(.08,1.0,forwardSpace)+",
+   "after": "let wanted=dir*mix(max(speed*.08,leaderSpeed),speed,forwardSpace)+"
+  },
+  {
+   "before": "let r=radius+footprint(other.extraData.z);let overlap=vec2f(r)-abs(delta);\n   if(all(overlap>vec2f(0))){let axis=select(0u,1u,overlap.y<overlap.x);var n=vec2f(0);n[axis]=select(-1.0,1.0,delta[axis]>0.0||(abs(delta[axis])<.00001&&i>j));let om=select(select(1.0,3.5,other.extraData.z==2.0),12.0,other.extraData.z==6.0);correction+=n*max(0.0,overlap[axis]-.003)*om/(mass+om);count++;atomicMax(&C[54],u32(min(overlap.x,overlap.y)*1000.0));}",
+   "after": "let r=radius+footprint(other.extraData.z);let gap=length(delta);\n   if(gap<r){var n=delta/max(gap,.00001);if(gap<.00001){let angle=rnd(min(i,j)*8191u+max(i,j))*6.2831853;n=vec2f(cos(angle),sin(angle))*select(-1.0,1.0,i>j);}let om=select(select(1.0,3.5,other.extraData.z==2.0),12.0,other.extraData.z==6.0);correction+=n*max(0.0,r-gap-.003)*om/(mass+om);count++;atomicMax(&C[54],u32((r-gap)*1000.0));}"
+  }
+ ]
+}

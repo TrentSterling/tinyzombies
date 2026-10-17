@@ -1,0 +1,29 @@
+{
+ "parentSha256": "222b0b3f4bb89d2f0cb2992d17fd248642867959f12920455a6a9268032ecfda",
+ "changes": [
+  {
+   "before": "fn announce(code:f32,value:f32){",
+   "after": "// Neighbors still waiting at home (sandbox); the shelter will not seal while any remain.\nfn neighborsWaiting30()->u32 {var n=0u;for(var k=0u;k<12u;k++){let c=P[CIV_BASE30+k];if(c.p.w==30.0&&c.data.y>.5&&c.data.y<1.5){n++;}}return n;}\nfn announce(code:f32,value:f32){"
+  },
+  {
+   "before": "let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0;",
+   "after": "let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0&&neighborsWaiting30()==0u;"
+  },
+  {
+   "before": "let m=Math.round(playerValues[448]||0);return (SANDBOX25?",
+   "after": "let m=Math.round(playerValues[448]||0);const home30=SANDBOX25?waitingNeighbors30():0;if(SANDBOX25&&m>=4&&home30>0)return 'Round up the neighbors: '+home30+' still home';return (SANDBOX25?"
+  },
+  {
+   "before": "if(world.mercer24&&interaction===7&&playerValues[L7.relay+2]<.5)label='Force the service gate before extraction';",
+   "after": "if(world.mercer24&&interaction===7&&playerValues[L7.relay+2]<.5)label='Force the service gate before extraction';\n   if(SANDBOX25&&interaction===7&&waitingNeighbors30()>0)label='Neighbors still at home: '+waitingNeighbors30();"
+  },
+  {
+   "before": "function nextSandbox25(){",
+   "after": "function waitingNeighbors30(){let n=0;for(let c=0;c<CIV_MAX30;c++)if(Math.round(playerValues[CIV_STATE30+c*4+2])===1)n++;return n;}\nfunction nextSandbox25(){"
+  },
+  {
+   "before": "  if(S[27].z>0.0&&length(o.uv-(S[27].xy+96.0)/192.0)<.009){col=vec3f(.05,.62,1);}",
+   "after": "  if(S[27].z>0.0&&length(o.uv-(S[27].xy+96.0)/192.0)<.009){col=vec3f(.05,.62,1);}\n  // Neighbors (sandbox mirror): gold diamonds while waiting at home, mint while following.\n  for(var ni=0u;ni<12u;ni++){let nb=S[976u+ni];if(nb.z<.5||nb.z>2.5){continue;}let uv=(nb.xy+96.0)/192.0;if(abs(o.uv.x-uv.x)+abs(o.uv.y-uv.y)<.012){col=select(vec3f(.55,1,.78),vec3f(1,.80,.20),nb.z<1.5);}}"
+  }
+ ]
+}

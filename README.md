@@ -25,7 +25,7 @@ Collapsing walls and buildings now crush infected. Any heavy wreck piece that is
 
 ## Neighbors to rescue (sandbox)
 
-Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
+Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. Like Zombies Ate My Neighbors, nobody leaves while someone is still waiting at home: the shelter will not seal until every neighbor has been found (saved or lost), the objective line says how many are still home, and the minimap shows them as gold diamonds (mint once they follow you). The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
 
 On a software GPU running the real shaders, a neighbor followed the player 73 m across town into the shelter; another, cornered by three awake infected, was lost in about 3 seconds.
 

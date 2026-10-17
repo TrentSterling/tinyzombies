@@ -1244,6 +1244,8 @@ const mission5Shader=COMMON+`
 @group(0) @binding(5) var<storage,read_write> Z13:array<Zombie>;
 
 `+SOLID+`
+// Neighbors still waiting at home (sandbox); the shelter will not seal while any remain.
+fn neighborsWaiting30()->u32 {var n=0u;for(var k=0u;k<12u;k++){let c=P[CIV_BASE30+k];if(c.p.w==30.0&&c.data.y>.5&&c.data.y<1.5){n++;}}return n;}
 fn announce(code:f32,value:f32){S.banner=vec4f(code,3.5,value,S.banner.w+1.0);}
 fn alarmAt(p:vec2f,seconds:f32){S.alarm=vec4f(p,seconds,58.0);S.wave.y=max(S.wave.y,seconds);}
 fn modValue(id:u32)->f32 {if(id<4u){return S.modsA[id];}return S.modsB[id-4u];}
@@ -1578,7 +1580,7 @@ fn chapterMission13(dt:f32){
  let db=S.buddy.xz-u.route.zw;let buddyInside=db.x> -1.75&&db.x<2.30&&abs(db.y)<2.25;
  S.spare5.x=f32(atomicExchange(&C[56],0u));
  var allInside=true;var present=0u;for(var k=0u;k<3u;k++){let p=S.team7[k].p.xz-u.route.zw;let here=p.x> -1.75&&p.x<2.30&&abs(p.y)<2.25;allInside=allInside&&here;if(here){present++;}}
- S.squad7.z=f32(present);let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0;
+ S.squad7.z=f32(present);let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0&&neighborsWaiting30()==0u;
  if(inside&&S.player7.x==0.0){S.orders.x=0.0;S.mission5.y=7.0;S.objectivePoint.w=0.0;}
  if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5){S.mission5.w=0.0;}
  if(u.controls.x>.5&&S.lastInput.w<.5&&S.mission5.y>=2.0&&S.mission5.y<=6.0){
@@ -3193,6 +3195,8 @@ fn sdfGlyph(code:u32,uv:vec2f)->f32{
   let g0=(u.goals.xy+96.0)/192.0;let g1=(u.goals.zw+96.0)/192.0;let ex=(u.route.zw+96.0)/192.0;
   if(length(o.uv-g0)<.011){col=select(vec3f(1,.6,.16),vec3f(.22,.94,.52),S[16].x>=2.4);}if(length(o.uv-g1)<.011){col=select(vec3f(1,.6,.16),vec3f(.22,.94,.52),S[16].y>=2.4);}if(max(abs(o.uv.x-ex.x),abs(o.uv.y-ex.y))<.014){col=vec3f(.15,.85,.75);}
   if(S[27].z>0.0&&length(o.uv-(S[27].xy+96.0)/192.0)<.009){col=vec3f(.05,.62,1);}
+  // Neighbors (sandbox mirror): gold diamonds while waiting at home, mint while following.
+  for(var ni=0u;ni<12u;ni++){let nb=S[976u+ni];if(nb.z<.5||nb.z>2.5){continue;}let uv=(nb.xy+96.0)/192.0;if(abs(o.uv.x-uv.x)+abs(o.uv.y-uv.y)<.012){col=select(vec3f(.55,1,.78),vec3f(1,.80,.20),nb.z<1.5);}}
   return vec4f(col,.98);
  }
  if(o.code<128u){
@@ -3627,6 +3631,7 @@ function calloutsHUD30(k){
  if(callout30.crushBurst>=2&&time-callout30.crushAt<1.6){const s='CRUSHED x'+callout30.crushBurst,px=(26+Math.min(14,callout30.crushBurst))*k;text(s,width/2-textWidth9(s,px)/2,height*.24,px,COL9.gold);}
  if(callout30.chainBurst>=2&&time-callout30.chainAt<1.6){const s='CHAIN x'+callout30.chainBurst,px=24*k;text(s,width/2-textWidth9(s,px)/2,height*.24+40*k,px,COL9.red);}
 }
+function waitingNeighbors30(){let n=0;for(let c=0;c<CIV_MAX30;c++)if(Math.round(playerValues[CIV_STATE30+c*4+2])===1)n++;return n;}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -3637,7 +3642,7 @@ function aimBeacon9(x,y,color,sz=24){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,133);}
 function arrow9(x,y,angle,color,sz=18){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,134,Math.round((angle+Math.PI)/Math.PI/2*65535));}
 function pulse9(x,y,prog,color,r=23){disk9(x,y,r,1,COL9.shadow);disk9(x,y,r,prog,color);}
 function clamp9(v,a,b){return Math.min(b,Math.max(a,v));}
-function shortObjective9(){if(world.source13){if(stage===4&&playerValues[440]>.5)return "Silence hospital alarm";if(stage===4&&playerValues[442]<.5)return "Open hospital shutter";if(playerValues[442]>.5)return "Red door";if(stage===5)return playerValues[440]>.5?"Winch opening: "+Math.max(0,Math.ceil(17-playerValues[441]))+"s":"Start bridge winch";if(stage===3)return playerValues[440]>.5?"Hold out: "+Math.max(0,Math.ceil(15-playerValues[441]))+"s":"Restore station power";if(stage===2){if(playerValues[440]>.5)return "Shutter "+Math.max(0,Math.ceil(11-playerValues[441]))+"s";return playerValues[447]===1?"Carry fuel / pistol only":"Fuel "+Math.round(playerValues[443])+"/2";}return "Service gate";}let m=Math.round(playerValues[448]||0);return (SANDBOX25?['Find Gary, HOA President','Start the karaoke generator','Steal the car battery','Hot-wire the ice cream truck','Fallout shelter (HOA approved)']:['Violet','Relay A','Cell','Relay B','Safehouse'])[Math.min(4,Math.max(0,m))];}
+function shortObjective9(){if(world.source13){if(stage===4&&playerValues[440]>.5)return "Silence hospital alarm";if(stage===4&&playerValues[442]<.5)return "Open hospital shutter";if(playerValues[442]>.5)return "Red door";if(stage===5)return playerValues[440]>.5?"Winch opening: "+Math.max(0,Math.ceil(17-playerValues[441]))+"s":"Start bridge winch";if(stage===3)return playerValues[440]>.5?"Hold out: "+Math.max(0,Math.ceil(15-playerValues[441]))+"s":"Restore station power";if(stage===2){if(playerValues[440]>.5)return "Shutter "+Math.max(0,Math.ceil(11-playerValues[441]))+"s";return playerValues[447]===1?"Carry fuel / pistol only":"Fuel "+Math.round(playerValues[443])+"/2";}return "Service gate";}let m=Math.round(playerValues[448]||0);const home30=SANDBOX25?waitingNeighbors30():0;if(SANDBOX25&&m>=4&&home30>0)return 'Round up the neighbors: '+home30+' still home';return (SANDBOX25?['Find Gary, HOA President','Start the karaoke generator','Steal the car battery','Hot-wire the ice cream truck','Fallout shelter (HOA approved)']:['Violet','Relay A','Cell','Relay B','Safehouse'])[Math.min(4,Math.max(0,m))];}
 function panel9(x,y,w,h,alpha=.78){rect(x,y,w,h,[.012,.031,.041,alpha]);}
 // DEAD ENDS arsenal parity: every slot with its key and stock. Bottom-centre, fades out once gear is idle.
 let loadoutSig25='',loadoutAt25=-99;
@@ -3730,6 +3735,7 @@ function hud(){
    if(interaction===8){let d=world.doors7.find(q=>q.index===Math.round(playerValues[450]));if(d?.startDoor)label='E  Open door';}
    if(world.source13){if(interaction===9)label='E  Hold to silence alarm';if(interaction===3)label=stage===5?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(17-playerValues[441]))+' seconds':'E  Hold to start winch'):stage===4?'E  Hold to open shutter':stage===3?(playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(15-playerValues[441]))+' seconds':'E  Hold to restore power'):stage!==2?'E  Force service gate':playerValues[440]>.5?'Opening: '+Math.max(0,Math.ceil(11-playerValues[441]))+' seconds':playerValues[447]===1?'E  Hold to pour fuel':'Find fuel cans: '+Math.round(playerValues[443])+' / 2';if(interaction===7){const state=Math.round(playerValues[L7.squad7+3]);label=state===1?'E  Open safehouse door':state===2?'Clear the doorway':state===3?'Sealing the door':state===4?'E  Hold 1.6s: teammates outside':'E  Hold to seal red door';}if(interaction===5){const kind=world.sourcePickups13.find(p=>p.index===Math.round(playerValues[450]))?.kind;label=kind==='rifle14'?'E  Take heavy rifle':kind==='auto14'?'E  Take auto shotgun':kind==='axe24'?'E  Swap axe / pistol':kind==='fuel'?'E  Carry fuel can':'E  Take supplies';}}else if(interaction===7&&playerValues[64]<2.4)label='Relays offline';
    if(world.mercer24&&interaction===7&&playerValues[L7.relay+2]<.5)label='Force the service gate before extraction';
+   if(SANDBOX25&&interaction===7&&waitingNeighbors30()>0)label='Neighbors still at home: '+waitingNeighbors30();
    const s=14*k,x=cx-textWidth9(label,s)/2,y=cy-r-43*k,w=textWidth9(label,s)+22*k;
    panel9(x-11*k,y-4*k,w,27*k,.76);text(label,x,y,s,interaction===1?COL9.violet:COL9.white);
    let prog=0;switch(interaction){case 1:prog=playerValues[89]/2.4;break;case 2:case 3:case 4:prog=playerValues[451]/.8;break;case 5:prog=playerValues[451]/1.4;break;case 7:prog=playerValues[104];break;}

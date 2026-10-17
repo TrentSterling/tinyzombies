@@ -37,6 +37,10 @@ Measured with the real shaders on a software WebGPU device (no hardware timing):
 
 Breaches count now. The nav grid used to write off any metre cell holding a single wall voxel, so a hole had to clear a whole grid-aligned metre to exist. Now a cell is walkable if a body fits anywhere in it, each edge records which of three lanes (centre or 0.3 m either side) a body can sweep through, and infected aim through that lane instead of at the next cell's centre. Line of sight also checks that the body fits along the line, so infected no longer press into the lip of a hole. Squad gunfire is heard, and infected only spawn where they can actually reach you. In the same software-GPU test, a lured infected went straight through a 1 m hole cut half a cell off the grid in about 4 s; the previous build ignored the hole and walked around the house.
 
+## Readable text
+
+HUD text and panels are drawn on a separate 2D canvas layered over the game, using Bangers for headlines and Rubik for everything else, at the screen's full pixel density. The old stretched bitmap-style glyphs are gone, and text stays sharp at the lower-quality tiers below because it does not follow the 3D render scale. If the browser cannot create a 2D canvas, the original GPU glyphs come back. The sandbox has its own title card and an evacuation card that shows neighbors saved, infected put down, infected crushed and your time. The fonts load from Google Fonts; offline, the browser falls back to Impact or a system sans-serif.
+
 ## Low-end GPUs
 
 The renderer now steps its quality down by itself when the frame rate stays under 45 FPS for 3 seconds of play. The simulation and horde size never change, only the picture:

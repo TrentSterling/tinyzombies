@@ -1,0 +1,45 @@
+{
+ "parentSha256": "b6b6d952e582f2e7596c7f41be73c1147c803f115e76de37bd87c4177063c9a3",
+ "changes": [
+  {
+   "before": "<meta name=\"color-scheme\" content=\"dark\">",
+   "after": "<meta name=\"color-scheme\" content=\"dark\"><link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"><link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin><link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap\">"
+  },
+  {
+   "before": "canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}",
+   "after": "canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}"
+  },
+  {
+   "before": "function text(str,x,y,px=17,col=[.89,.94,.93,1]){\n let pen=x,unit=px/32,gs=48*unit;",
+   "after": "// Crisp HUD text: drawn on a 2D overlay at device resolution with real fonts, so it never inherits the WebGPU canvas's\n// render scale. Panels, rings, the map and markers stay on the GPU. Without a 2D context (tests, odd browsers) the SDF glyphs remain.\nlet hud2d30=null,hudScale30=1;const textWidths30=new Map();\nfunction initHud2d30(){try{const c=document.createElement('canvas');c.id='hud2d';c.setAttribute('aria-hidden','true');document.body.appendChild(c);hud2d30=c.getContext('2d');document.fonts?.addEventListener?.('loadingdone',()=>textWidths30.clear());}catch(e){hud2d30=null;}}\nfunction sizeHud2d30(){const c=hud2d30.canvas,dpr=Math.min(2,window.devicePixelRatio||1),w=Math.max(1,Math.round((c.clientWidth||innerWidth)*dpr)),h=Math.max(1,Math.round((c.clientHeight||innerHeight)*dpr));\n if(c.width!==w||c.height!==h){c.width=w;c.height=h;textWidths30.clear();}hudScale30=w/Math.max(1,width);hud2d30.clearRect(0,0,w,h);}\nfunction fontFor30(px){const display=px>=24*clamp9(height/900,.72,1.15);return display?Math.round(px*hudScale30*1.08)+'px Bangers,Impact,\"Arial Black\",sans-serif':'700 '+Math.round(px*hudScale30*.94)+'px Rubik,\"Segoe UI\",system-ui,sans-serif';}\nfunction text(str,x,y,px=17,col=[.89,.94,.93,1]){\n if(hud2d30){const ctx=hud2d30,s=hudScale30,a=col[3]??1;str=String(str);ctx.font=fontFor30(px);ctx.textBaseline='middle';ctx.lineJoin='round';\n  ctx.lineWidth=Math.max(2,px*s*.16);ctx.strokeStyle='rgba(3,9,12,'+(.88*a)+')';ctx.strokeText(str,x*s,(y+px*.75)*s);\n  ctx.fillStyle='rgba('+Math.round(col[0]*255)+','+Math.round(col[1]*255)+','+Math.round(col[2]*255)+','+a+')';ctx.fillText(str,x*s,(y+px*.75)*s);return;}\n let pen=x,unit=px/32,gs=48*unit;"
+  },
+  {
+   "before": "function textWidth9(str,px=17){",
+   "after": "function textWidth9(str,px=17){if(hud2d30){const key=px.toFixed(2)+'|'+str;let w=textWidths30.get(key);if(w===undefined){hud2d30.font=fontFor30(px);w=hud2d30.measureText(String(str)).width/hudScale30;if(textWidths30.size>4000)textWidths30.clear();textWidths30.set(key,w);}return w;}"
+  },
+  {
+   "before": "function hud(){\n glyphCount=0;",
+   "after": "function hud(){\n glyphCount=0;if(hud2d30)sizeHud2d30();"
+  },
+  {
+   "before": "context=canvas.getContext('webgpu');",
+   "after": "context=canvas.getContext('webgpu');initHud2d30();"
+  },
+  {
+   "before": "function rect(x,y,w,h,c){uiQuad9(x,y,w,h,c);}",
+   "after": "function rect(x,y,w,h,c){if(hud2d30){const s=hudScale30,ctx=hud2d30;ctx.fillStyle='rgba('+Math.round(c[0]*255)+','+Math.round(c[1]*255)+','+Math.round(c[2]*255)+','+(c[3]??1)+')';ctx.fillRect(x*s,y*s,w*s,h*s);return;}uiQuad9(x,y,w,h,c);}"
+  },
+  {
+   "before": " if(!settings.started&&!completedBoundary15){",
+   "after": " if(!settings.started&&!completedBoundary15&&SANDBOX25){titleCard30(k);}\n else if(!settings.started&&!completedBoundary15){"
+  },
+  {
+   "before": "  if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);",
+   "after": "  if(won&&SANDBOX25){evacCard30(k);}\n  else if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);"
+  },
+  {
+   "before": "function nextSandbox25(){",
+   "after": "function pill30(label,cx,cy,px,col){const tw=textWidth9(label,px),w=tw+px*1.8,h=px*1.9,x=cx-w/2,y=cy-h/2,b=Math.max(2,px*.09);\n rect(x,y,w,h,[.03,.08,.10,.92]);rect(x,y,w,b,col);rect(x,y+h-b,w,b,col);rect(x,y,b,h,col);rect(x+w-b,y,b,h,col);text(label,cx-tw/2,cy-px*.75,px,col);}\nfunction titleCard30(k){\n panel9(width*.2,height*.18,width*.6,height*.62,.84);rect(width*.2,height*.18,width*.6,5*k,COL9.gold);\n centre('TINY ZOMBIES',height*.215,78*k,COL9.white);centre('MAPLE STREET',height*.345,32*k,COL9.violet);\n centre('Population: declining. Property values: worse.',height*.415,15*k,COL9.soft);\n pill30('CLICK TO PLAY',width/2,height*.515,22*k,COL9.gold);\n centre('Rescue your neighbors. Drop the houses on everyone else.',height*.6,15*k,COL9.white);\n centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit',height*.655,13*k,COL9.soft);\n centre('Press ? for all controls',height*.7,12*k,COL9.soft);\n}\nfunction evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}\nfunction evacCard30(k){\n const total=world.civilians30?.length||0,saved=counters[29]|0,lost=counters[25]|0,t=Math.round(playerValues[24]||0);\n panel9(width*.24,height*.2,width*.52,height*.6,.92);rect(width*.24,height*.2,width*.52,5*k,COL9.green);\n centre('MAPLE STREET EVACUATED',height*.235,44*k,COL9.green);centre(saved+' / '+total+' NEIGHBORS SAVED',height*.35,34*k,COL9.gold);\n centre(fmt(counters[0])+' put down   /   '+(counters[34]|0)+' crushed   /   '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0'),height*.455,16*k,COL9.white);\n centre(evacQuip30(saved,lost,total),height*.52,15*k,COL9.soft);\n pill30('ENTER   NEXT STREET',width/2,height*.635,20*k,COL9.gold);centre('N twice   New run',height*.715,12*k,COL9.soft);\n}\nfunction nextSandbox25(){"
+  }
+ ]
+}

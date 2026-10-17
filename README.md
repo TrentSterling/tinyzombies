@@ -19,6 +19,12 @@ Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandb
 
 `node tests/sandbox26.test.cjs` checks start-up, rerolls, objective reachability on 16 seeds, the announcer and the evacuation flow. Gameplay and GPU behaviour need an owner playtest.
 
+## Hordes that hear things
+
+Infected now follow two flow fields that share one buffer: one toward the squad (you, plus living bots at a small penalty) and one toward whatever they heard (gunfire and blasts far from the squad, alarms, a landed pipe bomb). A lured infected walks around the house to the pipe instead of grinding against the wall toward you. Following is smoother (the 8-way step blends with the field's slope), queues match the speed of the infected ahead instead of braking and surging, and crowd contacts push along the true separation instead of flipping between axes.
+
+Measured with the real shaders on a software WebGPU device (no hardware timing): both fields match an exact shortest-path reference on every reachable cell; a lured infected behind a back wall reached the pipe in about 15 s where the previous build stalled 14.6 m away; 48 infected chasing the player through a garage door were all inside in 10 s, against 37 of 48 after 12 s before.
+
 ## Low-end GPUs
 
 The renderer now steps its quality down by itself when the frame rate stays under 45 FPS for 3 seconds of play. The simulation and horde size never change, only the picture:

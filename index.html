@@ -453,7 +453,7 @@ const HALF:f32=96.0;const WG:i32=768;const CG:i32=48;const CHUNKS:u32=2304u;
 const NG:i32=192;const NAV_CELL:f32=1.0;const NAV_N:u32=36864u;
 const DYNAMIC_GRID:i32=384;const DYNAMIC_OFFSET:u32=${DYNAMIC_OFFSET}u;
 const OCC_BASE:u32=${OCC_BASE}u;const PAGE_CELLS:u32=3072u;
-const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;
+const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;
 const ZHEADS:u32=${ZHEADS}u;const ZCOUNTS:u32=${ZHEADS+MAX_Z}u;
 const PAINT_BASE:u32=${PAINT_BASE}u;const PAINT_PAGES:u32=${PAINT_PAGES}u;const SCORCH_SHIFT6:u32=${PAINT_PAGES*1024}u;
 fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}
@@ -1617,14 +1617,19 @@ const zombieShader=COMMON+`
 @group(0) @binding(7) var<storage,read_write> O:array<atomic<u32>>;
 @group(0) @binding(8) var<storage,read_write> E:array<Event>;
 `+SOLID.replace(/O\[([^\]]+)\]/g,'atomicLoad(&O[$1])')+EMIT+`
-fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
- let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[NAV_OFFSET+here]);
+fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
+ let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[base+here]);
  var best=1e9;var result=vec2f(0);let rotate=hash(id)%8u;
  for(var k=0u;k<8u;k++){let a=(k+rotate)%8u;let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
   if(a>=4u&&(atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)])>0u||atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)])>0u)){continue;}
-  let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[NAV_OFFSET+cell]);if(v>=cost){continue;}let aim=safe2(vec2f(n)+.5-HALF-p);let density=f32(H[ZCOUNTS+cell]);let score=f32(v)+select(10.0,14.0,a>=4u)+min(9.0,density*1.6)-dot(aim,safe2(prior))*1.1;
+  let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[base+cell]);if(v>=cost){continue;}let aim=safe2(vec2f(n)+.5-HALF-p);let density=f32(H[ZCOUNTS+cell]);let score=f32(v)+select(10.0,14.0,a>=4u)+min(9.0,density*1.6)-dot(aim,safe2(prior))*1.1;
   if(score<best){best=score;result=aim;}
- }return result;
+ }
+ // Smooth the 8-way choice with the downhill gradient; walls and unreached cells read as uphill.
+ if(cost<1073741800u&&any(result!=vec2f(0))){let up=f32(cost)+20.0;var g=vec2f(0);
+  for(var k=0u;k<4u;k++){let d=array<vec2i,4>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1))[k];let n=c+d;var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))){let raw=atomicLoad(&O[base+u32(n.x+NG*n.y)]);if(raw<1073741800u){v=min(up,f32(raw));}}g-=vec2f(d)*v;}
+  if(length(g)>.5){result=safe2(result+safe2(g)*.8);}}
+ return result;
 }
 @compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){
  let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));
@@ -1646,12 +1651,16 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
  var awake=z.v.w>0.0;
  if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
- if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;}
+ // Heard but not hunting: infected far from the squad walk to the sound along the heard lane, around walls and through breaches.
+ var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}
+ if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;heard=true;}
    // Landed pipe noise attracts only common and runner infected, through walls.
   var lureDistance=680.0/64.0;
-  if(kind<2.0){for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];let d=length(pipe.xy-z.p.xz);if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&d<lureDistance){lureDistance=d;goalPoint=pipe.xy;awake=true;z.v.w=max(z.v.w,3.0);victim=4u;atomicAdd(&C[71],1u);}}}
+  if(kind<2.0){for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];let d=length(pipe.xy-z.p.xz);if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&d<lureDistance){lureDistance=d;goalPoint=pipe.xy;heard=true;awake=true;z.v.w=max(z.v.w,3.0);victim=4u;atomicAdd(&C[71],1u);}}}
 
- let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);
+ let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard));
+ // No route to what was heard (or already there): fall back to hunting the squad.
+ if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}
  // Short direct line-of-sight segments preserve natural motion inside a room.
  var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
  if(sight&&targetDistance<select(480.0/64.0,780.0/64.0,z.v.w>0.0)){z.v.w=10.0;awake=true;}
@@ -1666,17 +1675,17 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
   if(z.combat13.y>0.0){speed*=.06;}
 
  var velocity=mix(z.v.xy,dir*speed,1.0-exp(-dt*12.0))+z.history.zw;
- var sep=vec2f(0);var forwardSpace=1.0;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
+ var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
  for(var k=0u;k<25u;k++){let rot=hash(i+u32(u.clock.z/4.0))%16u;let off=neighbor6(k,rot);
   let c=cell+off;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
   for(var n=0u;n<20u&&it>0u&&checks<72u;n++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;
    if(dist<comfort){var away=safe2(delta);if(dist<.0001){let angle=rnd(min(i,j)*8191u+max(i,j))*6.2831853;away=vec2f(cos(angle),sin(angle))*select(-1.0,1.0,i>j);}sep+=away*(1.0-dist/comfort)*select(1.0,.5,kind==2.0);steerCount++;}
-   let ahead=dot(-delta,dir);let crossLane=abs(dot(delta,vec2f(-dir.y,dir.x)));if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){forwardSpace=min(forwardSpace,clamp((ahead-rr+.05)/.7,0.0,1.0));}
+   let ahead=dot(-delta,dir);let crossLane=abs(dot(delta,vec2f(-dir.y,dir.x)));if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){let space=clamp((ahead-rr+.05)/.7,0.0,1.0);if(space<forwardSpace){forwardSpace=space;leaderSpeed=clamp(dot(other.v.xy,dir),0.0,speed);}}
    if(other.extraData.z==3.0&&other.extraData.w>=.90&&dist<1.7){damage+=30.0;}
    if(other.extraData.z==6.0&&other.extraData.w>=.95&&dist<3.2&&kind!=6.0){damage+=18.0;let away=safe2(delta);z.history.z+=away.x*5.0;z.history.w+=away.y*5.0;}
   }
  }
- let steer=sep/max(1.0,f32(steerCount)*.50);let wanted=dir*speed*mix(.08,1.0,forwardSpace)+clamp(steer,vec2f(-1.6),vec2f(1.6))*2.1;
+ let steer=sep/max(1.0,f32(steerCount)*.50);let wanted=dir*mix(max(speed*.08,leaderSpeed),speed,forwardSpace)+clamp(steer,vec2f(-1.6),vec2f(1.6))*2.1;
  velocity=mix(z.v.xy,wanted,1.0-exp(-dt*14.0))+z.history.zw;
    // Brute: .75 s tell, .8 s charge, with source stun and cooldown.
   if(kind==2.0){
@@ -2703,8 +2712,8 @@ const crowdShader=COMMON+`
  if(z.p.w<=0.0||dt<=0.0){B[i]=z;return;}let cell=vec2i(floor(z.p.xz+HALF));let radius=footprint(z.extraData.z);let mass=select(select(1.0,3.5,z.extraData.z==2.0),12.0,z.extraData.z==6.0);
  var correction=vec2f(0);var count=0u;var checked=0u;var capped=false;let rotate=hash(i+u32(u.clock.z/4.0))%8u;
  for(var k=0u;k<9u;k++){let d=neighbor6(k,rotate);let c=cell+d;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
-  for(var nn=0u;nn<24u&&it>0u&&checked<96u;nn++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checked++;let other=A[j];let delta=z.p.xz-other.p.xz;let r=radius+footprint(other.extraData.z);let overlap=vec2f(r)-abs(delta);
-   if(all(overlap>vec2f(0))){let axis=select(0u,1u,overlap.y<overlap.x);var n=vec2f(0);n[axis]=select(-1.0,1.0,delta[axis]>0.0||(abs(delta[axis])<.00001&&i>j));let om=select(select(1.0,3.5,other.extraData.z==2.0),12.0,other.extraData.z==6.0);correction+=n*max(0.0,overlap[axis]-.003)*om/(mass+om);count++;atomicMax(&C[54],u32(min(overlap.x,overlap.y)*1000.0));}
+  for(var nn=0u;nn<24u&&it>0u&&checked<96u;nn++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checked++;let other=A[j];let delta=z.p.xz-other.p.xz;let r=radius+footprint(other.extraData.z);let gap=length(delta);
+   if(gap<r){var n=delta/max(gap,.00001);if(gap<.00001){let angle=rnd(min(i,j)*8191u+max(i,j))*6.2831853;n=vec2f(cos(angle),sin(angle))*select(-1.0,1.0,i>j);}let om=select(select(1.0,3.5,other.extraData.z==2.0),12.0,other.extraData.z==6.0);correction+=n*max(0.0,r-gap-.003)*om/(mass+om);count++;atomicMax(&C[54],u32((r-gap)*1000.0));}
   }if(it>0u){capped=true;}if(checked>=96u){capped=true;break;}
  }
  let alpha=1.0-exp(-110.0*dt);correction*=alpha/max(1.0,f32(count)*.48);correction=clamp(correction,vec2f(-.20),vec2f(.20));let h=vec3f(radius,.29,radius);var p=z.p.xyz;
@@ -2752,17 +2761,29 @@ const navInitShader=COMMON+`
 // Low 12 bits remain exact physical occupancy. High 12 bits exclude doors only:
 // actors can plan toward a closed doorway while collision and battering keep it solid.
 `+SOLID.replace('O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]&mask','(O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]>>16u)&mask')+`
-@compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;let source=navcell(S.pos.xz)==i;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=select(1073741823u,0u,source);}
+@compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;
+ // Lane 0, low 16 bits: the squad (player 0, living bots +40 so the player stays preferred). Lane 1, high 16 bits: what the horde heard.
+ var squad=select(65535u,0u,navcell(S.pos.xz)==i);for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&navcell(S.team7[k].p.xz)==i){squad=min(squad,40u);}}
+ var heard=65535u;if(S.noise.z>0.0&&navcell(S.noise.xy)==i){heard=0u;}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
+ for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i){heard=0u;}}
+ let source=squad<65535u||heard<65535u;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=squad|(heard<<16u);}
 `;
 const navRelaxShader=COMMON+`
 @group(0) @binding(1) var<storage,read> O:array<u32>;
 @group(0) @binding(2) var<storage,read> A:array<u32>;
 @group(0) @binding(3) var<storage,read_write> B:array<u32>;
-@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=1073741823u;return;}let c=vec2i(i32(i%192u),i32(i/192u));var best=A[i];
+// Both lanes relax together from one read per neighbour; 65535 is unreachable and saturates.
+@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];var squad=own&65535u;var heard=own>>16u;
  for(var j=0u;j<8u;j++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[j];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
-  if(j>=4u&&(O[WALK_OFFSET+u32(c.x+NG*n.y)]>0u||O[WALK_OFFSET+u32(n.x+NG*c.y)]>0u)){continue;}best=min(best,A[u32(n.x+NG*n.y)]+select(10u,14u,j>=4u));
- }B[i]=best;
+  if(j>=4u&&(O[WALK_OFFSET+u32(c.x+NG*n.y)]>0u||O[WALK_OFFSET+u32(n.x+NG*c.y)]>0u)){continue;}let v=A[u32(n.x+NG*n.y)];let w=select(10u,14u,j>=4u);squad=min(squad,min((v&65535u)+w,65535u));heard=min(heard,min((v>>16u)+w,65535u));
+ }B[i]=squad|(heard<<16u);
 }
+`;
+// Publishes both lanes: the squad lane keeps its 10/14 units and INF in the nav region; the heard lane fills the old pressure region.
+const navPublishShader=COMMON+`
+@group(0) @binding(1) var<storage,read> A:array<u32>;
+@group(0) @binding(2) var<storage,read_write> O:array<u32>;
+@compute @workgroup_size(64) fn publish(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let a=A[i];let squad=a&65535u;let heard=a>>16u;O[NAV_OFFSET+i]=select(squad,1073741823u,squad>=65535u);O[HEARD_OFFSET+i]=select(heard,1073741823u,heard>=65535u);}
 `;
 
 const groupClearShader=COMMON+`
@@ -3381,7 +3402,7 @@ function buildComputeBindings(){
  bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));
  bindings.finalize=bg(compute.finalize,[[1,C],[2,drawArgs]]);
  bindings.navInit=bg(compute.navInit,[[1,S],[2,O],[3,NavA]]);
- bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));
+ bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);
  bindings.groupClear=bg(compute.groupClear,[[1,Groups]]);
  bindings.support=bg(compute.support,[[0,U],[1,W],[2,Groups]]);
  bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);
@@ -3415,7 +3436,7 @@ function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBee
  // First-frame sight and movement must see the closed doors before the first simulation tick.
  pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));
  // The generation-time field is uploaded once. Subsequent routing is entirely GPU-resident.
- device.queue.writeBuffer(NavA,0,world.navSeed);device.queue.writeBuffer(NavB,0,world.navSeed);
+ const packed25=new Uint32Array(NAV_SIZE);for(let c=0;c<NAV_SIZE;c++)packed25[c]=Math.min(world.navSeed[c],65535)|0xffff0000;device.queue.writeBuffer(NavA,0,packed25);device.queue.writeBuffer(NavB,0,packed25);device.queue.writeBuffer(O,PRESS_OFFSET*4,new Uint32Array(NAV_SIZE).fill(0x3fffffff));
  device.queue.submit([enc.finish()]);if(world.initialZ13){device.queue.writeBuffer(zA,0,world.initialZ13);device.queue.writeBuffer(zB,0,world.initialZ13);}counters.fill(0);counters[12]=100;zParity=0;navPhase=0;settings.paused=false;last=0;time=0;nextSound=nextBoom=lastCritSound=0;
  diagnostics.world={seed:runSeed,rooms:world.roomCount,chunks:CHUNK_COUNT,voxelSize:.25,destructibleVoxels:world.count,stage};
 }
@@ -3717,7 +3738,7 @@ function runSimulation(enc,beginExtra={}){
  pass(enc,'groupClear',bindings.groupClear,Math.ceil(MAX_GROUPS/64),stamp(4,null));pass(enc,'support',bindings.support,Math.ceil(world.count/64));pass(enc,'collapse',bindings.collapse,Math.ceil(MAX_GROUPS/64));
  pass(enc,'world',bindings.world,Math.ceil(world.count/64));pass(enc,'fracture8',bindings.fracture8,1,stamp(null,5));
  if(frame%8===0)pass(enc,'drip',bindings.drip,Math.ceil(world.count/64));
- if(navPhase===0)pass(enc,'navInit',bindings.navInit,Math.ceil(NAV_SIZE/64));relaxNav(enc,32,stampThisFrame);navPhase=(navPhase+1)%16;if(navPhase===0)enc.copyBufferToBuffer(NavA,0,O,NAV_OFFSET*4,NAV_SIZE*4);
+ if(navPhase===0)pass(enc,'navInit',bindings.navInit,Math.ceil(NAV_SIZE/64));relaxNav(enc,32,stampThisFrame);navPhase=(navPhase+1)%16;if(navPhase===0)pass(enc,'navPublish',bindings.navPublish,Math.ceil(NAV_SIZE/64));
  pass(enc,'prepare',bindings.prepare,1,stamp(8,null));
  {const p=enc.beginComputePass({label:'bounded flesh and rubble rings'});p.setPipeline(compute.spawn);p.setBindGroup(0,bindings.spawn);p.dispatchWorkgroupsIndirect(spawnArgs,0);p.end();}
  for(let sub=0;sub<2;sub++){pass(enc,'integrate',bindings.integrate,Math.ceil(settings.pool/64));enc.clearBuffer(pHeads);pass(enc,'gridP',bindings.gridP,Math.ceil(settings.pool/64));pass(enc,'solve',bindings.solve,Math.ceil(settings.pool/64),sub===1?stamp(null,9):{});}
@@ -3799,7 +3820,7 @@ async function main(){
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
  await cp('melee8',melee8Shader);await cp('fracture8',fracture8Shader);await cp('wreckBoxes8',wreckBoxes8Shader);await cp('aim3',aim3Shader);await cp('bullet3',bullet3Shader);await cp('buddy',buddyShader);await cp('squadNav7',squadNav7Shader);await cp('doors7',doors7Shader);await cp('crowd',crowdShader);await cp('dynamic',dynamicShader);await cp('lights',lightsShader);await cp('lightTiles',lightTilesShader);
- await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
+ await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
  await cp('fx6',fx6Shader);await cp('mission5',mission5Shader);await cp('begin',beginShader,'begin');await cp('init',initShader,'init');await cp('gridZ',gridZShader,'grid');await cp('world',worldShader);await cp('zombies',zombieShader);await cp('prepare',prepareSpawnShader,'prepare');await cp('spawn',spawnShader,'spawn');await cp('integrate',integrateShader,'integrate');await cp('gridP',gridPShader,'grid');await cp('solve',solveShader,'solve');await cp('boxes',boxesShader,'build');await cp('finalize',finalizeShader,'finish');
  boot.querySelector('p').textContent='Building the voxel renderer...';
  const rm=renderModule25=await shader('voxel renderer',renderShader),pm=await shader('tone map',postShader),um=await shader('GPU glyphs',uiShader);
@@ -3833,7 +3854,7 @@ async function main(){
   async inspectBuffers(){return {chunks:Array.from(new Uint32Array(await readBuffer(Chunks))),supports:Array.from(new Uint32Array(await readBuffer(Groups))),blood:Array.from(new Uint32Array(await readBuffer(Paint)))}}});
  window.__TINY_READY__=true;frameCallback=requestAnimationFrame(drawFrame);return true;
 }
-window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
+window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
  window.__TINY_READY__=false;
 loadAudioBank9();
 main().catch(fail);

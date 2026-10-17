@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "7990bfe007f28d3c38062aff76724b8f31ee2b18053270c09988c0ea12982852",
+  "runtimeSha256": "3f5c733d69190cc4dae6ce1556e00f653976ee02c15c4416d6bf96b16774b3b5",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
@@ -11,8 +11,9 @@
   "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065",
   "startupBindingCorrection": "Collapse shader reads u.run; bind uniform U at binding 0 alongside Groups and C. CPU host-layout regression only; actual GPU startup remains unverified.",
   "startupSwizzleCorrection": "Six invalid WGSL multi-component lvalue assignments replaced by vec4f(rhs, existing.zw). All 40 composed modules pass Naga parse and semantic validation. Actual device startup remains owner playtest.",
-  "previousRuntimeSha256": "e9d047c968bfc4eea6a187e2ec34ef199a6418b1cfd617ccabf736831a0a4f8c",
+  "previousRuntimeSha256": "7990bfe007f28d3c38062aff76724b8f31ee2b18053270c09988c0ea12982852",
   "auditCorrection25": "Parity-audit batch (16 exact hunks): director ignores dead bots (FADE no longer stalls after a bleed-out), Mercer/Burnout alarm cars restored from DEAD ENDS startMap at the captured seeds, N needs a second press, L/T/F6 need ?dev or ?lab, click-to-play recovers from a pre-start pause, loadout strip plus reload/empty weapon labels. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest.",
   "sandboxMilestone26": "?sandbox boots the V9 open-town mission (stage 6) as Maple Street: full configured population, seeded suburban houses/fences, campy announcer lines and names, evacuation card with Enter to reroll. Campaign URLs unchanged. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest.",
-  "performancePass27": "Crowd 3x3 ring (exact), gated sight ray, unused pressure grid removed, infected passes sized to the live population, door-frame flow fallback, adaptive render quality (tiers 0-3: MSAA off, render scale 0.8/0.67; ?tier, ?q, ?msaa pin it). Tint-validated shaders and SwiftShader-validated 1x pipelines; no GPU timing measured."
+  "performancePass27": "Crowd 3x3 ring (exact), gated sight ray, unused pressure grid removed, infected passes sized to the live population, door-frame flow fallback, adaptive render quality (tiers 0-3: MSAA off, render scale 0.8/0.67; ?tier, ?q, ?msaa pin it). Tint-validated shaders and SwiftShader-validated 1x pipelines; no GPU timing measured.",
+  "steeringPass28": "Two-lane flow field (squad: player + living bots; heard: noise, alarm, landed lure pipes) packed in the relax buffers and published by navPublish; heard infected path around walls with squad-lane fallback; gradient-smoothed following; speed-matched queues; circle crowd contacts. Real shaders executed on SwiftShader WebGPU: both lanes equal exact Dijkstra on 35,506 cells; lured infected reaches a pipe behind a house wall (live build stalls 14.6 m away); 48/48 infected through a garage door in 10 s vs 37/48 in 12 s. No hardware timing."
 }

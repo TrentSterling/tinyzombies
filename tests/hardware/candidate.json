@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "1a589db0910946ef3943fc12a10c3518b49230d1a59acaf71c50863438aa02f2",
+  "runtimeSha256": "e9d047c968bfc4eea6a187e2ec34ef199a6418b1cfd617ccabf736831a0a4f8c",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
@@ -11,6 +11,7 @@
   "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065",
   "startupBindingCorrection": "Collapse shader reads u.run; bind uniform U at binding 0 alongside Groups and C. CPU host-layout regression only; actual GPU startup remains unverified.",
   "startupSwizzleCorrection": "Six invalid WGSL multi-component lvalue assignments replaced by vec4f(rhs, existing.zw). All 40 composed modules pass Naga parse and semantic validation. Actual device startup remains owner playtest.",
-  "previousRuntimeSha256": "bf9da228fac672dc349d5508dff3d46d58b3a27e025305868ed39fae8255fafe",
-  "auditCorrection25": "Parity-audit batch (16 exact hunks): director ignores dead bots (FADE no longer stalls after a bleed-out), Mercer/Burnout alarm cars restored from DEAD ENDS startMap at the captured seeds, N needs a second press, L/T/F6 need ?dev or ?lab, click-to-play recovers from a pre-start pause, loadout strip plus reload/empty weapon labels. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest."
+  "previousRuntimeSha256": "1a589db0910946ef3943fc12a10c3518b49230d1a59acaf71c50863438aa02f2",
+  "auditCorrection25": "Parity-audit batch (16 exact hunks): director ignores dead bots (FADE no longer stalls after a bleed-out), Mercer/Burnout alarm cars restored from DEAD ENDS startMap at the captured seeds, N needs a second press, L/T/F6 need ?dev or ?lab, click-to-play recovers from a pre-start pause, loadout strip plus reload/empty weapon labels. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest.",
+  "sandboxMilestone26": "?sandbox boots the V9 open-town mission (stage 6) as Maple Street: full configured population, seeded suburban houses/fences, campy announcer lines and names, evacuation card with Enter to reroll. Campaign URLs unchanged. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest."
 }

@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),{sha}=require('./deadends-cpu-host.cjs');
 const delta=require('./audit-fixes25-delta.json');
 function withoutAuditFixes25(html){
+ html=require('./sandbox26.cjs').withoutSandbox26(html);
  if(!html.includes('function drawLoadout25('))return html;
  for(const [i,change]of [...delta.changes.entries()].reverse()){assert.equal(html.split(change.after).length,2,'Exact audit hunk '+i);html=html.replace(change.after,change.before);}
  assert.equal(sha(html),delta.parentSha256,'Audit inverse must restore immutable pre-audit runtime');return html;

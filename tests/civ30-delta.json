@@ -1,0 +1,69 @@
+{
+ "parentSha256": "01bd4c0693ba4bc3cbef3e49ffe1b62a4b6ecaa425f01f46fb9667204325cabe",
+ "changes": [
+  {
+   "before": "const MAX_WORLD=131072, MAX_PAGES=1152, MAX_PROPS=192, MAX_GROUPS=1024, MAX_FACES=260000;",
+   "after": "const MAX_WORLD=131072, MAX_PAGES=1152, MAX_PROPS=192, MAX_GROUPS=1024, MAX_FACES=260000;\n// Neighbors live in the 12 reserved prop slots past every level's props (max 138 of 192); the civilian pass mirrors them into the unused State tail for the HUD.\nconst CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904;"
+  },
+  {
+   "before": "const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;",
+   "after": "const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;const CIV_BASE30:u32=${MAX_PROPS-12}u;"
+  },
+  {
+   "before": "if(stage===2)for(const [x,z]of [[-49,38],[-44,25],[-35,12],[24,-23]])barrel8(x,z);",
+   "after": "if(stage===2)for(const [x,z]of [[-49,38],[-44,25],[-35,12],[24,-23]])barrel8(x,z);\n // Maple Street neighbors wait at home: prop kind 30, data = (hp, state 1 waiting / 2 following / 3 saved / 4 lost, fright, outfit).\n const civilians30=[];\n if(SANDBOX25&&!settings.lab){const homes=buildings.filter(b=>!b.authored&&Math.hypot(b.x+b.w/2-start[0],b.z+b.d/2-start[1])>18);\n  for(let n=homes.length-1;n>0;n--){const k=Math.floor(rand()*(n+1));[homes[n],homes[k]]=[homes[k],homes[n]];}\n  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,x=b.x+b.w/2,z=b.z+b.d*.6,outfit=civilians30.length;props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,0,0],slot*16);civilians30.push({x,z,slot,outfit});}}"
+  },
+  {
+   "before": "return {flow9:settings.lab?null:FLOW9,",
+   "after": "return {civilians30,flow9:settings.lab?null:FLOW9,"
+  },
+  {
+   "before": "const finalizeShader=COMMON+`",
+   "after": "// Maple Street neighbors: wait at home, follow the player once reached, get bitten by awake infected, count as saved inside the shelter.\nconst civilians30Shader=COMMON+`\n@group(0) @binding(1) var<storage,read_write> SR:array<vec4f>;\n@group(0) @binding(2) var<storage,read_write> C:array<atomic<u32>>;\n@group(0) @binding(3) var<storage,read> Z:array<Zombie>;\n@group(0) @binding(4) var<storage,read> H:array<u32>;\n@group(0) @binding(5) var<storage,read> O:array<u32>;\n@group(0) @binding(6) var<storage,read_write> Props:array<Prop>;\n`+SOLID+`\nfn civStep30(me:vec2f,goal:vec2f)->vec2f {\n let to=goal-me;let direct=safe2(to);var clear=length(to)<20.0;let steps=u32(ceil(length(to)*2.0));\n for(var s=1u;clear&&s<steps;s++){let q=me+direct*f32(s)*.5;if(solid(vec3f(q.x,.36,q.y))>0u){clear=false;}}\n if(clear){return direct;}\n let c=clamp(vec2i(floor(me+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let wc=O[WALK_OFFSET+here];var best=O[NAV_OFFSET+here];var result=direct;\n for(var a=0u;a<8u;a++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}\n  let wn=O[WALK_OFFSET+u32(n.x+NG*n.y)];if(!stepOpen30(wc,wn,d,O[WALK_OFFSET+u32(c.x+NG*n.y)],O[WALK_OFFSET+u32(n.x+NG*c.y)])){continue;}\n  let v=O[NAV_OFFSET+u32(n.x+NG*n.y)]+select(0u,4u,a>=4u);if(v<best){best=v;var aim=vec2f(n)+.5-HALF;if(a<4u){aim=portal30(vec2f(c)+.5-HALF,wc,wn,d);}result=safe2(aim-me);}\n }\n return result;\n}\n@compute @workgroup_size(16) fn update(@builtin(global_invocation_id) gid:vec3u){let k=gid.x;if(k>=12u){return;}let slot=CIV_BASE30+k;var c=Props[slot];\n let live=c.p.w==30.0;SR[976u+k]=vec4f(c.p.x,c.p.z,select(0.0,c.data.y,live),c.data.x);\n if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}\n let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);\n if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}\n var stride2=vec2f(0);if(c.data.y>1.5&&d>1.7&&player.w>0.0){stride2=civStep30(me,player.xz)*select(2.1,2.9,d>6.0);}\n // Awake infected in contact bite.\n var bites=0u;let cell=vec2i(floor(me+HALF));\n for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];\n  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42){bites++;}}}}\n c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);\n if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}\n let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;\n if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}\n c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));\n let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[29],1u);}\n Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);\n}\n`;\nconst finalizeShader=COMMON+`"
+  },
+  {
+   "before": "await cp('navPublish',navPublishShader,'publish');",
+   "after": "await cp('navPublish',navPublishShader,'publish');await cp('civilians30',civilians30Shader);"
+  },
+  {
+   "before": "navPublish:navPublishShader,",
+   "after": "navPublish:navPublishShader,civilians30:civilians30Shader,"
+  },
+  {
+   "before": "bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));",
+   "after": "bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));bindings.civilians30=[zA,zB].map(z=>bg(compute.civilians30,[[0,U],[1,S],[2,C],[3,z],[4,zHeads],[5,O],[6,Props]]));"
+  },
+  {
+   "before": "pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));",
+   "after": "if(world.civilians30?.length)pass(enc,'civilians30',bindings.civilians30[zParity],1);pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));"
+  },
+  {
+   "before": "if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;victim=ti+1u;}}",
+   "after": "if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;victim=ti+1u;}}\n // Maple Street neighbors are on the menu too (sandbox only). Their bites are applied by the civilian pass, so victim 5 skips the squad damage path.\n if(u.run.x>5.0&&u.run.y<.5){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<.5||cv.data.y>2.5){continue;}let d=length(cv.p.xz-z.p.xz);if(d<min(nearestTarget,10.0)){nearestTarget=d;goalPoint=cv.p.xz;victim=5u;}}}"
+  },
+  {
+   "before": "@compute @workgroup_size(64) fn build(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;",
+   "after": "// Neighbors: the squad body plan at 92%, campy outfits, a bobbing \"!\" while they wait, arms up when bitten.\nfn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.data.y>2.5){return;}\n let o=u32(c.data.w)%6u;let cloth=array<vec3f,6>(vec3f(.95,.55,.72),vec3f(.18,.42,.86),vec3f(.96,.86,.12),vec3f(.93,.93,.90),vec3f(.40,.70,.30),vec3f(.62,.36,.18))[o];\n let skin=array<vec3f,3>(vec3f(.86,.64,.41),vec3f(.53,.34,.22),vec3f(.95,.76,.62))[o%3u];\n let dir=select(vec2f(0,1),c.aux.zw,length(c.aux.zw)>.1);var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}\n modelSize=vec3f(.92);modelProne=0.0;let stride=sin(S.aux.x*11.0+f32(k))*min(1.0,length(c.aux.xy))*.09;let lift=abs(stride)*.55;let panic=c.data.z>0.0;\n for(var j=0u;j<15u;j++){let v=FRIEND7[j*2u];let sz=FRIEND7[j*2u+1u];var color=skin;\n  switch u32(v.w){case 1u:{color=cloth;}case 2u:{color=cloth*.55;}case 3u:{color=vec3f(.20,.16,.12);}case 4u:{color=vec3f(.03);}case 5u:{color=vec3f(.92,.92,.78);}default:{}}\n  part(c.p.xyz,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.12*abs(sin(S.aux.x*14.0)),panic&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);\n }\n modelSize=vec3f(1);\n if(c.data.y<1.5){let bob=.06*sin(S.aux.x*4.0+f32(k));box(c.p.xyz+vec3f(0,1.45+bob,0),vec3f(.10,.28,.10),vec3f(1,.80,.20),3,1.6);box(c.p.xyz+vec3f(0,1.17+bob,0),vec3f(.10,.08,.10),vec3f(1,.80,.20),3,1.6);}\n}\n@compute @workgroup_size(64) fn build(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;"
+  },
+  {
+   "before": "if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}",
+   "after": "if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}}"
+  },
+  {
+   "before": "  if(SANDBOX25&&playerValues[461]>0){",
+   "after": "  if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);\n  if(SANDBOX25&&playerValues[461]>0){"
+  },
+  {
+   "before": "function nextSandbox25(){",
+   "after": "const CIV_NAMES30=['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'];\nconst CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],\n saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],\n lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};\nlet civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;\nfunction neighborsHUD30(k){\n const total=world.civilians30.length,joined=counters[24]|0,saved=counters[29]|0,lost=counters[25]|0;\n for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind]){const pick=CIV_LINES30[kind==='joined'?'join':kind];const who=CIV_NAMES30[(now*3+total)%CIV_NAMES30.length];civNote30=pick[now%pick.length].replaceAll('{n}',who);civNoteUntil30=time+4;civSeen30[kind]=now;}}\n if(joined<civSeen30.joined)civSeen30={joined,saved,lost};\n const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);\n if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);\n for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}\n}\nfunction nextSandbox25(){"
+  },
+  {
+   "before": "centre(SANDBOX25?fmt(counters[0])+' neighbors put down  /  '+Math.round(playerValues[24]||0)+'s  /  HOA fees waived':",
+   "after": "centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+Math.round(playerValues[24]||0)+'s':"
+  },
+  {
+   "before": "if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}",
+   "after": "if(distance>4.0&&victim!=5u){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}"
+  }
+ ]
+}

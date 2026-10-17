@@ -126,6 +126,8 @@ function storage(label,size,data,extra=0){return buf(label,size,GPUBufferUsage.S
 // V4 world contract: metres are unchanged; empty space has no voxel page or face allocation.
 const GRID=768, CGRID=48, CHUNK_COUNT=CGRID*CGRID, CHUNK_CELLS=3072;
 const MAX_WORLD=131072, MAX_PAGES=1152, MAX_PROPS=192, MAX_GROUPS=1024, MAX_FACES=260000;
+// Neighbors live in the 12 reserved prop slots past every level's props (max 138 of 192); the civilian pass mirrors them into the unused State tail for the HUD.
+const CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904;
 const PAGE_TABLE=0, OCC_BASE=CHUNK_COUNT, OCC_SIZE=OCC_BASE+MAX_PAGES*CHUNK_CELLS;
 const NG=192, NAV_SIZE=NG*NG, NAV_OFFSET=OCC_SIZE, WALK_OFFSET=NAV_OFFSET+NAV_SIZE, PRESS_OFFSET=WALK_OFFSET+NAV_SIZE;
 const DYNAMIC_GRID=384, DYNAMIC_SIZE=DYNAMIC_GRID*DYNAMIC_GRID, DYNAMIC_OFFSET=PRESS_OFFSET+NAV_SIZE;
@@ -403,6 +405,11 @@ function makeWorld(){
  for(const [x,z]of [[-51,39],[-46,25],[-37,12],[-28,-2],[0,-19],[22,-23],[35,13],[39,26]])barrel8(x,z);
  // Foundry leg groups more fuel in pairs, not everywhere across the level.
  if(stage===2)for(const [x,z]of [[-49,38],[-44,25],[-35,12],[24,-23]])barrel8(x,z);
+ // Maple Street neighbors wait at home: prop kind 30, data = (hp, state 1 waiting / 2 following / 3 saved / 4 lost, fright, outfit).
+ const civilians30=[];
+ if(SANDBOX25&&!settings.lab){const homes=buildings.filter(b=>!b.authored&&Math.hypot(b.x+b.w/2-start[0],b.z+b.d/2-start[1])>18);
+  for(let n=homes.length-1;n>0;n--){const k=Math.floor(rand()*(n+1));[homes[n],homes[k]]=[homes[k],homes[n]];}
+  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,x=b.x+b.w/2,z=b.z+b.d*.6,outfit=civilians30.length;props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,0,0],slot*16);civilians30.push({x,z,slot,outfit});}}
 
  if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');
  const occ=new Uint32Array(OCC_SIZE+NAV_SIZE*3+DYNAMIC_SIZE),blocks=new Float32Array(MAX_WORLD*8),chunks=new Uint32Array(CHUNK_COUNT*4);
@@ -424,7 +431,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -453,7 +460,7 @@ const HALF:f32=96.0;const WG:i32=768;const CG:i32=48;const CHUNKS:u32=2304u;
 const NG:i32=192;const NAV_CELL:f32=1.0;const NAV_N:u32=36864u;
 const DYNAMIC_GRID:i32=384;const DYNAMIC_OFFSET:u32=${DYNAMIC_OFFSET}u;
 const OCC_BASE:u32=${OCC_BASE}u;const PAGE_CELLS:u32=3072u;
-const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;
+const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;const CIV_BASE30:u32=${MAX_PROPS-12}u;
 const ZHEADS:u32=${ZHEADS}u;const ZCOUNTS:u32=${ZHEADS+MAX_Z}u;
 const PAINT_BASE:u32=${PAINT_BASE}u;const PAINT_PAGES:u32=${PAINT_PAGES}u;const SCORCH_SHIFT6:u32=${PAINT_PAGES*1024}u;
 fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}
@@ -1659,11 +1666,13 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=max(0.0,1.0-dt*6.0);z.history.w*=max(0.0,1.0-dt*6.0);
  let toPlayer=S.pos.xz-z.p.xz;let distance=length(toPlayer);var victim=0u;var goalPoint=S.pos.xz;var nearTeam=999.0;var nearestTarget=distance;
  for(var ti=0u;ti<3u;ti++){let ally=S.team7[ti];if(ally.vital.z<.5){continue;}let d=length(ally.p.xz-z.p.xz);nearTeam=min(nearTeam,d);if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;victim=ti+1u;}}
+ // Maple Street neighbors are on the menu too (sandbox only). Their bites are applied by the civilian pass, so victim 5 skips the squad damage path.
+ if(u.run.x>5.0&&u.run.y<.5){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<.5||cv.data.y>2.5){continue;}let d=length(cv.p.xz-z.p.xz);if(d<min(nearestTarget,10.0)){nearestTarget=d;goalPoint=cv.p.xz;victim=5u;}}}
  // Preparation gates the director, not nearby actors. Awareness needs sight, sound or injury.
  z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
  if(distance>52.0&&nearTeam>15.0&&z.v.w<=0.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
  var awake=z.v.w>0.0;
- if(distance>4.0){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
+ if(distance>4.0&&victim!=5u){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  // Heard but not hunting: infected far from the squad walk to the sound along the heard lane, around walls and through breaches.
  var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}
@@ -2205,12 +2214,25 @@ fn friend7(id:u32){
  if(busy||down){let y=select(1.1,.6,down);let c=select(vec3f(.3,1,.68),vec3f(1,.35,.19),down);for(var j=0u;j<4u;j++){let wide=j%2u==0u;let back=j<2u;box(p.xyz+vec3f(0,y+select(.02,0.0,back)+select(0.0,.009,wide),0),select(vec3f(.065,.038,.23),vec3f(.24,.038,.08),wide)*select(1.0,1.25,back),select(c,vec3f(.01,.025,.03),back),3,select(.55,0.0,back));}}
 }
 
+// Neighbors: the squad body plan at 92%, campy outfits, a bobbing "!" while they wait, arms up when bitten.
+fn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.data.y>2.5){return;}
+ let o=u32(c.data.w)%6u;let cloth=array<vec3f,6>(vec3f(.95,.55,.72),vec3f(.18,.42,.86),vec3f(.96,.86,.12),vec3f(.93,.93,.90),vec3f(.40,.70,.30),vec3f(.62,.36,.18))[o];
+ let skin=array<vec3f,3>(vec3f(.86,.64,.41),vec3f(.53,.34,.22),vec3f(.95,.76,.62))[o%3u];
+ let dir=select(vec2f(0,1),c.aux.zw,length(c.aux.zw)>.1);var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}
+ modelSize=vec3f(.92);modelProne=0.0;let stride=sin(S.aux.x*11.0+f32(k))*min(1.0,length(c.aux.xy))*.09;let lift=abs(stride)*.55;let panic=c.data.z>0.0;
+ for(var j=0u;j<15u;j++){let v=FRIEND7[j*2u];let sz=FRIEND7[j*2u+1u];var color=skin;
+  switch u32(v.w){case 1u:{color=cloth;}case 2u:{color=cloth*.55;}case 3u:{color=vec3f(.20,.16,.12);}case 4u:{color=vec3f(.03);}case 5u:{color=vec3f(.92,.92,.78);}default:{}}
+  part(c.p.xyz,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.12*abs(sin(S.aux.x*14.0)),panic&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
+ }
+ modelSize=vec3f(1);
+ if(c.data.y<1.5){let bob=.06*sin(S.aux.x*4.0+f32(k));box(c.p.xyz+vec3f(0,1.45+bob,0),vec3f(.10,.28,.10),vec3f(1,.80,.20),3,1.6);box(c.p.xyz+vec3f(0,1.17+bob,0),vec3f(.10,.08,.10),vec3f(1,.80,.20),3,1.6);}
+}
 @compute @workgroup_size(64) fn build(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;
  if(i==0u){
   for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x){for(var j=0u;j<12u;j++){let a=f32(j)*.5236;box(vec3f(acid.x+cos(a)*acid.z*.55,.025,acid.y+sin(a)*acid.z*.55),vec3f(.55,.035,.55),vec3f(.37,.57,.08),1,.4);}}}
   box(vec3f(0,-.22,0),vec3f(192,.44,192),vec3f(.37,.40,.38),0,0);
   model(S.pos.xyz,S.look.xy,S.anim8.x,0,true,S.look.w*.25,select(-1.0,-3.0,S.player7.x>0.0));
-  if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}
+  if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}}
   if(S.weapons.w>.02){for(var k=0u;k<11u;k++){let a=(f32(k)-5.0)*.13;let d=vec2f(S.look.x*cos(a)-S.look.y*sin(a),S.look.x*sin(a)+S.look.y*cos(a));let p=S.pos.xz+d*(1.7-S.weapons.w*.35);box(vec3f(p.x,.10,p.y),vec3f(.07,.07,.07),vec3f(.65,.95,.94),1,S.weapons.w*2.0);}}
   for(var bi=0u;bi<16u;bi++){let pipe=S.pipes12[bi];if(pipe.z<=0.0){continue;}
     let t=clamp((3.15-pipe.z)/.45,0.0,1.0);let xz=mix(S.pipeStarts12[bi].xy,pipe.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*1.4,xz.y);
@@ -2307,6 +2329,45 @@ fn friend7(id:u32){
 }
 `;
 
+// Maple Street neighbors: wait at home, follow the player once reached, get bitten by awake infected, count as saved inside the shelter.
+const civilians30Shader=COMMON+`
+@group(0) @binding(1) var<storage,read_write> SR:array<vec4f>;
+@group(0) @binding(2) var<storage,read_write> C:array<atomic<u32>>;
+@group(0) @binding(3) var<storage,read> Z:array<Zombie>;
+@group(0) @binding(4) var<storage,read> H:array<u32>;
+@group(0) @binding(5) var<storage,read> O:array<u32>;
+@group(0) @binding(6) var<storage,read_write> Props:array<Prop>;
+`+SOLID+`
+fn civStep30(me:vec2f,goal:vec2f)->vec2f {
+ let to=goal-me;let direct=safe2(to);var clear=length(to)<20.0;let steps=u32(ceil(length(to)*2.0));
+ for(var s=1u;clear&&s<steps;s++){let q=me+direct*f32(s)*.5;if(solid(vec3f(q.x,.36,q.y))>0u){clear=false;}}
+ if(clear){return direct;}
+ let c=clamp(vec2i(floor(me+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let wc=O[WALK_OFFSET+here];var best=O[NAV_OFFSET+here];var result=direct;
+ for(var a=0u;a<8u;a++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
+  let wn=O[WALK_OFFSET+u32(n.x+NG*n.y)];if(!stepOpen30(wc,wn,d,O[WALK_OFFSET+u32(c.x+NG*n.y)],O[WALK_OFFSET+u32(n.x+NG*c.y)])){continue;}
+  let v=O[NAV_OFFSET+u32(n.x+NG*n.y)]+select(0u,4u,a>=4u);if(v<best){best=v;var aim=vec2f(n)+.5-HALF;if(a<4u){aim=portal30(vec2f(c)+.5-HALF,wc,wn,d);}result=safe2(aim-me);}
+ }
+ return result;
+}
+@compute @workgroup_size(16) fn update(@builtin(global_invocation_id) gid:vec3u){let k=gid.x;if(k>=12u){return;}let slot=CIV_BASE30+k;var c=Props[slot];
+ let live=c.p.w==30.0;SR[976u+k]=vec4f(c.p.x,c.p.z,select(0.0,c.data.y,live),c.data.x);
+ if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}
+ let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
+ if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}
+ var stride2=vec2f(0);if(c.data.y>1.5&&d>1.7&&player.w>0.0){stride2=civStep30(me,player.xz)*select(2.1,2.9,d>6.0);}
+ // Awake infected in contact bite.
+ var bites=0u;let cell=vec2i(floor(me+HALF));
+ for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
+  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42){bites++;}}}}
+ c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
+ if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
+ let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
+ if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}
+ c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));
+ let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[29],1u);}
+ Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);
+}
+`;
 const finalizeShader=COMMON+`
 @group(0) @binding(1) var<storage,read_write> C:array<atomic<u32>>;
 @group(0) @binding(2) var<storage,read_write> D:array<u32>;
@@ -3425,7 +3486,7 @@ function buildComputeBindings(){
  bindings.integrate=bg(compute.integrate,[[0,U],[1,pA],[2,pB],[3,O],[4,Paint],[5,WP],[6,C],[7,S],[8,Props]]);
  bindings.gridP=bg(compute.gridP,[[0,U],[1,pB],[2,pHeads],[3,pNext]]);
  bindings.solve=bg(compute.solve,[[0,U],[1,pB],[2,pA],[3,pHeads],[4,pNext],[5,C],[6,O]]);
- bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));
+ bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));bindings.civilians30=[zA,zB].map(z=>bg(compute.civilians30,[[0,U],[1,S],[2,C],[3,z],[4,zHeads],[5,O],[6,Props]]));
  bindings.finalize=bg(compute.finalize,[[1,C],[2,drawArgs]]);
  bindings.navInit=bg(compute.navInit,[[1,S],[2,O],[3,NavA]]);
  bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);
@@ -3528,6 +3589,19 @@ const MISSION_LABELS=['Find Violet','Start relay A','Recover the cell','Power re
 const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke generator online. Everyone heard that.','Battery installed. Please stand well back.'],4:'Power restored. Property values recovering.',6:'The casserole dish was full of ammo. Classic Linda.',7:'Structural solution applied.',9:'Pipe bombs earned. Keep up the good work.',10:'The whole neighborhood is coming over to say hi.',11:'Somebody screamed. Rude.',14:'You dropped the battery. Gary is disappointed.',15:'Maple Street evacuated. HOA fees waived.'};
 function sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}
 const SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];
+const CIV_NAMES30=['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'];
+const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],
+ saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
+ lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
+let civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;
+function neighborsHUD30(k){
+ const total=world.civilians30.length,joined=counters[24]|0,saved=counters[29]|0,lost=counters[25]|0;
+ for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind]){const pick=CIV_LINES30[kind==='joined'?'join':kind];const who=CIV_NAMES30[(now*3+total)%CIV_NAMES30.length];civNote30=pick[now%pick.length].replaceAll('{n}',who);civNoteUntil30=time+4;civSeen30[kind]=now;}}
+ if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
+ const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);
+ if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
+ for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
+}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -3578,6 +3652,7 @@ function hud(){
   rect(cx-38*k,cy+r+39*k,76*k,3*k,COL9.dim);rect(cx-38*k,cy+r+39*k,76*k*clamp9(playerValues[L12.items+3]/100,0,1),3*k,COL9.green);
   if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,12*k)/2,cy+r+67*k,12*k,COL9.gold);
   drawLoadout25(k,eq);
+  if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
   if(playerValues[110]>0){
@@ -3705,7 +3780,7 @@ function hud(){
  }
   if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
-   centre(SANDBOX25?fmt(counters[0])+' neighbors put down  /  '+Math.round(playerValues[24]||0)+'s  /  HOA fees waived':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
+   centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
    else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
    if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
@@ -3770,7 +3845,7 @@ function runSimulation(enc,beginExtra={}){
  for(let sub=0;sub<2;sub++){pass(enc,'integrate',bindings.integrate,Math.ceil(settings.pool/64));enc.clearBuffer(pHeads);pass(enc,'gridP',bindings.gridP,Math.ceil(settings.pool/64));pass(enc,'solve',bindings.solve,Math.ceil(settings.pool/64),sub===1?stamp(null,9):{});}
  pass(enc,'meshReset',bindings.meshReset,Math.ceil(CHUNK_COUNT/64),stamp(10,null));pass(enc,'mesh',bindings.mesh,CHUNK_COUNT);
  pass(enc,'lights',bindings.lights,1);pass(enc,'lightTiles',bindings.lightTiles,4);
- pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));
+ if(world.civilians30?.length)pass(enc,'civilians30',bindings.civilians30[zParity],1);pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));
  pass(enc,'wreckBoxes8',bindings.wreckBoxes8,Math.ceil(WRECK_MAX8/64));pass(enc,'faces',bindings.faces,CHUNK_COUNT);pass(enc,'finalize',bindings.finalize,1);pass(enc,'faceFinalize',bindings.faceFinalize,1,stamp(null,11));
 }
 
@@ -3846,7 +3921,7 @@ async function main(){
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
  await cp('melee8',melee8Shader);await cp('fracture8',fracture8Shader);await cp('wreckBoxes8',wreckBoxes8Shader);await cp('aim3',aim3Shader);await cp('bullet3',bullet3Shader);await cp('buddy',buddyShader);await cp('squadNav7',squadNav7Shader);await cp('doors7',doors7Shader);await cp('crowd',crowdShader);await cp('dynamic',dynamicShader);await cp('lights',lightsShader);await cp('lightTiles',lightTilesShader);
- await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
+ await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('navPublish',navPublishShader,'publish');await cp('civilians30',civilians30Shader);await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
  await cp('fx6',fx6Shader);await cp('mission5',mission5Shader);await cp('begin',beginShader,'begin');await cp('init',initShader,'init');await cp('gridZ',gridZShader,'grid');await cp('world',worldShader);await cp('zombies',zombieShader);await cp('prepare',prepareSpawnShader,'prepare');await cp('spawn',spawnShader,'spawn');await cp('integrate',integrateShader,'integrate');await cp('gridP',gridPShader,'grid');await cp('solve',solveShader,'solve');await cp('boxes',boxesShader,'build');await cp('finalize',finalizeShader,'finish');
  boot.querySelector('p').textContent='Building the voxel renderer...';
  const rm=renderModule25=await shader('voxel renderer',renderShader),pm=await shader('tone map',postShader),um=await shader('GPU glyphs',uiShader);
@@ -3880,7 +3955,7 @@ async function main(){
   async inspectBuffers(){return {chunks:Array.from(new Uint32Array(await readBuffer(Chunks))),supports:Array.from(new Uint32Array(await readBuffer(Groups))),blood:Array.from(new Uint32Array(await readBuffer(Paint)))}}});
  window.__TINY_READY__=true;frameCallback=requestAnimationFrame(drawFrame);return true;
 }
-window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
+window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,civilians30:civilians30Shader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
  window.__TINY_READY__=false;
 loadAudioBank9();
 main().catch(fail);

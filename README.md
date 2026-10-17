@@ -19,6 +19,12 @@ Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandb
 
 `node tests/sandbox26.test.cjs` checks start-up, rerolls, objective reachability on 16 seeds, the announcer and the evacuation flow. Gameplay and GPU behaviour need an owner playtest.
 
+## Neighbors to rescue (sandbox)
+
+Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
+
+On a software GPU running the real shaders, a neighbor followed the player 73 m across town into the shelter; another, cornered by three awake infected, was lost in about 3 seconds.
+
 ## Hordes that hear things
 
 Infected now follow two flow fields that share one buffer: one toward the squad (you, plus living bots at a small penalty) and one toward whatever they heard (gunfire and blasts far from the squad, alarms, a landed pipe bomb). A lured infected walks around the house to the pipe instead of grinding against the wall toward you. Following is smoother (the 8-way step blends with the field's slope), queues match the speed of the infected ahead instead of braking and surging, and crowd contacts push along the true separation instead of flipping between axes.

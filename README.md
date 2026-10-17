@@ -8,6 +8,17 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 This checkout restores a larger connected Chapter 1 district, destructible wall breaches, the configured infected population, bounded off-route pressure and objective-safe extraction. Chapters 2–5 world buffers, art, controls, recorded audio and persistent blood are preserved. This build is released for the owner's playtest through [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18). CPU/source checks are separate from shader compilation, GPU performance and earned gameplay, which remain unverified. See [scope, preservation and test limits](tests/MERCER-RESTORATION.md) and [fresh CPU results](validation/mercer-support-fix/suite-summary.json).
 
+## Maple Street sandbox (prototype)
+
+Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
+
+- It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).
+- Every block gets up to two small houses with garage doors and side doors, knee-high picket fences and yard junk. All of it breaks. The seed rerolls the street; `?sandbox&seed=1234` picks one.
+- A very calm announcer comments on the chaos. After the evacuation, Enter rolls a new street.
+- No checkpoints or records are saved in the sandbox. The campaign URL is unchanged.
+
+`node tests/sandbox26.test.cjs` checks start-up, rerolls, objective reachability on 16 seeds, the announcer and the evacuation flow. Gameplay and GPU behaviour need an owner playtest.
+
 ## Parity audit fixes
 
 An independent source audit against [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) found and this build fixes:

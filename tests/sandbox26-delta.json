@@ -1,0 +1,85 @@
+{
+ "parentSha256": "1a589db0910946ef3943fc12a10c3518b49230d1a59acaf71c50863438aa02f2",
+ "changes": [
+  {
+   "before": "const params=new URLSearchParams(location.search);",
+   "after": "const params=new URLSearchParams(location.search);\n// Maple Street sandbox: the open V9 town mission with the full horde, campy and rerollable.\nconst SANDBOX25=params.has('sandbox'),SANDBOX_STAGE25=6;"
+  },
+  {
+   "before": "stage=1,upgrades=[0,0,0],navPhase=0",
+   "after": "stage=SANDBOX25?SANDBOX_STAGE25:1,upgrades=[0,0,0],navPhase=0"
+  },
+  {
+   "before": "runSeed=(runSeed+104729)>>>0;stage=1;upgrades=[0,0,0];",
+   "after": "runSeed=(runSeed+104729)>>>0;stage=SANDBOX25?SANDBOX_STAGE25:1;upgrades=[0,0,0];"
+  },
+  {
+   "before": "settings.lab||stage===1?campaignPopulation24():",
+   "after": "settings.lab||stage===1||SANDBOX25?campaignPopulation24():"
+  },
+  {
+   "before": " // Sixteen districts share a 12 m street network.",
+   "after": " // Maple Street: up to two small houses per block (garage door front, side door), a knee-high picket fence, yard junk. The seed rerolls all of it.\n function houses25(cx,cz,id){\n  for(const [hx0,hz0] of [[cx-21,cz-19],[cx-9,cz-19]]){if(rand()<.15)continue;\n   const hw=8+Math.floor(rand()*3),hd=7+Math.floor(rand()*2),hx=hx0+Math.floor(rand()*2),hz=hz0+Math.floor(rand()*2);\n   if(!free(hx+hw/2,hz+hd/2,6)||!flowFree9(hx+hw/2,hz+hd/2,6)||!freightFree9(hx+hw/2,hz+hd/2,6))continue;\n   const mat=rand()<.4?3:1,westDoor=rand()<.5;\n   wall(hx,hz,hw,false,0,mat);wall(hx,hz+hd,hw,false,4.5,mat);wall(hx,hz,hd,true,westDoor?2:0,mat);wall(hx+hw-.5,hz,hd,true,westDoor?0:2,mat);\n   buildings.push({x:hx,z:hz,w:hw,d:hd});if(rand()<.7)shelf(hx+1,hz+1);\n  }\n  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6))wall(x,cz-6,2,false,0,1,.75);}\n  crate(cx+6+Math.floor(rand()*4),cz+6+Math.floor(rand()*3),2);crate(cx-10+Math.floor(rand()*3),cz+13,1.5);if(rand()<.4)crate(cx+11,cz+8,1.25);\n }\n // Sixteen districts share a 12 m street network."
+  },
+  {
+   "before": "  if(!settings.lab){let bx=cx-18",
+   "after": "  if(SANDBOX25&&!settings.lab){houses25(cx,cz,id);}else if(!settings.lab){let bx=cx-18"
+  },
+  {
+   "before": "  for(const b of FLOW9.buildings){",
+   "after": "  for(const b of SANDBOX25?[]:FLOW9.buildings){"
+  },
+  {
+   "before": "chapter8:CHAPTER8[(stage-1)%3]",
+   "after": "chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3]"
+  },
+  {
+   "before": "const MISSION_LABELS=['Find Violet','Start relay A','Recover the cell','Power relay B','Reach the safehouse'];",
+   "after": "const MISSION_LABELS=['Find Violet','Start relay A','Recover the cell','Power relay B','Reach the safehouse'];\n// Sandbox voice: a calm announcer, a neighborhood that is very much on fire.\nconst SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke generator online. Everyone heard that.','Battery installed. Please stand well back.'],4:'Power restored. Property values recovering.',6:'The casserole dish was full of ammo. Classic Linda.',7:'Structural solution applied.',9:'Pipe bombs earned. Keep up the good work.',10:'The whole neighborhood is coming over to say hi.',11:'Somebody screamed. Rude.',14:'You dropped the battery. Gary is disappointed.',15:'Maple Street evacuated. HOA fees waived.'};\nfunction sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}\nconst SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];\nfunction nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}"
+  },
+  {
+   "before": "return ['Violet','Relay A','Cell','Relay B','Safehouse']",
+   "after": "return (SANDBOX25?['Find Gary, HOA President','Start the karaoke generator','Steal the car battery','Hot-wire the ice cream truck','Fallout shelter (HOA approved)']:['Violet','Relay A','Cell','Relay B','Safehouse'])"
+  },
+  {
+   "before": "const names=['Mara','Rook','Kit']",
+   "after": "const names=SQUAD25()"
+  },
+  {
+   "before": "const nick=['Mara','Rook','Kit']",
+   "after": "const nick=SQUAD25()"
+  },
+  {
+   "before": "  if(settings.practice){const note='PRACTICE: progress is not being saved';",
+   "after": "  if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}\n  if(settings.practice){const note='PRACTICE: progress is not being saved';"
+  },
+  {
+   "before": "  centre('NO ONE LEFT',height*.378,18*k,COL9.violet);",
+   "after": "  centre(SANDBOX25?'MAPLE STREET':'NO ONE LEFT',height*.378,18*k,COL9.violet);\n  if(SANDBOX25)centre('Population: declining. Property values: worse.',height*.43,14*k,COL9.soft);"
+  },
+  {
+   "before": "centre(finalResult19?'Campaign survived':'Safehouse secured',",
+   "after": "centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',"
+  },
+  {
+   "before": "centre(checkpointStatus13||'CHAPTER COMPLETE',",
+   "after": "centre(SANDBOX25?fmt(counters[0])+' neighbors put down  /  '+Math.round(playerValues[24]||0)+'s  /  HOA fees waived':checkpointStatus13||'CHAPTER COMPLETE',"
+  },
+  {
+   "before": "   else centre('Enter  Continue to '+",
+   "after": "   else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+"
+  },
+  {
+   "before": "   if(stage>1)centre('Backspace  Retry '+",
+   "after": "   if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+"
+  },
+  {
+   "before": "   case 'Enter':if(!settings.started||playerValues[67]===1)",
+   "after": "   case 'Enter':if(SANDBOX25&&playerValues[67]===1){nextSandbox25();break;}if(!settings.started||playerValues[67]===1)"
+  },
+  {
+   "before": "  if(playerValues[67]===1){saveBoundary13();continueBoundary13();return;}",
+   "after": "  if(playerValues[67]===1){if(SANDBOX25){nextSandbox25();return;}saveBoundary13();continueBoundary13();return;}"
+  }
+ ]
+}

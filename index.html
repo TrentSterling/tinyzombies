@@ -21,6 +21,8 @@ const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 // Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
+// Maple Street sandbox: the open V9 town mission with the full horde, campy and rerollable.
+const SANDBOX25=params.has('sandbox'),SANDBOX_STAGE25=6;
 const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
@@ -145,7 +147,7 @@ function fractureData8(w){
  }
  u[2]=w.groupCount;w.fractureGroupMax8=largest;w.fractureMembers8=at;return new Uint32Array(raw);
 }
-let runSeed=(+(params.get('seed')||73129))>>>0,stage=1,upgrades=[0,0,0],navPhase=0,seedRequested=false,advanceRequested=0;
+let runSeed=(+(params.get('seed')||73129))>>>0,stage=SANDBOX25?SANDBOX_STAGE25:1,upgrades=[0,0,0],navPhase=0,seedRequested=false,advanceRequested=0;
 const roomNames=['NORTH LOADING','PUMP YARD','NORTH PROCESSING','COLD STORAGE','WEST DEPOT','POWER STATION','SERVICE QUARTER','EAST LOGISTICS','RESCUE DISTRICT','CENTRAL FREIGHT','ASSEMBLY YARD','SAFEHOUSE DISTRICT','ENTRY APPROACH','SOUTH STORAGE','MAINTENANCE','OUTER FREIGHT'];
 function keyCell(x,y,z){return x+GRID*(z+GRID*y);}
 function occAddress(x,y,z,occ){if(x<0||x>=GRID||z<0||z>=GRID||y<0||y>=12)return -1;let page=occ[(x>>4)+CGRID*(z>>4)];return page?OCC_BASE+(page-1)*CHUNK_CELLS+(x&15)+16*(z&15)+256*y:-1;}
@@ -300,11 +302,23 @@ function makeWorld(){
  function crate(x,z,w=1.5){if(!free(x,z,w)||(!settings.lab&&(!flowFree9(x+w*.5,z+w*.5,w*.6)||!freightFree9(x+w*.5,z+w*.5,w*.6))))return;let g=newGroup();objectGroups8.push(g);boxM(x,0,z,w,.75,w,1,g);boxM(x,.75,z,w,.25,w,2,g);}
  function shelf(x,z){if(!free(x,z,3)||(!settings.lab&&(!flowFree9(x+1.5,z+.5,2)||!freightFree9(x+1.5,z+.5,2))))return;let g=newGroup();objectGroups8.push(g);for(let dx of [0,2.75])for(let dz of [0,1])boxM(x+dx,0,z+dz,.25,1.75,.25,4,g);for(let y of [.5,1.5])boxM(x,y,z,3,.25,1.25,4,g);for(let k=0;k<3;k++)boxM(x+.25+k,.75,z+.25,.5,.5,.5,1,g);}
  function prop(x,z,type=0){if(propCount>=MAX_PROPS)throw Error('Prop capacity');if(!free(x,z,1)||(!settings.lab&&type!==1&&(!flowFree9(x,z,1.5)||!freightFree9(x,z,1.5))))return;props.set([x,0,z,type,type===0?6:type===2?18:type===3?12:1,0,0,rand(),2.4,1.4,0,0,0,0,0,0],propCount++*16);}
+ // Maple Street: up to two small houses per block (garage door front, side door), a knee-high picket fence, yard junk. The seed rerolls all of it.
+ function houses25(cx,cz,id){
+  for(const [hx0,hz0] of [[cx-21,cz-19],[cx-9,cz-19]]){if(rand()<.15)continue;
+   const hw=8+Math.floor(rand()*3),hd=7+Math.floor(rand()*2),hx=hx0+Math.floor(rand()*2),hz=hz0+Math.floor(rand()*2);
+   if(!free(hx+hw/2,hz+hd/2,6)||!flowFree9(hx+hw/2,hz+hd/2,6)||!freightFree9(hx+hw/2,hz+hd/2,6))continue;
+   const mat=rand()<.4?3:1,westDoor=rand()<.5;
+   wall(hx,hz,hw,false,0,mat);wall(hx,hz+hd,hw,false,4.5,mat);wall(hx,hz,hd,true,westDoor?2:0,mat);wall(hx+hw-.5,hz,hd,true,westDoor?0:2,mat);
+   buildings.push({x:hx,z:hz,w:hw,d:hd});if(rand()<.7)shelf(hx+1,hz+1);
+  }
+  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6))wall(x,cz-6,2,false,0,1,.75);}
+  crate(cx+6+Math.floor(rand()*4),cz+6+Math.floor(rand()*3),2);crate(cx-10+Math.floor(rand()*3),cz+13,1.5);if(rand()<.4)crate(cx+11,cz+8,1.25);
+ }
  // Sixteen districts share a 12 m street network. Buildings occupy islands, never the full district.
  for(let rz=0;rz<4;rz++)for(let rx=0;rx<4;rx++){
   let id=rx+4*rz,cx=-72+rx*48,cz=-72+rz*48;
   yards.push({x:cx,z:cz+8,width:30,depth:26});
-  if(!settings.lab){let bx=cx-18+(rand()<.5?0:2),bz=cz-18,w=18+(id%3)*1.5,d=10+(id%2)*2;
+  if(SANDBOX25&&!settings.lab){houses25(cx,cz,id);}else if(!settings.lab){let bx=cx-18+(rand()<.5?0:2),bz=cz-18,w=18+(id%3)*1.5,d=10+(id%2)*2;
    // Keep objective pockets outside the architectural footprint.
    if(exclusions.some(([x,z,r])=>x>bx-r&&x<bx+w+r&&z>bz-r&&z<bz+d+r)){bz=cz+8;}
    if(free(bx+w/2,bz+d/2,Math.max(w,d)*.52)&&flowFree9(bx+w/2,bz+d/2,Math.max(w,d)*.52)&&freightFree9(bx+w/2,bz+d/2,Math.max(w,d)*.52)){
@@ -328,7 +342,7 @@ function makeWorld(){
  }
  // Authored freight masses frame the operation's bends and parallel approaches.
  if(!settings.lab){
-  for(const b of FLOW9.buildings){
+  for(const b of SANDBOX25?[]:FLOW9.buildings){
    const mat=stage===2?3:0;
    wall(b.x,b.z,b.w,false,b.doors[0]?4.5:0,mat);wall(b.x,b.z+b.d,b.w,false,b.doors[1]?4.5:0,mat);
    wall(b.x,b.z,b.d,true,b.doors[2]?3.5:0,mat);wall(b.x+b.w-.5,b.z,b.d,true,b.doors[3]?3.5:0,mat);
@@ -410,7 +424,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -3248,7 +3262,7 @@ function bindInput(){
  canvas.addEventListener('pointerdown',e=>{
   e.preventDefault();setMouse(e);if(seedRequested)return;
   if(playerValues[464]>.5){pendingChoice=Math.min(3,Math.max(1,Math.floor(mouse.x*3)+1));cancelInput12();return;}
-  if(playerValues[67]===1){saveBoundary13();continueBoundary13();return;}
+  if(playerValues[67]===1){if(SANDBOX25){nextSandbox25();return;}saveBoundary13();continueBoundary13();return;}
   if(!settings.started&&!settings.help&&!completedBoundary15){settings.paused=false;settings.tactical=false;}
   if(settings.paused||settings.help||settings.tactical)return;
   if(completedBoundary15)return;if(!settings.started){settings.started=true;enableAudio();canvas.focus();cancelInput12();return;}
@@ -3271,8 +3285,8 @@ function bindInput(){
    case 'KeyX':if(!settings.paused)input12.order++;break;
    case 'Slash':e.preventDefault();if(settings.help){settings.help=false;settings.paused=!helpResume;}else{helpResume=!settings.paused;settings.help=true;settings.paused=true;}cancelInput12();break;
    case 'KeyL':if(!DEV_KEYS25)break;settings.practice=true;settings.lab=!settings.lab;seedRequested=true;break;
-   case 'KeyN':if(!confirmKey25('KeyN','Press N again to erase your checkpoint'))break;clearCheckpoint();seedRequested=true;advanceRequested=0;runSeed=(runSeed+104729)>>>0;stage=1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12();break;
-   case 'Enter':if(!settings.started||playerValues[67]===1){saveBoundary13();continueBoundary13();}break;
+   case 'KeyN':if(!confirmKey25('KeyN','Press N again to erase your checkpoint'))break;clearCheckpoint();seedRequested=true;advanceRequested=0;runSeed=(runSeed+104729)>>>0;stage=SANDBOX25?SANDBOX_STAGE25:1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12();break;
+   case 'Enter':if(SANDBOX25&&playerValues[67]===1){nextSandbox25();break;}if(!settings.started||playerValues[67]===1){saveBoundary13();continueBoundary13();}break;
    case 'F6':e.preventDefault();if(!DEV_KEYS25)break;settings.practice=true;{let opts=[256,512,1024,2048,4096,8192];settings.zombies=opts[(opts.indexOf(settings.zombies)+1)%opts.length];}break;
    case 'KeyT':if(!DEV_KEYS25)break;settings.practice=true;settings.demo=!settings.demo;settings.started=true;break;
    case 'Tab':settings.tactical=!settings.tactical;cancelInput12();break;
@@ -3438,6 +3452,11 @@ const FIELD_MODS=[
  {name:'Scavenger',a:'Earn ordnance with fewer kills',b:'Use your surroundings'}
 ];
 const MISSION_LABELS=['Find Violet','Start relay A','Recover the cell','Power relay B','Reach the safehouse'];
+// Sandbox voice: a calm announcer, a neighborhood that is very much on fire.
+const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke generator online. Everyone heard that.','Battery installed. Please stand well back.'],4:'Power restored. Property values recovering.',6:'The casserole dish was full of ammo. Classic Linda.',7:'Structural solution applied.',9:'Pipe bombs earned. Keep up the good work.',10:'The whole neighborhood is coming over to say hi.',11:'Somebody screamed. Rude.',14:'You dropped the battery. Gary is disappointed.',15:'Maple Street evacuated. HOA fees waived.'};
+function sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}
+const SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];
+function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
 function timeLabel(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');}
@@ -3447,7 +3466,7 @@ function aimBeacon9(x,y,color,sz=24){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,133);}
 function arrow9(x,y,angle,color,sz=18){uiQuad9(x-sz*.5,y-sz*.5,sz,sz,color,134,Math.round((angle+Math.PI)/Math.PI/2*65535));}
 function pulse9(x,y,prog,color,r=23){disk9(x,y,r,1,COL9.shadow);disk9(x,y,r,prog,color);}
 function clamp9(v,a,b){return Math.min(b,Math.max(a,v));}
-function shortObjective9(){if(world.source13){if(stage===4&&playerValues[440]>.5)return "Silence hospital alarm";if(stage===4&&playerValues[442]<.5)return "Open hospital shutter";if(playerValues[442]>.5)return "Red door";if(stage===5)return playerValues[440]>.5?"Winch opening: "+Math.max(0,Math.ceil(17-playerValues[441]))+"s":"Start bridge winch";if(stage===3)return playerValues[440]>.5?"Hold out: "+Math.max(0,Math.ceil(15-playerValues[441]))+"s":"Restore station power";if(stage===2){if(playerValues[440]>.5)return "Shutter "+Math.max(0,Math.ceil(11-playerValues[441]))+"s";return playerValues[447]===1?"Carry fuel / pistol only":"Fuel "+Math.round(playerValues[443])+"/2";}return "Service gate";}let m=Math.round(playerValues[448]||0);return ['Violet','Relay A','Cell','Relay B','Safehouse'][Math.min(4,Math.max(0,m))];}
+function shortObjective9(){if(world.source13){if(stage===4&&playerValues[440]>.5)return "Silence hospital alarm";if(stage===4&&playerValues[442]<.5)return "Open hospital shutter";if(playerValues[442]>.5)return "Red door";if(stage===5)return playerValues[440]>.5?"Winch opening: "+Math.max(0,Math.ceil(17-playerValues[441]))+"s":"Start bridge winch";if(stage===3)return playerValues[440]>.5?"Hold out: "+Math.max(0,Math.ceil(15-playerValues[441]))+"s":"Restore station power";if(stage===2){if(playerValues[440]>.5)return "Shutter "+Math.max(0,Math.ceil(11-playerValues[441]))+"s";return playerValues[447]===1?"Carry fuel / pistol only":"Fuel "+Math.round(playerValues[443])+"/2";}return "Service gate";}let m=Math.round(playerValues[448]||0);return (SANDBOX25?['Find Gary, HOA President','Start the karaoke generator','Steal the car battery','Hot-wire the ice cream truck','Fallout shelter (HOA approved)']:['Violet','Relay A','Cell','Relay B','Safehouse'])[Math.min(4,Math.max(0,m))];}
 function panel9(x,y,w,h,alpha=.78){rect(x,y,w,h,[.012,.031,.041,alpha]);}
 // DEAD ENDS arsenal parity: every slot with its key and stock. Bottom-centre, fades out once gear is idle.
 let loadoutSig25='',loadoutAt25=-99;
@@ -3487,6 +3506,7 @@ function hud(){
   rect(cx-38*k,cy+r+39*k,76*k,3*k,COL9.dim);rect(cx-38*k,cy+r+39*k,76*k*clamp9(playerValues[L12.items+3]/100,0,1),3*k,COL9.green);
   if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,12*k)/2,cy+r+67*k,12*k,COL9.gold);
   drawLoadout25(k,eq);
+  if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
   if(playerValues[110]>0){
    const fuse=playerValues[110],total=playerValues[499]||6,t=clamp9((total-fuse)/.45,0,1),bx=playerValues[497]+(playerValues[108]-playerValues[497])*t,bz=playerValues[498]+(playerValues[109]-playerValues[498])*t;
@@ -3501,7 +3521,7 @@ function hud(){
    const label='Down - '+secs+'s';text(label,cx-textWidth9(label,18*k)/2,cy-r-62*k,18*k,COL9.red);
   }
   // Near-player team indicators live over the actual avatars; no persistent roster.
-  const names=['Mara','Rook','Kit'],colors=[COL9.violet,COL9.cyan,COL9.gold];
+  const names=SQUAD25(),colors=[COL9.violet,COL9.cyan,COL9.gold];
   for(let i=0;i<3;i++){
    const o=L7.team7+i*128,thp=playerValues[o+3],wx=playerValues[o],wz=playerValues[o+2];
    if(!(Number.isFinite(wx)&&Number.isFinite(wz))||thp<-1)continue;
@@ -3568,7 +3588,7 @@ function hud(){
   uiQuad9(x,y,sz,sz,[1,1,1,1],130);
   const mission=shortObjective9(),distance=Math.round(Math.hypot(playerValues[488]-playerValues[0],playerValues[489]-playerValues[2]));
   text(mission+'  '+distance+'m',x,y+sz+12*k,17*k,COL9.gold);
-  const nick=['Mara','Rook','Kit'],tones=[COL9.violet,COL9.cyan,COL9.gold];
+  const nick=SQUAD25(),tones=[COL9.violet,COL9.cyan,COL9.gold];
   for(let i=0;i<3;i++){let t=playerValues[L7.team7+i*128+3];text(nick[i],x+(i*sz/3),y+sz+44*k,14*k,t<=0?COL9.red:tones[i]);rect(x+i*sz/3,y+sz+65*k,sz/3-12*k,3*k,COL9.dim);rect(x+i*sz/3,y+sz+65*k,(sz/3-12*k)*clamp9(t/100,0,1),3*k,tones[i]);}
   text('Release Tab',x,y+sz+79*k,12*k,COL9.soft);
  }
@@ -3581,7 +3601,8 @@ function hud(){
  if(!settings.started&&!completedBoundary15){
   panel9(width*.23,height*.27,width*.54,height*.45,.78);
   centre('TINY ZOMBIES',height*.30,46*k,COL9.white);
-  centre('NO ONE LEFT',height*.378,18*k,COL9.violet);
+  centre(SANDBOX25?'MAPLE STREET':'NO ONE LEFT',height*.378,18*k,COL9.violet);
+  if(SANDBOX25)centre('Population: declining. Property values: worse.',height*.43,14*k,COL9.soft);
   centre('Click to play',height*.485,23*k,COL9.gold);
   if(savedCheckpoint)centre('Enter to continue Chapter '+savedCheckpoint.stage,height*.544,17*k,COL9.green);
   centre('Move with WASD, aim and fire with the mouse.',height*.585,15*k,COL9.soft);
@@ -3611,11 +3632,11 @@ function hud(){
   centre('Backspace  Retry     N twice  New run',height*.502,17*k,COL9.white);
  }
   if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
-   centre(finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
-   centre(checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
+   centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
+   centre(SANDBOX25?fmt(counters[0])+' neighbors put down  /  '+Math.round(playerValues[24]||0)+'s  /  HOA fees waived':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
-   else centre('Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
-   if(stage>1)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
+   else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
+   if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
   }
  if(settings.help){
   const x=width*.18,y=height*.20,w=width*.64;panel9(x,y,w,height*.64,.96);centre('Controls',y+20*k,28*k,COL9.white);
@@ -3638,7 +3659,7 @@ function updateUniforms(dt){
  const rx=(mouse.x*2-1)*hw,uy=(1-mouse.y*2)*hh-up[1]*.45;
  const det=right[0]*up[2]-right[2]*up[0];const aimX=(rx*up[2]-uy*right[2])/det,aimZ=(right[0]*uy-up[0]*rx)/det;
  uniformData.set([aimX,aimZ,0,0],40);pendingGrenade=pendingDash=0;
- uniformData.set([settings.lab||stage===1?campaignPopulation24():Math.min(settings.zombies,245),settings.pool,settings.started?1:0,0],44);
+ uniformData.set([settings.lab||stage===1||SANDBOX25?campaignPopulation24():Math.min(settings.zombies,245),settings.pool,settings.started?1:0,0],44);
  uniformData.set([width,height,hw,hh],48);uniformData.set([...cameraEye,0],52);
  uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);

@@ -1,8 +1,9 @@
 {
   "harnessVersion": "deadweight-v1",
-  "runtimeSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f",
+  "runtimeSha256": "ddc87b5c85e111be9b8d24d4d0af712fca67cc4beca5acb928b7e2d4b225a05b",
   "shippedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "acceptance": "Deferred: earned Chapter 5 winch, squad extraction, final campaign progress/records/checkpoint removal and exact same-tab retry; matched Chapters 1\u20134 regression separately; no Chapter 6",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "1683d5a461f0d55d850f5ad2fd00abed14e40214"
+  "dependencyCommit": "1683d5a461f0d55d850f5ad2fd00abed14e40214",
+  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment."
 }

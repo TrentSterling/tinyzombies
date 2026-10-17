@@ -2415,11 +2415,11 @@ fn clearSegment7(a:vec3f,b:vec3f,pad:f32)->bool {
  let delta=b-a;let d=length(delta);if(d<.05){return true;}let steps=min(112u,u32(ceil(d/.35)));let dir=delta/f32(max(1u,steps));
  for(var n=1u;n<steps;n++){let q=a+dir*f32(n);if(blocked(q,vec3f(pad,.06,pad))){return false;}}return true;
 }
-fn threatNear7(point:vec2f,rad:f32)->f32 {var risk=0.0;for(var z=0u;z<u32(u.config.x);z++){let e=Z[z];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,point)<rad&&clearSegment7(e.p.xyz+vec3f(0,.5,0),vec3f(point.x,.4,point.y),.02)){risk+=select(1.0,3.0,e.extraData.z==6.0);}}return risk;}
+fn threatNear7(point:vec2f,rad:f32)->f32 {var risk=0.0;let lx0=clamp(i32(floor(point.x-rad+HALF)),0,191);let lz0=clamp(i32(floor(point.y-rad+HALF)),0,191);let hx0=clamp(i32(floor(point.x+rad+HALF)),0,191);let hz0=clamp(i32(floor(point.y+rad+HALF)),0,191);for(var cz0=lz0;cz0<=hz0;cz0++){for(var cx0=lx0;cx0<=hx0;cx0++){var it0=H[u32(cx0+192*cz0)];for(var g0=0u;g0<256u&&it0>0u;g0++){let z=it0-1u;it0=H[ZHEADS+z];let e=Z[z];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,point)<rad&&clearSegment7(e.p.xyz+vec3f(0,.5,0),vec3f(point.x,.4,point.y),.02)){risk+=select(1.0,3.0,e.extraData.z==6.0);}}}}return risk;}
 fn danger7(p:vec2f)->vec4f {
  var best=vec4f(0);for(var k=0u;k<16u;k++){let f=S.acid13[k];if(f.w>S.aux.x&&distance(p,f.xy)<f.z+.5){best=vec4f(f.x,0,f.y,f.z+1.0);}}
  for(var k=0u;k<16u;k++){let f=S.heat6[k];if(f.w>S.aux.x&&distance(p,f.xy)<f.z+.5){best=vec4f(f.x,0,f.y,f.z+1.0);}}
- for(var i=0u;i<u32(u.config.x);i++){let z=Z[i];if(z.p.w<=0.0){continue;}if(z.extraData.z==6.0&&z.extraData.w>.05&&distance(z.p.xz,p)<4.5){best=vec4f(z.p.x,0,z.p.z,4.8);break;}}
+ let lx1=clamp(i32(floor(p.x-4.5+HALF)),0,191);let lz1=clamp(i32(floor(p.y-4.5+HALF)),0,191);let hx1=clamp(i32(floor(p.x+4.5+HALF)),0,191);let hz1=clamp(i32(floor(p.y+4.5+HALF)),0,191);for(var cz1=lz1;cz1<=hz1;cz1++){for(var cx1=lx1;cx1<=hx1;cx1++){var it1=H[u32(cx1+192*cz1)];for(var g1=0u;g1<256u&&it1>0u;g1++){let i=it1-1u;it1=H[ZHEADS+i];let z=Z[i];if(z.p.w<=0.0){continue;}if(z.extraData.z==6.0&&z.extraData.w>.05&&distance(z.p.xz,p)<4.5){best=vec4f(z.p.x,0,z.p.z,4.8);break;}}}}
  for(var i=0u;i<u32(u.worldInfo.y);i++){let pr=P[i];if(pr.p.w==4.0&&pr.data.x>0.0&&(pr.data.y==1.0||pr.data.y==2.0)&&all(abs(pr.p.xz-p)<pr.aux.xz*.5+vec2f(.7))){best=vec4f(pr.p.x,0,pr.p.z,max(pr.aux.x,pr.aux.z)*.5+1.2);}}
  return best;
 }
@@ -2574,10 +2574,10 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     if(hazard.w>0.0){goal=6u;let away=safe2(a.p.xz-hazard.xz+vec2f(.02*f32(id+1u),.03));destination7=vec4f(hazard.xz+away*hazard.w,0,0);destination7=vec4f(destination7.x,0,destination7.y,-1);goalScore=1500.0;}
     // Visible special windups and danger to the current patient outweigh mere proximity.
     var threat=-1;var score=-1e9;var pressure=0.0;
-    for(var j=0u;j<u32(u.config.x);j++){let z=Z[j];if(z.p.w<=0.0){continue;}let d=distance(z.p.xz,a.p.xz);if(d<4.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.03)){pressure+=select(1.0,3.0,z.extraData.z==6.0);}if(d>760.0/64.0||(z.v.w<=0.0&&d>220.0/64.0)){continue;}
+    let lx2=clamp(i32(floor(a.p.x-4.0+HALF)),0,191);let lz2=clamp(i32(floor(a.p.z-4.0+HALF)),0,191);let hx2=clamp(i32(floor(a.p.x+4.0+HALF)),0,191);let hz2=clamp(i32(floor(a.p.z+4.0+HALF)),0,191);for(var cz2=lz2;cz2<=hz2;cz2++){for(var cx2=lx2;cx2<=hx2;cx2++){var it2=H[u32(cx2+192*cz2)];for(var g2=0u;g2<256u&&it2>0u;g2++){let j=it2-1u;it2=H[ZHEADS+j];let z=Z[j];if(z.p.w<=0.0){continue;}let d=distance(z.p.xz,a.p.xz);if(d<4.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.03)){pressure+=select(1.0,3.0,z.extraData.z==6.0);}if(d>760.0/64.0||(z.v.w<=0.0&&d>220.0/64.0)){continue;}
      var s=20.0-d;if(S.orders.x>.5&&S.order13.x==3.0&&S.order13.z==f32(id)&&S.order13.y==f32(j)){s+=80.0;}if(z.extraData.z==4.0&&z.special13.w>=0.0){s+=100.0;}if(id==2u&&z.extraData.z>=2.0&&z.extraData.z!=4.0){s+=8.0;}if(z.extraData.z==5.0&&z.extraData.w>.05){s+=30.0;}if(z.extraData.z==6.0&&z.extraData.w>.05){s+=20.0;}if(goal==2u||goal==1u){s+=max(0.0,7.0-distance(z.p.xz,destination7.xz))*3.0;}
      if(s<=score){continue;}if(clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.60,0)*zScale(z.extraData.z),.035)){score=s;threat=i32(j);}
-    }
+    }}}
     a.memory.x=f32(threat);a.memory.y=pressure;
     if(threat>=0&&goalScore<160.0&&distance(a.p.xz,S.pos.xz)<5.0){goal=8u;destination7=vec4f(a.p.xyz,-1);}
     var clear=pressure<1.0;if(goal==2u||goal==3u){clear=threatNear7(destination7.xz,2.1)<.5;}
@@ -2629,7 +2629,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    }}
   // Fire is concurrent with moving/covering, but not healing or reviving. Downed pistols remain useful.
   var destination7=i32(a.memory.x);if(destination7<0||destination7>=i32(u.config.x)||Z[u32(max(0,destination7))].p.w<=0.0){destination7=-1;}
-  if(a.p.w<=0.0&&a.look.z<=0.0){var best=10.0;for(var j=0u;j<u32(u.config.x);j++){let z=Z[j];let d=distance(z.p.xz,a.p.xz);if(z.p.w>0.0&&d<best&&clearSegment7(a.p.xyz+vec3f(0,.22,0),z.p.xyz+vec3f(0,.6,0),.03)){best=d;destination7=i32(j);}}}
+  if(a.p.w<=0.0&&a.look.z<=0.0){var best=10.0;let lx3=clamp(i32(floor(a.p.x-10.0+HALF)),0,191);let lz3=clamp(i32(floor(a.p.z-10.0+HALF)),0,191);let hx3=clamp(i32(floor(a.p.x+10.0+HALF)),0,191);let hz3=clamp(i32(floor(a.p.z+10.0+HALF)),0,191);for(var cz3=lz3;cz3<=hz3;cz3++){for(var cx3=lx3;cx3<=hx3;cx3++){var it3=H[u32(cx3+192*cz3)];for(var g3=0u;g3<256u&&it3>0u;g3++){let j=it3-1u;it3=H[ZHEADS+j];let z=Z[j];let d=distance(z.p.xz,a.p.xz);if(z.p.w>0.0&&d<best&&clearSegment7(a.p.xyz+vec3f(0,.22,0),z.p.xyz+vec3f(0,.6,0),.03)){best=d;destination7=i32(j);}}}}}
   if(id==1u&&S.botFuel15[id]<.5&&a.p.w>0.0&&destination7>=0&&a.pack.z==0.0){let d=distance(a.p.xz,Z[u32(destination7)].p.xz);var desired=weapon;if(d<400.0/64.0&&mag.y+reserve.y>0.0){desired=1u;}else if(d>530.0/64.0&&mag.x+reserve.x>0.0){desired=0u;}if(desired!=weapon){mag[weapon]=a.pack.x;weapon=desired;mag.w=f32(desired);a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;a.look.z=max(.15,a.look.z);}}
    let busy=(((u.run.x==3.0&&S.botPour15[id]>0.0)||((u.run.x==4.0||u.run.x==5.0)&&a.ai.x==7.0&&distance(a.p.xz,S.orders.yz)<100.0/64.0))&&S.orders.x>.5&&S.order13.z==f32(id)&&S.order13.x==5.0)||a.ai.y==4.0||a.ai.y==5.0||a.ai.y==6.0||a.ai.y==7.0||(S.botFuel15[id]>.5&&a.ai.x==7.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0);
   if(!busy&&destination7>=0&&a.p.w>0.0&&S.botFuel15[id]<.5&&weapon==2u&&mag.x>0.0){mag.z=a.pack.x;weapon=0u;mag.w=0.0;a.pack.x=mag.x;a.pack.y=gunStats14(0u,S.upgrades14[id+1u]).x;a.pack.z=0.0;a.look.z=max(.15,a.look.z);}
@@ -2643,7 +2643,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    S.botControl13[id]=max(0.0,S.botControl13[id]-dt);
    var pipeInFlight=false;for(var k=0u;k<16u;k++){pipeInFlight=pipeInFlight||S.pipes12[k].z>0.0;}if(!pipeInFlight&&a.p.w>0.0&&!busy&&S.botItems13[id].x>0.0&&S.botControl13[id]<=0.0){
     var visible=0u;var ordinary=0u;var center=vec2f(0);
-    for(var j=0u;j<u32(u.config.x);j++){let z=Z[j];if(z.p.w>0.0&&z.v.w>0.0&&distance(z.p.xz,a.p.xz)<760.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.02)){visible++;if(z.extraData.z<2.0){ordinary++;center+=z.p.xz;}}}
+    let lx4=clamp(i32(floor(a.p.x-(760.0/64.0)+HALF)),0,191);let lz4=clamp(i32(floor(a.p.z-(760.0/64.0)+HALF)),0,191);let hx4=clamp(i32(floor(a.p.x+(760.0/64.0)+HALF)),0,191);let hz4=clamp(i32(floor(a.p.z+(760.0/64.0)+HALF)),0,191);for(var cz4=lz4;cz4<=hz4;cz4++){for(var cx4=lx4;cx4<=hx4;cx4++){var it4=H[u32(cx4+192*cz4)];for(var g4=0u;g4<256u&&it4>0u;g4++){let j=it4-1u;it4=H[ZHEADS+j];let z=Z[j];if(z.p.w>0.0&&z.v.w>0.0&&distance(z.p.xz,a.p.xz)<760.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.02)){visible++;if(z.extraData.z<2.0){ordinary++;center+=z.p.xz;}}}}}
     if(visible>=11u&&ordinary>=9u){center/=f32(ordinary);var safe=distance(center,S.pos.xz)>180.0/64.0;for(var k=0u;k<3u;k++){if(S.botLife13[k].y<.5&&distance(center,S.team7[k].p.xz)<=180.0/64.0){safe=false;}}
      if(safe&&distance(center,a.p.xz)<490.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),vec3f(center.x,.5,center.y),.02)){
       for(var k=0u;k<16u;k++){if(S.pipes12[k].z<=0.0){S.pipes12[k]=vec4f(center,3.15,3.15);S.pipeStarts12[k]=vec4f(a.p.xz,f32(id+1u),0);S.botItems13[id].x-=1.0;S.botControl13[id]=20.0;atomicAdd(&C[63],1u);break;}}

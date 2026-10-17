@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "faeca966602565e8a2e01068e2daadceff30e8ef1a3c7342b8db6e312f266221",
+  "runtimeSha256": "b6b6d952e582f2e7596c7f41be73c1147c803f115e76de37bd87c4177063c9a3",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
@@ -11,7 +11,7 @@
   "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065",
   "startupBindingCorrection": "Collapse shader reads u.run; bind uniform U at binding 0 alongside Groups and C. CPU host-layout regression only; actual GPU startup remains unverified.",
   "startupSwizzleCorrection": "Six invalid WGSL multi-component lvalue assignments replaced by vec4f(rhs, existing.zw). All 40 composed modules pass Naga parse and semantic validation. Actual device startup remains owner playtest.",
-  "previousRuntimeSha256": "222b0b3f4bb89d2f0cb2992d17fd248642867959f12920455a6a9268032ecfda",
+  "previousRuntimeSha256": "faeca966602565e8a2e01068e2daadceff30e8ef1a3c7342b8db6e312f266221",
   "auditCorrection25": "Parity-audit batch (16 exact hunks): director ignores dead bots (FADE no longer stalls after a bleed-out), Mercer/Burnout alarm cars restored from DEAD ENDS startMap at the captured seeds, N needs a second press, L/T/F6 need ?dev or ?lab, click-to-play recovers from a pre-start pause, loadout strip plus reload/empty weapon labels. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest.",
   "sandboxMilestone26": "?sandbox boots the V9 open-town mission (stage 6) as Maple Street: full configured population, seeded suburban houses/fences, campy announcer lines and names, evacuation card with Enter to reroll. Campaign URLs unchanged. CPU host checks and Chrome Tint WGSL validation only; gameplay and GPU startup remain owner playtest.",
   "performancePass27": "Crowd 3x3 ring (exact), gated sight ray, unused pressure grid removed, infected passes sized to the live population, door-frame flow fallback, adaptive render quality (tiers 0-3: MSAA off, render scale 0.8/0.67; ?tier, ?q, ?msaa pin it). Tint-validated shaders and SwiftShader-validated 1x pipelines; no GPU timing measured.",
@@ -19,5 +19,6 @@
   "breachPass29": "Breach-aware walkability: body-fit cell cores, per-edge lane sweeps with lane codes, portal aim through the open lane, body-width line of sight, heard squad gunfire, reachable-only spawns. Real shaders on SwiftShader WebGPU: both lanes equal edge-aware Dijkstra on 36,355 cells (was 35,585); a lured infected goes through a 1 m breach offset half a cell from the grid in about 4 s (previous build walks around, about 15 s); doorway throughput unchanged at 48/48 in 10 s. No hardware timing.",
   "neighbors30": "Maple Street neighbors (sandbox): up to 8 per street in reserved prop slots 180-191, a civilians30 compute pass (join at 2.2 m, follow on the squad field with edge-aware steps and portal aim, bites from awake infected in contact, saved inside the shelter), infected target neighbors and stay on them, boxes draw campy outfits with a waiting marker, HUD tally/notes/HELP markers, end-card total. Real shaders on SwiftShader WebGPU: a neighbor followed the player 73.6 m across town and was saved; one surrounded by three awake infected was lost in about 3 s. No hardware timing.",
   "crush31": "Collapse crush (crush30 marks dynamic-grid bit 28 under falling heavy wreckage; infected there take the 200-damage slab crush), breakage noise at the broken-voxel centroid (10+ voxels, 10-38 m, open-town only), cumulative barrel-chain counter, CRUSHED/CHAIN callouts and crush total (sandbox). Real shaders on SwiftShader WebGPU: 6/6 infected under a falling piece crushed (C[34]=6, kills=6); a settled piece and bystanders harmless. No hardware timing.",
-  "rescue32": "Sandbox rescue is required: the shelter will not seal while neighbors wait at home; objective line and prompt explain it; neighbors on the minimap. Source/host checks and Tint only."
+  "rescue32": "Sandbox rescue is required: the shelter will not seal while neighbors wait at home; objective line and prompt explain it; neighbors on the minimap. Source/host checks and Tint only.",
+  "botScans33": "The bots' five full-horde scans (threat, brute danger, pressure, downed nearest, visibility) query only zombie-grid cells inside each scan's radius; loop bodies unchanged. CPU mirror proves set equality on 2,000 random hordes; Tint-validated; buddy pipeline not executable on SwiftShader. No GPU timing."
 }

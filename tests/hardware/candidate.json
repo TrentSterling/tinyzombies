@@ -1,11 +1,12 @@
 {
-  "harnessVersion": "bot-objective-priority-v1",
-  "runtimeSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "harnessVersion": "mercer-restoration-v1",
+  "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: ordinary-input Chapter 1 bot crank / Chapter 2 bot fuel revive-first interruption, strict radius and resume, retained self-medkit/manual rescue, bot patient validity/crawl/pin/extraction and fresh matched five-chapter persistence. CPU fragment/ordered adapters are separate evidence, not earned gameplay.",
+  "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "9b113b2204f4e6e3685e4233d2b25815df2dcf4f",
+  "dependencyCommit": "e4fe5def1f60b030b6d90761ab3ab5a9fab5dda2",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710",
-  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment."
+  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment.",
+  "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065"
 }

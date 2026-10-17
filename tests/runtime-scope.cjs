@@ -10,6 +10,7 @@ fn validHealPatient21(patientId21:i32,healer:u32,healerHP:f32)->bool {
 }
 `;
 function withoutBotObjectivePriority23(html){
+ html=require('./mercer-restoration-scope.cjs').withoutMercerRestoration24(html);
  html=withoutLogicalGrouping(html);
  if(!html.includes('fn botReviveFirst23('))return html;
  const helper23=`// Bot machinery must not bypass the source's nearby revive interaction priority.

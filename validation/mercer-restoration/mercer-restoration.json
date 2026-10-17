@@ -1,0 +1,207 @@
+{
+  "method": "Exact CPU production host, source/asset fingerprints, physical occupancy/navigation reference and mechanically adapted production route/pressure/formation/axe/blast fragments with controlled state. No WGSL compilation, GPU execution, earned gameplay, rendering or performance qualification.",
+  "candidateSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Mercer authored spine, supplies, mission doors and initial actors stay unchanged",
+      "passed": true,
+      "authoredInfected": 185
+    },
+    {
+      "name": "seed 73129 honors 0 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 0,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 73129 honors 256 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 256,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 73129 honors 2048 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 2048,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 73129 honors 8192 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 8192,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 1 honors 0 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 0,
+      "connectedNavCells": 19044,
+      "voxels": 73343,
+      "pages": 365,
+      "fractureGroups": 491,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 1 honors 256 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 256,
+      "connectedNavCells": 19044,
+      "voxels": 73343,
+      "pages": 365,
+      "fractureGroups": 491,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 1 honors 2048 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 2048,
+      "connectedNavCells": 19044,
+      "voxels": 73343,
+      "pages": 365,
+      "fractureGroups": 491,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 1 honors 8192 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 8192,
+      "connectedNavCells": 19044,
+      "voxels": 73343,
+      "pages": 365,
+      "fractureGroups": 491,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 4294967295 honors 0 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 0,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 4294967295 honors 256 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 256,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 4294967295 honors 2048 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 2048,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "seed 4294967295 honors 8192 initial slots and bounded world/fracture budgets",
+      "passed": true,
+      "alive": 8192,
+      "connectedNavCells": 19040,
+      "voxels": 73471,
+      "pages": 366,
+      "fractureGroups": 493,
+      "maxGroupVoxels": 128
+    },
+    {
+      "name": "all supplemental maximum-budget actors have physically clear spawn footprints",
+      "passed": true,
+      "checked": 8007
+    },
+    {
+      "name": "five alternate exterior passages are open in collision and connected on both sides",
+      "passed": true,
+      "passages": 5
+    },
+    {
+      "name": "new building wall blocks movement until a local body-clear breach removes occupancy",
+      "passed": true,
+      "removed": 42,
+      "from": [
+        -63,
+        -46.7
+      ],
+      "to": [
+        -63,
+        -45.2
+      ]
+    },
+    {
+      "name": "director budget is chapter-scoped: 1",
+      "passed": true
+    },
+    {
+      "name": "director budget is chapter-scoped: 2",
+      "passed": true
+    },
+    {
+      "name": "director budget is chapter-scoped: 3",
+      "passed": true
+    },
+    {
+      "name": "director budget is chapter-scoped: 4",
+      "passed": true
+    },
+    {
+      "name": "director budget is chapter-scoped: 5",
+      "passed": true
+    },
+    {
+      "name": "off-route warning precedes bounded pressure; cooldown, recovery and retreat work",
+      "passed": true
+    },
+    {
+      "name": "maximum 12 sleeping off-screen actors recruited without filling retreat sector or spawning extras",
+      "passed": true
+    },
+    {
+      "name": "safehouse, down, pin and other chapters suppress Mercer pressure",
+      "passed": true
+    },
+    {
+      "name": "off-route formation follows player while other chapters retain exact route formation",
+      "passed": true
+    },
+    {
+      "name": "axe contact is ray-bounded, one pulse per swing, Mercer-only and structural-safe",
+      "passed": true
+    },
+    {
+      "name": "source barrel/pump blasts use exact current-frame stamp and bounded radius",
+      "passed": true
+    },
+    {
+      "name": "bullet/pipe damage and occupancy/fracture/nav handoffs remain connected",
+      "passed": true
+    },
+    {
+      "name": "pause/retry clears pressure and axe transient state in the exact host",
+      "passed": true
+    }
+  ]
+}

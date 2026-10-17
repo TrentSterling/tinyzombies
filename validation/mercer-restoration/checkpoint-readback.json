@@ -1,0 +1,67 @@
+{
+  "method": "CPU-only execution of exact sampled-state callback with controlled asynchronous ordering; no WebGPU execution.",
+  "candidateSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "passed": true,
+  "checks": [
+    {
+      "name": "old Burnout victory cannot save unplayed Last Train after chapter reset",
+      "passed": true
+    },
+    {
+      "name": "pending seed transition discards old victory before reset executes",
+      "passed": true
+    },
+    {
+      "name": "pending retry discards old sample before reset executes",
+      "passed": true
+    },
+    {
+      "name": "same-stage retry epoch discards old victory after reset",
+      "passed": true
+    },
+    {
+      "name": "new campaign epoch discards old completion",
+      "passed": true
+    },
+    {
+      "name": "current-generation readback is still consumed and released",
+      "passed": true
+    },
+    {
+      "name": "audio epoch and pause do not invalidate current gameplay readback",
+      "passed": true
+    },
+    {
+      "name": "callback error still unmaps and releases the readback slot",
+      "passed": true
+    },
+    {
+      "name": "old Last Train victory cannot save unplayed Code Red after chapter reset",
+      "passed": true
+    },
+    {
+      "name": "pending Last Train to Code Red transition discards the old sample",
+      "passed": true
+    },
+    {
+      "name": "Code Red retry epoch discards its old terminal completion sample",
+      "passed": true
+    },
+    {
+      "name": "old Code Red victory cannot complete unplayed Deadweight",
+      "passed": true
+    },
+    {
+      "name": "pending Code Red to Deadweight transition discards the old sample",
+      "passed": true
+    },
+    {
+      "name": "old final victory cannot repopulate completion after final entry retry",
+      "passed": true
+    },
+    {
+      "name": "pending final retry discards old sample and releases its slot",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "method": "Evaluated shader strings, comments stripped, lexical reserved-token scan only. Not a compiler or GPU test.",
+  "candidateSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "shadersChecked": 40,
+  "reservedWords": 146,
+  "failures": [],
+  "passed": true
+}

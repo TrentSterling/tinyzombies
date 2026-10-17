@@ -9,7 +9,7 @@ const h=loadHost(file),src=h.sources;
 
 check('navInit seeds the squad lane (player 0, living bots 40) and the heard lane (noise, alarm, lure pipes)',()=>{
  const s=src.navInit;assert(s.includes('var squad=select(65535u,0u,navcell(S.pos.xz)==i)'));assert(s.includes('squad=min(squad,40u)'));
- for(const k of ['S.noise.z>0.0&&navcell(S.noise.xy)==i','S.alarm.z>0.0&&navcell(S.alarm.xy)==i','pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i'])assert(s.includes(k),k);
+ for(const k of [s.includes('S.noiseRing34')?'r.z>0.0&&navcell(r.xy)==i':'S.noise.z>0.0&&navcell(S.noise.xy)==i','S.alarm.z>0.0&&navcell(S.alarm.xy)==i','pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i'])assert(s.includes(k),k);
  assert(s.includes('A[i]=squad|(heard<<16u);'));
 });
 check('packed relaxation equals two independent fields (CPU reference of the shader arithmetic)',()=>{
@@ -30,7 +30,7 @@ check('publish keeps the squad lane in nav units with INF, heard lane goes to th
  assert(h.script.includes("packed25[c]=Math.min(world.navSeed[c],65535)|0xffff0000"),'boot seed packed, heard lane starts unreachable');
 });
 check('heard infected path on the heard lane and fall back to the squad lane when it has no route',()=>{
- const z=src.zombies;assert(z.includes('var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}'));
+ const z=src.zombies;assert(z.includes('var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}')||z.includes('var heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}'),'heard goal (single slot, or the noise ring since ring36)');
  assert(z.includes('goalPoint=S.alarm.xy;heard=true;'));assert(z.includes('goalPoint=pipe.xy;heard=true;'));
  assert(z.includes('flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard))'));assert(z.includes('if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}'));
 });

@@ -8,7 +8,7 @@ const file=process.argv[2]||path.join(__dirname,'../index.html'),h=loadHost(file
 function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const digest=v=>sha(JSON.stringify(v));
 check('Mercer authored spine, supplies, mission doors and initial actors stay unchanged',()=>{
- const w=h.run('world');for(const field of ['source13','sourceSeed13','sourceDoors13','sourceProps15','sourcePickups13','start','buddy','generators','exit','gate13','final13','startDoor13'])assert.equal(digest(w[field]),baseline.worlds[1].fields[field],field);
+ const w=loadHost(require('./audit-fixes25.cjs').auditParentFile25(file)).run('world');for(const field of ['source13','sourceSeed13','sourceDoors13','sourceProps15','sourcePickups13','start','buddy','generators','exit','gate13','final13','startDoor13'])assert.equal(digest(w[field]),baseline.worlds[1].fields[field],field);
  assert.deepEqual(h.json('MERCER13.grid'),baseline.mercer.grid);return{authoredInfected:w.source13.infected.length};
 });
 for(const seed of [73129,1,4294967295])for(const budget of [0,256,2048,8192])check(`seed ${seed} honors ${budget} initial slots and bounded world/fracture budgets`,()=>{

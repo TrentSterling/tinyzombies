@@ -8,6 +8,18 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 This checkout restores a larger connected Chapter 1 district, destructible wall breaches, the configured infected population, bounded off-route pressure and objective-safe extraction. Chapters 2–5 world buffers, art, controls, recorded audio and persistent blood are preserved. This build is released for the owner's playtest through [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18). CPU/source checks are separate from shader compilation, GPU performance and earned gameplay, which remain unverified. See [scope, preservation and test limits](tests/MERCER-RESTORATION.md) and [fresh CPU results](validation/mercer-support-fix/suite-summary.json).
 
+## Parity audit fixes
+
+An independent source audit against [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) found and this build fixes:
+
+- **Director stall after a bot death.** A dead bot kept counting as downed stress (+0.4), so the director could never relax out of FADE and stopped sending ordinary hordes and specials for the rest of the chapter. Dead bots are now skipped, as elsewhere in the same shader.
+- **Missing car alarms in Mercer and Burnout.** The captures had dropped the source's `alarm` flag. Car 23 (Mercer) and car 22 (Burnout) are restored, verified by running DEAD ENDS `startMap` at the captured seeds. They become live props exactly like Deadweight's alarm car.
+- **Accidental save loss.** N needs a second press within 2.5 seconds. L, T and F6 no longer silently disable saving in ordinary play.
+- **Click-to-play after alt-tab** on the title card no longer needs a hidden Escape press.
+- **Weapon HUD.** A bottom-centre loadout strip shows all six slots with their keys, magazines/reserves and pipe/molotov/medkit counts. It appears when gear, stock or upgrades change and fades after about 2.5 seconds. The weapon label now shows RELOADING, EMPTY R and NO AMMO, and the ammo ring goes neutral while a throwable or medkit is selected.
+
+`node tests/audit-fixes25.test.cjs` covers these with CPU host checks; all 40 WGSL modules also pass Chrome 141's Tint compiler. Gameplay, GPU startup and the HUD's look still need an owner playtest.
+
 ## DEAD ENDS Chapters 1–5
 
 The published campaign contains five authored chapters from [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html): Mercer, Burnout, Last Train, Code Red and Deadweight. Code Red adds the hospital shutter and alarm; Deadweight adds the bridge winch and campaign ending. The player mohawk, all 43 recorded SFX assets and default 2,048 infected / 32,768 particle allocations are preserved.
@@ -58,7 +70,7 @@ CPU collision/navigation models also pass three seeds across all three chapters,
 
 ## Compact minimap and environment contrast
 
-The compact minimap is restored at the upper right during active play. Hold Tab for the larger field map. Help, pause and hidden-HUD mode hide the compact map. Both sizes use the same existing GPU renderer and live collision/entity data.
+The compact minimap is restored at the upper right during active play. Press Tab to toggle the larger field map. Help, pause and hidden-HUD mode hide the compact map. Both sizes use the same existing GPU renderer and live collision/entity data.
 
 Static architecture and ground now use darker, less saturated materials, following DEAD ENDS' category separation. Character and particle colors, lighting, post-processing, mission behavior and world geometry remain unchanged. The reference came from the verified DEAD ENDS source and gallery/repository image.
 
@@ -86,7 +98,7 @@ Paired GPU particle buffers and impact counts matched across isolated impacts an
 
 Serve this directory over localhost, for example `python -m http.server 8000`, and open `http://localhost:8000/` in a WebGPU-capable desktop browser with hardware acceleration. Public hosting requires HTTPS. Keep `assets/audio/` beside the HTML for recorded sound; the files load from the same host. No package installation, build step, third-party runtime or WebGL fallback is required.
 
-Click to start. Move with WASD or arrow keys and aim with the mouse. LMB fires or uses selected gear; RMB or Space shoves. Select guns with 1/2/3, reload with R, and return to the last gun with Q. 4/G/C cycles throwables; 5/F/H selects a medkit. Hold LMB to heal yourself or RMB to heal a nearby ally. Hold Shift to sprint, E to interact, V to toggle dragging, and X to issue or clear the existing squad order. Tab toggles the field map. Wheel cycles available gear; Ctrl-wheel zooms. Escape pauses, ? shows controls, Backspace restarts, N starts a new campaign, M mutes, F3 shows statistics, and F2 exports diagnostics.
+Click to start. Move with WASD or arrow keys and aim with the mouse. LMB fires or uses selected gear; RMB or Space shoves. Select guns with 1/2/3, reload with R, and return to the last gun with Q. 4/G/C cycles throwables; 5/F/H selects a medkit. Hold LMB to heal yourself or RMB to heal a nearby ally. Hold Shift to sprint, E to interact, V to toggle dragging, and X to issue a squad order. Tab toggles the field map. Wheel cycles available gear; Ctrl-wheel zooms. Escape pauses, ? shows controls, Backspace retries the chapter, N twice starts a new campaign (the first press only warns), M mutes, F1 hides the HUD, F3 shows statistics, and F2 exports diagnostics. The developer keys L (lab), T (demo) and F6 (population) only work with `?dev` or `?lab`; they switch the run to practice, which stops checkpoint and record saving and shows a PRACTICE notice.
 
 ## V9 compatibility repair
 

@@ -1,0 +1,66 @@
+{
+  "runtimeSha256": "ddc87b5c85e111be9b8d24d4d0af712fca67cc4beca5acb928b7e2d4b225a05b",
+  "parentRuntimeSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f",
+  "runtimeChange": "Exactly two added parentheses in buddy busy predicate; no other runtime bytes changed.",
+  "suites": [
+    {
+      "suite": "burnout-fuel",
+      "passed": true,
+      "checks": 18
+    },
+    {
+      "suite": "checkpoint-readback",
+      "passed": true,
+      "checks": 15
+    },
+    {
+      "suite": "code-red-navigation",
+      "passed": true,
+      "checks": 18
+    },
+    {
+      "suite": "code-red",
+      "passed": true,
+      "checks": 53
+    },
+    {
+      "suite": "deadweight-navigation",
+      "passed": true,
+      "checks": 23
+    },
+    {
+      "suite": "deadweight",
+      "passed": true,
+      "checks": 59
+    },
+    {
+      "suite": "hardware-route",
+      "passed": true,
+      "checks": null
+    },
+    {
+      "suite": "last-train",
+      "passed": true,
+      "checks": 62
+    },
+    {
+      "suite": "navigation",
+      "passed": true,
+      "checks": 24
+    },
+    {
+      "suite": "wgsl-logical-grouping",
+      "passed": true,
+      "checks": 19
+    },
+    {
+      "suite": "wgsl-source",
+      "passed": true,
+      "checks": null
+    }
+  ],
+  "unfixedMainNegativeControl": "fails new grouping tests as expected",
+  "browserCompilation": "not run: installed cloud Chromium failed to launch before startup; no standalone WGSL compiler is installed",
+  "hardware": "not run",
+  "source": "https://www.w3.org/TR/WGSL/#operator-precedence-associativity"
+}

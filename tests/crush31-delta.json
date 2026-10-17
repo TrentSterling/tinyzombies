@@ -1,0 +1,53 @@
+{
+ "parentSha256": "ec0dd2e1e7a4771f07a9c5a4cabf3fd9b76c3be28926e002b87ec64b71576a2e",
+ "changes": [
+  {
+   "before": "dirtyAt(b.p.xyz);atomicAdd(&C[9],1u);if(melee){",
+   "after": "dirtyAt(b.p.xyz);atomicAdd(&C[9],1u);atomicAdd(&C[37],u32(b.p.x+96.0));atomicAdd(&C[40],u32(b.p.z+96.0));atomicAdd(&C[45],1u);if(melee){"
+  },
+  {
+   "before": "if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}if(u.run.x<=5.0){chapterMission13(dt);return;}",
+   "after": "// Breaking things is loud: 10+ voxels broken in a frame make a noise at their centroid, 10 m for a chip, up to 38 m for a collapse.\n let broke30=atomicExchange(&C[45],0u);let sumX30=atomicExchange(&C[37],0u);let sumZ30=atomicExchange(&C[40],0u);\n if(u.run.x>5.0&&u.run.y<.5&&broke30>=10u){let at=vec2f(f32(sumX30),f32(sumZ30))/f32(broke30)-vec2f(96.0)+.5;let loud=clamp(10.0+f32(broke30)*.12,10.0,38.0);if(S.noise.z<=0.0||loud>=S.noise.w*.8){S.noise=vec4f(at,3.0,loud);}}\n if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}if(u.run.x<=5.0){chapterMission13(dt);return;}"
+  },
+  {
+   "before": "if(!boom){continue;}atomicAdd(&C[52],1u);",
+   "after": "if(!boom){continue;}atomicAdd(&C[52],1u);atomicAdd(&C[46],1u);"
+  },
+  {
+   "before": "damage+=200.0;atomicAdd(&C[34],1u);}}",
+   "after": "damage+=200.0;atomicAdd(&C[34],1u);}}\n  // Collapses crush the horde: crush30 marks the 0.5 m cells under falling heavy wreckage with bit 28.\n  if((atomicLoad(&O[DYNAMIC_OFFSET+dynCell(z.p.xz)])&0x10000000u)!=0u){damage+=200.0;atomicAdd(&C[34],1u);}"
+  },
+  {
+   "before": "const finalizeShader=COMMON+`",
+   "after": "// Falling heavy wreckage (6+ voxels, dropping or flung, bottom below 1.2 m) marks the dynamic cells under it; infected there are crushed.\nconst crush30Shader=COMMON+`\n@group(0) @binding(1) var<storage,read> Wr:array<Wreck8>;\n@group(0) @binding(2) var<storage,read_write> O:array<atomic<u32>>;\n@compute @workgroup_size(64) fn crush(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=256u){return;}let w=Wr[i];\n if(w.p.w<.5||w.extent.w<6.0||w.misc.x>=.7){return;}let falling=w.v.y< -1.5||length(w.v.xyz)>4.0;if(!falling||w.p.y-w.extent.y>1.2){return;}\n let lo=clamp(vec2i(floor((w.p.xz-w.extent.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let hi=clamp(vec2i(floor((w.p.xz+w.extent.xz+HALF)*2.0)),vec2i(0),min(vec2i(DYNAMIC_GRID-1),lo+vec2i(15)));\n for(var z=lo.y;z<=hi.y;z++){for(var x=lo.x;x<=hi.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],0x10000000u);}}\n}\n`;\nconst finalizeShader=COMMON+`"
+  },
+  {
+   "before": "await cp('civilians30',civilians30Shader);",
+   "after": "await cp('civilians30',civilians30Shader);await cp('crush30',crush30Shader,'crush');"
+  },
+  {
+   "before": "civilians30:civilians30Shader,",
+   "after": "civilians30:civilians30Shader,crush30:crush30Shader,"
+  },
+  {
+   "before": "bindings.civilians30=[zA,zB].map(",
+   "after": "bindings.crush30=device.createBindGroup({layout:compute.crush30.getBindGroupLayout(0),entries:[{binding:1,resource:{buffer:Fracture,offset:F8.pieces*4,size:WRECK_MAX8*F8.stride*4}},{binding:2,resource:{buffer:O}}]});bindings.civilians30=[zA,zB].map("
+  },
+  {
+   "before": "enc.clearBuffer(O,DYNAMIC_OFFSET*4,DYNAMIC_SIZE*4);pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));",
+   "after": "enc.clearBuffer(O,DYNAMIC_OFFSET*4,DYNAMIC_SIZE*4);pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));pass(enc,'crush30',bindings.crush30,4);"
+  },
+  {
+   "before": "  if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);",
+   "after": "  if(SANDBOX25)calloutsHUD30(k);\n  if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);"
+  },
+  {
+   "before": "function nextSandbox25(){",
+   "after": "// Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.\nconst callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};\nfunction calloutsHUD30(k){\n const crushed=counters[34]|0,chain=counters[46]|0;\n if(crushed<callout30.crushed||chain<callout30.chain)Object.assign(callout30,{crushed,chain,crushBurst:0,chainBurst:0});\n if(crushed>callout30.crushed){callout30.crushBurst=time-callout30.crushAt<1.5?callout30.crushBurst+crushed-callout30.crushed:crushed-callout30.crushed;callout30.crushAt=time;callout30.crushed=crushed;}\n if(chain>callout30.chain){callout30.chainBurst=time-callout30.chainAt<1.5?callout30.chainBurst+chain-callout30.chain:chain-callout30.chain;callout30.chainAt=time;callout30.chain=chain;}\n if(callout30.crushBurst>=2&&time-callout30.crushAt<1.6){const s='CRUSHED x'+callout30.crushBurst,px=(26+Math.min(14,callout30.crushBurst))*k;text(s,width/2-textWidth9(s,px)/2,height*.24,px,COL9.gold);}\n if(callout30.chainBurst>=2&&time-callout30.chainAt<1.6){const s='CHAIN x'+callout30.chainBurst,px=24*k;text(s,width/2-textWidth9(s,px)/2,height*.24+40*k,px,COL9.red);}\n}\nfunction nextSandbox25(){"
+  },
+  {
+   "before": "' put down  /  '+Math.round(playerValues[24]||0)+'s':",
+   "after": "' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':"
+  }
+ ]
+}

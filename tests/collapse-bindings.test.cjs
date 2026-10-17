@@ -17,7 +17,7 @@ test('collapse entry point directly uses the uniform and both storage bindings',
 });
 test('only one host uniform entry differs from the released runtime',()=>{
  assert.equal(h.html.split(after).length,2);assert.equal(h.html.includes(before),false);
- assert.equal(sha(h.html.replace(after,before)),'1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4');
+ assert.equal(sha(require('./wgsl-swizzle-assignment.cjs').withoutSwizzleAssignmentFix(h.html).replace(after,before)),'1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4');
 });
 const pipelineNames=[...new Set([...builder.matchAll(/compute\.([A-Za-z0-9_]+)/g)].map(m=>m[1]))];
 const resourceNames=[...new Set([...builder.matchAll(/\[\d+,([A-Za-z0-9_]+)\]/g)].map(m=>m[1]))].filter(n=>!['a','b','z'].includes(n));

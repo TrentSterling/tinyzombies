@@ -1,0 +1,15 @@
+{
+  "runtimeSha256": "bf9da228fac672dc349d5508dff3d46d58b3a27e025305868ed39fae8255fafe",
+  "passed": true,
+  "method": "Independent exact-source and CPU review; real Naga validation is recorded separately.",
+  "runtimeChange": "Six statements in mission5 and zombie shader source, across five lines. Whole vec4f assignments preserve original RHS xy and existing zw; no JavaScript or other runtime changes.",
+  "independentChecks": {
+    "allComposedShaderLvalueScan": 40,
+    "newRegression": 9,
+    "collapseBindingRegression": 4,
+    "logicalGroupingRegression": 19,
+    "reservedWordScan": "passed"
+  },
+  "semanticNotes": "Mission5 has one invocation owner; zombie writes target invocation-local z. Preserved zw contains existing objective distance/timers/flags; no introduced cross-invocation read-modify-write race.",
+  "limits": "No browser/device startup or gameplay run."
+}

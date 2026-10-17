@@ -1,0 +1,55 @@
+{
+  "runtimeSha256": "bf9da228fac672dc349d5508dff3d46d58b3a27e025305868ed39fae8255fafe",
+  "method": "Exact-source lexical guard, immutable full-runtime inverse and CPU lane-preservation fixtures. Real Naga parse/validation is recorded separately; this suite is not GPU execution.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "all 40 composed WGSL modules have no multi-component lvalue assignments",
+      "passed": true,
+      "shaders": 40
+    },
+    {
+      "name": "exact six-site inverse recovers the previous runtime without changing JS",
+      "passed": true,
+      "sites": 6
+    },
+    {
+      "name": "negative control catches every previous illegal write",
+      "passed": true
+    },
+    {
+      "name": "guard detects compound/color/parenthesized writes but permits reads and single lanes",
+      "passed": true
+    },
+    {
+      "name": "preserve xy result and untouched zw: S.objectivePoint.xy=select(u.goals.xy,chapterDoor16(u.run.x),gateDone);",
+      "passed": true,
+      "fixtures": 64,
+      "sourceSites": 1
+    },
+    {
+      "name": "preserve xy result and untouched zw: S.objectivePoint.xy=u.goals.zw;",
+      "passed": true,
+      "fixtures": 64,
+      "sourceSites": 1
+    },
+    {
+      "name": "preserve xy result and untouched zw: S.objectivePoint.xy=q.p.xz;",
+      "passed": true,
+      "fixtures": 64,
+      "sourceSites": 1
+    },
+    {
+      "name": "preserve xy result and untouched zw: z.special13.xy=direct;",
+      "passed": true,
+      "fixtures": 64,
+      "sourceSites": 2
+    },
+    {
+      "name": "preserve xy result and untouched zw: z.sense13.xy=goalPoint+jitter;",
+      "passed": true,
+      "fixtures": 64,
+      "sourceSites": 1
+    }
+  ]
+}

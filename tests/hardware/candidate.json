@@ -1,9 +1,12 @@
 {
-  "harnessVersion": "deadweight-v1",
-  "runtimeSha256": "ddc87b5c85e111be9b8d24d4d0af712fca67cc4beca5acb928b7e2d4b225a05b",
-  "shippedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
-  "acceptance": "Deferred: earned Chapter 5 winch, squad extraction, final campaign progress/records/checkpoint removal and exact same-tab retry; matched Chapters 1\u20134 regression separately; no Chapter 6",
+  "harnessVersion": "mercer-restoration-v2",
+  "runtimeSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
+  "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "1683d5a461f0d55d850f5ad2fd00abed14e40214",
-  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment."
+  "dependencyCommit": "e4fe5def1f60b030b6d90761ab3ab5a9fab5dda2",
+  "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
+  "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710",
+  "startupCorrection": "Two-byte WGSL logical grouping hotfix. Source grammar and CPU truth table checked; browser compilation/startup remain unverified in this environment.",
+  "liveStartupOnlyMerge": "efe2ed29b215310e6cc93f12ada60e4d45abf065"
 }

@@ -1,0 +1,154 @@
+{
+  "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "method": "CPU-only exact host, controlled production fragments, geometry/navigation reference, static hardware-harness contracts and source WGSL lexical guards. No WGSL compiler, GPU/browser execution or earned gameplay.",
+  "passed": true,
+  "suites": [
+    {
+      "suite": "bot-objective-priority",
+      "passed": true,
+      "checks": 247,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "burnout-fuel",
+      "passed": true,
+      "checks": 18,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "campaign-chain",
+      "passed": true,
+      "checks": 24,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "checkpoint-readback",
+      "passed": true,
+      "checks": 15,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "code-red",
+      "passed": true,
+      "checks": 53,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "code-red-navigation",
+      "passed": true,
+      "checks": 18,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "deadweight",
+      "passed": true,
+      "checks": 59,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "deadweight-navigation",
+      "passed": true,
+      "checks": 23,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "downed-crawl",
+      "passed": true,
+      "checks": 95,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "downed-crawl-fixture",
+      "passed": true,
+      "checks": 11,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "extraction-hardware",
+      "passed": true,
+      "checks": 43,
+      "runtimeSha256": null
+    },
+    {
+      "suite": "extraction-hold",
+      "passed": true,
+      "checks": 80,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "hardware-route",
+      "passed": true,
+      "checks": null,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "heal-validity",
+      "passed": true,
+      "checks": 45,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "last-train",
+      "passed": true,
+      "checks": 62,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "leaper-pin",
+      "passed": true,
+      "checks": 85,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "mercer-restoration",
+      "passed": true,
+      "checks": 29,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "mercer-restoration-regression",
+      "passed": true,
+      "checks": 33,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "navigation",
+      "passed": true,
+      "checks": 24,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "revive-priority",
+      "passed": true,
+      "checks": 56,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "wgsl-logical-grouping",
+      "passed": true,
+      "checks": 19,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    },
+    {
+      "suite": "wgsl-source",
+      "passed": true,
+      "checks": null,
+      "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c"
+    }
+  ],
+  "independentReview": {
+    "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+    "focusedChecks": 165,
+    "eightSeedGeometry": true,
+    "findingsResolved": [
+      "exterior squad order bounds",
+      "off-route player-relative formation",
+      "axe re-equip first contact",
+      "safehouse partial-coarse navigation detour"
+    ],
+    "remainingSourceBlockers": 0,
+    "qualification": "CPU/source review only; no GPU or browser qualification"
+  },
+  "suiteCount": 22,
+  "namedChecks": 1039
+}

@@ -1,0 +1,52 @@
+{
+  "method": "CPU mocked browser/GPU transport, preflight, ownership and cleanup only; no shader compilation or GPU execution.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "fixtureSha256": "50920c6833cbfd7c147f2ef8285e378a59d380f09fed688cf63c7bf1b8075e13",
+  "passed": true,
+  "checks": [
+    {
+      "name": "module creates only an expression and requires a full hash",
+      "passed": true
+    },
+    {
+      "name": "reject preflight before allocating: wrong-origin",
+      "passed": true
+    },
+    {
+      "name": "reject preflight before allocating: wrong-hash",
+      "passed": true
+    },
+    {
+      "name": "reject preflight before allocating: started",
+      "passed": true
+    },
+    {
+      "name": "reject preflight before allocating: wrong-layout",
+      "passed": true
+    },
+    {
+      "name": "reject preflight before allocating: not-ready",
+      "passed": true
+    },
+    {
+      "name": "synthetic no-compute failure returns partial report and releases every owned buffer",
+      "passed": true
+    },
+    {
+      "name": "submission failure still cleans up owned buffers and error scope",
+      "passed": true
+    },
+    {
+      "name": "fixture does not use legacy controlledStep or persistent writes",
+      "passed": true
+    },
+    {
+      "name": "current begin bind layout and input/state footprints are pinned",
+      "passed": true
+    },
+    {
+      "name": "fixture identity follows current hardware manifest",
+      "passed": true
+    }
+  ]
+}

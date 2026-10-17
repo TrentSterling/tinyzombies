@@ -1,7 +1,7 @@
 {
   "method": "WGSL mixed-short-circuit lexical grouping guard over all evaluated shader strings, exact two-character inverse, and exhaustive CPU truth table for this expression. Not WGSL compilation, pipeline creation, GPU execution or browser startup.",
   "grammarSource": "https://www.w3.org/TR/WGSL/#operator-precedence-associativity",
-  "candidateSha256": "ddc87b5c85e111be9b8d24d4d0af712fca67cc4beca5acb928b7e2d4b225a05b",
+  "candidateSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
   "passed": true,
   "checks": [
     {
@@ -76,7 +76,7 @@
     {
       "name": "one exact inverse recovers the unchanged main or candidate runtime",
       "passed": true,
-      "parentSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f"
+      "parentSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2"
     },
     {
       "name": "all command, activity, fuel and strict radius combinations preserve intended busy semantics",

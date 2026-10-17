@@ -1,0 +1,159 @@
+{
+  "method": "Exact production host, typed-buffer bytes and immutable pre-edit source/asset fingerprints. CPU only; no shader compilation, GPU execution or earned gameplay.",
+  "baseline": {
+    "commit": "b335dfb",
+    "equivalentRemoteTree": "e4fe5def",
+    "sha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+    "seed": 73129,
+    "method": "Captured by exact CPU host before Mercer runtime edits; no GPU execution."
+  },
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Chapter2 world geometry, props, navigation and initial population match pre-restoration bytes",
+      "passed": true,
+      "comparedFields": 42,
+      "initialInfected": 181,
+      "voxels": 39980
+    },
+    {
+      "name": "Chapter2 remains identical when Mercer population setting is 512",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 remains identical when Mercer population setting is 8192",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 world geometry, props, navigation and initial population match pre-restoration bytes",
+      "passed": true,
+      "comparedFields": 42,
+      "initialInfected": 199,
+      "voxels": 44976
+    },
+    {
+      "name": "Chapter3 remains identical when Mercer population setting is 512",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 remains identical when Mercer population setting is 8192",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 world geometry, props, navigation and initial population match pre-restoration bytes",
+      "passed": true,
+      "comparedFields": 42,
+      "initialInfected": 198,
+      "voxels": 36352
+    },
+    {
+      "name": "Chapter4 remains identical when Mercer population setting is 512",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 remains identical when Mercer population setting is 8192",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 world geometry, props, navigation and initial population match pre-restoration bytes",
+      "passed": true,
+      "comparedFields": 42,
+      "initialInfected": 193,
+      "voxels": 35664
+    },
+    {
+      "name": "Chapter5 remains identical when Mercer population setting is 512",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 remains identical when Mercer population setting is 8192",
+      "passed": true
+    },
+    {
+      "name": "renderShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "postShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "uiShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "fx6Shader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "dripShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "spawnShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "integrateShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "boxesShader presentation, particle or blood implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "bindInput control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "ordnanceHint control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "gearLabel14 control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "gearAvailable12 control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "selectGear12 control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "resetGear12 control implementation remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "audio mixer, bank metadata, playback and event handling remain byte-identical",
+      "passed": true
+    },
+    {
+      "name": "embedded character art remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "embedded font remains byte-identical",
+      "passed": true
+    },
+    {
+      "name": "persistent blood helpers and splatter implementation remain byte-identical",
+      "passed": true
+    },
+    {
+      "name": "HTML and CSS outside the script remain byte-identical",
+      "passed": true
+    },
+    {
+      "name": "all existing external art/audio assets remain byte-identical",
+      "passed": true,
+      "assets": 62
+    },
+    {
+      "name": "strict restoration inverse recovers immutable parent and rejects unrelated drift",
+      "passed": true
+    }
+  ]
+}

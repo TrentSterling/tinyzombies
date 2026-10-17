@@ -1,0 +1,295 @@
+{
+  "method": "CPU-only deterministic mock callbacks exercising the unchanged ordinary-input extraction observation helper. No readback evaluation, browser, GPU, shader compilation, earned gameplay, or hardware acceptance.",
+  "helperSha256": "956200c8083fd0aac93483b2f0b235555fab0b3a721aad57039f91bf13f5c547",
+  "limits": {
+    "maxReadsPerCase": 5000,
+    "maxSleepsPerCase": 5000,
+    "realSleeps": 0
+  },
+  "passed": true,
+  "checks": [
+    {
+      "name": "chapter 1: measured short tap rejected, hold and independent closure accepted",
+      "passed": true,
+      "reads": 328,
+      "positiveTapSeconds": 0.04,
+      "holdBracket": [
+        0.17500000000000007,
+        0.18000000000000016
+      ],
+      "observedClosureSeconds": 0.6000599999999885
+    },
+    {
+      "name": "chapter 2: measured short tap rejected, hold and independent closure accepted",
+      "passed": true,
+      "reads": 328,
+      "positiveTapSeconds": 0.04,
+      "holdBracket": [
+        0.17500000000000007,
+        0.18000000000000016
+      ],
+      "observedClosureSeconds": 0.6000599999999885
+    },
+    {
+      "name": "chapter 3: measured short tap rejected, hold and independent closure accepted",
+      "passed": true,
+      "reads": 328,
+      "positiveTapSeconds": 0.04,
+      "holdBracket": [
+        0.17500000000000007,
+        0.18000000000000016
+      ],
+      "observedClosureSeconds": 0.6000599999999885
+    },
+    {
+      "name": "chapter 4: measured short tap rejected, hold and independent closure accepted",
+      "passed": true,
+      "reads": 328,
+      "positiveTapSeconds": 0.04,
+      "holdBracket": [
+        0.17500000000000007,
+        0.18000000000000016
+      ],
+      "observedClosureSeconds": 0.6000599999999885
+    },
+    {
+      "name": "chapter 5: measured short tap rejected, hold and independent closure accepted",
+      "passed": true,
+      "reads": 328,
+      "positiveTapSeconds": 0.04,
+      "holdBracket": [
+        0.17500000000000007,
+        0.18000000000000016
+      ],
+      "observedClosureSeconds": 0.6000599999999885
+    },
+    {
+      "name": "legacy edge-triggered seal is rejected at the positive-tap probe",
+      "passed": true,
+      "reads": 7,
+      "rejection": "Error: Extraction observation inconclusive: door not clear and ready"
+    },
+    {
+      "name": "missing positive subthreshold tap sample is inconclusive",
+      "passed": true,
+      "reads": 8,
+      "rejection": "Error: Extraction observation inconclusive: door not clear and ready"
+    },
+    {
+      "name": "no positive hold sample before the deadline is inconclusive",
+      "passed": true,
+      "reads": 34,
+      "rejection": "Error: Extraction observation window ended; outcome incomplete"
+    },
+    {
+      "name": "missing pending full-hold samples cannot establish the .18s bracket",
+      "passed": true,
+      "reads": 170,
+      "rejection": "Error: Extraction .18-second initiation bracket is incomplete"
+    },
+    {
+      "name": "a full-hold sampling gap above 100ms is rejected despite a positive pending sample",
+      "passed": true,
+      "reads": 190,
+      "rejection": "Error: Extraction .18-second initiation bracket is incomplete"
+    },
+    {
+      "name": "missing the entire initiation window cannot count as completion",
+      "passed": true,
+      "reads": 170,
+      "rejection": "Error: Extraction initiation window missed"
+    },
+    {
+      "name": "missing all post-resume closing samples cannot count as completion",
+      "passed": true,
+      "reads": 210,
+      "rejection": "Error: Extraction contract incomplete"
+    },
+    {
+      "name": "retained pending hold after release cannot count as tap rejection",
+      "passed": true,
+      "reads": 245,
+      "rejection": "Error: Extraction observation window ended; outcome incomplete"
+    },
+    {
+      "name": "downed release freezes the mock pending hold and cannot count as a reset or pass",
+      "passed": true,
+      "frozenHoldSeconds": 0.04,
+      "rejection": "Error: Extraction observation window ended; outcome incomplete"
+    },
+    {
+      "name": "deadline expiry cannot count as acceptance",
+      "passed": true,
+      "reads": 26,
+      "rejection": "Error: Extraction observation window ended; outcome incomplete"
+    },
+    {
+      "name": "pause partial: changing paused is rejected",
+      "passed": true,
+      "reads": 162,
+      "rejection": "Error: Paused partial changed"
+    },
+    {
+      "name": "pause partial: changing t is rejected",
+      "passed": true,
+      "reads": 162,
+      "rejection": "Error: Paused partial changed"
+    },
+    {
+      "name": "pause partial: changing hold is rejected",
+      "passed": true,
+      "reads": 162,
+      "rejection": "Error: Paused partial changed"
+    },
+    {
+      "name": "pause partial: changing seal is rejected",
+      "passed": true,
+      "reads": 162,
+      "rejection": "Error: Paused partial changed"
+    },
+    {
+      "name": "pause closure: changing paused is rejected",
+      "passed": true,
+      "reads": 207,
+      "rejection": "Error: Paused closure changed"
+    },
+    {
+      "name": "pause closure: changing t is rejected",
+      "passed": true,
+      "reads": 207,
+      "rejection": "Error: Paused closure changed"
+    },
+    {
+      "name": "pause closure: changing hold is rejected",
+      "passed": true,
+      "reads": 207,
+      "rejection": "Error: Paused closure changed"
+    },
+    {
+      "name": "pause closure: changing seal is rejected",
+      "passed": true,
+      "reads": 207,
+      "rejection": "Error: Paused closure changed"
+    },
+    {
+      "name": "pending hold eligibility change: inside",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: allFourAliveInside",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: down",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: pin",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: hp",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: interaction",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold eligibility change: interactionIndex",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction observation inconclusive: eligibility changed"
+    },
+    {
+      "name": "pending hold cancellation by released E is rejected",
+      "passed": true,
+      "reads": 185,
+      "rejection": "Error: Extraction hold interrupted"
+    },
+    {
+      "name": "closure cancellation after resume is rejected",
+      "passed": true,
+      "reads": 220,
+      "rejection": "Error: Extraction closure cancelled"
+    },
+    {
+      "name": "autonomous closure interruption: allFourAliveInside",
+      "passed": true,
+      "reads": 220,
+      "rejection": "Error: Extraction closure observation interrupted"
+    },
+    {
+      "name": "autonomous closure interruption: down",
+      "passed": true,
+      "reads": 220,
+      "rejection": "Error: Extraction closure observation interrupted"
+    },
+    {
+      "name": "autonomous closure interruption: pin",
+      "passed": true,
+      "reads": 220,
+      "rejection": "Error: Extraction closure observation interrupted"
+    },
+    {
+      "name": "autonomous closure interruption: eHeld",
+      "passed": true,
+      "reads": 220,
+      "rejection": "Error: Extraction closure observation interrupted"
+    },
+    {
+      "name": "closure duration 0.25s is rejected",
+      "passed": true,
+      "reads": 258,
+      "rejection": "Error: Extraction contract incomplete"
+    },
+    {
+      "name": "closure duration 1.1s is rejected",
+      "passed": true,
+      "reads": 428,
+      "rejection": "Error: Extraction contract incomplete"
+    },
+    {
+      "name": "invalid runtime observation: stage",
+      "passed": true,
+      "reads": 1,
+      "rejection": "Error: Extraction runtime/stage error"
+    },
+    {
+      "name": "invalid runtime observation: errors",
+      "passed": true,
+      "reads": 1,
+      "rejection": "Error: Extraction runtime/stage error"
+    },
+    {
+      "name": "invalid runtime observation: stopped",
+      "passed": true,
+      "reads": 1,
+      "rejection": "Error: Extraction runtime/stage error"
+    },
+    {
+      "name": "failed final evidence capture cannot publish a passing progress report",
+      "passed": true,
+      "reads": 328,
+      "rejection": "Error: Synthetic screenshot capture cancelled"
+    },
+    {
+      "name": "failed final E release cannot publish a passing progress report",
+      "passed": true,
+      "reads": 328,
+      "rejection": "Error: Synthetic final input release failed"
+    }
+  ]
+}

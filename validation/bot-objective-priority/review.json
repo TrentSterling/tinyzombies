@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "parentSha256": "2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70",
+  "findings": [],
+  "independentlyRerun": {
+    "bot-objective-priority": 247,
+    "revive-priority": 56,
+    "heal-validity": 45,
+    "wgsl-source": "passed lexical scan, not compilation"
+  },
+  "scope": "Read-only independent runtime, test harness, false-pass, documentation and manifest review. Runtime helper matches confirmed source predicate; exact inverse recovers parent. Initial duplicate-helper test fixture issue corrected and final suite rerun. Hardware deferred."
+}

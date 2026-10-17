@@ -37,7 +37,7 @@ function context(weapon) {
     S: {
       cell: vec(), edges12: vec(0, weapon), gear12: vec(weapon, weapon, 1, weapon),
       reload12: vec(1.2, 0, weapon, .02), heal12: vec(.8), axe14: vec(.48),
-      mission5: vec(3, 3, 12, 0), relay: vec(), alarm: vec(), flags12: vec(),
+      mission5: vec(3, 3, 12, 0), relay: vec(), alarm: vec(), flags12: vec(), escape: vec(),
       pos: vec(0, 0, 0, 100), player7: vec()
     },
     P: [{data: vec()}], used: true, k: 0, vec4f: vec, max: Math.max,

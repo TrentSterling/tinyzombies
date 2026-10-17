@@ -1,0 +1,1018 @@
+{
+  "method": "Exact Ch1 crank, Ch2 fuel and autonomous opening fragments, optionally followed by complete production buddy update/claims/GOAP mechanically adapted to JavaScript. Geometry, threat and movement are controlled; selected fragment harness omits other mission work including order expiry, demo/config guards, and uses scheduler inactivity preconditions. No full mission/begin shader execution, WGSL compilation, f32 timing, natural gameplay or complete ordering-parity claim.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "parentSha256": "2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70",
+  "helperSha256": "7d1dbf36dfc83cb8b8813bc6deb1e40fad1d3f56450de917069419b2f91ef950",
+  "crankSha256": "cf139e6f11db4dc91fa11473768f72cf82c6b4e54e25602c068d740b564f0879",
+  "fuelSha256": "0b8673a72a2fad1dac534d82fc4ab8f3f9fc41a56ae80899cd60ea3db2be4c27",
+  "timerSha256": "ad8c9f48449266fdf7582c2d81623407a6ee83dc5ccb91dc75b1d4717dfddd01",
+  "passed": true,
+  "checks": [
+    {
+      "name": "strict inverse recovers exact reviewed parent including prior five-fix stack",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch1 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch1 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch1 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch1 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator0 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator0 patient1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator0 patient2",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator1 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator1 patient0",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator1 patient2",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator2 patient-1",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator2 patient0",
+      "passed": true
+    },
+    {
+      "name": "nearby downed patient blocks near-complete objective Ch2 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius inside Ch2 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius exact Ch2 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "strict revive radius outside Ch2 operator2 patient1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch1 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch1 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch1 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch2 operator0",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch2 operator1",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation healthy-human Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation zero-hp-human-no-down-timer Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation revived-bot Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dead-bot-positive-hp Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation dragged-bot Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "ineligible patient permits operation positive-hp-bot-with-stale-down-timer Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "human down timer remains authoritative despite mixed positive HP Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "negative bot HP with no bleed timer still blocks Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "selection priority never queries threat or sight Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes revived Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dead Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes dragged Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "operation resumes after patient becomes out-of-range Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility down Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility pinned Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility out-of-objective-range Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "inherited operator eligibility exact-objective-range Ch2 operator2",
+      "passed": true
+    },
+    {
+      "name": "priority helper excludes its own downed slot 0",
+      "passed": true
+    },
+    {
+      "name": "priority helper excludes its own downed slot 1",
+      "passed": true
+    },
+    {
+      "name": "priority helper excludes its own downed slot 2",
+      "passed": true
+    },
+    {
+      "name": "nearest excluded patient does not hide farther eligible patient: dead",
+      "passed": true
+    },
+    {
+      "name": "nearest excluded patient does not hide farther eligible patient: dragged",
+      "passed": true
+    },
+    {
+      "name": "nearest excluded patient does not hide farther eligible patient: healthy",
+      "passed": true
+    },
+    {
+      "name": "radius uses XZ Euclidean distance and ignores vertical height",
+      "passed": true
+    },
+    {
+      "name": "inherited crank guard no-order",
+      "passed": true
+    },
+    {
+      "name": "inherited crank guard different-order-kind",
+      "passed": true
+    },
+    {
+      "name": "inherited crank guard open-gate",
+      "passed": true
+    },
+    {
+      "name": "inherited fuel guard resets partial hold: no-fuel",
+      "passed": true
+    },
+    {
+      "name": "inherited fuel guard resets partial hold: different-goal",
+      "passed": true
+    },
+    {
+      "name": "inherited fuel guard resets partial hold: already-active",
+      "passed": true
+    },
+    {
+      "name": "existing Ch1 order still works with stale AI goal and without fuel",
+      "passed": true
+    },
+    {
+      "name": "existing autonomous Ch2 fuel delivery does not require a manual order",
+      "passed": true
+    },
+    {
+      "name": "near-complete already active crank pauses without requeueing operator0",
+      "passed": true
+    },
+    {
+      "name": "near-complete already active crank pauses without requeueing operator1",
+      "passed": true
+    },
+    {
+      "name": "near-complete already active crank pauses without requeueing operator2",
+      "passed": true
+    },
+    {
+      "name": "Ch1 crank pauses and resumes original 4.2-second total at 30Hz",
+      "passed": true
+    },
+    {
+      "name": "Ch2 interrupted pour starts a fresh 2.1-second hold at 30Hz",
+      "passed": true
+    },
+    {
+      "name": "Ch1 crank pauses and resumes original 4.2-second total at 60Hz",
+      "passed": true
+    },
+    {
+      "name": "Ch2 interrupted pour starts a fresh 2.1-second hold at 60Hz",
+      "passed": true
+    },
+    {
+      "name": "Ch1 crank pauses and resumes original 4.2-second total at 120Hz",
+      "passed": true
+    },
+    {
+      "name": "Ch2 interrupted pour starts a fresh 2.1-second hold at 120Hz",
+      "passed": true
+    },
+    {
+      "name": "other unaffected operator can finish second can while operator0 is rescue-blocked",
+      "passed": true
+    },
+    {
+      "name": "other unaffected operator can finish second can while operator1 is rescue-blocked",
+      "passed": true
+    },
+    {
+      "name": "other unaffected operator can finish second can while operator2 is rescue-blocked",
+      "passed": true
+    },
+    {
+      "name": "activated Ch2 11-second opening stays autonomous during rescue at 30Hz",
+      "passed": true
+    },
+    {
+      "name": "activated Ch2 11-second opening stays autonomous during rescue at 60Hz",
+      "passed": true
+    },
+    {
+      "name": "activated Ch2 11-second opening stays autonomous during rescue at 120Hz",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer pause Ch1",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer victory Ch1",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer defeat Ch1",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer chooser Ch1",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer pause Ch2",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer victory Ch2",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer defeat Ch2",
+      "passed": true
+    },
+    {
+      "name": "adapter scheduler precondition freezes objective/timer chooser Ch2",
+      "passed": true
+    },
+    {
+      "name": "new objective fragments do not affect Chapter3",
+      "passed": true
+    },
+    {
+      "name": "new objective fragments do not affect Chapter4",
+      "passed": true
+    },
+    {
+      "name": "new objective fragments do not affect Chapter5",
+      "passed": true
+    },
+    {
+      "name": "new objective fragments do not affect Chapter6",
+      "passed": true
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator0 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator0 patient1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator0 patient2",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator1 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator1 patient0",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator1 patient2",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator2 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator2 patient0",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch1 operator2 patient1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator0 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator0 patient1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator0 patient2",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator1 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator1 patient0",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator1 patient2",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator2 patient-1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator2 patient0",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "mission-before-full-buddy replans stale operation and rescues Ch2 operator2 patient1",
+      "passed": true,
+      "framesUntilRescue": 154
+    },
+    {
+      "name": "full buddy cannot rescue through threat and objective remains blocked",
+      "passed": true
+    },
+    {
+      "name": "full buddy cannot rescue through sight and objective remains blocked",
+      "passed": true
+    },
+    {
+      "name": "production dispatcher remains begin then mission5 then buddy",
+      "passed": true
+    },
+    {
+      "name": "same behavioral oracle catches parent regression Ch1",
+      "passed": true
+    },
+    {
+      "name": "same behavioral oracle catches parent regression Ch2",
+      "passed": true
+    },
+    {
+      "name": "strict inverse rejects duplicate helper and guards rather than masking scope drift",
+      "passed": true
+    }
+  ]
+}

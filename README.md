@@ -4,6 +4,10 @@ A standalone WebGPU voxel zombie game. This is the 2026 V9 prototype, distinct f
 
 Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/tiny-zombies/` address redirects here.
 
+## Mercer restoration playtest build
+
+This checkout restores a larger connected Chapter 1 district, destructible wall breaches, the configured infected population, bounded off-route pressure and objective-safe extraction. Chapters 2–5 world buffers, art, controls, recorded audio and persistent blood are preserved. This build is released for the owner's playtest through [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18). CPU/source checks are separate from shader compilation, GPU performance and earned gameplay, which remain unverified. See [scope, preservation and test limits](tests/MERCER-RESTORATION.md) and [fresh CPU results](validation/mercer-support-fix/suite-summary.json).
+
 ## DEAD ENDS Chapters 1–5
 
 The published campaign contains five authored chapters from [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html): Mercer, Burnout, Last Train, Code Red and Deadweight. Code Red adds the hospital shutter and alarm; Deadweight adds the bridge winch and campaign ending. The player mohawk, all 43 recorded SFX assets and default 2,048 infected / 32,768 particle allocations are preserved.

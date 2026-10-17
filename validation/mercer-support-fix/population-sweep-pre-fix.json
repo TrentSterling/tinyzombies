@@ -1,0 +1,344 @@
+{
+  "runtimeSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "method": "32 deterministic seeds × 12 boundary budgets, exact production host buffers; independent voxel/prop footprint checks at maximum population. Parent actor prefixes, zero unused slots, geometry independence, all occupancy backlinks, group capacities, all nine building interiors, five passages and repeat determinism. CPU only: no shader compilation/execution, dynamic fracture, GPU ordering or gameplay/performance.",
+  "passed": true,
+  "seedCount": 32,
+  "budgets": [
+    -1,
+    0,
+    1,
+    184,
+    185,
+    186,
+    245,
+    246,
+    2048,
+    8191,
+    8192,
+    9000
+  ],
+  "worldBuilds": 416,
+  "maximumBudgetSupplementalFootprints": 256224,
+  "summaries": [
+    {
+      "seed": 0,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 364,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 365,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 365,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 73129,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 366,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2147483647,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 365,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2147483648,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 367,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 4294967294,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 367,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 4294967295,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 366,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3551281436,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 363,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 4191906251,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 365,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2911712430,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 364,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1955984437,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 363,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3230038032,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 364,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1353280559,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 365,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1723542466,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 366,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1297184825,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 367,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1560921156,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 367,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 80020179,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 366,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1076570646,
+      "passed": true,
+      "voxels": 73535,
+      "pages": 368,
+      "groups": 495,
+      "maxGroupVoxels": 128,
+      "connected": 19038,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3448429181,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 366,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1438570936,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 363,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3839316407,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 366,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2697724842,
+      "passed": true,
+      "voxels": 73535,
+      "pages": 366,
+      "groups": 495,
+      "maxGroupVoxels": 128,
+      "connected": 19038,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 198893313,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 363,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3531582572,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 366,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2720644315,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 365,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 2335165566,
+      "passed": true,
+      "voxels": 73407,
+      "pages": 365,
+      "groups": 493,
+      "maxGroupVoxels": 128,
+      "connected": 19042,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1369737669,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 366,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1693151328,
+      "passed": true,
+      "voxels": 73343,
+      "pages": 365,
+      "groups": 492,
+      "maxGroupVoxels": 128,
+      "connected": 19044,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 613017663,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 367,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 3089094802,
+      "passed": true,
+      "voxels": 73471,
+      "pages": 368,
+      "groups": 494,
+      "maxGroupVoxels": 128,
+      "connected": 19040,
+      "spawnFootprints": 8007
+    },
+    {
+      "seed": 1821974217,
+      "passed": true,
+      "voxels": 73279,
+      "pages": 365,
+      "groups": 491,
+      "maxGroupVoxels": 128,
+      "connected": 19046,
+      "spawnFootprints": 8007
+    }
+  ]
+}

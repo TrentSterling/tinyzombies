@@ -1,0 +1,188 @@
+{
+  "method": "CPU reference model against exact world geometry and captured in-game coordinates; source fingerprints lock the new WGSL/reference correspondence. Not WGSL execution, browser playtesting or a performance measurement.",
+  "candidateSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "passed": true,
+  "checks": [
+    {
+      "name": "reviewed WGSL local-edge reference remains synchronized",
+      "passed": true
+    },
+    {
+      "name": "reviewed WGSL local-search reference remains synchronized",
+      "passed": true
+    },
+    {
+      "name": "fallback is bounded and retains exact physical body/scratch sizes",
+      "passed": true
+    },
+    {
+      "name": "captured safehouse stall reproduces on coarse graph: bot 0",
+      "passed": true,
+      "expanded": 192
+    },
+    {
+      "name": "fallback connects captured bot 0 without crossing collision",
+      "passed": true,
+      "expanded": 26,
+      "nodes": 56,
+      "waypoints": 12
+    },
+    {
+      "name": "captured safehouse stall reproduces on coarse graph: bot 1",
+      "passed": true,
+      "expanded": 192
+    },
+    {
+      "name": "fallback connects captured bot 1 without crossing collision",
+      "passed": true,
+      "expanded": 14,
+      "nodes": 37,
+      "waypoints": 10
+    },
+    {
+      "name": "captured safehouse stall reproduces on coarse graph: bot 2",
+      "passed": true,
+      "expanded": 192
+    },
+    {
+      "name": "fallback connects captured bot 2 without crossing collision",
+      "passed": true,
+      "expanded": 25,
+      "nodes": 54,
+      "waypoints": 12
+    },
+    {
+      "name": "fine diagonal cannot cut the safehouse wall corner",
+      "passed": true
+    },
+    {
+      "name": "fine edge rejects structural wall crossing",
+      "passed": true
+    },
+    {
+      "name": "closed final door remains physically impassable",
+      "passed": true,
+      "expanded": 192,
+      "nodes": 217
+    },
+    {
+      "name": "closed service gate remains physically impassable",
+      "passed": true
+    },
+    {
+      "name": "closed ordinary freight door keeps existing coarse planning behavior",
+      "passed": true
+    },
+    {
+      "name": "successful street coarse route is unchanged",
+      "passed": true
+    },
+    {
+      "name": "successful service approach coarse route is unchanged",
+      "passed": true
+    },
+    {
+      "name": "successful open freight yard coarse route is unchanged",
+      "passed": true
+    },
+    {
+      "name": "goals at 12 metres never trigger the local retry",
+      "passed": true
+    },
+    {
+      "name": "worst-case local search respects node/expansion/edge/route caps",
+      "passed": true,
+      "expanded": 192,
+      "nodes": 256,
+      "edgeChecks": 1536
+    },
+    {
+      "name": "hazards retain a positive path penalty",
+      "passed": true
+    },
+    {
+      "name": "all captured bots traverse with walk movement, avoidance and lookahead false",
+      "passed": true,
+      "seconds": 1.9666666666666666,
+      "fallbacks": 3,
+      "maxStuck": 0.08333333333333333,
+      "positions": [
+        [
+          34.341107332249365,
+          -16.96384520228466
+        ],
+        [
+          32.98208265810736,
+          -17.478187770920098
+        ],
+        [
+          34.63175482686979,
+          -17.608981513277964
+        ]
+      ]
+    },
+    {
+      "name": "all captured bots traverse with sprint movement, avoidance and lookahead false",
+      "passed": true,
+      "seconds": 1.5,
+      "fallbacks": 3,
+      "maxStuck": 0.08333333333333333,
+      "positions": [
+        [
+          34.34963194543345,
+          -17.008139042661337
+        ],
+        [
+          32.98326729672786,
+          -17.47795814026034
+        ],
+        [
+          34.65683085899855,
+          -17.636250396577363
+        ]
+      ]
+    },
+    {
+      "name": "all captured bots traverse with walk movement, avoidance and lookahead true",
+      "passed": true,
+      "seconds": 1.9666666666666666,
+      "fallbacks": 3,
+      "maxStuck": 0.08333333333333333,
+      "positions": [
+        [
+          34.34196836999806,
+          -16.966625071255272
+        ],
+        [
+          32.97771306322842,
+          -17.478594080541026
+        ],
+        [
+          34.64987224591236,
+          -17.608930318330497
+        ]
+      ]
+    },
+    {
+      "name": "all captured bots traverse with sprint movement, avoidance and lookahead true",
+      "passed": true,
+      "seconds": 1.6333333333333333,
+      "fallbacks": 3,
+      "maxStuck": 0.19999999999999998,
+      "positions": [
+        [
+          34.349338287427194,
+          -17.008165160565824
+        ],
+        [
+          32.98415828915209,
+          -17.477395433684748
+        ],
+        [
+          34.656908958693975,
+          -17.636293736037565
+        ]
+      ]
+    }
+  ]
+}

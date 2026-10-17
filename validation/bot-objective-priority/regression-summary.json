@@ -1,0 +1,143 @@
+{
+  "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "runtimeDiff": {
+    "insertions": 9,
+    "deletions": 2
+  },
+  "focusedCases": 247,
+  "focusedPassed": true,
+  "regressionSuites": [
+    {
+      "suite": "revive-priority",
+      "passed": true,
+      "cases": 56,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "adafb1949a8bc2127353d35e6b8fcd97b8103ff614a50d7ef5e64a1ccbcd5880"
+    },
+    {
+      "suite": "heal-validity",
+      "passed": true,
+      "cases": 45,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "a41023900a2df079b4fc1172b530da021f51585aebb550d9204a214510e3d57b"
+    },
+    {
+      "suite": "downed-crawl",
+      "passed": true,
+      "cases": 95,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "0d1f2b68527ec9bf7bedfc0095870821a4969a30d5de2694be14b6ac2e590ea2"
+    },
+    {
+      "suite": "leaper-pin",
+      "passed": true,
+      "cases": 85,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "0faf95c4e19e119746564325c8773cbc3870b3adfee49b1bb3f46e6d23d5ea75"
+    },
+    {
+      "suite": "extraction-hold",
+      "passed": true,
+      "cases": 72,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "8811c328253aa5ce3d5a0d09336dc7cefef459f8758da2f4a4bfc689eb3d300f"
+    },
+    {
+      "suite": "last-train",
+      "passed": true,
+      "cases": 62,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "fe20e7fabbcad98e9e3c77bba29becd1f60675a55fc01fa6049bf250eee5bb1d"
+    },
+    {
+      "suite": "code-red",
+      "passed": true,
+      "cases": 53,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "9c8c9fe971e01619a8cec01663a5e06698909cff5f3b23ac411d954de06c015c"
+    },
+    {
+      "suite": "deadweight",
+      "passed": true,
+      "cases": 59,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "baa0872c3b6bfd1d72356c882c4b700f128c568c8b45ba585c71ca91e8856b74"
+    },
+    {
+      "suite": "checkpoint-readback",
+      "passed": true,
+      "cases": 15,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "4c1b8628fe065011651c0ef489f36a577432e93bf1bcc560d8c2051d4156dcd3"
+    },
+    {
+      "suite": "campaign-chain",
+      "passed": true,
+      "cases": 24,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "159614d2ca8b89827ed5a2cc55ccd66039353bd089a7dd87d273dd0eb3236f04"
+    },
+    {
+      "suite": "burnout-fuel",
+      "passed": true,
+      "cases": 18,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "287fc0aa1d301e7f16d3911baec8cbbd0c58a454d58b10d44c5a9d255ccfd76f"
+    },
+    {
+      "suite": "navigation",
+      "passed": true,
+      "cases": 24,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "d13e58a88c3a529abc5d5c71599e992df879452ecbf4354fa4e5f38b325f7cb1"
+    },
+    {
+      "suite": "code-red-navigation",
+      "passed": true,
+      "cases": 18,
+      "candidateSha256": null,
+      "reportSha256": "9364996de44fcb0f594a4586995e0a420e5381c1ff976bba823ec5acc86868a9"
+    },
+    {
+      "suite": "deadweight-navigation",
+      "passed": true,
+      "cases": 23,
+      "candidateSha256": null,
+      "reportSha256": "5d092bd3fe3af18394ae82afd3f81ebc7129eb372e4d0e87e7b9bee0e32e665e"
+    },
+    {
+      "suite": "extraction-hardware",
+      "passed": true,
+      "cases": 43,
+      "candidateSha256": null,
+      "reportSha256": "1d676ba428c1fc2e0c69aa6c8a68dbf1c83ffb0439180689458669b977a69bc0"
+    },
+    {
+      "suite": "downed-crawl-fixture",
+      "passed": true,
+      "cases": 11,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "4ccca0abdd0d7cf0b2be2c8b307c66a5bb0fdd722f0fa030064f1d41c95f735e"
+    },
+    {
+      "suite": "hardware-route",
+      "passed": true,
+      "cases": null,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "cb3ad9498d3ad9dab45300c4a7b96cf927a58add7f823f26c982a20634bb68e9"
+    },
+    {
+      "suite": "wgsl-source",
+      "passed": true,
+      "cases": null,
+      "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+      "reportSha256": "56a1c428179d50c643feebeb8ca056d2e958db775979f541fba64472a126840b"
+    }
+  ],
+  "passed": true,
+  "audio": {
+    "flacFiles": 43,
+    "unchangedFromParent": true
+  },
+  "limits": "CPU only. Hardware, WGSL compilation and ordinary gameplay were not run. No merge or live deployment."
+}

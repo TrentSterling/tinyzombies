@@ -1,0 +1,237 @@
+{
+  "method": "Ordered exact production medical-equipment and mission-selection fragments, then complete production buddy updater/GOAP CPU adapter; controlled geometry, threats and movement. Pause/terminal guards are adapter preconditions. No full begin/mission shader execution, WGSL compilation or natural gameplay claim.",
+  "candidateSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "parentSha256": "87bf5cfcf83d39c44298a977f7d739a0621805e2034790b52327ece68cfc739d",
+  "medicalSha256": "4838ea30bfef2ad1c03a93ed372cfe180ee60bd36a278f24940a0b409ac2fad9",
+  "selectionSha256": "e8f25228561db43637a096ec13791a93c1471640ee0561db73748eec57a4435d",
+  "passed": true,
+  "checks": [
+    {
+      "name": "only reviewed self-heal reset differs from patient-validity parent",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter1 patient0",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter1 patient1",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter1 patient2",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter2 patient0",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter2 patient1",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter2 patient2",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter3 patient0",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter3 patient1",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter3 patient2",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter4 patient0",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter4 patient1",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter4 patient2",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter5 patient0",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter5 patient1",
+      "passed": true
+    },
+    {
+      "name": "ordered begin/mission/buddy cancels self-medkit Chapter5 patient2",
+      "passed": true
+    },
+    {
+      "name": "normal35HP rescue completes once and self-heal restarts next frame 30",
+      "passed": true,
+      "seconds": 2.3666666666666667
+    },
+    {
+      "name": "normal35HP rescue completes once and self-heal restarts next frame 60",
+      "passed": true,
+      "seconds": 2.3666666666666667
+    },
+    {
+      "name": "normal35HP rescue completes once and self-heal restarts next frame 120",
+      "passed": true,
+      "seconds": 2.3583333333333334
+    },
+    {
+      "name": "source-order precharged self-kit may complete on first E frame 30",
+      "passed": true
+    },
+    {
+      "name": "source-order precharged self-kit may complete on first E frame 60",
+      "passed": true
+    },
+    {
+      "name": "source-order precharged self-kit may complete on first E frame 120",
+      "passed": true
+    },
+    {
+      "name": "threat-blocked revive permits ordinary self-medkit completion 30",
+      "passed": true
+    },
+    {
+      "name": "threat-blocked revive permits ordinary self-medkit completion 60",
+      "passed": true
+    },
+    {
+      "name": "threat-blocked revive permits ordinary self-medkit completion 120",
+      "passed": true
+    },
+    {
+      "name": "blocked→clear resets uncommitted self progress; clear→blocked starts fresh",
+      "passed": true
+    },
+    {
+      "name": "secondary teammate medicine remains independent while manual revive advances",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: release",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: range",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: exact90",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: sight",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: drag",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: dead",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: closed-door",
+      "passed": true
+    },
+    {
+      "name": "ineligible manual rescue does not cancel self-healing: not-selected",
+      "passed": true
+    },
+    {
+      "name": "nearest threat-blocked patient does not fall through to farther clear patient",
+      "passed": true
+    },
+    {
+      "name": "dead or dragged nearest patient yields the farther valid selected revive",
+      "passed": true
+    },
+    {
+      "name": "equal-distance selection keeps first source-order patient",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: pin",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: down",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: no-kit",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: moving",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: damage",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: release-latch",
+      "passed": true
+    },
+    {
+      "name": "existing equipment interruption stays intact: wrong-gear",
+      "passed": true
+    },
+    {
+      "name": "simulation inactive makes no medical/rescue progress: pause",
+      "passed": true
+    },
+    {
+      "name": "simulation inactive makes no medical/rescue progress: victory",
+      "passed": true
+    },
+    {
+      "name": "simulation inactive makes no medical/rescue progress: defeat",
+      "passed": true
+    },
+    {
+      "name": "simulation inactive makes no medical/rescue progress: chooser",
+      "passed": true
+    },
+    {
+      "name": "pause/resume continues ordinary ordering without retaining stale self-heal",
+      "passed": true
+    },
+    {
+      "name": "legacy chapter behavior retains concurrent self-medkit progress",
+      "passed": true
+    },
+    {
+      "name": "selected patient dying between mission and buddy cannot clear medical progress",
+      "passed": true
+    },
+    {
+      "name": "already completed live patient cannot clear medical progress through stale selection",
+      "passed": true
+    },
+    {
+      "name": "strict inverse rejects duplicate reset instead of hiding unrelated changes",
+      "passed": true
+    },
+    {
+      "name": "production dispatcher order remains begin then mission then buddy",
+      "passed": true
+    },
+    {
+      "name": "active ordered rescue does not save a checkpoint and retry restores entry resources",
+      "passed": true
+    }
+  ]
+}

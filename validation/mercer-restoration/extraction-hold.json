@@ -1,0 +1,363 @@
+{
+  "method": "CPU-only exact production host/scalar WGSL fragments and lexical contracts; no shader compilation or earned gameplay.",
+  "candidateSha256": "634573afd3997a66eb8d15a20235b49422772f0b7f7847b3987ac18e70075c0c",
+  "sourceContract": {
+    "sourceSha256": "209a9d39f79649304c278ed229a0fcba52c7a610ce6c7113cbd048c46f82837e",
+    "lines": [
+      1170,
+      1183,
+      3266,
+      3818,
+      3835,
+      3855,
+      3892
+    ]
+  },
+  "passed": true,
+  "checks": [
+    {
+      "name": "Chapter1 rejects tap then starts all-inside hold and .6s autonomous seal",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 rejects tap then starts all-inside hold and .6s autonomous seal",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 rejects tap then starts all-inside hold and .6s autonomous seal",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 rejects tap then starts all-inside hold and .6s autonomous seal",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 rejects tap then starts all-inside hold and .6s autonomous seal",
+      "passed": true
+    },
+    {
+      "name": "Mercer unearned gate rejects open extraction even after a physical shortcut",
+      "passed": true
+    },
+    {
+      "name": "Mercer unearned gate rejects partial seal extraction even after a physical shortcut",
+      "passed": true
+    },
+    {
+      "name": "Mercer unearned gate rejects already closed extraction even after a physical shortcut",
+      "passed": true
+    },
+    {
+      "name": "Mercer physical gate opening alone cannot replace earned relay completion",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 extraction does not inherit Mercer gate prerequisite",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 extraction does not inherit Mercer gate prerequisite",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 extraction does not inherit Mercer gate prerequisite",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 extraction does not inherit Mercer gate prerequisite",
+      "passed": true
+    },
+    {
+      "name": "inside f32 hold timing at 30Hz",
+      "passed": true,
+      "holdSeconds": 0.20000001043081284,
+      "closedSeconds": 0.7666667066514492,
+      "frames": 23
+    },
+    {
+      "name": "inside f32 hold timing at 60Hz",
+      "passed": true,
+      "holdSeconds": 0.18333334289491177,
+      "closedSeconds": 0.7666667066514492,
+      "frames": 46
+    },
+    {
+      "name": "inside f32 hold timing at 120Hz",
+      "passed": true,
+      "holdSeconds": 0.18333334289491177,
+      "closedSeconds": 0.7750000404193997,
+      "frames": 93
+    },
+    {
+      "name": "inside f32 hold timing at jitter",
+      "passed": true,
+      "holdSeconds": 0.1983333359239623,
+      "closedSeconds": 0.7963333438383415,
+      "frames": 47
+    },
+    {
+      "name": "outside f32 hold timing at 30Hz",
+      "passed": true,
+      "holdSeconds": 1.6333334185183048,
+      "closedSeconds": 2.200000114738941,
+      "frames": 66
+    },
+    {
+      "name": "outside f32 hold timing at 60Hz",
+      "passed": true,
+      "holdSeconds": 1.6166667509824038,
+      "closedSeconds": 2.200000114738941,
+      "frames": 132
+    },
+    {
+      "name": "outside f32 hold timing at 120Hz",
+      "passed": true,
+      "holdSeconds": 1.6083334172144532,
+      "closedSeconds": 2.200000114738941,
+      "frames": 264
+    },
+    {
+      "name": "outside f32 hold timing at jitter",
+      "passed": true,
+      "holdSeconds": 1.62800002284348,
+      "closedSeconds": 2.2260000307578593,
+      "frames": 133
+    },
+    {
+      "name": "outside threshold changes dynamically when living squad enters or leaves",
+      "passed": true
+    },
+    {
+      "name": "revive prevents start but carries held time",
+      "passed": true
+    },
+    {
+      "name": "blocked doorway prevents start but carries held time",
+      "passed": true
+    },
+    {
+      "name": "release resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "pin resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "no action resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "ordinary door resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "rifle resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "auto shotgun resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "axe resets shared hold before returning to seal",
+      "passed": true
+    },
+    {
+      "name": "ordinary pickup kind0 retains shared hold",
+      "passed": true
+    },
+    {
+      "name": "ordinary pickup kind1 retains shared hold",
+      "passed": true
+    },
+    {
+      "name": "ordinary pickup kind2 retains shared hold",
+      "passed": true
+    },
+    {
+      "name": "ordinary pickup kind3 retains shared hold",
+      "passed": true
+    },
+    {
+      "name": "ordinary pickup kind7 retains shared hold",
+      "passed": true
+    },
+    {
+      "name": "downed freezes hold; ordinary damage and movement within reach do not reset it",
+      "passed": true
+    },
+    {
+      "name": "downed release is applied when live interaction resumes",
+      "passed": true
+    },
+    {
+      "name": "pause freezes both pending hold and independent closing progress",
+      "passed": true
+    },
+    {
+      "name": "outside interrupts existing closure without a win",
+      "passed": true
+    },
+    {
+      "name": "downed interrupts existing closure without a win",
+      "passed": true
+    },
+    {
+      "name": "pinned interrupts existing closure without a win",
+      "passed": true
+    },
+    {
+      "name": "occupied interrupts existing closure without a win",
+      "passed": true
+    },
+    {
+      "name": "reach interrupts existing closure without a win",
+      "passed": true
+    },
+    {
+      "name": "continuous E can retry after a cancelled seal without another key edge",
+      "passed": true
+    },
+    {
+      "name": "closed door reopens on a new edge from either side and does not reseal that frame",
+      "passed": true
+    },
+    {
+      "name": "holding E across outside closure does not reopen without a fresh edge",
+      "passed": true
+    },
+    {
+      "name": "held action0 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "held action1 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "held action3 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "held action5 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "held action8 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "held action9 cannot become a false fresh closed-door edge",
+      "passed": true
+    },
+    {
+      "name": "reopen edge freezes downed, then release or pin permits the next effective E",
+      "passed": true
+    },
+    {
+      "name": "Chapter1 nearest non-dragged revive beats open sealing, closed reopen beats revive",
+      "passed": true
+    },
+    {
+      "name": "Chapter2 nearest non-dragged revive beats open sealing, closed reopen beats revive",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 nearest non-dragged revive beats open sealing, closed reopen beats revive",
+      "passed": true
+    },
+    {
+      "name": "Chapter4 nearest non-dragged revive beats open sealing, closed reopen beats revive",
+      "passed": true
+    },
+    {
+      "name": "Chapter5 nearest non-dragged revive beats open sealing, closed reopen beats revive",
+      "passed": true
+    },
+    {
+      "name": "revive radius is strict90px and dead or dragged patients do not block sealing",
+      "passed": true
+    },
+    {
+      "name": "actual manual revive branch follows selected source action instead of the old manual target",
+      "passed": true
+    },
+    {
+      "name": "legacy manual revive behavior remains selected by its original target",
+      "passed": true
+    },
+    {
+      "name": "buddy no longer overwrites source closed-door action with revive HUD",
+      "passed": true
+    },
+    {
+      "name": "up-outside automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "down-outside automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "pin-outside automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "dead-outside automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "inside automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "at70 automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "beyond70 automatic outside-bot reopening contract",
+      "passed": true
+    },
+    {
+      "name": "all-living-inside excludes dead but includes downed and pinned survivors",
+      "passed": true
+    },
+    {
+      "name": "closing-frame victory telemetry still counts once and host reset clears the hold mirror",
+      "passed": true
+    },
+    {
+      "name": "existing extraction closure/occupancy/reopening/victory bytes remain exact after removing only new initiation call",
+      "passed": true
+    },
+    {
+      "name": "human objective completion resets mirror but bot completion does not erase human carry",
+      "passed": true
+    },
+    {
+      "name": "source-only helper is called once after selection and before objective completion",
+      "passed": true
+    },
+    {
+      "name": "HUD extraction state0 matches action and hold progress",
+      "passed": true
+    },
+    {
+      "name": "HUD extraction state1 matches action and hold progress",
+      "passed": true
+    },
+    {
+      "name": "HUD extraction state2 matches action and hold progress",
+      "passed": true
+    },
+    {
+      "name": "HUD extraction state3 matches action and hold progress",
+      "passed": true
+    },
+    {
+      "name": "HUD extraction state4 matches action and hold progress",
+      "passed": true
+    }
+  ]
+}

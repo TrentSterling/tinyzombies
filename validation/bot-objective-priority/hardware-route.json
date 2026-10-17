@@ -1,0 +1,9 @@
+{
+  "method": "Static harness privacy/contract plus CPU physical-centerline model. No browser, shader compilation or gameplay.",
+  "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "lastTrainSegments": 28,
+  "codeRedSegments": 28,
+  "deadweightSegments": 20,
+  "durableProgressCases": 7,
+  "passed": true
+}

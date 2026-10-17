@@ -1,12 +1,22 @@
 {
-  "runtimeSha256": "ddc87b5c85e111be9b8d24d4d0af712fca67cc4beca5acb928b7e2d4b225a05b",
-  "parentRuntimeSha256": "e035eca088efe289cad54707d8eec9ef758444b6eeba6ff063663f96a104450f",
+  "runtimeSha256": "d59ea2d5596f1fef2498a0d4e51c5a71fe77496b9bc10a528fe3f00da08a1aee",
+  "parentRuntimeSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
   "runtimeChange": "Exactly two added parentheses in buddy busy predicate; no other runtime bytes changed.",
   "suites": [
+    {
+      "suite": "bot-objective-priority",
+      "passed": true,
+      "checks": 247
+    },
     {
       "suite": "burnout-fuel",
       "passed": true,
       "checks": 18
+    },
+    {
+      "suite": "campaign-chain",
+      "passed": true,
+      "checks": 24
     },
     {
       "suite": "checkpoint-readback",
@@ -34,9 +44,34 @@
       "checks": 59
     },
     {
+      "suite": "downed-crawl-fixture",
+      "passed": true,
+      "checks": 11
+    },
+    {
+      "suite": "downed-crawl",
+      "passed": true,
+      "checks": 95
+    },
+    {
+      "suite": "extraction-hardware",
+      "passed": true,
+      "checks": 43
+    },
+    {
+      "suite": "extraction-hold",
+      "passed": true,
+      "checks": 72
+    },
+    {
       "suite": "hardware-route",
       "passed": true,
       "checks": null
+    },
+    {
+      "suite": "heal-validity",
+      "passed": true,
+      "checks": 45
     },
     {
       "suite": "last-train",
@@ -44,9 +79,19 @@
       "checks": 62
     },
     {
+      "suite": "leaper-pin",
+      "passed": true,
+      "checks": 85
+    },
+    {
       "suite": "navigation",
       "passed": true,
       "checks": 24
+    },
+    {
+      "suite": "revive-priority",
+      "passed": true,
+      "checks": 56
     },
     {
       "suite": "wgsl-logical-grouping",
@@ -59,7 +104,7 @@
       "checks": null
     }
   ],
-  "unfixedMainNegativeControl": "fails new grouping tests as expected",
+  "independentReview": "All 20 suites independently rerun and passed; fixed hashes and parent negative controls verified. No blocking findings.",
   "browserCompilation": "not run: installed cloud Chromium failed to launch before startup; no standalone WGSL compiler is installed",
   "hardware": "not run",
   "source": "https://www.w3.org/TR/WGSL/#operator-precedence-associativity"

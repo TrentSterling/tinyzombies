@@ -1,0 +1,692 @@
+{
+  "method": "CPU production-fragment and exact host execution, f64/float32-rounded adapters, synthetic and authored collision models. Controlled state fixtures are not gameplay. No GPU compilation, full AI, rendered pose or projectile-impact qualification.",
+  "candidateSha256": "1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4",
+  "parentRuntimeSha256": "dcce514a9d9d326be7b419c4e0ec332ff53a9527adb6e17a608097358cb2bf01",
+  "customization": "Restore requested0.60m/s downed crawl; intentionally differs from immobile source downed controls.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "only comment and two movement semantics differ from reviewed pin parent",
+      "passed": true
+    },
+    {
+      "name": "five-second crawl 30Hz 1,0 f64",
+      "passed": true,
+      "metres": 3.000000000000002,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0,-1 f64",
+      "passed": true,
+      "metres": 3.000000000000002,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 1,1 f64",
+      "passed": true,
+      "metres": 3.0000000000000044,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz -1,-1 f64",
+      "passed": true,
+      "metres": 3.0000000000000044,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0.5,0 f64",
+      "passed": true,
+      "metres": 1.500000000000001,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0.25,0.25 f64",
+      "passed": true,
+      "metres": 1.060660171779822,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 9,9 f64",
+      "passed": true,
+      "metres": 3.0000000000000044,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0,0 f64",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 1,0 f64",
+      "passed": true,
+      "metres": 2.99999999999998,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0,-1 f64",
+      "passed": true,
+      "metres": 2.99999999999998,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 1,1 f64",
+      "passed": true,
+      "metres": 3.000000000000003,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz -1,-1 f64",
+      "passed": true,
+      "metres": 3.000000000000003,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0.5,0 f64",
+      "passed": true,
+      "metres": 1.49999999999999,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0.25,0.25 f64",
+      "passed": true,
+      "metres": 1.0606601717798143,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 9,9 f64",
+      "passed": true,
+      "metres": 3.000000000000003,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0,0 f64",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 1,0 f64",
+      "passed": true,
+      "metres": 2.9999999999999583,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0,-1 f64",
+      "passed": true,
+      "metres": 2.9999999999999583,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 1,1 f64",
+      "passed": true,
+      "metres": 2.999999999999961,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz -1,-1 f64",
+      "passed": true,
+      "metres": 2.999999999999961,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0.5,0 f64",
+      "passed": true,
+      "metres": 1.4999999999999791,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0.25,0.25 f64",
+      "passed": true,
+      "metres": 1.0606601717798065,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 9,9 f64",
+      "passed": true,
+      "metres": 2.999999999999961,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0,0 f64",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 1,0 f32-rounded",
+      "passed": true,
+      "metres": 2.999997854232788,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0,-1 f32-rounded",
+      "passed": true,
+      "metres": 2.999997854232788,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 1,1 f32-rounded",
+      "passed": true,
+      "metres": 3.0000015502374304,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz -1,-1 f32-rounded",
+      "passed": true,
+      "metres": 3.0000015502374304,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0.5,0 f32-rounded",
+      "passed": true,
+      "metres": 1.499998927116394,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0.25,0.25 f32-rounded",
+      "passed": true,
+      "metres": 1.060659413136548,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 9,9 f32-rounded",
+      "passed": true,
+      "metres": 3.0000015502374304,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 30Hz 0,0 f32-rounded",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 1,0 f32-rounded",
+      "passed": true,
+      "metres": 2.999997615814209,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0,-1 f32-rounded",
+      "passed": true,
+      "metres": 2.999997615814209,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 1,1 f32-rounded",
+      "passed": true,
+      "metres": 2.9999904234694235,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz -1,-1 f32-rounded",
+      "passed": true,
+      "metres": 2.9999904234694235,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0.5,0 f32-rounded",
+      "passed": true,
+      "metres": 1.4999988079071045,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0.25,0.25 f32-rounded",
+      "passed": true,
+      "metres": 1.0606593288428512,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 9,9 f32-rounded",
+      "passed": true,
+      "metres": 2.9999904234694235,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 60Hz 0,0 f32-rounded",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 1,0 f32-rounded",
+      "passed": true,
+      "metres": 3.00002121925354,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0,-1 f32-rounded",
+      "passed": true,
+      "metres": 3.00002121925354,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 1,1 f32-rounded",
+      "passed": true,
+      "metres": 2.999984691498026,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz -1,-1 f32-rounded",
+      "passed": true,
+      "metres": 2.999984691498026,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0.5,0 f32-rounded",
+      "passed": true,
+      "metres": 1.50001060962677,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0.25,0.25 f32-rounded",
+      "passed": true,
+      "metres": 1.0606676739188563,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 9,9 f32-rounded",
+      "passed": true,
+      "metres": 2.999984691498026,
+      "seconds": 5
+    },
+    {
+      "name": "five-second crawl 120Hz 0,0 f32-rounded",
+      "passed": true,
+      "metres": 0,
+      "seconds": 5
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 0",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 1",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 2",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 3",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 4",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 5",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 6",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 7",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 8",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 9",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 10",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 11",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 12",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 13",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 14",
+      "passed": true
+    },
+    {
+      "name": "crawl cap bypasses stale sprint/drag/fuel/heal multipliers 15",
+      "passed": true
+    },
+    {
+      "name": "jitter counts simulation elapsed and pause makes no progress false",
+      "passed": true
+    },
+    {
+      "name": "jitter counts simulation elapsed and pause makes no progress true",
+      "passed": true
+    },
+    {
+      "name": "disabled downed movement: menu",
+      "passed": true
+    },
+    {
+      "name": "disabled downed movement: chooser",
+      "passed": true
+    },
+    {
+      "name": "disabled downed movement: win",
+      "passed": true
+    },
+    {
+      "name": "disabled downed movement: defeat",
+      "passed": true
+    },
+    {
+      "name": "live pin wins over crawl, release restores crawl and aim, re-pin stops again",
+      "passed": true
+    },
+    {
+      "name": "existing collision/footprint wall",
+      "passed": true,
+      "position": [
+        0.7500000000000004,
+        0
+      ]
+    },
+    {
+      "name": "existing collision/footprint slide",
+      "passed": true,
+      "position": [
+        0.7566042558696061,
+        4.24264068711923
+      ]
+    },
+    {
+      "name": "existing collision/footprint corner",
+      "passed": true,
+      "position": [
+        0.7566042558696061,
+        0.7566042558696061
+      ]
+    },
+    {
+      "name": "existing collision/footprint clamp",
+      "passed": true,
+      "position": [
+        95.3,
+        95.3
+      ]
+    },
+    {
+      "name": "fresh knockout initializes40s before crawl and selects the pistol",
+      "passed": true
+    },
+    {
+      "name": "terminal HP-zero actor does not become a new crawling knockout",
+      "passed": true
+    },
+    {
+      "name": "crawl and current downed pistol coexist with cooldown and one-round floor",
+      "passed": true
+    },
+    {
+      "name": "downed controls still reject new gear/reload and revive restores release latch",
+      "passed": true
+    },
+    {
+      "name": "held fire through revival requires the existing release before healthy shooting",
+      "passed": true
+    },
+    {
+      "name": "existing moving-pistol spread reads restored motion, no formula is changed",
+      "passed": true
+    },
+    {
+      "name": "moving patient invalidates revive outside1.18m; clear stationary rescue gives35HP",
+      "passed": true
+    },
+    {
+      "name": "revive existing interruption occluded",
+      "passed": true
+    },
+    {
+      "name": "revive existing interruption threat",
+      "passed": true
+    },
+    {
+      "name": "revive existing interruption at-boundary",
+      "passed": true
+    },
+    {
+      "name": "current bleedout/whole-squad defeat remains 0",
+      "passed": true,
+      "seconds": 2.0166666666666666
+    },
+    {
+      "name": "current bleedout/whole-squad defeat remains 2",
+      "passed": true,
+      "seconds": 40.016666666666666
+    },
+    {
+      "name": "actual host uniforms preserve screen-relative movement, pistol input, Shift and pause flags",
+      "passed": true
+    },
+    {
+      "name": "downed human still drops a dragged ally; no new drag/sprint/heal eligibility",
+      "passed": true
+    },
+    {
+      "name": "authored closed/open doors keep same crawl footprint Chapter1",
+      "passed": true,
+      "doors": 2
+    },
+    {
+      "name": "authored closed/open doors keep same crawl footprint Chapter2",
+      "passed": true,
+      "doors": 3
+    },
+    {
+      "name": "authored closed/open doors keep same crawl footprint Chapter3",
+      "passed": true,
+      "doors": 3
+    },
+    {
+      "name": "authored closed/open doors keep same crawl footprint Chapter4",
+      "passed": true,
+      "doors": 3
+    },
+    {
+      "name": "authored closed/open doors keep same crawl footprint Chapter5",
+      "passed": true,
+      "doors": 3
+    }
+  ],
+  "doorResults": [
+    {
+      "stage": 1,
+      "index": 49,
+      "axis": 0,
+      "open": [
+        -29.092187499999593,
+        15
+      ],
+      "closed": [
+        -31.24218749999993,
+        15
+      ]
+    },
+    {
+      "stage": 1,
+      "index": 48,
+      "axis": 1,
+      "open": [
+        1,
+        -2.4046875000000556
+      ],
+      "closed": [
+        1,
+        -4.244687500000016
+      ]
+    },
+    {
+      "stage": 2,
+      "index": 25,
+      "axis": 0,
+      "open": [
+        -29.092187499999593,
+        16
+      ],
+      "closed": [
+        -31.24218749999993,
+        16
+      ]
+    },
+    {
+      "stage": 2,
+      "index": 24,
+      "axis": 1,
+      "open": [
+        3.5,
+        -4.409999942779597
+      ],
+      "closed": [
+        3.5,
+        -6.249999942779557
+      ]
+    },
+    {
+      "stage": 2,
+      "index": 28,
+      "axis": 0,
+      "open": [
+        31.907812500000407,
+        -19
+      ],
+      "closed": [
+        29.75781250000007,
+        -19
+      ]
+    },
+    {
+      "stage": 3,
+      "index": 27,
+      "axis": 1,
+      "open": [
+        -36,
+        13.907812499999945
+      ],
+      "closed": [
+        -36,
+        11.757812499999991
+      ]
+    },
+    {
+      "stage": 3,
+      "index": 26,
+      "axis": 1,
+      "open": [
+        -10.5,
+        -1.4099999427795833
+      ],
+      "closed": [
+        -10.5,
+        -3.2499999427795574
+      ]
+    },
+    {
+      "stage": 3,
+      "index": 29,
+      "axis": 0,
+      "open": [
+        31.907812500000407,
+        8
+      ],
+      "closed": [
+        29.75781250000007,
+        8
+      ]
+    },
+    {
+      "stage": 4,
+      "index": 35,
+      "axis": 1,
+      "open": [
+        -28,
+        12.907812499999945
+      ],
+      "closed": [
+        -28,
+        10.757812499999991
+      ]
+    },
+    {
+      "stage": 4,
+      "index": 34,
+      "axis": 1,
+      "open": [
+        -3.5,
+        9.589999580383246
+      ],
+      "closed": [
+        -3.5,
+        7.759999580383284
+      ]
+    },
+    {
+      "stage": 4,
+      "index": 37,
+      "axis": 0,
+      "open": [
+        31.907812500000407,
+        -7
+      ],
+      "closed": [
+        29.75781250000007,
+        -7
+      ]
+    },
+    {
+      "stage": 5,
+      "index": 17,
+      "axis": 0,
+      "open": [
+        -28.092187499999593,
+        17
+      ],
+      "closed": [
+        -30.24218749999993,
+        17
+      ]
+    },
+    {
+      "stage": 5,
+      "index": 16,
+      "axis": 0,
+      "open": [
+        5.590000057220403,
+        0.5
+      ],
+      "closed": [
+        3.7500000572204426,
+        0.5
+      ]
+    },
+    {
+      "stage": 5,
+      "index": 19,
+      "axis": 0,
+      "open": [
+        31.907812500000407,
+        -16
+      ],
+      "closed": [
+        29.75781250000007,
+        -16
+      ]
+    }
+  ]
+}

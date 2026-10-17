@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:#0b1b22;color:#e1e9d2;font:16px/1.65 ui-monospace,monospace;z-index:2}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:radial-gradient(ellipse at 30% 40%,#163039,#0b1b22 70%);color:#e1e9d2;font:500 17px/1.65 Rubik,'Segoe UI',system-ui,sans-serif;z-index:2}#boot h1{font:clamp(44px,9vw,120px)/1 Bangers,Impact,'Arial Black',sans-serif;letter-spacing:.03em;color:#f0f7ee;text-shadow:0 5px 0 #03090c,0 0 32px rgba(255,189,97,.25);margin:0 0 18px}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
 </style></head><body><canvas id="game" tabindex="0" aria-label="Tiny Zombies compute prototype"></canvas><div id="boot"><h1>TINY ZOMBIES</h1><p>Preparing the quiet HUD and squad...</p></div><noscript>This game requires JavaScript and WebGPU.</noscript><script>
 /* TINY ZOMBIES — NO ONE LEFT / V9 — QUIET HUD
    Native WebGPU/WGSL. No libraries, fetches, image assets, or WASM. CPU authors the sparse world; GPU owns runtime entities and mission decisions.
@@ -3662,6 +3662,20 @@ function evacCard30(k){
  centre(evacQuip30(saved,lost,total),height*.52,15*k,COL9.soft);
  pill30('ENTER   NEXT STREET',width/2,height*.635,20*k,COL9.gold);centre('N twice   New run',height*.715,12*k,COL9.soft);
 }
+// Controls as key caps in two columns; the sandbox adds its three house rules underneath.
+const HELP_KEYS30=[[[['W','A','S','D'],'Move'],[['Mouse'],'Aim'],[['LMB'],'Fire / use gear'],[['RMB','Space'],'Shove'],[['1','2','3'],'Guns'],[['R'],'Reload'],[['Q'],'Last gun'],[['4','G'],'Throwables'],[['5','F'],'Medkit: LMB self, RMB ally']],
+ [[['Shift'],'Sprint'],[['V'],'Drag a body'],[['X'],'Order the squad'],[['E'],'Interact'],[['Tab'],'Field map'],[['Wheel'],'Cycle gear'],[['Ctrl','Wheel'],'Zoom'],[['M'],'Mute'],[['Backspace'],'Restart'],[['Esc'],'Pause'],[['?'],'This card']]];
+const HELP_RULES30=['Find neighbors shouting HELP! and walk them to the shelter.','Knock a house down and the wreck crushes whoever is underneath.','Blasts, alarms and gunfire are loud. The whole street hears.'];
+function keycap30(label,x,cy,px){const tw=textWidth9(label,px),w=Math.max(px*1.9,tw+px*1.1),h=px*1.85,y=cy-h/2,b=Math.max(1.5,px*.08);
+ rect(x,y,w,h,[.10,.17,.19,.95]);rect(x,y+h-b*2.2,w,b*2.2,[.02,.05,.06,.95]);rect(x,y,w,b,[.36,.48,.48,.9]);text(label,x+(w-tw)/2,cy-px*.82,px,COL9.white);return w;}
+function helpCard30(k){
+ const rules=SANDBOX25,w=Math.min(width*.7,1100*k),h=(rules?640:480)*k,x=(width-w)/2,y=Math.max(height*.15,(height-h)/2),row=33*k,px=15*k;
+ panel9(x,y,w,h,.95);rect(x,y,w,5*k,COL9.cyan);centre('CONTROLS',y+18*k,40*k,COL9.white);
+ HELP_KEYS30.forEach((col,c)=>{const cx=x+w*(c?.54:.08),ax=cx+150*k;col.forEach(([keys,action],i)=>{const cy=y+100*k+i*row;let kx=cx;
+  for(const key of keys)kx+=keycap30(key,kx,cy,px)+6*k;text(action,Math.max(ax,kx+8*k),cy-px*.75,px,i===0&&c===0?COL9.gold:COL9.soft);});});
+ if(rules){const ry=y+100*k+11*row+8*k;rect(x+w*.06,ry,w*.88,2*k,[.36,.48,.48,.5]);centre('MAPLE STREET RULES',ry+14*k,24*k,COL9.violet);
+  HELP_RULES30.forEach((r,i)=>centre(r,ry+56*k+i*26*k,15*k,i===1?COL9.gold:COL9.white));}
+}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -3850,9 +3864,10 @@ function hud(){
    if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
   }
  if(settings.help){
+  if(hud2d30)helpCard30(k);else{
   const x=width*.18,y=height*.20,w=width*.64;panel9(x,y,w,height*.64,.96);centre('Controls',y+20*k,28*k,COL9.white);
   const lines=['Move with WASD or arrows. Aim with the mouse.','LMB fires or uses selected gear. RMB / Space shoves.','1 / 2 / 3 guns. R reloads. Q returns to the last gun.','4 / G cycles throwables. 5 / F selects a medkit.','Medkit: hold LMB to heal yourself; RMB heals an ally.','Shift holds sprint. V toggles dragging. X orders the squad.','E interacts. Tab toggles map. Wheel cycles gear; Ctrl zooms.','M mutes. Backspace restarts. ? shows help; Esc pauses.'];
-  lines.forEach((line,i)=>centre(line,y+(72+i*31)*k,14*k,i===2?COL9.gold:COL9.soft));
+  lines.forEach((line,i)=>centre(line,y+(72+i*31)*k,14*k,i===2?COL9.gold:COL9.soft));}
  }
  if(active&&!settings.tactical&&!settings.help&&!settings.paused)aimHUD();
  device.queue.writeBuffer(glyphBuffer,0,glyphMemory,0,glyphCount*48);

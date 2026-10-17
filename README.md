@@ -39,7 +39,7 @@ Breaches count now. The nav grid used to write off any metre cell holding a sing
 
 ## Readable text
 
-HUD text and panels are drawn on a separate 2D canvas layered over the game, using Bangers for headlines and Rubik for everything else, at the screen's full pixel density. The old stretched bitmap-style glyphs are gone, and text stays sharp at the lower-quality tiers below because it does not follow the 3D render scale. If the browser cannot create a 2D canvas, the original GPU glyphs come back. The sandbox has its own title card and an evacuation card that shows neighbors saved, infected put down, infected crushed and your time. The fonts load from Google Fonts; offline, the browser falls back to Impact or a system sans-serif.
+HUD text and panels are drawn on a separate 2D canvas layered over the game, using Bangers for headlines and Rubik for everything else, at the screen's full pixel density. The old stretched bitmap-style glyphs are gone, and text stays sharp at the lower-quality tiers below because it does not follow the 3D render scale. If the browser cannot create a 2D canvas, the original GPU glyphs come back. Press ? for a controls card drawn as key caps; in the sandbox it also lists the three house rules. The loading screen uses the same fonts. The sandbox has its own title card and an evacuation card that shows neighbors saved, infected put down, infected crushed and your time. The fonts load from Google Fonts; offline, the browser falls back to Impact or a system sans-serif.
 
 ## Low-end GPUs
 

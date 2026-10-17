@@ -439,7 +439,7 @@ const COMMON=geometryWGSL16+`
 struct Uniforms { vp:mat4x4f, light:mat4x4f, clock:vec4f, inputMove:vec4f, aim:vec4f, config:vec4f, screen:vec4f, camera:vec4f, controls:vec4f, run:vec4f, worldInfo:vec4f, goals:vec4f, route:vec4f, v3:vec4f, v5:vec4f, gear12:vec4f, input12:vec4f, controlEdges12:vec4f, meta12:vec4f };
 struct Bullet3 { origin:vec4f, dir:vec4f, hit:vec4f, tag:vec4f };
 struct Buddy7 { p:vec4f, look:vec4f, ai:vec4f, destination7:vec4f, pack:vec4f, memory:vec4f, nav:vec4f, movement:vec4f, plan:vec4u, stats:vec4f, vital:vec4f, intent:vec4f, aim:vec4f, pathInfo:vec4f, misc:vec4f, flags:vec4f, route:array<vec4f,16> };
-struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16> };
+struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16>, pad34:array<vec4f,2>, civ34:array<vec4f,12>, noiseRing34:array<vec4f,6>, noiseSeen34:vec4f };
 struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f };
 struct Particle { p:vec4f, v:vec4f, c:vec4f, a:vec4f };
 struct Block { p:vec4f, extraData:vec4f };
@@ -1443,6 +1443,16 @@ fn beginExtraction20(inside:bool,occupied:bool,allInside:bool,edge:f32,finalDoor
  S.squad7.w=select(4.0,0.0,allInside);
  if(occupied){S.squad7.w=2.0;}if(S.escape.x>0.0&&S.escape.x<1.0){S.squad7.w=3.0;}if(P[finalDoor].data.y>.5){S.squad7.w=1.0;}
 }
+// Noise ring: writers still set S.noise; a value that differs from what the last decay left behind is a new noise and takes a slot.
+// Repeats within 4 m merge (louder, longer); otherwise the quietest-remaining or expired slot is replaced.
+fn hearRing34(dt:f32){
+ let n=S.noise;
+ if(n.z>0.0&&any(n!=S.noiseSeen34)){var slot=6u;var weakest=0u;
+  for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(slot==6u&&r.z>0.0&&distance(r.xy,n.xy)<4.0){slot=k;}if(r.z<S.noiseRing34[weakest].z){weakest=k;}}
+  if(slot<6u){let r=S.noiseRing34[slot];S.noiseRing34[slot]=vec4f(n.xy,max(r.z,n.z),max(r.w,n.w));}else{S.noiseRing34[weakest]=n;}}
+ for(var k=0u;k<6u;k++){S.noiseRing34[k].z=max(0.0,S.noiseRing34[k].z-dt);}
+ S.noiseSeen34=vec4f(n.xy,max(0.0,n.z-dt),n.w);
+}
 fn chapterMission13(dt:f32){
  var alarmPulse18=false;if(u.run.x==4.0){alarmPulse18=alarmTick18(dt);}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);
@@ -1530,8 +1540,8 @@ fn chapterMission13(dt:f32){
  }
  if(dt<=0.0||S.goal.w>0.0||u.config.z<.5){return;}
  // Breaking things is loud: 10+ voxels broken in a frame make a noise at their centroid, 10 m for a chip, up to 38 m for a collapse.
- let broke30=atomicExchange(&C[45],0u);let sumX30=atomicExchange(&C[37],0u);let sumZ30=atomicExchange(&C[40],0u);
- if(u.run.x>5.0&&u.run.y<.5&&broke30>=10u){let at=vec2f(f32(sumX30),f32(sumZ30))/f32(broke30)-vec2f(96.0)+.5;let loud=clamp(10.0+f32(broke30)*.12,10.0,38.0);if(S.noise.z<=0.0||loud>=S.noise.w*.8){S.noise=vec4f(at,3.0,loud);}}
+ hearRing34(dt);let broke30=atomicExchange(&C[45],0u);let sumX30=atomicExchange(&C[37],0u);let sumZ30=atomicExchange(&C[40],0u);
+ if(u.run.x>5.0&&u.run.y<.5&&broke30>=10u){let at=vec2f(f32(sumX30),f32(sumZ30))/f32(broke30)-vec2f(96.0)+.5;let loud=clamp(10.0+f32(broke30)*.12,10.0,38.0);if(S.noise.z<=0.0||loud>=S.noise.w*.8||distance(at,S.noise.xy)>8.0){S.noise=vec4f(at,3.0,loud);}}
  if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}if(u.run.x<=5.0){chapterMission13(dt);return;}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);S.orders.w=max(0.0,S.orders.w-dt);
  if(u.controls.x<.5){S.lastInput.w=0.0;}
@@ -1643,6 +1653,8 @@ const zombieShader=COMMON+`
 @group(0) @binding(7) var<storage,read_write> O:array<atomic<u32>>;
 @group(0) @binding(8) var<storage,read_write> E:array<Event>;
 `+SOLID.replace(/O\[([^\]]+)\]/g,'atomicLoad(&O[$1])')+EMIT+`
+// The closest remembered noise this position is inside the radius of, or 6 when it hears none.
+fn ringHeard34(p:vec2f)->u32 {var best=6u;var bd=1e9;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];let d=distance(p,r.xy);if(r.z>0.0&&d<r.w&&d<bd){bd=d;best=k;}}return best;}
 fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[base+here]);
  var best=1e9;var result=vec2f(0);let rotate=hash(id)%8u;
@@ -1674,13 +1686,13 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  // Maple Street neighbors are on the menu too (sandbox only). Their bites are applied by the civilian pass, so victim 5 skips the squad damage path.
  if(u.run.x>5.0&&u.run.y<.5){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<.5||cv.data.y>2.5){continue;}let d=length(cv.p.xz-z.p.xz);if(d<min(nearestTarget,10.0)){nearestTarget=d;goalPoint=cv.p.xz;victim=5u;}}}
  // Preparation gates the director, not nearby actors. Awareness needs sight, sound or injury.
- z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
+ let ring34=ringHeard34(z.p.xz);z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||ring34<6u||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
  if(distance>52.0&&nearTeam>15.0&&z.v.w<=0.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
  var awake=z.v.w>0.0;
  if(distance>4.0&&victim!=5u){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  // Heard but not hunting: infected far from the squad walk to the sound along the heard lane, around walls and through breaches.
- var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}
+ var heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;heard=true;}
    // Landed pipe noise attracts only common and runner infected, through walls.
   var lureDistance=680.0/64.0;
@@ -2864,7 +2876,7 @@ fn laneCode30(p:vec2f,dir:vec2f)->u32 {
 @compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;
  // Lane 0, low 16 bits: the squad (player 0, living bots +40 so the player stays preferred). Lane 1, high 16 bits: what the horde heard.
  var squad=select(65535u,0u,navcell(S.pos.xz)==i);for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&navcell(S.team7[k].p.xz)==i){squad=min(squad,40u);}}
- var heard=65535u;if(S.noise.z>0.0&&navcell(S.noise.xy)==i){heard=0u;}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
+ var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
  for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i){heard=0u;}}
  let source=squad<65535u||heard<65535u;
  // A cell is walkable if a body fits at its centre or 0.3 m off it: walls running through a cell leave the other half usable.

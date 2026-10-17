@@ -1,0 +1,37 @@
+{
+ "parentSha256": "4ba235c76cdcd4e0626a10e0387e18f2ca1a05be1d46fcd21f7c91efdd94336d",
+ "changes": [
+  {
+   "before": "heatLife15:array<f32,16> };",
+   "after": "heatLife15:array<f32,16>, pad34:array<vec4f,2>, civ34:array<vec4f,12>, noiseRing34:array<vec4f,6>, noiseSeen34:vec4f };"
+  },
+  {
+   "before": "fn chapterMission13(dt:f32){",
+   "after": "// Noise ring: writers still set S.noise; a value that differs from what the last decay left behind is a new noise and takes a slot.\n// Repeats within 4 m merge (louder, longer); otherwise the quietest-remaining or expired slot is replaced.\nfn hearRing34(dt:f32){\n let n=S.noise;\n if(n.z>0.0&&any(n!=S.noiseSeen34)){var slot=6u;var weakest=0u;\n  for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(slot==6u&&r.z>0.0&&distance(r.xy,n.xy)<4.0){slot=k;}if(r.z<S.noiseRing34[weakest].z){weakest=k;}}\n  if(slot<6u){let r=S.noiseRing34[slot];S.noiseRing34[slot]=vec4f(n.xy,max(r.z,n.z),max(r.w,n.w));}else{S.noiseRing34[weakest]=n;}}\n for(var k=0u;k<6u;k++){S.noiseRing34[k].z=max(0.0,S.noiseRing34[k].z-dt);}\n S.noiseSeen34=vec4f(n.xy,max(0.0,n.z-dt),n.w);\n}\nfn chapterMission13(dt:f32){"
+  },
+  {
+   "before": "let broke30=atomicExchange(&C[45],0u);",
+   "after": "hearRing34(dt);let broke30=atomicExchange(&C[45],0u);"
+  },
+  {
+   "before": "if(S.noise.z<=0.0||loud>=S.noise.w*.8){S.noise=vec4f(at,3.0,loud);}",
+   "after": "if(S.noise.z<=0.0||loud>=S.noise.w*.8||distance(at,S.noise.xy)>8.0){S.noise=vec4f(at,3.0,loud);}"
+  },
+  {
+   "before": "fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {",
+   "after": "// The closest remembered noise this position is inside the radius of, or 6 when it hears none.\nfn ringHeard34(p:vec2f)->u32 {var best=6u;var bd=1e9;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];let d=distance(p,r.xy);if(r.z>0.0&&d<r.w&&d<bd){bd=d;best=k;}}return best;}\nfn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {"
+  },
+  {
+   "before": "z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||(S.noise.z>0.0&&length(z.p.xz-S.noise.xy)<S.noise.w)||",
+   "after": "let ring34=ringHeard34(z.p.xz);z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||ring34<6u||"
+  },
+  {
+   "before": "var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}",
+   "after": "var heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}"
+  },
+  {
+   "before": "var heard=65535u;if(S.noise.z>0.0&&navcell(S.noise.xy)==i){heard=0u;}",
+   "after": "var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}"
+  }
+ ]
+}

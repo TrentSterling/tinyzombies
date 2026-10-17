@@ -1,4 +1,6 @@
-# Candidate propagation of startup-only WGSL fix
+# Historical candidate propagation of startup-only WGSL fix
+
+This document records the earlier candidate stage. The corrected restoration is now included in the owner-playtest release [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18), without a browser/gameplay acceptance claim. Main's original hotfix evidence is preserved under `validation/wgsl-startup-hotfix/historical-main/`.
 
 The published main runtime and this independent candidate shared an ungrouped `&&`/`||` expression in the buddy shader's busy predicate. [WGSL section 8.20](https://www.w3.org/TR/WGSL/#operator-precedence-associativity) requires grouping between these operator families. Main received the startup-only fix through [PR 16](https://github.com/TrentSterling/tinyzombies/pull/16); this branch separately carries the same two parentheses without merging its broader correction stack into main.
 

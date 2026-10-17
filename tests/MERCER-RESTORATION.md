@@ -1,6 +1,6 @@
-# Mercer restoration candidate
+# Mercer restoration playtest build
 
-This is an unmerged, undeployed Chapter 1 candidate based on the separately backed-up six-fix and WGSL grouping stack at `e4fe5def1f60b030b6d90761ab3ab5a9fab5dda2` (equivalent local parent `b335dfb`). Main's separate startup-only merge `efe2ed29b215310e6cc93f12ada60e4d45abf065` is unchanged.
+This owner-playtest release includes the Chapter 1 restoration and the previously backed-up six-fix and WGSL grouping stack at `e4fe5def1f60b030b6d90761ab3ab5a9fab5dda2` (equivalent local parent `b335dfb`). [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18) preserves both histories. The pre-release production rollback target is `efe2ed29b215310e6cc93f12ada60e4d45abf065`.
 
 Runtime SHA-256: `1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4`
 
@@ -50,4 +50,4 @@ The additional source-blast lifecycle suite has 11 checks for actual producer st
 
 These are CPU host/buffer checks, controlled production-fragment adapters, collision/navigation reference models and lexical shader guards. They do not compile or execute WGSL, create GPU pipelines, render the district, establish combat pacing, or earn a campaign completion. Files named hardware/fixture tests here are static or mocked harness checks, not hardware runs.
 
-Cloud browser launch remains blocked by the environment's socket policy. No bypass or desktop testing was attempted. Shader compilation, natural gameplay, a matched full-budget hardware performance run and earned Mercer-to-Burnout continuation remain deferred. The restored population increases actor scans substantially; retained allocation limits do not establish acceptable GPU performance. The source-level independent review is not hardware acceptance.
+Cloud Chromium process launch was blocked by the environment's socket policy. The supported existing cloud browser also could not reach the candidate or production site. No bypass or desktop testing was attempted. Shader compilation, natural gameplay, a matched full-budget hardware performance run and earned Mercer-to-Burnout continuation remain deferred. The restored population increases actor scans substantially; retained allocation limits do not establish acceptable GPU performance. The source-level independent review is not hardware acceptance.

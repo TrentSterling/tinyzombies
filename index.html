@@ -457,6 +457,20 @@ const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const 
 const ZHEADS:u32=${ZHEADS}u;const ZCOUNTS:u32=${ZHEADS+MAX_Z}u;
 const PAINT_BASE:u32=${PAINT_BASE}u;const PAINT_PAGES:u32=${PAINT_PAGES}u;const SCORCH_SHIFT6:u32=${PAINT_PAGES*1024}u;
 fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}
+// Walk word, low 3 bits (zero = fully open, so readers that mask &7 and treat non-zero as a wall see at least one side of every wall):
+// bit 0 = no body fits anywhere in the cell, bit 1 = east edge blocked, bit 2 = south edge blocked.
+// Bits 3-4 / 5-6 = the open lane through the east / south edge (1 centre, 2 at -0.3 m, 3 at +0.3 m) for portal aiming.
+fn stepOpen30(wc:u32,wn:u32,d:vec2i,sideA:u32,sideB:u32)->bool {
+ if((wn&1u)>0u){return false;}
+ if(d.x!=0&&d.y!=0){return (sideA&7u)==0u&&(sideB&7u)==0u&&(wc&6u)==0u&&(wn&6u)==0u;}
+ if(d.x==1){return (wc&2u)==0u;}if(d.x==-1){return (wn&2u)==0u;}if(d.y==1){return (wc&4u)==0u;}return (wn&4u)==0u;
+}
+// The point to aim for when stepping from cell c (centre cp) to the orthogonal neighbour c+d through its open lane.
+fn portal30(cp:vec2f,wc:u32,wn:u32,d:vec2i)->vec2f {
+ let east=d.x!=0;let owner=select(wc,wn,d.x<0||d.y<0);let code=select((owner>>5u)&3u,(owner>>3u)&3u,east);
+ let off=select(select(.3,-.3,code==2u),0.0,code<=1u);let side=select(vec2f(-1,0),vec2f(0,1),east);
+ return cp+vec2f(d)*.5+side*off;
+}
 fn dynCell(p:vec2f)->u32 {let c=clamp(vec2i(floor((p+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));return u32(c.x+DYNAMIC_GRID*c.y);}
 fn chunkAt(p:vec3f)->u32 {let c=clamp(vec2u((p.xz+HALF)/4.0),vec2u(0),vec2u(47));return c.x+48u*c.y;}
 fn gunStats12(w:u32)->vec4f {
@@ -1018,7 +1032,7 @@ fn axeStep14(){
    S.shots13[actor*18u+pellet*2u+n]=shot;
    if(n==0u){
     if(human){if(pellet<8u){S.bullets[pellet]=shot;}else{S.extraShot12=shot;}}
-    else if(pellet==0u){if(actor==1u){S.bullets[8]=shot;}else{S.extraBullets7[actor-2u]=shot;}}
+    else if(pellet==0u){if(actor==1u){S.bullets[8]=shot;}else{S.extraBullets7[actor-2u]=shot;}if(S.noise.z<=0.0||S.noise.w<=9.5){S.noise=vec4f(o.xz,2.0,9.0);}}
     let trail=(select(8u+actor,pellet,human)%12u)*6u+serial%6u;S.trails6[trail]=shot;S.trails6[trail].tag.z=S.aux.x;
     atomicAdd(&C[41],1u);atomicAdd(&C[47],1u);
    }
@@ -1594,7 +1608,7 @@ const initShader=COMMON+`
  var kind=0.0;if(i%12u==1u){kind=1.0;}if(i%96u==0u){kind=2.0;}if(i%53u==2u){kind=3.0;}if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}
  for(var attempt=0u;attempt<24u;attempt++){let seed=i*7919u+attempt*104729u+u32(u.worldInfo.z);p=vec2f(f32(index%grid),f32(index/grid))*spacing-90.0+vec2f(.5)*spacing+(vec2f(rnd(seed),rnd(seed+127u))-.5)*spacing*.6;
   if(i==31u&&attempt==0u){p=u.route.xy+vec2f(21,-14);}if(attempt>0u){p=vec2f(rnd(seed),rnd(seed+127u))*180.0-90.0;}
-  if(length(p-u.route.xy)>13.0&&!blocked(vec3f(p.x,.36,p.y),vec3f(footprint(kind),.29,footprint(kind)))){ok=true;break;}
+  if(length(p-u.route.xy)>13.0&&!blocked(vec3f(p.x,.36,p.y),vec3f(footprint(kind),.29,footprint(kind)))&&O[NAV_OFFSET+navcell(p)]<1073741800u){ok=true;break;}
  }if(!ok){p=vec2f(-94.0+f32(i%2u)*188.0,f32(i%183u)-91.0);}
  if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));
  Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0));
@@ -1621,13 +1635,13 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[base+here]);
  var best=1e9;var result=vec2f(0);let rotate=hash(id)%8u;
  for(var k=0u;k<8u;k++){let a=(k+rotate)%8u;let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
-  if(a>=4u&&(atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)])>0u||atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)])>0u)){continue;}
-  let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[base+cell]);if(v>=cost){continue;}let aim=safe2(vec2f(n)+.5-HALF-p);let density=f32(H[ZCOUNTS+cell]);let score=f32(v)+select(10.0,14.0,a>=4u)+min(9.0,density*1.6)-dot(aim,safe2(prior))*1.1;
+  let wc=atomicLoad(&O[WALK_OFFSET+here]);let wn=atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*n.y)]);if(!stepOpen30(wc,wn,d,atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)]),atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)]))){continue;}
+  let cell=u32(n.x+NG*n.y);let v=atomicLoad(&O[base+cell]);if(v>=cost){continue;}var aim=safe2(vec2f(n)+.5-HALF-p);if(a<4u){let gate=portal30(vec2f(c)+.5-HALF,wc,wn,d);if(length(gate-p)>.18){aim=safe2(gate-p);}}let density=f32(H[ZCOUNTS+cell]);let score=f32(v)+select(10.0,14.0,a>=4u)+min(9.0,density*1.6)-dot(aim,safe2(prior))*1.1;
   if(score<best){best=score;result=aim;}
  }
  // Smooth the 8-way choice with the downhill gradient; walls and unreached cells read as uphill.
  if(cost<1073741800u&&any(result!=vec2f(0))){let up=f32(cost)+20.0;var g=vec2f(0);
-  for(var k=0u;k<4u;k++){let d=array<vec2i,4>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1))[k];let n=c+d;var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))){let raw=atomicLoad(&O[base+u32(n.x+NG*n.y)]);if(raw<1073741800u){v=min(up,f32(raw));}}g-=vec2f(d)*v;}
+  for(var k=0u;k<4u;k++){let d=array<vec2i,4>(vec2i(1,0),vec2i(-1,0),vec2i(0,1),vec2i(0,-1))[k];let n=c+d;var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))&&stepOpen30(atomicLoad(&O[WALK_OFFSET+here]),atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*n.y)]),d,0u,0u)){let raw=atomicLoad(&O[base+u32(n.x+NG*n.y)]);if(raw<1073741800u){v=min(up,f32(raw));}}g-=vec2f(d)*v;}
   if(length(g)>.5){result=safe2(result+safe2(g)*.8);}}
  return result;
 }
@@ -1638,7 +1652,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;
   for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=34.0+rnd(sd+7u)*18.0;p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
-   if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))){found=true;break;}
+   if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
   }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5));z.extraData.z=kind;z.extraData.w=0.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
@@ -1662,7 +1676,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  // No route to what was heard (or already there): fall back to hunting the squad.
  if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}
  // Short direct line-of-sight segments preserve natural motion inside a room.
- var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
+ var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));let bodySide=vec2f(-direct.y,direct.x)*footprint(kind);for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||solid(vec3f(probe.x+bodySide.x,.36,probe.y+bodySide.y))>0u||solid(vec3f(probe.x-bodySide.x,.36,probe.y-bodySide.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
  if(sight&&targetDistance<select(480.0/64.0,780.0/64.0,z.v.w>0.0)){z.v.w=10.0;awake=true;}
  if(awake){atomicAdd(&C[53],1u);}
  if(sight||targetDistance<1.2){dir=direct;}
@@ -2342,9 +2356,9 @@ fn travelClear14(a:vec2f,b:vec2f)->bool {
  for(var k=1u;k<=n;k++){let q=mix(a,b,f32(k)/f32(n));if(blocked(vec3f(q.x,.36,q.y),vec3f(.24,.29,.24))){return false;}}return true;
 }
 fn walkGoal14(goal:vec2f)->vec2f {
- if(!blocked(vec3f(goal.x,.36,goal.y),vec3f(.25,.29,.25))&&O[WALK_OFFSET+navcell(goal)]==0u){return goal;}
+ if(!blocked(vec3f(goal.x,.36,goal.y),vec3f(.25,.29,.25))&&(O[WALK_OFFSET+navcell(goal)]&7u)==0u){return goal;}
  let c=vec2i(floor(goal+HALF));var result=goal;var best=1e9;
- for(var ring=0;ring<5;ring++){for(var y=-ring;y<=ring;y++){for(var x=-ring;x<=ring;x++){let p=vec2f(c+vec2i(x,y))+.5-HALF;let d=distance(p,goal);if(d<best&&O[WALK_OFFSET+navcell(p)]==0u&&!blocked(vec3f(p.x,.36,p.y),vec3f(.25,.29,.25))){best=d;result=p;}}}if(best<1e8){return result;}}return S.pos.xz;
+ for(var ring=0;ring<5;ring++){for(var y=-ring;y<=ring;y++){for(var x=-ring;x<=ring;x++){let p=vec2f(c+vec2i(x,y))+.5-HALF;let d=distance(p,goal);if(d<best&&(O[WALK_OFFSET+navcell(p)]&7u)==0u&&!blocked(vec3f(p.x,.36,p.y),vec3f(.25,.29,.25))){best=d;result=p;}}}if(best<1e8){return result;}}return S.pos.xz;
 }
 fn routeAhead14(amount:f32)->vec2f {
  let route=chapterRoute16(u.run.x);let count=chapterRouteCount16(u.run.x);var best=1e9;var along=0.0;var traveled=0.0;
@@ -2587,7 +2601,7 @@ fn passCell7(c:vec2i)->bool {
  // A door planning edge may bypass the door, never the wall beside it.
  for(var z=-1;z<=1;z+=2){for(var x=-1;x<=1;x+=2){let q=point+vec2f(f32(x),f32(z))*.25;if(solid(vec3f(q.x,.36,q.y))>0u){return false;}}}
  let gate=P[u32(S.chapter13.x)];if(u.run.x<=5.0&&gate.data.y>.5&&all(abs(point-gate.p.xz)<gate.aux.xz*.5+vec2f(.25))){return false;}
- if(O[WALK_OFFSET+i]==0u){return true;}
+ if((O[WALK_OFFSET+i]&7u)==0u){return true;}
  // Closed tactical doors are traversable planning edges, opened physically on arrival.
  let p=vec2f(c)+.5-HALF;
  for(var j=u32(S.rules7.x);j<u32(S.rules7.x+S.rules7.y);j++){
@@ -2761,21 +2775,33 @@ const navInitShader=COMMON+`
 // Low 12 bits remain exact physical occupancy. High 12 bits exclude doors only:
 // actors can plan toward a closed doorway while collision and battering keep it solid.
 `+SOLID.replace('O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]&mask','(O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)]>>16u)&mask')+`
+fn bodyFits30(q:vec2f)->bool {return !blocked(vec3f(q.x,.36,q.y),vec3f(.17,.29,.17));}
+// Returns the first lane (1 centre, 2 at -0.3 m, 3 at +0.3 m) that a body can sweep from this centre to the next, or 0.
+fn laneCode30(p:vec2f,dir:vec2f)->u32 {
+ for(var l=0u;l<3u;l++){let off=array<f32,3>(0.0,-.3,.3)[l];let side=vec2f(-dir.y,dir.x)*off;var clear=true;
+  for(var s=0u;s<5u;s++){let q=p+side+dir*(f32(s)*.25);if(!bodyFits30(q)){clear=false;break;}}
+  if(clear){return l+1u;}}
+ return 0u;
+}
 @compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;
  // Lane 0, low 16 bits: the squad (player 0, living bots +40 so the player stays preferred). Lane 1, high 16 bits: what the horde heard.
  var squad=select(65535u,0u,navcell(S.pos.xz)==i);for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&navcell(S.team7[k].p.xz)==i){squad=min(squad,40u);}}
  var heard=65535u;if(S.noise.z>0.0&&navcell(S.noise.xy)==i){heard=0u;}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
  for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i){heard=0u;}}
- let source=squad<65535u||heard<65535u;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=squad|(heard<<16u);}
+ let source=squad<65535u||heard<65535u;
+ // A cell is walkable if a body fits at its centre or 0.3 m off it: walls running through a cell leave the other half usable.
+ let fits=bodyFits30(p)||bodyFits30(p+vec2f(.3,0))||bodyFits30(p-vec2f(.3,0))||bodyFits30(p+vec2f(0,.3))||bodyFits30(p-vec2f(0,.3));
+ var bits=select(0u,1u,!fits&&!source);let east=laneCode30(p,vec2f(1,0));let south=laneCode30(p,vec2f(0,1));
+ bits|=select(2u,east<<3u,east>0u);bits|=select(4u,south<<5u,south>0u);O[WALK_OFFSET+i]=bits;A[i]=squad|(heard<<16u);}
 `;
 const navRelaxShader=COMMON+`
 @group(0) @binding(1) var<storage,read> O:array<u32>;
 @group(0) @binding(2) var<storage,read> A:array<u32>;
 @group(0) @binding(3) var<storage,read_write> B:array<u32>;
 // Both lanes relax together from one read per neighbour; 65535 is unreachable and saturates.
-@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];var squad=own&65535u;var heard=own>>16u;
+@compute @workgroup_size(64) fn relax(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let w0=O[WALK_OFFSET+i];if((w0&1u)>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];var squad=own&65535u;var heard=own>>16u;
  for(var j=0u;j<8u;j++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[j];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
-  if(j>=4u&&(O[WALK_OFFSET+u32(c.x+NG*n.y)]>0u||O[WALK_OFFSET+u32(n.x+NG*c.y)]>0u)){continue;}let v=A[u32(n.x+NG*n.y)];let w=select(10u,14u,j>=4u);squad=min(squad,min((v&65535u)+w,65535u));heard=min(heard,min((v>>16u)+w,65535u));
+  if(!stepOpen30(w0,O[WALK_OFFSET+u32(n.x+NG*n.y)],d,O[WALK_OFFSET+u32(c.x+NG*n.y)],O[WALK_OFFSET+u32(n.x+NG*c.y)])){continue;}let v=A[u32(n.x+NG*n.y)];let w=select(10u,14u,j>=4u);squad=min(squad,min((v&65535u)+w,65535u));heard=min(heard,min((v>>16u)+w,65535u));
  }B[i]=squad|(heard<<16u);
 }
 `;

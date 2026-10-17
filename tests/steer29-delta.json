@@ -1,0 +1,65 @@
+{
+ "parentSha256": "3f5c733d69190cc4dae6ce1556e00f653976ee02c15c4416d6bf96b16774b3b5",
+ "changes": [
+  {
+   "before": "fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}",
+   "after": "fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}\n// Walk word, low 3 bits (zero = fully open, so readers that mask &7 and treat non-zero as a wall see at least one side of every wall):\n// bit 0 = no body fits anywhere in the cell, bit 1 = east edge blocked, bit 2 = south edge blocked.\n// Bits 3-4 / 5-6 = the open lane through the east / south edge (1 centre, 2 at -0.3 m, 3 at +0.3 m) for portal aiming.\nfn stepOpen30(wc:u32,wn:u32,d:vec2i,sideA:u32,sideB:u32)->bool {\n if((wn&1u)>0u){return false;}\n if(d.x!=0&&d.y!=0){return (sideA&7u)==0u&&(sideB&7u)==0u&&(wc&6u)==0u&&(wn&6u)==0u;}\n if(d.x==1){return (wc&2u)==0u;}if(d.x==-1){return (wn&2u)==0u;}if(d.y==1){return (wc&4u)==0u;}return (wn&4u)==0u;\n}\n// The point to aim for when stepping from cell c (centre cp) to the orthogonal neighbour c+d through its open lane.\nfn portal30(cp:vec2f,wc:u32,wn:u32,d:vec2i)->vec2f {\n let east=d.x!=0;let owner=select(wc,wn,d.x<0||d.y<0);let code=select((owner>>5u)&3u,(owner>>3u)&3u,east);\n let off=select(select(.3,-.3,code==2u),0.0,code<=1u);let side=select(vec2f(-1,0),vec2f(0,1),east);\n return cp+vec2f(d)*.5+side*off;\n}"
+  },
+  {
+   "before": "@compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=",
+   "after": "fn bodyFits30(q:vec2f)->bool {return !blocked(vec3f(q.x,.36,q.y),vec3f(.17,.29,.17));}\n// Returns the first lane (1 centre, 2 at -0.3 m, 3 at +0.3 m) that a body can sweep from this centre to the next, or 0.\nfn laneCode30(p:vec2f,dir:vec2f)->u32 {\n for(var l=0u;l<3u;l++){let off=array<f32,3>(0.0,-.3,.3)[l];let side=vec2f(-dir.y,dir.x)*off;var clear=true;\n  for(var s=0u;s<5u;s++){let q=p+side+dir*(f32(s)*.25);if(!bodyFits30(q)){clear=false;break;}}\n  if(clear){return l+1u;}}\n return 0u;\n}\n@compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p="
+  },
+  {
+   "before": "let source=squad<65535u||heard<65535u;let wall=blocked(vec3f(p.x,.36,p.y),vec3f(.30,.29,.30))&&!source;O[WALK_OFFSET+i]=select(0u,1u,wall);A[i]=squad|(heard<<16u);}",
+   "after": "let source=squad<65535u||heard<65535u;\n // A cell is walkable if a body fits at its centre or 0.3 m off it: walls running through a cell leave the other half usable.\n let fits=bodyFits30(p)||bodyFits30(p+vec2f(.3,0))||bodyFits30(p-vec2f(.3,0))||bodyFits30(p+vec2f(0,.3))||bodyFits30(p-vec2f(0,.3));\n var bits=select(0u,1u,!fits&&!source);let east=laneCode30(p,vec2f(1,0));let south=laneCode30(p,vec2f(0,1));\n bits|=select(2u,east<<3u,east>0u);bits|=select(4u,south<<5u,south>0u);O[WALK_OFFSET+i]=bits;A[i]=squad|(heard<<16u);}"
+  },
+  {
+   "before": "if(i>=NAV_N){return;}if(O[WALK_OFFSET+i]>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];",
+   "after": "if(i>=NAV_N){return;}let w0=O[WALK_OFFSET+i];if((w0&1u)>0u){B[i]=0xffffffffu;return;}let c=vec2i(i32(i%192u),i32(i/192u));let own=A[i];"
+  },
+  {
+   "before": "  if(j>=4u&&(O[WALK_OFFSET+u32(c.x+NG*n.y)]>0u||O[WALK_OFFSET+u32(n.x+NG*c.y)]>0u)){continue;}let v=A[u32(n.x+NG*n.y)];",
+   "after": "  if(!stepOpen30(w0,O[WALK_OFFSET+u32(n.x+NG*n.y)],d,O[WALK_OFFSET+u32(c.x+NG*n.y)],O[WALK_OFFSET+u32(n.x+NG*c.y)])){continue;}let v=A[u32(n.x+NG*n.y)];"
+  },
+  {
+   "before": "  if(a>=4u&&(atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)])>0u||atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)])>0u)){continue;}",
+   "after": "  let wc=atomicLoad(&O[WALK_OFFSET+here]);let wn=atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*n.y)]);if(!stepOpen30(wc,wn,d,atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)]),atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)]))){continue;}"
+  },
+  {
+   "before": "let aim=safe2(vec2f(n)+.5-HALF-p);let density=",
+   "after": "var aim=safe2(vec2f(n)+.5-HALF-p);if(a<4u){let gate=portal30(vec2f(c)+.5-HALF,wc,wn,d);if(length(gate-p)>.18){aim=safe2(gate-p);}}let density="
+  },
+  {
+   "before": "var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))){let raw=",
+   "after": "var v=up;if(all(n>=vec2i(0))&&all(n<vec2i(NG))&&stepOpen30(atomicLoad(&O[WALK_OFFSET+here]),atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*n.y)]),d,0u,0u)){let raw="
+  },
+  {
+   "before": "&&O[WALK_OFFSET+navcell(goal)]==0u){return goal;}",
+   "after": "&&(O[WALK_OFFSET+navcell(goal)]&7u)==0u){return goal;}"
+  },
+  {
+   "before": "if(d<best&&O[WALK_OFFSET+navcell(p)]==0u&&",
+   "after": "if(d<best&&(O[WALK_OFFSET+navcell(p)]&7u)==0u&&"
+  },
+  {
+   "before": " if(O[WALK_OFFSET+i]==0u){return true;}",
+   "after": " if((O[WALK_OFFSET+i]&7u)==0u){return true;}"
+  },
+  {
+   "before": "else if(pellet==0u){if(actor==1u){S.bullets[8]=shot;}else{S.extraBullets7[actor-2u]=shot;}}",
+   "after": "else if(pellet==0u){if(actor==1u){S.bullets[8]=shot;}else{S.extraBullets7[actor-2u]=shot;}if(S.noise.z<=0.0||S.noise.w<=9.5){S.noise=vec4f(o.xz,2.0,9.0);}}"
+  },
+  {
+   "before": "for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}",
+   "after": "let bodySide=vec2f(-direct.y,direct.x)*footprint(kind);for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||solid(vec3f(probe.x+bodySide.x,.36,probe.y+bodySide.y))>0u||solid(vec3f(probe.x-bodySide.x,.36,probe.y-bodySide.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}"
+  },
+  {
+   "before": "&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))){found=true;break;}",
+   "after": "&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}"
+  },
+  {
+   "before": "if(length(p-u.route.xy)>13.0&&!blocked(vec3f(p.x,.36,p.y),vec3f(footprint(kind),.29,footprint(kind)))){ok=true;break;}",
+   "after": "if(length(p-u.route.xy)>13.0&&!blocked(vec3f(p.x,.36,p.y),vec3f(footprint(kind),.29,footprint(kind)))&&O[NAV_OFFSET+navcell(p)]<1073741800u){ok=true;break;}"
+  }
+ ]
+}

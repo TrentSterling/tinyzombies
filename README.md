@@ -25,6 +25,8 @@ Infected now follow two flow fields that share one buffer: one toward the squad 
 
 Measured with the real shaders on a software WebGPU device (no hardware timing): both fields match an exact shortest-path reference on every reachable cell; a lured infected behind a back wall reached the pipe in about 15 s where the previous build stalled 14.6 m away; 48 infected chasing the player through a garage door were all inside in 10 s, against 37 of 48 after 12 s before.
 
+Breaches count now. The nav grid used to write off any metre cell holding a single wall voxel, so a hole had to clear a whole grid-aligned metre to exist. Now a cell is walkable if a body fits anywhere in it, each edge records which of three lanes (centre or 0.3 m either side) a body can sweep through, and infected aim through that lane instead of at the next cell's centre. Line of sight also checks that the body fits along the line, so infected no longer press into the lip of a hole. Squad gunfire is heard, and infected only spawn where they can actually reach you. In the same software-GPU test, a lured infected went straight through a 1 m hole cut half a cell off the grid in about 4 s; the previous build ignored the hole and walked around the house.
+
 ## Low-end GPUs
 
 The renderer now steps its quality down by itself when the frame rate stays under 45 FPS for 3 seconds of play. The simulation and horde size never change, only the picture:

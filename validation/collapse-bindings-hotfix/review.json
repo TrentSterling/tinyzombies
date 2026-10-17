@@ -1,0 +1,13 @@
+{
+  "runtimeSha256": "85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449",
+  "method": "Independent read-only inspection of exact composed WGSL entry-point call graphs and host bindings; not a WGSL compiler, GPU reflection or browser run.",
+  "passed": true,
+  "computePipelinesAudited": 37,
+  "hostBindingExpressions": 38,
+  "rootCause": "collapse evaluate reads u.run, so auto layout requires binding 0 uniform U (400 bytes); released host supplied only storage Groups/C at 1/2.",
+  "onlyRuntimeChange": "Add [0,U] to bindings.collapse.",
+  "otherOmissionsFound": 0,
+  "focusedChecks": 4,
+  "negativeControl": "Previous two-entry host binding fails strict collapse layout fixture; fixed host passes repeated production-builder calls.",
+  "limits": "Actual startup, gameplay and GPU performance remain unverified in cloud."
+}

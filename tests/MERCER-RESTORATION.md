@@ -2,7 +2,11 @@
 
 This owner-playtest release includes the Chapter 1 restoration and the previously backed-up six-fix and WGSL grouping stack at `e4fe5def1f60b030b6d90761ab3ab5a9fab5dda2` (equivalent local parent `b335dfb`). [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18) preserves both histories. The pre-release production rollback target is `efe2ed29b215310e6cc93f12ada60e4d45abf065`.
 
-Runtime SHA-256: `1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0b4`
+Runtime SHA-256: `85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449`
+
+## Startup binding correction
+
+The owner's live playtest reached world/audio initialization but failed creating the collapse bind group: the shader used three bindings while the host supplied two. The support correction introduced `u.run` reads, so the auto layout now includes the 400-byte uniform buffer at binding 0. The startup fix adds only `[0,U]` to the collapse host bind group; no shader or gameplay code changes. `collapse-bindings.test.cjs` executes the actual host binding builder, checks repeated creation and reproduces the previous missing-uniform failure as a negative control. Independent source inspection of all 37 compute pipelines found no other binding mismatches. This CPU/source evidence does not establish browser/GPU startup; the owner is performing that playtest. Fresh hotfix results are in `validation/collapse-bindings-hotfix/`.
 
 ## Bounded restoration
 
@@ -17,7 +21,7 @@ Runtime SHA-256: `1082ae0d4f1ece7dfcf7fd9bc59f480ad745dfcab84a4c1e34702fa93a14d0
 
 The immutable pre-edit fingerprints in `mercer-restoration-baseline.cjs` are unchanged. Tests compare all Chapter 2–5 world, prop, initial-population, occupancy and navigation buffers at multiple population settings, plus embedded/external art, mohawk, controls, all 43 FLAC recordings, audio code, blood, particles, font and HTML/CSS shell. Shared new runtime decisions are explicitly Mercer-scoped. Earlier medical, revive, downed crawl, pin, extraction and checkpoint-chain regressions run against the current candidate.
 
-`mercer-restoration-scope.cjs` only reverses the 19 exact reviewed Mercer hunks in `mercer-restoration-delta.json`, then requires the immutable parent runtime SHA. Older whole-file inverse tests use that helper to retain their historical identity assertions. The new restoration suite exercises the actual candidate; it does not substitute the reverted parent. The WGSL grouping and reserved-token scans inspect all 40 current evaluated shader strings.
+`mercer-restoration-scope.cjs` only reverses the 20 exact reviewed Mercer hunks in `mercer-restoration-delta.json`, then requires the immutable parent runtime SHA. Older whole-file inverse tests use that helper to retain their historical identity assertions. The new restoration suite exercises the actual candidate; it does not substitute the reverted parent. The WGSL grouping and reserved-token scans inspect all 40 current evaluated shader strings.
 
 ## Reproduce CPU checks
 

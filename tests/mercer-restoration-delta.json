@@ -76,6 +76,10 @@
     {
       "before": "atomicStore(&G[g*4u+2u],1u);atomicAdd(&C[23],1u);",
       "after": "atomicStore(&G[g*4u+2u],1u);if(u.run.x==1.0&&u.run.y<.5){atomicStore(&G[4096u+g],1u);}atomicAdd(&C[23],1u);"
+    },
+    {
+      "before": "bindings.collapse=bg(compute.collapse,[[1,Groups],[2,C]]);",
+      "after": "bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);"
     }
   ]
 }

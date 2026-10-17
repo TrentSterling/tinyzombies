@@ -3340,7 +3340,7 @@ function buildComputeBindings(){
  bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));
  bindings.groupClear=bg(compute.groupClear,[[1,Groups]]);
  bindings.support=bg(compute.support,[[0,U],[1,W],[2,Groups]]);
- bindings.collapse=bg(compute.collapse,[[1,Groups],[2,C]]);
+ bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);
  bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups]]);
  bindings.drip=bg(compute.drip,[[0,U],[1,W],[2,O],[3,WP],[4,S]]);
  bindings.meshReset=bg(compute.meshReset,[[1,Chunks],[2,C]]);

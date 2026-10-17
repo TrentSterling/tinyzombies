@@ -1618,7 +1618,7 @@ const zombieShader=COMMON+`
 @group(0) @binding(8) var<storage,read_write> E:array<Event>;
 `+SOLID.replace(/O\[([^\]]+)\]/g,'atomicLoad(&O[$1])')+EMIT+`
 fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
- let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[NAV_OFFSET+here]);if(cost>=1073741800u){return vec2f(0);}
+ let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[NAV_OFFSET+here]);
  var best=1e9;var result=vec2f(0);let rotate=hash(id)%8u;
  for(var k=0u;k<8u;k++){let a=(k+rotate)%8u;let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
   if(a>=4u&&(atomicLoad(&O[WALK_OFFSET+u32(c.x+NG*n.y)])>0u||atomicLoad(&O[WALK_OFFSET+u32(n.x+NG*c.y)])>0u)){continue;}
@@ -1653,7 +1653,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32)->vec2f {
 
  let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i);
  // Short direct line-of-sight segments preserve natural motion inside a room.
- var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
+ var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
  if(sight&&targetDistance<select(480.0/64.0,780.0/64.0,z.v.w>0.0)){z.v.w=10.0;awake=true;}
  if(awake){atomicAdd(&C[53],1u);}
  if(sight||targetDistance<1.2){dir=direct;}
@@ -1777,7 +1777,7 @@ fn dirtyAt(p:vec3f){let c=vec2i(floor((p.xz+HALF)/4.0));for(var k=0u;k<5u;k++){l
  if(S.aux.w>0.0){let delta=b.p.xyz-vec3f(S.blast.x,.35,S.blast.y);if(length(delta)<S.blast.w*.88){damage+=60.0;impulse=normalize(delta+vec3f(.001,.2,0))*8.0+vec3f(0,3,0);}}
  if(S.tools.x>0.0){let delta=b.p.xz-S.pos.xz;let t=dot(delta,S.look.xy);let across=abs(dot(delta,vec2f(-S.look.y,S.look.x)));if(t>0.0&&t<min(14.0,S.mission.w+2.8)&&across<1.10){damage+=100.0;impulse=vec3f(S.look.x,.3,S.look.y)*12.0;}}
  let g=u32(b.extraData.w);let melee=meleeInside8(b.p.xyz,vec3f(.125),S.melee8,S.meleeDir8);if(melee){damage+=3.2;impulse=vec3f(S.meleeDir8.x,0,S.meleeDir8.y)*4.0+vec3f(0,1.5,0);}
- let nc=vec2i(floor(b.p.xz+HALF));var pressure=0u;for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=nc+vec2i(dx,dz);if(all(n>=vec2i(0))&&all(n<vec2i(NG))){pressure=max(pressure,O[PRESS_OFFSET+u32(n.x+NG*n.y)]);}}}
+ let nc=vec2i(floor(b.p.xz+HALF));let pressure=0u;
  if(pressure>=65536u){damage+=100.0;impulse=vec3f(0,7,0);}else if(pressure>=8192u){damage+=35.0;impulse=vec3f(0,6,0);}else if(pressure>=1024u){damage+=5.0;impulse=vec3f(0,4,0);}else if(pressure>=5u){damage+=u.clock.x*1.5;}
  if(atomicLoad(&C[52])>0u){for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==0.0&&pr.data.y>.44){let delta=b.p.xyz-vec3f(pr.p.x,.4,pr.p.z);if(length(delta)<2.9){damage+=60.0;impulse=normalize(delta+vec3f(.001,.4,0))*9.0;}}}}
  // Source barrels/pumps use Prop kind 10 and the exact explosion-frame stamp.
@@ -2702,7 +2702,7 @@ const crowdShader=COMMON+`
 @compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;
  if(z.p.w<=0.0||dt<=0.0){B[i]=z;return;}let cell=vec2i(floor(z.p.xz+HALF));let radius=footprint(z.extraData.z);let mass=select(select(1.0,3.5,z.extraData.z==2.0),12.0,z.extraData.z==6.0);
  var correction=vec2f(0);var count=0u;var checked=0u;var capped=false;let rotate=hash(i+u32(u.clock.z/4.0))%8u;
- for(var k=0u;k<25u;k++){let d=neighbor6(k,rotate);let c=cell+d;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
+ for(var k=0u;k<9u;k++){let d=neighbor6(k,rotate);let c=cell+d;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
   for(var nn=0u;nn<24u&&it>0u&&checked<96u;nn++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checked++;let other=A[j];let delta=z.p.xz-other.p.xz;let r=radius+footprint(other.extraData.z);let overlap=vec2f(r)-abs(delta);
    if(all(overlap>vec2f(0))){let axis=select(0u,1u,overlap.y<overlap.x);var n=vec2f(0);n[axis]=select(-1.0,1.0,delta[axis]>0.0||(abs(delta[axis])<.00001&&i>j));let om=select(select(1.0,3.5,other.extraData.z==2.0),12.0,other.extraData.z==6.0);correction+=n*max(0.0,overlap[axis]-.003)*om/(mass+om);count++;atomicMax(&C[54],u32(min(overlap.x,overlap.y)*1000.0));}
   }if(it>0u){capped=true;}if(checked>=96u){capped=true;break;}
@@ -3309,6 +3309,31 @@ let zA,zB,pA,pB,C,S,U,O,W,WP,Paint,Events,zHeads,zNext,pHeads,pNext,Boxes,drawAr
 let Lights,LightTiles,Fracture;
 let NavA,NavB,Groups,Props,Chunks,FaceCache,Faces,faceArgs,facePipeline,faceShadowPipeline,faceBG,faceShadowBG;let gpuStages={};
 let compute={},renderPipeline,shadowPipeline,postPipeline,uiPipeline,shadowTexture,shadowSampler,linearSampler;
+// Quality tiers for low-end GPUs. Tier 0 is the original look; each step removes fill-rate work, never simulation.
+const QUALITY_TIERS25=[{q:1,msaa:4},{q:1,msaa:1},{q:.8,msaa:1},{q:.67,msaa:1}];
+let renderPipeline1,facePipeline1,renderBG1,faceBG1,renderModule25,renderSamples25=4,qualitySlow25=0;
+let qualityTier25=Math.max(0,Math.min(3,Math.round(+params.get('tier')||0)));
+const qualityLocked25=params.has('tier')||params.has('q')||params.has('msaa');
+async function ensureNoMSAA25(){
+ if(!renderPipeline1){const vertexLayout=[{arrayStride:24,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'}]}];
+  renderPipeline1=await device.createRenderPipelineAsync({label:'voxel HDR pipeline 1x',layout:'auto',vertex:{module:renderModule25,entryPoint:'vs',buffers:vertexLayout},fragment:{module:renderModule25,entryPoint:'fs',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
+  facePipeline1=await device.createRenderPipelineAsync({label:'cached exposed voxel faces 1x',layout:'auto',vertex:{module:renderModule25,entryPoint:'faceVS'},fragment:{module:renderModule25,entryPoint:'fs',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
+  renderBG1=bg(renderPipeline1,[[0,U],[1,S],[2,Boxes],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);
+  faceBG1=bg(facePipeline1,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);}
+ if(QUALITY_TIERS25[qualityTier25].msaa===1&&renderSamples25!==1){renderSamples25=1;width=0;}
+}
+function applyQualityTier25(t){
+ qualityTier25=Math.max(0,Math.min(QUALITY_TIERS25.length-1,t));const tier=QUALITY_TIERS25[qualityTier25];
+ settings.quality=params.has('q')?Math.max(.5,Math.min(1,+params.get('q')||1)):tier.q;
+ if(params.get('msaa')==='1')tier.msaa=1;else if(params.get('msaa')==='4')tier.msaa=4;
+ if(tier.msaa===1){if(renderSamples25!==1)ensureNoMSAA25().catch(e=>diagnostics.notes.push('1x pipeline: '+e.message));}else if(renderSamples25!==4){renderSamples25=4;width=0;}
+ width=0;diagnostics.quality={tier:qualityTier25,scale:settings.quality,msaa:tier.msaa,locked:qualityLocked25};
+}
+function qualityGovernor25(elapsed){
+ if(qualityLocked25||!settings.started||settings.paused||time<4||elapsed<=0)return;
+ qualitySlow25=fps<45?qualitySlow25+elapsed:Math.max(0,qualitySlow25-elapsed*.5);
+ if(qualitySlow25>3&&qualityTier25<QUALITY_TIERS25.length-1){applyQualityTier25(qualityTier25+1);qualitySlow25=-3;}
+}
 let hdrTexture,hdrMSAA,depthTexture,postBG,renderBG,shadowBG,uiBG,width=0,height=0,zParity=0;
 let sampleBuffer,tsQuery,tsResolve,tsRead,tsBusy=false,stampThisFrame=false;
 const uniformData=new Float32Array(100),glyphMemory=new ArrayBuffer(2048*48),glyphFloats=new Float32Array(glyphMemory),glyphInts=new Uint32Array(glyphMemory);let glyphCount=0;
@@ -3401,8 +3426,8 @@ function sizeTargets(){
  width=canvas.width=w;height=canvas.height=h;
  for(const t of [hdrTexture,hdrMSAA,depthTexture])t?.destroy();
  hdrTexture=device.createTexture({label:'HDR resolve',size:[w,h],format:'rgba16float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
- hdrMSAA=device.createTexture({label:'HDR 4x MSAA',size:[w,h],format:'rgba16float',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT});
- depthTexture=device.createTexture({label:'depth 4x MSAA',size:[w,h],format:'depth24plus',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT});
+ hdrMSAA=renderSamples25===4?device.createTexture({label:'HDR 4x MSAA',size:[w,h],format:'rgba16float',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;
+ depthTexture=device.createTexture({label:'depth '+renderSamples25+'x',size:[w,h],format:'depth24plus',sampleCount:renderSamples25,usage:GPUTextureUsage.RENDER_ATTACHMENT});
  postBG=bg(postPipeline,[[0,hdrTexture],[1,linearSampler]]);device.queue.writeBuffer(uiUniform,0,new Float32Array([w,h,0,0,...world.generators,...world.start,...world.exit]));
 }
 // V9: rasterized glyph-distance samples (NOT a bundled font file or WOFF).
@@ -3593,7 +3618,7 @@ function hud(){
   text('Release Tab',x,y+sz+79*k,12*k,COL9.soft);
  }
  if(settings.stats){
-  const a=['WebGPU  /  V9','FPS '+Math.round(fps),'Capacity '+fmt(settings.zombies),'Alive '+fmt(counters[7]),'Gibs '+fmt(counters[2]),'Crowd contacts '+fmt(counters[38]),'Collision caps '+fmt(counters[39]),'Voxels broken '+fmt(counters[9]),'Plans '+fmt(counters[72]),'Rescues '+fmt(counters[74]),'GPU '+(gpuMs===null?'n/a':gpuMs.toFixed(2)+' ms'),'F3  Hide telemetry'];
+  const a=['WebGPU  /  V9','FPS '+Math.round(fps),'Quality tier '+qualityTier25+(qualityLocked25?' (pinned)':''),'Capacity '+fmt(settings.zombies),'Alive '+fmt(counters[7]),'Gibs '+fmt(counters[2]),'Crowd contacts '+fmt(counters[38]),'Collision caps '+fmt(counters[39]),'Voxels broken '+fmt(counters[9]),'Plans '+fmt(counters[72]),'Rescues '+fmt(counters[74]),'GPU '+(gpuMs===null?'n/a':gpuMs.toFixed(2)+' ms'),'F3  Hide telemetry'];
   let fs=14*k,x=width-245*k,y=height/2-a.length*22*k/2;panel9(x-14*k,y-15*k,255*k,a.length*23*k+18*k,.92);
   a.forEach((v,i)=>text(v,x,y+i*23*k,fs,i===0?COL9.gold:COL9.soft));
  }
@@ -3673,12 +3698,13 @@ function updateUniforms(dt){
  device.queue.writeBuffer(U,0,uniformData);
 }
 function stamp(start,end){if(!stampThisFrame)return {};let timestampWrites={querySet:tsQuery};if(start!==null)timestampWrites.beginningOfPassWriteIndex=start;if(end!==null)timestampWrites.endOfPassWriteIndex=end;return {timestampWrites};}
+function liveGroups25(){return Math.max(1,Math.ceil(uniformData[44]/64));}
 function runSimulation(enc,beginExtra={}){
  if(playerValues[464]>.5){pass(enc,'mission5',bindings.mission5[zParity],1);return;}
  pass(enc,'begin',bindings.begin,1,beginExtra);
  pass(enc,'mission5',bindings.mission5[zParity],1);
- enc.clearBuffer(zHeads);enc.clearBuffer(O,PRESS_OFFSET*4,NAV_SIZE*4);
- pass(enc,'gridZ',bindings.gridZ[zParity],Math.ceil(settings.zombies/64),stamp(2,null));
+ enc.clearBuffer(zHeads);// The unused pressure grid is no longer cleared every frame.
+ pass(enc,'gridZ',bindings.gridZ[zParity],liveGroups25(),stamp(2,null));
  pass(enc,'aim3',bindings.aim3[zParity],1);pass(enc,'melee8',bindings.melee8,1);
  pass(enc,'squadNav7',bindings.squadNav7,3);
  pass(enc,'buddy',bindings.buddy[zParity],1);
@@ -3686,8 +3712,8 @@ function runSimulation(enc,beginExtra={}){
  pass(enc,'doors7',bindings.doors7[zParity],1);
  pass(enc,'props',bindings.props,1);pass(enc,'fx6',bindings.fx6,1);
  enc.clearBuffer(O,DYNAMIC_OFFSET*4,DYNAMIC_SIZE*4);pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));
- pass(enc,'zombies',bindings.zombies[zParity],Math.ceil(settings.zombies/64));zParity=1-zParity;
- for(let it=0;it<2;it++){enc.clearBuffer(zHeads);pass(enc,'gridZ',bindings.gridZ[zParity],Math.ceil(settings.zombies/64));pass(enc,'crowd',bindings.crowd[zParity],Math.ceil(settings.zombies/64),it===1?stamp(null,3):{});zParity=1-zParity;}
+ pass(enc,'zombies',bindings.zombies[zParity],liveGroups25());zParity=1-zParity;
+ for(let it=0;it<2;it++){enc.clearBuffer(zHeads);pass(enc,'gridZ',bindings.gridZ[zParity],liveGroups25());pass(enc,'crowd',bindings.crowd[zParity],liveGroups25(),it===1?stamp(null,3):{});zParity=1-zParity;}
  pass(enc,'groupClear',bindings.groupClear,Math.ceil(MAX_GROUPS/64),stamp(4,null));pass(enc,'support',bindings.support,Math.ceil(world.count/64));pass(enc,'collapse',bindings.collapse,Math.ceil(MAX_GROUPS/64));
  pass(enc,'world',bindings.world,Math.ceil(world.count/64));pass(enc,'fracture8',bindings.fracture8,1,stamp(null,5));
  if(frame%8===0)pass(enc,'drip',bindings.drip,Math.ceil(world.count/64));
@@ -3704,7 +3730,7 @@ function runSimulation(enc,beginExtra={}){
 function drawFrame(now){
  if(stopped)return;if(inFlight>=2){frameCallback=requestAnimationFrame(drawFrame);return;}try{
  const start=performance.now();let elapsed=last?Math.min(.10,(now-last)/1000):1/60;last=now;
- if(elapsed>0)fps=fps*.95+Math.min(240,1/elapsed)*.05;
+ if(elapsed>0)fps=fps*.95+Math.min(240,1/elapsed)*.05;qualityGovernor25(elapsed);
  if(seedRequested){world=makeWorld();resetRequested=true;seedRequested=false;advanceRequested=0;}
  if(resetRequested){reset();resetRequested=false;}
  sizeTargets();updateAudioState9();
@@ -3721,8 +3747,9 @@ function drawFrame(now){
   p.setPipeline(shadowPipeline);p.setBindGroup(0,shadowBG);p.setVertexBuffer(0,vBuffer);p.drawIndirect(drawArgs,0);p.setPipeline(faceShadowPipeline);p.setBindGroup(0,faceShadowBG);p.drawIndirect(faceArgs,0);p.end();
  }
  {
-  const p=enc.beginRenderPass({label:'HDR voxels',colorAttachments:[{view:hdrMSAA.createView(),resolveTarget:hdrTexture.createView(),clearValue:{r:.075,g:.14,b:.18,a:1},loadOp:'clear',storeOp:'discard'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'discard'}});
-  p.setPipeline(renderPipeline);p.setBindGroup(0,renderBG);p.setVertexBuffer(0,vBuffer);p.drawIndirect(drawArgs,0);p.setPipeline(facePipeline);p.setBindGroup(0,faceBG);p.drawIndirect(faceArgs,0);p.end();
+  const ms=renderSamples25===4,clear={r:.075,g:.14,b:.18,a:1};
+  const p=enc.beginRenderPass({label:'HDR voxels',colorAttachments:[ms?{view:hdrMSAA.createView(),resolveTarget:hdrTexture.createView(),clearValue:clear,loadOp:'clear',storeOp:'discard'}:{view:hdrTexture.createView(),clearValue:clear,loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'discard'}});
+  p.setPipeline(ms?renderPipeline:renderPipeline1);p.setBindGroup(0,ms?renderBG:renderBG1);p.setVertexBuffer(0,vBuffer);p.drawIndirect(drawArgs,0);p.setPipeline(ms?facePipeline:facePipeline1);p.setBindGroup(0,ms?faceBG:faceBG1);p.drawIndirect(faceArgs,0);p.end();
  }
  {
   const aimTarget=context.getCurrentTexture().createView();const extra=stampThisFrame?{timestampWrites:{querySet:tsQuery,endOfPassWriteIndex:1}}:{};
@@ -3775,7 +3802,7 @@ async function main(){
  await cp('navInit',navInitShader,'init');await cp('navRelax',navRelaxShader,'relax');await cp('groupClear',groupClearShader,'clear');await cp('support',supportShader,'count');await cp('collapse',collapseShader,'evaluate');await cp('props',propsShader);await cp('drip',dripShader,'drip');await cp('meshReset',meshResetShader,'reset');await cp('mesh',meshShader,'mesh');await cp('faces',faceBuildShader,'build');await cp('faceFinalize',faceFinalizeShader,'finish');
  await cp('fx6',fx6Shader);await cp('mission5',mission5Shader);await cp('begin',beginShader,'begin');await cp('init',initShader,'init');await cp('gridZ',gridZShader,'grid');await cp('world',worldShader);await cp('zombies',zombieShader);await cp('prepare',prepareSpawnShader,'prepare');await cp('spawn',spawnShader,'spawn');await cp('integrate',integrateShader,'integrate');await cp('gridP',gridPShader,'grid');await cp('solve',solveShader,'solve');await cp('boxes',boxesShader,'build');await cp('finalize',finalizeShader,'finish');
  boot.querySelector('p').textContent='Building the voxel renderer...';
- const rm=await shader('voxel renderer',renderShader),pm=await shader('tone map',postShader),um=await shader('GPU glyphs',uiShader);
+ const rm=renderModule25=await shader('voxel renderer',renderShader),pm=await shader('tone map',postShader),um=await shader('GPU glyphs',uiShader);
  const vertexLayout=[{arrayStride:24,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'}]}];
  shadowPipeline=await device.createRenderPipelineAsync({label:'voxel shadow pipeline',layout:'auto',vertex:{module:rm,entryPoint:'shadowVS',buffers:vertexLayout},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:1,depthBiasSlopeScale:1.25}});
  renderPipeline=await device.createRenderPipelineAsync({label:'voxel HDR pipeline',layout:'auto',vertex:{module:rm,entryPoint:'vs',buffers:vertexLayout},fragment:{module:rm,entryPoint:'fs',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'},multisample:{count:4}});
@@ -3785,7 +3812,7 @@ async function main(){
  uiPipeline=await device.createRenderPipelineAsync({label:'SDF GPU interface pipeline',layout:'auto',vertex:{module:um,entryPoint:'vs'},fragment:{module:um,entryPoint:'fs',targets:[{format,blend:{color:{srcFactor:'src-alpha',dstFactor:'one-minus-src-alpha',operation:'add'},alpha:{srcFactor:'one',dstFactor:'one-minus-src-alpha',operation:'add'}}}]},primitive:{topology:'triangle-list'}});
  shadowTexture=device.createTexture({label:'1024 shadow map',size:[1024,1024],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});shadowSampler=device.createSampler({compare:'less-equal',magFilter:'linear',minFilter:'linear'});linearSampler=device.createSampler({magFilter:'linear',minFilter:'linear'});
  renderBG=bg(renderPipeline,[[0,U],[1,S],[2,Boxes],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);shadowBG=bg(shadowPipeline,[[0,U],[1,S],[2,Boxes]]);uiBG=bg(uiPipeline,[[0,uiUniform],[1,glyphBuffer],[2,fontBuffer],[3,O],[4,S],[5,Paint],[6,C],[7,zHeads]]);
- faceBG=bg(facePipeline,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);faceShadowBG=bg(faceShadowPipeline,[[0,U],[1,S],[2,Faces]]);
+ faceBG=bg(facePipeline,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);applyQualityTier25(qualityTier25);if(QUALITY_TIERS25[qualityTier25].msaa===1)await ensureNoMSAA25();faceShadowBG=bg(faceShadowPipeline,[[0,U],[1,S],[2,Faces]]);
  buildComputeBindings();sizeTargets();updateUniforms(0);reset();bindInput();boot.hidden=true;
  diagnostics.world={seed:runSeed,rooms:world.roomCount,chunks:CHUNK_COUNT,stage,metres:WORLD,voxelSize:.25,destructibleVoxels:world.count,characterGrid:16,particlePairWindow:1.35,particleShrinkWindow:.62};diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:true,tactical:'toggle Tab',debug:'F3'};diagnostics.world.occupiedPages=world.occupiedPages;diagnostics.v8={fullPaintTiles:PAINT_PAGES,paintBytes:PAINT_SIZE*4,fragments:WRECK_MAX8,groupCheckBudget:4,chapter:world.chapter8.name,extraBarrels:world.extraBarrels8.length};diagnostics.world.faceCacheEntries=world.cacheSize;
  window.__tiny={settings,diagnostics,combatLayout:L13,snapshot,reset:()=>{resetRequested=true;},start:()=>{settings.started=true;},clearBlood:()=>{clearBloodRequested=true;},exportDiagnostics,get stats(){return {frame,fps,cpuMs,gpuMs,gpuStages,stage,seed:runSeed,worldVoxels:world.count,rooms:world.roomCount,counters:Array.from(counters),stopped};},

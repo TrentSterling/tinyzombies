@@ -19,6 +19,19 @@ Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandb
 
 `node tests/sandbox26.test.cjs` checks start-up, rerolls, objective reachability on 16 seeds, the announcer and the evacuation flow. Gameplay and GPU behaviour need an owner playtest.
 
+## Low-end GPUs
+
+The renderer now steps its quality down by itself when the frame rate stays under 45 FPS for 3 seconds of play. The simulation and horde size never change, only the picture:
+
+| Tier | Render scale | MSAA |
+| --- | --- | --- |
+| 0 (default) | 100% | 4x |
+| 1 | 100% | off |
+| 2 | 80% | off |
+| 3 | 67% | off |
+
+Pin a setting with `?tier=0`–`3`, `?q=0.5`–`1` (render scale) or `?msaa=1|4`; pinning turns the automatic step-down off. F3 shows the current tier. The same pass trims GPU work that changed nothing: the crowd search covers 3×3 cells instead of 5×5 (still exact), sight rays stop once sight is already lost, an unused pressure grid is no longer read or cleared, and infected passes are sized to the live population. Infected standing in a partly walled cell, such as a door frame, now head for the cheapest open neighbour instead of stalling. No GPU timings were measured in development; try it on the weakest machine you have.
+
 ## Parity audit fixes
 
 An independent source audit against [DEAD ENDS v29.2](https://github.com/TrentSterling/deadends/blob/a547496c931a047c832a21d35165026df091025b/index.html) found and this build fixes:

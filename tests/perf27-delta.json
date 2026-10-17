@@ -1,0 +1,69 @@
+{
+ "parentSha256": "e9d047c968bfc4eea6a187e2ec34ef199a6418b1cfd617ccabf736831a0a4f8c",
+ "changes": [
+  {
+   "before": "for(var k=0u;k<25u;k++){let d=neighbor6(k,rotate);",
+   "after": "for(var k=0u;k<9u;k++){let d=neighbor6(k,rotate);"
+  },
+  {
+   "before": "for(var k=1u;k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;",
+   "after": "for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;"
+  },
+  {
+   "before": "let cost=atomicLoad(&O[NAV_OFFSET+here]);if(cost>=1073741800u){return vec2f(0);}",
+   "after": "let cost=atomicLoad(&O[NAV_OFFSET+here]);"
+  },
+  {
+   "before": "var pressure=0u;for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=nc+vec2i(dx,dz);if(all(n>=vec2i(0))&&all(n<vec2i(NG))){pressure=max(pressure,O[PRESS_OFFSET+u32(n.x+NG*n.y)]);}}}",
+   "after": "let pressure=0u;"
+  },
+  {
+   "before": "enc.clearBuffer(zHeads);enc.clearBuffer(O,PRESS_OFFSET*4,NAV_SIZE*4);",
+   "after": "enc.clearBuffer(zHeads);// The unused pressure grid is no longer cleared every frame."
+  },
+  {
+   "before": "pass(enc,'gridZ',bindings.gridZ[zParity],Math.ceil(settings.zombies/64),stamp(2,null));",
+   "after": "pass(enc,'gridZ',bindings.gridZ[zParity],liveGroups25(),stamp(2,null));"
+  },
+  {
+   "before": "pass(enc,'zombies',bindings.zombies[zParity],Math.ceil(settings.zombies/64));",
+   "after": "pass(enc,'zombies',bindings.zombies[zParity],liveGroups25());"
+  },
+  {
+   "before": "pass(enc,'gridZ',bindings.gridZ[zParity],Math.ceil(settings.zombies/64));pass(enc,'crowd',bindings.crowd[zParity],Math.ceil(settings.zombies/64),",
+   "after": "pass(enc,'gridZ',bindings.gridZ[zParity],liveGroups25());pass(enc,'crowd',bindings.crowd[zParity],liveGroups25(),"
+  },
+  {
+   "before": "function runSimulation(enc,beginExtra={}){",
+   "after": "function liveGroups25(){return Math.max(1,Math.ceil(uniformData[44]/64));}\nfunction runSimulation(enc,beginExtra={}){"
+  },
+  {
+   "before": "let compute={},renderPipeline,shadowPipeline,postPipeline,uiPipeline,shadowTexture,shadowSampler,linearSampler;",
+   "after": "let compute={},renderPipeline,shadowPipeline,postPipeline,uiPipeline,shadowTexture,shadowSampler,linearSampler;\n// Quality tiers for low-end GPUs. Tier 0 is the original look; each step removes fill-rate work, never simulation.\nconst QUALITY_TIERS25=[{q:1,msaa:4},{q:1,msaa:1},{q:.8,msaa:1},{q:.67,msaa:1}];\nlet renderPipeline1,facePipeline1,renderBG1,faceBG1,renderModule25,renderSamples25=4,qualitySlow25=0;\nlet qualityTier25=Math.max(0,Math.min(3,Math.round(+params.get('tier')||0)));\nconst qualityLocked25=params.has('tier')||params.has('q')||params.has('msaa');\nasync function ensureNoMSAA25(){\n if(!renderPipeline1){const vertexLayout=[{arrayStride:24,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'float32x3'}]}];\n  renderPipeline1=await device.createRenderPipelineAsync({label:'voxel HDR pipeline 1x',layout:'auto',vertex:{module:renderModule25,entryPoint:'vs',buffers:vertexLayout},fragment:{module:renderModule25,entryPoint:'fs',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});\n  facePipeline1=await device.createRenderPipelineAsync({label:'cached exposed voxel faces 1x',layout:'auto',vertex:{module:renderModule25,entryPoint:'faceVS'},fragment:{module:renderModule25,entryPoint:'fs',targets:[{format:'rgba16float'}]},primitive:{topology:'triangle-list',cullMode:'back'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});\n  renderBG1=bg(renderPipeline1,[[0,U],[1,S],[2,Boxes],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);\n  faceBG1=bg(facePipeline1,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);}\n if(QUALITY_TIERS25[qualityTier25].msaa===1&&renderSamples25!==1){renderSamples25=1;width=0;}\n}\nfunction applyQualityTier25(t){\n qualityTier25=Math.max(0,Math.min(QUALITY_TIERS25.length-1,t));const tier=QUALITY_TIERS25[qualityTier25];\n settings.quality=params.has('q')?Math.max(.5,Math.min(1,+params.get('q')||1)):tier.q;\n if(params.get('msaa')==='1')tier.msaa=1;else if(params.get('msaa')==='4')tier.msaa=4;\n if(tier.msaa===1){if(renderSamples25!==1)ensureNoMSAA25().catch(e=>diagnostics.notes.push('1x pipeline: '+e.message));}else if(renderSamples25!==4){renderSamples25=4;width=0;}\n width=0;diagnostics.quality={tier:qualityTier25,scale:settings.quality,msaa:tier.msaa,locked:qualityLocked25};\n}\nfunction qualityGovernor25(elapsed){\n if(qualityLocked25||!settings.started||settings.paused||time<4||elapsed<=0)return;\n qualitySlow25=fps<45?qualitySlow25+elapsed:Math.max(0,qualitySlow25-elapsed*.5);\n if(qualitySlow25>3&&qualityTier25<QUALITY_TIERS25.length-1){applyQualityTier25(qualityTier25+1);qualitySlow25=-3;}\n}"
+  },
+  {
+   "before": " const rm=await shader('voxel renderer',renderShader)",
+   "after": " const rm=renderModule25=await shader('voxel renderer',renderShader)"
+  },
+  {
+   "before": " faceBG=bg(facePipeline,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);",
+   "after": " faceBG=bg(facePipeline,[[0,U],[1,S],[2,Faces],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);applyQualityTier25(qualityTier25);if(QUALITY_TIERS25[qualityTier25].msaa===1)await ensureNoMSAA25();"
+  },
+  {
+   "before": " hdrMSAA=device.createTexture({label:'HDR 4x MSAA',size:[w,h],format:'rgba16float',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT});\n depthTexture=device.createTexture({label:'depth 4x MSAA',size:[w,h],format:'depth24plus',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT});",
+   "after": " hdrMSAA=renderSamples25===4?device.createTexture({label:'HDR 4x MSAA',size:[w,h],format:'rgba16float',sampleCount:4,usage:GPUTextureUsage.RENDER_ATTACHMENT}):null;\n depthTexture=device.createTexture({label:'depth '+renderSamples25+'x',size:[w,h],format:'depth24plus',sampleCount:renderSamples25,usage:GPUTextureUsage.RENDER_ATTACHMENT});"
+  },
+  {
+   "before": "  const p=enc.beginRenderPass({label:'HDR voxels',colorAttachments:[{view:hdrMSAA.createView(),resolveTarget:hdrTexture.createView(),clearValue:{r:.075,g:.14,b:.18,a:1},loadOp:'clear',storeOp:'discard'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'discard'}});\n  p.setPipeline(renderPipeline);p.setBindGroup(0,renderBG);p.setVertexBuffer(0,vBuffer);p.drawIndirect(drawArgs,0);p.setPipeline(facePipeline);p.setBindGroup(0,faceBG);p.drawIndirect(faceArgs,0);p.end();",
+   "after": "  const ms=renderSamples25===4,clear={r:.075,g:.14,b:.18,a:1};\n  const p=enc.beginRenderPass({label:'HDR voxels',colorAttachments:[ms?{view:hdrMSAA.createView(),resolveTarget:hdrTexture.createView(),clearValue:clear,loadOp:'clear',storeOp:'discard'}:{view:hdrTexture.createView(),clearValue:clear,loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depthTexture.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'discard'}});\n  p.setPipeline(ms?renderPipeline:renderPipeline1);p.setBindGroup(0,ms?renderBG:renderBG1);p.setVertexBuffer(0,vBuffer);p.drawIndirect(drawArgs,0);p.setPipeline(ms?facePipeline:facePipeline1);p.setBindGroup(0,ms?faceBG:faceBG1);p.drawIndirect(faceArgs,0);p.end();"
+  },
+  {
+   "before": " if(elapsed>0)fps=fps*.95+Math.min(240,1/elapsed)*.05;",
+   "after": " if(elapsed>0)fps=fps*.95+Math.min(240,1/elapsed)*.05;qualityGovernor25(elapsed);"
+  },
+  {
+   "before": "const a=['WebGPU  /  V9','FPS '+Math.round(fps),",
+   "after": "const a=['WebGPU  /  V9','FPS '+Math.round(fps),'Quality tier '+qualityTier25+(qualityLocked25?' (pinned)':''),"
+  }
+ ]
+}

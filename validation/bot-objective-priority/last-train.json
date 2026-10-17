@@ -1,0 +1,258 @@
+{
+  "method": "CPU-only exact host functions plus translated scalar WGSL fragments and geometry model. No shader compilation, GPU execution or earned gameplay.",
+  "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "passed": true,
+  "checks": [
+    {
+      "name": "existing map1 still continues to Burnout with source carry",
+      "passed": true
+    },
+    {
+      "name": "existing map2 now enters authored Last Train with exact entry carry",
+      "passed": true
+    },
+    {
+      "name": "Burnout active/reloaded retry restores original entry, not current damage",
+      "passed": true
+    },
+    {
+      "name": "Last Train active/reloaded retry restores original entry, not current damage",
+      "passed": true
+    },
+    {
+      "name": "live Burnout win continues once to Last Train without double-counting",
+      "passed": true
+    },
+    {
+      "name": "Last Train win saves once with its entry chain and continues to Code Red",
+      "passed": true
+    },
+    {
+      "name": "completed Code Red reload/retry restores the exact Deadweight entry",
+      "passed": true
+    },
+    {
+      "name": "repeated Enter and pointer cannot skip the active Chapter5",
+      "passed": true
+    },
+    {
+      "name": "pending live-win retry ignores immediate Enter without stranding overlay",
+      "passed": true
+    },
+    {
+      "name": "pending completion-view retry ignores immediate Enter without stranding overlay",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from active",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from paused",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from help",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from downed",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from dead",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from won",
+      "passed": true
+    },
+    {
+      "name": "N resets campaign from completed",
+      "passed": true
+    },
+    {
+      "name": "practice cannot overwrite campaign save",
+      "passed": true
+    },
+    {
+      "name": "lab cannot overwrite campaign save",
+      "passed": true
+    },
+    {
+      "name": "storage failure retains usable in-tab continuation to Deadweight",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects null",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects unportedMap",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects missingEntry",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects skippedEntry",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects recursiveEntry",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects badNestedSeed",
+      "passed": true
+    },
+    {
+      "name": "checkpoint rejects badDifficulty",
+      "passed": true
+    },
+    {
+      "name": "human power hold crosses2s once, including activation-frame timer dt",
+      "passed": true
+    },
+    {
+      "name": "eligible human hold resets on release",
+      "passed": true
+    },
+    {
+      "name": "eligible human hold resets on pin",
+      "passed": true
+    },
+    {
+      "name": "eligible human hold resets on leave",
+      "passed": true
+    },
+    {
+      "name": "eligible human hold resets on revive-priority",
+      "passed": true
+    },
+    {
+      "name": "downed human hold freezes and resumes after revival without adding downed time",
+      "passed": true
+    },
+    {
+      "name": "ordinary bot proximity cannot activate power",
+      "passed": true
+    },
+    {
+      "name": "explicit gate order operates one eligible bot; partial actor holds do not combine",
+      "passed": true
+    },
+    {
+      "name": "nearby human revival takes priority over ordered panel operation",
+      "passed": true
+    },
+    {
+      "name": "nearby other-bot revival takes priority over ordered panel operation",
+      "passed": true
+    },
+    {
+      "name": "dead other bot does not steal eligible panel action",
+      "passed": true
+    },
+    {
+      "name": "dragged other bot does not steal eligible panel action",
+      "passed": true
+    },
+    {
+      "name": "distant other bot does not steal eligible panel action",
+      "passed": true
+    },
+    {
+      "name": "human and bot partial holds remain separate",
+      "passed": true
+    },
+    {
+      "name": "bot hold resets on pin",
+      "passed": true
+    },
+    {
+      "name": "bot hold resets on cancel-order",
+      "passed": true
+    },
+    {
+      "name": "bot hold resets on different-goal",
+      "passed": true
+    },
+    {
+      "name": "bot hold resets on out-of-range",
+      "passed": true
+    },
+    {
+      "name": "bot hold resets on wall",
+      "passed": true
+    },
+    {
+      "name": "countdown remains autonomous after release, movement and incapacitation",
+      "passed": true,
+      "openingElapsed": 15.000000000000325
+    },
+    {
+      "name": "paused simulation adds no hold or countdown time",
+      "passed": true
+    },
+    {
+      "name": "authored Last Train world is source-derived with complete late additions",
+      "passed": true
+    },
+    {
+      "name": "start door is north-facing; final door remains west-facing",
+      "passed": true
+    },
+    {
+      "name": "seven-point route has no zero-length segment; both shader consumers use real count",
+      "passed": true
+    },
+    {
+      "name": "north departure uses expanded original shelter and live-human eligibility",
+      "passed": true
+    },
+    {
+      "name": "closed interlock rejects collision and coarse planning; open gate allows crossing",
+      "passed": true
+    },
+    {
+      "name": "all four train footprints remain indestructible physical solids",
+      "passed": true
+    },
+    {
+      "name": "all source guards exclude Chapter3 from legacy machinery and recycling",
+      "passed": true
+    },
+    {
+      "name": "fixed allocations and 245 active campaign budget remain unchanged",
+      "passed": true
+    },
+    {
+      "name": "Chapter3 safe-room inset matches source without changing older bounds",
+      "passed": true
+    },
+    {
+      "name": "qualified closure/reopen/cancel/win bytes exclude only new initiation call and down telemetry",
+      "passed": true
+    },
+    {
+      "name": "authored centerline/control/maintenance/final approaches clear physical body",
+      "passed": true,
+      "segments": 16,
+      "samplingMetres": 0.025
+    },
+    {
+      "name": "closed north start door blocks departure lane",
+      "passed": true
+    },
+    {
+      "name": "closed final door blocks extraction approach without any wall bypass",
+      "passed": true
+    },
+    {
+      "name": "bot downed hold is frozen rather than progressing or combining with another actor",
+      "passed": true
+    }
+  ]
+}

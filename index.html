@@ -1217,6 +1217,13 @@ fn directorStep13(dt:f32){
    S.queue13[n]=wave;break;
   }}
 }
+// Bot machinery must not bypass the source's nearby revive interaction priority.
+fn botReviveFirst23(id:u32)->bool {
+ let p=S.team7[id].p.xz;
+ if(S.player7.x>0.0&&distance(p,S.pos.xz)<90.0/64.0){return true;}
+ for(var other=0u;other<3u;other++){if(other!=id&&S.team7[other].p.w<=0.0&&S.botLife13[other].y<.5&&S.squad7.y!=f32(other)&&distance(p,S.team7[other].p.xz)<90.0/64.0){return true;}}
+ return false;
+}
 // Last Train keeps per-actor hold progress in the existing spare pour lanes.
 // Downed actors cannot interact; their partial source hold is retained until eligible again.
 fn startPower16(){
@@ -1322,10 +1329,10 @@ fn chapterMission13(dt:f32){
  var alarmPulse18=false;if(u.run.x==4.0){alarmPulse18=alarmTick18(dt);}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);
  for(var i=0u;i<u32(u.config.x);i++){var z=Z13[i];if(z.extraData.z!=3.0||z.special13.w<0.0){continue;}z.special13.z=max(0.0,z.special13.z-dt);if(z.special13.z==0.0){var slot=16u;for(var k=0u;k<16u;k++){if(S.acid13[k].w<=S.aux.x&&slot==16u){slot=k;}}if(slot<16u){S.acid13[slot]=vec4f(z.sense13.xy,71.0/64.0,S.aux.x+5.8);}z.special13.w=-1.0;}Z13[i]=z;}
- if(u.run.x==1.0&&S.orders.x>.5&&S.order13.x==5.0){let a=S.team7[u32(S.order13.z)];let g=u32(S.chapter13.x);if(a.p.w>0.0&&S.botLife13[u32(S.order13.z)].w==0.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&P[g].data.y>.5){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;if(S.relay.y>=4.2){P[g].data.y=0.0;P[g].p.y=3.4;S.relay.z=1.0;S.orders.x=0.0;}}}
+ if(u.run.x==1.0&&S.orders.x>.5&&S.order13.x==5.0){let a=S.team7[u32(S.order13.z)];let g=u32(S.chapter13.x);if(a.p.w>0.0&&S.botLife13[u32(S.order13.z)].w==0.0&&!botReviveFirst23(u32(S.order13.z))&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&P[g].data.y>.5){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;if(S.relay.y>=4.2){P[g].data.y=0.0;P[g].p.y=3.4;S.relay.z=1.0;S.orders.x=0.0;}}}
  if(u.run.x!=4.0){directorStep13(dt);}let scream=atomicExchange(&C[55],0u);if(scream>0u){queueWave13(30.0,true,true);S.alarm.z=12.0;}
   if(u.run.x==2.0){for(var id=0u;id<3u;id++){
-  let a=S.team7[id];let ready=S.botFuel15[id]>.5&&a.p.w>0.0&&S.botLife13[id].w==0.0&&a.ai.x==7.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&S.relay.x<.5;
+  let a=S.team7[id];let ready=S.botFuel15[id]>.5&&a.p.w>0.0&&S.botLife13[id].w==0.0&&a.ai.x==7.0&&!botReviveFirst23(id)&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&S.relay.x<.5;
   if(ready){S.botPour15[id]+=dt;if(S.botPour15[id]>=2.1){S.botFuel15[id]=0.0;S.botPour15[id]=0.0;S.relay.w+=1.0;S.team7[id].plan.y=0u;if(S.relay.w>=2.0){S.relay.x=1.0;S.relay.y=0.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}}}else{S.botPour15[id]=0.0;}
  }}
  let carAlarm=atomicExchange(&C[90],0u);if(carAlarm>0u){queueWave13(15.0,false,true);queueWave13(24.0,true,true);S.alarm.z=12.0;}

@@ -1,0 +1,259 @@
+{
+  "method": "CPU-only exact host, translated scalar WGSL and source geometry checks; no shader compilation or earned gameplay.",
+  "candidateSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
+  "passed": true,
+  "checks": [
+    {
+      "name": "independent 2.4s hold and 17s autonomous opening at 30Hz",
+      "passed": true
+    },
+    {
+      "name": "independent 2.4s hold and 17s autonomous opening at 60Hz",
+      "passed": true
+    },
+    {
+      "name": "independent 2.4s hold and 17s autonomous opening at 120Hz",
+      "passed": true
+    },
+    {
+      "name": "human winch hold resets on release",
+      "passed": true
+    },
+    {
+      "name": "human winch hold resets on pin",
+      "passed": true
+    },
+    {
+      "name": "human winch hold resets on leave",
+      "passed": true
+    },
+    {
+      "name": "human winch hold resets on revive",
+      "passed": true
+    },
+    {
+      "name": "human partial hold freezes downed and tolerates ordinary damage",
+      "passed": true
+    },
+    {
+      "name": "bot partial hold freezes downed and tolerates ordinary damage",
+      "passed": true
+    },
+    {
+      "name": "ordinary followers do not activate by proximity",
+      "passed": true
+    },
+    {
+      "name": "owned X order starts once then ends while winch continues",
+      "passed": true
+    },
+    {
+      "name": "simultaneous operators cannot double-start",
+      "passed": true
+    },
+    {
+      "name": "ordered bot resets on pin",
+      "passed": true
+    },
+    {
+      "name": "ordered bot resets on cancel",
+      "passed": true
+    },
+    {
+      "name": "ordered bot resets on remote-target",
+      "passed": true
+    },
+    {
+      "name": "ordered bot resets on other-goal",
+      "passed": true
+    },
+    {
+      "name": "ordered bot resets on range",
+      "passed": true
+    },
+    {
+      "name": "ordered operation respects human revive priority",
+      "passed": true
+    },
+    {
+      "name": "ordered operation respects bot revive priority",
+      "passed": true
+    },
+    {
+      "name": "ordered operation respects dead revive priority",
+      "passed": true
+    },
+    {
+      "name": "ordered operation respects dragged revive priority",
+      "passed": true
+    },
+    {
+      "name": "ordered operation respects at-radius revive priority",
+      "passed": true
+    },
+    {
+      "name": "human action radius is strict115px and a nearby non-dragged downed ally wins",
+      "passed": true
+    },
+    {
+      "name": "paused simulation changes neither hold nor opening time",
+      "passed": true
+    },
+    {
+      "name": "winch does not turn 17s activity into persistent alarm pressure",
+      "passed": true
+    },
+    {
+      "name": "map4 enters DEADWEIGHT with exact entry seed/carry/totals",
+      "passed": true
+    },
+    {
+      "name": "active retry and reload preserve exact chapter entry",
+      "passed": true
+    },
+    {
+      "name": "final win removes only active checkpoint and persists clear4 plus source-ranked best",
+      "passed": true
+    },
+    {
+      "name": "repeated final win/Enter never creates map6 or duplicates totals",
+      "passed": true
+    },
+    {
+      "name": "final same-tab retry restores entry without resurrecting persisted checkpoint",
+      "passed": true
+    },
+    {
+      "name": "loss retains the resumable map4 checkpoint",
+      "passed": true
+    },
+    {
+      "name": "practice cannot grant final clear or remove entry",
+      "passed": true
+    },
+    {
+      "name": "lab cannot grant final clear or remove entry",
+      "passed": true
+    },
+    {
+      "name": "demo cannot grant final clear or remove entry",
+      "passed": true
+    },
+    {
+      "name": "legacy unknown downs stay unknown through continue/retry and do not claim best",
+      "passed": true
+    },
+    {
+      "name": "removeItem failure is honest and leaves final retry usable",
+      "passed": true
+    },
+    {
+      "name": "setItem failure is honest and leaves final retry usable",
+      "passed": true
+    },
+    {
+      "name": "new run preserves clear/record history",
+      "passed": true
+    },
+    {
+      "name": "best rank is survivors, fewer downs, lower time; kills and exact ties never replace",
+      "passed": true
+    },
+    {
+      "name": "clear set does not infer earlier chapters and retains existing records",
+      "passed": true
+    },
+    {
+      "name": "progress parser bounds corrupt values, record count and malformed input",
+      "passed": true
+    },
+    {
+      "name": "parser rejects persisted continuation map5",
+      "passed": true
+    },
+    {
+      "name": "parser rejects persisted continuation map6",
+      "passed": true
+    },
+    {
+      "name": "all source guards include Chapter5 and no unported/procedural continuation",
+      "passed": true
+    },
+    {
+      "name": "existing closure conditions/timing retain baseline after exact initiation-call/telemetry normalization",
+      "passed": true
+    },
+    {
+      "name": "complete source bridge capture and late connector/rifle are retained",
+      "passed": true
+    },
+    {
+      "name": "east Toll departure and west final door use six-point source route",
+      "passed": true
+    },
+    {
+      "name": "closed winch blocks bridge crossing and open winch allows it",
+      "passed": true
+    },
+    {
+      "name": "capacity allocations and43 audio files are unchanged",
+      "passed": true,
+      "voxels": 35664,
+      "props": 31,
+      "pages": 82,
+      "faceCapacity": 213984
+    },
+    {
+      "name": "bridge water/deck masks match all captured cells without covering walkable pavement",
+      "passed": true
+    },
+    {
+      "name": "human down-entry telemetry counts once across both actual entry guards",
+      "passed": true
+    },
+    {
+      "name": "bot down-entry telemetry counts only new up-to-down transitions",
+      "passed": true
+    },
+    {
+      "name": "final victory counts pending prior-props bot down before buddy early return",
+      "passed": true
+    },
+    {
+      "name": "both storage failures preserve the specific checkpoint restoration warning",
+      "passed": true
+    },
+    {
+      "name": "legacy aggregate downs do not suppress known chapter-local best record",
+      "passed": true
+    },
+    {
+      "name": "float32 winch accumulator preserves threshold/activation-frame delay: 30Hz",
+      "passed": true,
+      "frames": 582,
+      "activationSeconds": 2.433333460241556,
+      "openingAccumulator": 17.000083923339844
+    },
+    {
+      "name": "float32 winch accumulator preserves threshold/activation-frame delay: 60Hz",
+      "passed": true,
+      "frames": 1165,
+      "activationSeconds": 2.416666792705655,
+      "openingAccumulator": 17.016578674316406
+    },
+    {
+      "name": "float32 winch accumulator preserves threshold/activation-frame delay: 120Hz",
+      "passed": true,
+      "frames": 2328,
+      "activationSeconds": 2.400000125169754,
+      "openingAccumulator": 17.008159637451172
+    },
+    {
+      "name": "float32 winch accumulator preserves threshold/activation-frame delay: bounded jitter",
+      "passed": true,
+      "frames": 1208,
+      "activationSeconds": 2.4086667092051357,
+      "openingAccumulator": 17.000694274902344
+    }
+  ]
+}

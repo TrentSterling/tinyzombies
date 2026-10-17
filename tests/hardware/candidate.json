@@ -1,10 +1,10 @@
 {
-  "harnessVersion": "revive-priority-v1",
-  "runtimeSha256": "2df704d882c5df5404ca880e1e4623ce63877846047de1f7349f3996d4b34f70",
+  "harnessVersion": "bot-objective-priority-v1",
+  "runtimeSha256": "bae0595bd9e851593b0800df7fb2d19c01afaa65ade725750c2d5a713c17dde2",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
-  "acceptance": "Deferred: ordinary-input simultaneous self-medkit/manual rescue, threat-blocked exception and first-frame completion boundary, retained bot patient validity/crawl/pin/extraction and fresh matched five-chapter persistence. CPU source/ordered adapters are separate evidence, not earned gameplay.",
+  "acceptance": "Deferred: ordinary-input Chapter 1 bot crank / Chapter 2 bot fuel revive-first interruption, strict radius and resume, retained self-medkit/manual rescue, bot patient validity/crawl/pin/extraction and fresh matched five-chapter persistence. CPU fragment/ordered adapters are separate evidence, not earned gameplay.",
   "hardwareStatus": "not-run",
-  "dependencyCommit": "84199cab543e9e07a5c9a65432592dde47d47767",
+  "dependencyCommit": "7b9f18df2be90d38e8b83b4c014f8f28c04e81f4",
   "testedRollback": "bd6bc8c9157eea06e351beeaf94049ebaea68323",
   "sourceChapterBase": "247aa55a5647954d8da995ad94782a22443af710"
 }

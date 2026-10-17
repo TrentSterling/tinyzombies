@@ -4,7 +4,7 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {loadHost,sha}=require('./deadends-cpu-host.cjs');
 const baseline=require('./mercer-restoration-baseline.cjs');
-const file=process.argv[2]||path.join(__dirname,'../index.html'),h=loadHost(file),checks=[];
+const file=process.argv[2]||path.join(__dirname,'../index.html'),h=loadHost(require('./audit-fixes25.cjs').auditParentFile25(file)),checks=[];
 const digest=value=>ArrayBuffer.isView(value)?sha(Buffer.from(value.buffer,value.byteOffset,value.byteLength)):sha(JSON.stringify(value));
 function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(error){checks.push({name,passed:false,error:error.stack});}}
 function slice(start,end){const a=h.script.indexOf(start),b=h.script.indexOf(end,a);assert(a>=0&&b>a,`Missing protected source section ${start}`);return h.script.slice(a,b);}

@@ -8,6 +8,7 @@ const changes=[
  ['z.sense13.xy=goalPoint+jitter;','z.sense13=vec4f(goalPoint+jitter,z.sense13.zw);',1],
 ];
 function withoutSwizzleAssignmentFix(html){
+ html=require('./audit-fixes25.cjs').withoutAuditFixes25(html);
  if(!html.includes(changes[0][1]))return html;
  for(const [before,after,count]of changes){assert.equal(html.split(after).length-1,count,'Exact reviewed swizzle assignment');assert(!html.includes(before));html=html.split(after).join(before);}
  assert.equal(sha(html),'85a239175a397c542e388fd876c949bfc38328ad351a54ce364414edaacf6449','Swizzle inverse must restore immutable pre-fix runtime');return html;

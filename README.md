@@ -21,6 +21,14 @@ The DEAD ENDS chapters keep their night look.
 
 The start shelter is dressed like a Left 4 Dead safe room: a wooden gun rack of rifles on the back wall, an armory table with a shotgun, a rifle, an ammo can, a medkit and a lit work lamp, a stack of supply crates and a cot. Supply caches around the street are folding tables laid out with guns, ammo cans, a medkit and pipe bombs. Once looted, only the bare table and an empty can are left.
 
+The yards look the part as well:
+- **Hedges:** run down the sides of each front yard.
+- **Fences:** white picket fences with a gate run across the front, and longer picket rows line the gardens.
+- **Houses:** pink, mint or baby-blue siding, or brick.
+- **Pools:** many houses have one out back, with white coping and rippling water.
+
+Hedges and fences are ordinary breakable voxels, so they shatter like everything else. The street layout, neighbors and supplies are exactly where they were.
+
 Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
 
 - It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).

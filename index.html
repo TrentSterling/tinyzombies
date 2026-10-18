@@ -307,15 +307,26 @@ function makeWorld(){
  function shelf(x,z){if(!free(x,z,3)||(!settings.lab&&(!flowFree9(x+1.5,z+.5,2)||!freightFree9(x+1.5,z+.5,2))))return;let g=newGroup();objectGroups8.push(g);for(let dx of [0,2.75])for(let dz of [0,1])boxM(x+dx,0,z+dz,.25,1.75,.25,4,g);for(let y of [.5,1.5])boxM(x,y,z,3,.25,1.25,4,g);for(let k=0;k<3;k++)boxM(x+.25+k,.75,z+.25,.5,.5,.5,1,g);}
  function prop(x,z,type=0){if(propCount>=MAX_PROPS)throw Error('Prop capacity');if(!free(x,z,1)||(!settings.lab&&type!==1&&(!flowFree9(x,z,1.5)||!freightFree9(x,z,1.5))))return;props.set([x,0,z,type,type===0?6:type===2?18:type===3?12:1,0,0,rand(),2.4,1.4,0,0,0,0,0,0],propCount++*16);}
  // Maple Street: up to two small houses per block (garage door front, side door), a knee-high picket fence, yard junk. The seed rerolls all of it.
+ // ZAMN yards: hedges down the sides of the front yard (mat 6), a white picket fence with a 3 m gate across it (mat 7), a pool out back.
+ // The garden picket rows built after the houses leave a gap in front of every gate (gates45), or a yard could seal a neighbor in.
+ // No rand() here, so street layouts stay exactly as before; a piece is skipped if anything stands there, it touches a mission lane, or the map edge.
+ const pools45=[],gates45=[];
+ const empty45=(x0,z0,x1,z1)=>{for(let x=Math.floor((x0+96)*4);x<Math.ceil((x1+96)*4);x++)for(let z=Math.floor((z0+96)*4);z<Math.ceil((z1+96)*4);z++){const c=cells.get(keyCell(x,0,z));if(c&&c[3]!==6&&c[3]!==7)return false;}return true;};
+ const ok45=(x0,z0,x1,z1)=>{const cx=(x0+x1)/2,cz=(z0+z1)/2,r=Math.max(x1-x0,z1-z0)/2;return x0>-90&&x1<90&&z0>-90&&z1<90&&free(cx,cz,r)&&flowFree9(cx,cz,r)&&freightFree9(cx,cz,r)&&empty45(x0-.5,z0-.5,x1+.5,z1+.5);};
+ function yard45(hx,hz,hw,hd){const fz=hz+hd+.5,depth=4.5;
+  for(const x of [hx-1.25,hx+hw+.75])if(ok45(x,fz+.5,x+.5,fz+depth))wall(x,fz+.5,depth-.5,true,0,6,1.0);
+  if(ok45(hx-1.25,fz+depth,hx+hw+1.25,fz+depth+.5)){wall(hx-1.25,fz+depth,hw+2.5,false,3,7,.75);gates45.push({x:hx+hw/2,z:fz+depth});}
+  const px=Math.round(hx+hw/2-2),pz=Math.round(hz-4.25);if(ok45(px,pz,px+4,pz+3))pools45.push({x:px,z:pz,w:4,d:3});
+ }
  function houses25(cx,cz,id){
   for(const [hx0,hz0] of [[cx-21,cz-19],[cx-9,cz-19]]){if(rand()<.15)continue;
    const hw=8+Math.floor(rand()*3),hd=7+Math.floor(rand()*2),hx=hx0+Math.floor(rand()*2),hz=hz0+Math.floor(rand()*2);
    if(!free(hx+hw/2,hz+hd/2,6)||!flowFree9(hx+hw/2,hz+hd/2,6)||!freightFree9(hx+hw/2,hz+hd/2,6))continue;
-   const mat=rand()<.4?3:1,westDoor=rand()<.5;
+   const mat=rand()<.4?3:8+((hx*7+hz*13)%3+3)%3,westDoor=rand()<.5;
    wall(hx,hz,hw,false,0,mat);wall(hx,hz+hd,hw,false,4.5,mat);wall(hx,hz,hd,true,westDoor?2:0,mat);wall(hx+hw-.5,hz,hd,true,westDoor?0:2,mat);
-   buildings.push({x:hx,z:hz,w:hw,d:hd});if(rand()<.7)shelf(hx+1,hz+1);
+   buildings.push({x:hx,z:hz,w:hw,d:hd});if(rand()<.7)shelf(hx+1,hz+1);yard45(hx,hz,hw,hd);
   }
-  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6))wall(x,cz-6,2,false,0,1,.75);}
+  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6)&&!gates45.some(g=>Math.abs(g.z-(cz-6))<3&&x<g.x+2&&x+2>g.x-2))wall(x,cz-6,2,false,0,7,.75);}
   crate(cx+6+Math.floor(rand()*4),cz+6+Math.floor(rand()*3),2);crate(cx-10+Math.floor(rand()*3),cz+13,1.5);if(rand()<.4)crate(cx+11,cz+8,1.25);
  }
  // Sixteen districts share a 12 m street network. Buildings occupy islands, never the full district.
@@ -418,7 +429,7 @@ function makeWorld(){
  const ids=[...new Set([...cells.values()].map(([x,y,z])=>(x>>4)+CGRID*(z>>4)))].sort((a,b)=>a-b);
  if(ids.length>MAX_PAGES)throw Error('Occupied page budget exceeded '+ids.length);
  ids.forEach((c,i)=>{occ[c]=i+1;chunks[c*4]=1;});
- let i=0;const materialHP=[4,1,4,3,7,8];
+ let i=0;const materialHP=[4,1,4,3,7,8,2,1,1,1,1];
  for(const [key,[x,y,z,mat,g]]of cells){let addr=occAddress(x,y,z,occ),hp=materialHP[mat];blocks.set([x*.25-96+.125,y*.25+.125,z*.25-96+.125,hp,mat,addr,hp,g],i*8);occ[addr]=i+1;chunks[((x>>4)+CGRID*(z>>4))*4+3]+=6;if(g&&y<2)groups[g*4]++;i++;}
  let cacheSize=0;for(let c=0;c<CHUNK_COUNT;c++){let cap=chunks[c*4+3];chunks[c*4+3]=cacheSize;cacheSize+=cap;}
  // Each original voxel reserves at most six faces. Removal can never exceed that bound.
@@ -433,7 +444,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -452,7 +463,7 @@ struct Structure8 { lo:vec4f, span:vec4u, refs:vec4u };
 struct Wreck8 { p:vec4f, v:vec4f, extent:vec4f, origin:vec4f, misc:vec4f, ids:array<u32,64> };
 struct Fracture8 { header:array<u32,16>, groups:array<Structure8,1024>, members:array<u32,131072>, localIndex:array<u32,131072>, wreck:array<Wreck8,256> };
 fn wreckScale8(w:Wreck8)->f32 {return clamp(26.0-w.v.w,0.0,1.0);}
-fn material8(m:f32)->vec3f {if(m==1.0){return vec3f(.46,.29,.14);}if(m==4.0){return vec3f(.22,.34,.39);}if(m==3.0){return vec3f(.47,.24,.18);}if(m==2.0){return vec3f(.69,.74,.66);}return vec3f(.51,.59,.55);}
+fn material8(m:f32)->vec3f {if(m==1.0){return vec3f(.46,.29,.14);}if(m==6.0){return vec3f(.14,.36,.15);}if(m==7.0){return vec3f(.86,.86,.82);}if(m==8.0){return vec3f(.84,.55,.58);}if(m==9.0){return vec3f(.55,.76,.64);}if(m==10.0){return vec3f(.56,.67,.84);}if(m==4.0){return vec3f(.22,.34,.39);}if(m==3.0){return vec3f(.47,.24,.18);}if(m==2.0){return vec3f(.69,.74,.66);}return vec3f(.51,.59,.55);}
 fn meleeInside8(p:vec3f,half:vec3f,center:vec4f,dir:vec4f)->bool {
  if(center.w<.5||p.y-half.y>1.72||p.y+half.y<0.0){return false;}
  let delta=p.xz-center.xz;let along=abs(dot(delta,dir.xy));let across=abs(dot(delta,vec2f(-dir.y,dir.x)));return along<.43+dot(abs(dir.xy),half.xz)&&across<.85+dot(abs(vec2f(-dir.y,dir.x)),half.xz);
@@ -3078,7 +3089,7 @@ const faceBuildShader=COMMON+`
 @group(0) @binding(6) var<storage,read> WP:array<u32>;
 @group(0) @binding(7) var<storage,read_write> Faces:array<Box>;
 @compute @workgroup_size(64) fn build(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=wg.x;if(chunk>=CHUNKS){return;}let centre=vec3f(f32(chunk%48u)*4.0-94.0,1.0,f32(chunk/48u)*4.0-94.0);let clip=u.vp*vec4f(centre-vec3f(S.pos.x,0,S.pos.z),1);if(abs(clip.x)>1.0+8.0/u.screen.z||abs(clip.y)>1.0+8.0/u.screen.w){return;}
- let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}color*=.94+rnd(item.x*17u)*.12;
+ let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}if(mat==6u){color=vec3f(.09,.27,.11)*(.8+rnd(item.x*29u)*.45);}if(mat==7u){color=select(vec3f(.84,.84,.80),vec3f(.52,.54,.50),(u32(floor((b.p.x+b.p.z)*4.0+.5))&1u)==1u&&b.p.y>.3);}if(mat==8u){color=vec3f(.80,.50,.54);}if(mat==9u){color=vec3f(.50,.72,.60);}if(mat==10u){color=vec3f(.52,.63,.80);}color*=.94+rnd(item.x*17u)*.12;
  let char6=WP[${MAX_WORLD}u+item.x];let charAmount=f32(char6&255u)/255.0;color=mix(color,vec3f(.065,.051,.044),smoothstep(.05,.70,charAmount));
  let packed=WP[item.x];let amount=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);color=mix(color,mix(vec3f(.25,.022,.025),vec3f(.56,.015,.035),exp(-age*.05)),amount*.9*select(1.0,.24,char6>packed));color=mix(color,vec3f(.034,.029,.025),charAmount*.60);
  let damage=1.0-clamp(b.p.w/max(1.0,b.extraData.z),0.0,1.0);let dst=atomicAdd(&C[19],1u);if(dst<${MAX_FACES}u){Faces[dst]=Box(vec4f(b.p.xyz+n*.125,damage),vec4f(n,4),vec4f(color,1));}}
@@ -3148,11 +3159,15 @@ fn routeGround9(p:vec2f)->f32 {var edge=1e6;
  return edge; }
 // Maple Street in daylight: asphalt streets, pale kerbs and sidewalks, a dithered lawn green with tufts, wood-plank floors inside houses.
 // House rectangles come from S.floors42 (written once at reset): two per vec4, each packed as (corner+96)*32+size in whole metres.
-fn floorAt42(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;if(p.x>x0&&p.x<x0+a-(x0+96.0)*32.0&&p.y>z0&&p.y<z0+b-(z0+96.0)*32.0){return true;}}}return false;}
+// Returns (kind, distance to the rect edge): kind 1 house floor, 2 pool (size field +16), 0 neither.
+fn floorAt42(p:vec2f)->vec2f {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;var w=a-(x0+96.0)*32.0;var d=b-(z0+96.0)*32.0;let pool=w>=16.0;w-=select(0.0,16.0,pool);d-=select(0.0,16.0,pool);
+ if(p.x>x0&&p.x<x0+w&&p.y>z0&&p.y<z0+d){return vec2f(select(1.0,2.0,pool),min(min(p.x-x0,x0+w-p.x),min(p.y-z0,z0+d-p.y)));}}}return vec2f(0);}
 fn suburb42(p:vec2f,edge:f32,noise:f32,top:f32,own:vec3f)->vec3f {
  if(top>.05){return own;}
  let t=floor(p*4.0);let dither=f32((u32(abs(t.x+400.0))+u32(abs(t.y+400.0)))%2u);
- if(floorAt42(p)){let plank=fract(p.x*2.0);let seam=1.0-smoothstep(0.0,.06,min(plank,1.0-plank));return mix(vec3f(.66,.45,.27),vec3f(.58,.38,.22),dither*.5+noise*.3)*(1.0-seam*.35);}
+ let fl=floorAt42(p);
+ if(fl.x==2.0){if(fl.y<.3){return vec3f(.86,.86,.82)*(.95+noise*.06);}let ripple=.5+.5*sin((p.x*1.3+p.y)*5.0+S.aux.x*2.2);return mix(vec3f(.12,.36,.78),vec3f(.30,.62,.95),ripple*.35+smoothstep(.3,1.2,fl.y)*.15);}
+ if(fl.x==1.0){let plank=fract(p.x*2.0);let seam=1.0-smoothstep(0.0,.06,min(plank,1.0-plank));return mix(vec3f(.66,.45,.27),vec3f(.58,.38,.22),dither*.5+noise*.3)*(1.0-seam*.35);}
  if(edge<0.0){return vec3f(.17,.18,.21)*(.92+noise*.16);}
  if(edge<.18){return vec3f(.70,.69,.64);}
  if(edge<1.7){let s=abs(fract(p+.5)-.5);let seam=1.0-smoothstep(0.0,.04,min(s.x,s.y));return vec3f(.60,.60,.56)*(.95+noise*.08)*(1.0-seam*.18);}
@@ -3626,7 +3641,7 @@ function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBee
  st.set([0,0,2,0],L12.gear);st.set([30,8,15,0],L12.mag);st.set([180,48,9999,0],L12.reserve);st.set([2,1,1,100],L12.items);st.set([0,-1,100,0],L12.heal);resetGear12();
  if(world.source13){for(let id=0;id<3;id++){const p=world.source13.players[id+1],o=L7.team7+id*128;st.set([p.x/64-42,0,p.y/64-27,100],o);}st.set(st.subarray(L7.team7,L7.team7+4),L7.buddy);st.set([world.gate13,world.final13,world.startDoor13,0],L13.chapter);st.set([15,24,0,0],L13.director);}
  st.set([0,-1,0,0],L7.squad7);st.set([world.doorFirst7,world.doors7.length,0,0],L7.rules7);st.set([settings.lab?1:0,0,0,0],L7.journey7);st.set([0,0,20,0],L7.pace7);
- st.set([100,100,100,0],L13.botStamina);applyCarry13(st);if(SANDBOX25&&!settings.lab)packFloors42(st,world.buildings);device.queue.writeBuffer(S,0,st);playerValues.set(st);
+ st.set([100,100,100,0],L13.botStamina);applyCarry13(st);if(SANDBOX25&&!settings.lab)packFloors42(st,world.buildings,world.pools45||[]);device.queue.writeBuffer(S,0,st);playerValues.set(st);
  updateUniforms(0);
  const enc=device.createCommandEncoder({label:'reset seeded compound'});for(const b of [C,pA,pB,Paint,WP,zHeads,pHeads])enc.clearBuffer(b);
  if(!world.initialZ13){pass(enc,'init',bindings.initA,MAX_Z/64);pass(enc,'init',bindings.initB,MAX_Z/64);}
@@ -3768,7 +3783,8 @@ function helpCard30(k){
   HELP_RULES30.forEach((r,i)=>centre(r,ry+56*k+i*26*k,15*k,i===1?COL9.gold:COL9.white));}
 }
 // House floors for the daylight ground shader (S.floors42 at float 3980): two rectangles per vec4, (corner+96)*32+size, whole metres.
-function packFloors42(st,buildings){let k=0;for(const b of buildings){if(k>=58)break;const x0=Math.round(b.x),z0=Math.round(b.z),w=Math.round(b.w),d=Math.round(b.d);if(w<1||d<1||w>31||d>31||x0<-96||z0<-96)continue;const o=3980+(k>>1)*4+(k&1)*2;st[o]=(x0+96)*32+w;st[o+1]=(z0+96)*32+d;k++;}return k;}
+// Pools share the list with +16 on both size fields, so house and pool sizes must stay under 16 m.
+function packFloors42(st,buildings,pools=[]){let k=0;for(const [b,flag] of [...buildings.map(b=>[b,0]),...pools.map(p=>[p,16])]){if(k>=58)break;const x0=Math.round(b.x),z0=Math.round(b.z),w=Math.round(b.w),d=Math.round(b.d);if(w<1||d<1||w>15||d>15||x0<-96||z0<-96)continue;const o=3980+(k>>1)*4+(k&1)*2;st[o]=(x0+96)*32+w+flag;st[o+1]=(z0+96)*32+d+flag;k++;}return k;}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}

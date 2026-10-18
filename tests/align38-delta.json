@@ -1,0 +1,17 @@
+{
+ "parentSha256": "0e7a8dd014eba4533d3d15440dbadae237c779aa8a11efd0523e2aed29529595",
+ "changes": [
+  {
+   "before": "const crush30Shader=COMMON+`\n@group(0) @binding(1) var<storage,read> Wr:array<Wreck8>;",
+   "after": "// Storage bindings must start on a 256-byte boundary; the pieces start CRUSH_LEAD30 bytes past one, so the view carries that lead.\nconst CRUSH_LEAD30=(F8.pieces*4)%256;\nconst crush30Shader=COMMON+`\nstruct CrushView30 { ${CRUSH_LEAD30?`lead:array<vec4f,${CRUSH_LEAD30/16}>,`:''} w:array<Wreck8,${WRECK_MAX8}> }\n@group(0) @binding(1) var<storage,read> Wr:CrushView30;"
+  },
+  {
+   "before": "if(i>=256u){return;}let w=Wr[i];",
+   "after": "if(i>=256u){return;}let w=Wr.w[i];"
+  },
+  {
+   "before": "{binding:1,resource:{buffer:Fracture,offset:F8.pieces*4,size:WRECK_MAX8*F8.stride*4}}",
+   "after": "{binding:1,resource:{buffer:Fracture,offset:F8.pieces*4-CRUSH_LEAD30,size:CRUSH_LEAD30+WRECK_MAX8*F8.stride*4}}"
+  }
+ ]
+}

@@ -9,7 +9,8 @@ const html=fs.readFileSync(file,'utf8');
 const mock=`(()=>{const log=[];const ctx={canvas:{width:0,height:0,clientWidth:1920,clientHeight:1080},log,
  clearRect(){log.push(['clear']);},fillRect(x,y,w,h){log.push(['rect',x,y,w,h,this.fillStyle]);},
  strokeText(s,x,y){log.push(['stroke',s,x,y,this.font]);},fillText(s,x,y){log.push(['fill',s,x,y,this.font,this.fillStyle]);},
- measureText(s){log.push(['measure',s]);return {width:String(s).length*10};}};return ctx;})()`;
+ measureText(s){log.push(['measure',s]);return {width:String(s).length*10};},
+ save(){},restore(){},beginPath(){},lineTo(){},moveTo(){},stroke(){},fill(){},arc(){},roundRect(){},createRadialGradient(){return {addColorStop(){}};},createLinearGradient(){return {addColorStop(){}};}};return ctx;})()`;
 const host=(seed)=>{const h=loadHost(file,seed?{seed}:undefined);h.run('reset()');h.run(`width=960;height=540;window.devicePixelRatio=2;hud2d30=${mock};sizeHud2d30();`);return h;};
 const fills=h=>h.json('hud2d30.log.filter(e=>e[0]==="fill").map(e=>e[1])');
 
@@ -39,7 +40,7 @@ check('without a 2D context the original SDF glyph path still draws',()=>{
 });
 check('sandbox title card: name, street, click-to-play and the pitch',()=>{
  const h=host('73129&sandbox');h.run('hud2d30.log.length=0;titleCard30(1)');const f=fills(h);
- for(const s of ['TINY ZOMBIES','MAPLE STREET','CLICK TO PLAY','Rescue your neighbors. Drop the houses on everyone else.'])assert(f.includes(s),s);
+ for(const s of ['TINY ZOMBIES','MAPLE STREET','CLICK TO PLAY'])assert(f.includes(s),s);assert(f.some(x=>String(x).startsWith('Rescue your neighbors. Drop the houses on everyone else.')),'tagline (poster52 adds Kick the cheese.)');
  assert(html.includes('if(!settings.started&&!completedBoundary15&&SANDBOX25){titleCard30(k);}'));
 });
 check('evacuation card reports saved neighbors, kills, crushes and time, with a quip for every outcome',()=>{

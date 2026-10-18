@@ -12,6 +12,8 @@ This checkout restores a larger connected Chapter 1 district, destructible wall 
 
 ## Maple Street (default)
 
+The title is a B-movie poster: full-bleed yellow, a slowly turning red hypnotic spiral, and TINY ZOMBIES in drippy green with a fat black outline. In play, a ZAMN-style block sits top left: ten blue health cells (red when you are low) and a big orange score (10 per infected put down, 25 per crush, 500 per neighbor saved).
+
 Maple Street is in daylight now, styled after Zombies Ate My Neighbors:
 - **Ground:** asphalt streets, pale curbs and sidewalks, a dithered emerald lawn with darker tufts, and wood-plank floors inside the houses. Wall tops keep their brick colors.
 - **Lighting:** the sun is warm, and the blue-black night fog is now a light haze.

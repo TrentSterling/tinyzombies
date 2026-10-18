@@ -48,6 +48,8 @@ Collapsing walls and buildings now crush infected. Any heavy wreck piece that is
 
 Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. Like Zombies Ate My Neighbors, nobody leaves while someone is still waiting at home: the shelter will not seal until every neighbor has been found (saved or lost), the objective line says how many are still home, and the minimap shows them as gold diamonds (mint once they follow you). The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
 
+Cheese wheels sit around the street: outside the start shelter, beside each BBQ Dad's grill, and out past the yard gates. Walk into one and it rolls off at speed. Shove it or blast it and it goes faster. It bounces off walls for about 30 m and flattens every infected in its path (SAY CHEESE!). In the software-GPU test, one kick rolled a wheel 22 m and crushed six infected lined up in front of it within 1.6 s.
+
 Some neighbors are characters, Zombies Ate My Neighbors style:
 - **Pool Guy Phil** (or Lorraine the Lounger) floats in the backyard pool on a red-and-white inner tube.
 - **BBQ Dad** (or Grill Sergeant Gus) wears a chef hat by a smoking grill in the front yard.

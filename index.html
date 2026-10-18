@@ -1071,10 +1071,13 @@ fn axeStep14(){
     if(human){if(pellet<8u){S.bullets[pellet]=shot;}else{S.extraShot12=shot;}}
     else if(pellet==0u){if(actor==1u){S.bullets[8]=shot;}else{S.extraBullets7[actor-2u]=shot;}if(S.noise.z<=0.0||S.noise.w<=9.5){S.noise=vec4f(o.xz,2.0,9.0);}}
     let trail=(select(8u+actor,pellet,human)%12u)*6u+serial%6u;S.trails6[trail]=shot;S.trails6[trail].tag.z=S.aux.x;
+    // Maple Street: the player's pistol is a squirt gun. hit.w=1 marks its trail as a water stream for the renderer.
+    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){S.trails6[trail].hit.w=1.0;}
     atomicAdd(&C[41],1u);atomicAdd(&C[47],1u);
    }
    if(h.kind>0u){atomicAdd(&C[42],1u);atomicMax(&C[49],u32(S.aux.x*1000.0)+1u);
     if(h.kind==3u){event(shot.hit.xyz+h.n*.05,dir*4.0+h.n*1.5+vec3f(0,1.6,0),vec3f(.67,.012,.032),7u,8u,seed+n*71u);}
+    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){event(shot.hit.xyz+h.n*.05,dir*2.5+h.n*1.2+vec3f(0,2.2,0),vec3f(.38,.70,1.0),11u,10u,seed+n*53u);}
     else{event(shot.hit.xyz+h.n*.04,h.n*2.0-dir*.2+vec3f(0,1.6,0),vec3f(.50,.53,.47),11u,5u,seed+n*71u);}
    }
   }
@@ -2425,7 +2428,8 @@ fn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04
  }
  if(i<72u){let sh=S.trails6[i];let age=S.aux.x-sh.tag.z;let crit=sh.tag.w>=2.0;let life=select(.19,.29,crit);
   if(sh.tag.w>0.0&&sh.dir.w>0.0&&age>=0.0&&age<life){let fade=1.0-age/life;let tip=min(sh.dir.w,1.1+age*230.0);let tail=max(min(.5,sh.dir.w),tip-select(4.0,12.0,crit)*fade);
-   beam6(sh.origin.xyz+sh.dir.xyz*tail,sh.origin.xyz+sh.dir.xyz*tip,select(vec3f(.9,.88,.63),vec3f(1,.60,.035),crit),select(.028,.065,crit),select(1.3,4.0,crit)*fade);
+   let water=sh.hit.w>.5;
+   beam6(sh.origin.xyz+sh.dir.xyz*tail,sh.origin.xyz+sh.dir.xyz*tip,select(select(vec3f(.9,.88,.63),vec3f(1,.60,.035),crit),vec3f(.40,.75,1.0),water),select(select(.028,.065,crit),.075,water),select(select(1.3,4.0,crit),1.6,water)*fade);
   }
  }
  if(i<u32(u.config.x)){let z=Z[i];if(z.p.w>0.0){enemyModel6(z);}}
@@ -3576,7 +3580,7 @@ function ordnanceHint(pipe){
 // DEAD ENDS control contract, pinned a547496c931a047c832a21d35165026df091025b.
 // Input emits monotonic edges; the GPU owns inventory, cooldowns and consumption.
 const GEAR12=['M4 CARBINE','PUMP SHOTGUN','9MM PISTOL','PIPE BOMB','MOLOTOV','MEDKIT'];
-function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';return n===0&&(b&1)?'R7 HEAVY RIFLE':n===1&&(b&2)?'AUTO SHOTGUN':n===2&&(b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1?'FIRE AXE':GEAR12[n];}
+function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';if(n===2&&SANDBOX25&&!((b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1))return 'SQUIRT GUN';return n===0&&(b&1)?'R7 HEAVY RIFLE':n===1&&(b&2)?'AUTO SHOTGUN':n===2&&(b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1?'FIRE AXE':GEAR12[n];}
 const GUN12=[{clip:30,reserve:180,rate:.098,reload:1.8},{clip:8,reserve:48,rate:.69,reload:.48},{clip:15,reserve:9999,rate:.21,reload:1.15}];
 const L12={gear:2220,mag:2224,reserve:2228,items:2232,ack:2236,flags:2240,reload:2244,heal:2248,events:2252,edges:2256,extraShot:2260,throw:2276,throwFrom:2280,pipes:2284,pipeStarts:2348,flights:2412,flightStarts:2476,stateFloats:2540};
 const input12={selected:0,lastGun:0,previous:2,seq:1,attack:0,reload:0,release:0,blocked:false,throwable:3,wheelAt:-Infinity,drag:0,order:0,cancel:0};
@@ -3986,7 +3990,7 @@ function drawLoadout25(k,eq){
  const up=playerValues[L13.upgrades]|0,items=[0,1,2].map(i=>Math.round(playerValues[L12.items+i]||0)),reserves=[0,1].map(i=>Math.round(playerValues[L12.reserve+i]||0));
  const sig=[eq,up,...items,...reserves].join();if(sig!==loadoutSig25){loadoutSig25=sig;loadoutAt25=time;}
  const fade=clamp9(1-(time-loadoutAt25-2.5)/.6,0,1);if(fade<=0)return;
- const names=[up&1?'R7 RIFLE':'CARBINE',up&2?'AUTO SG':'PUMP',gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL',SANDBOX25?'SODA':'PIPE','MOLOTOV','MEDKIT'],keys=['1','2','3','4','4','5'];
+ const names=[up&1?'R7 RIFLE':'CARBINE',up&2?'AUTO SG':'PUMP',gearLabel14(2)==='FIRE AXE'?'AXE':SANDBOX25?'SQUIRT':'PISTOL',SANDBOX25?'SODA':'PIPE','MOLOTOV','MEDKIT'],keys=['1','2','3','4','4','5'];
  const sw=84*k,sh=42*k,gap=6*k,sx=width/2-(6*sw+5*gap)/2,sy=height-sh-16*k,a=(c,m=1)=>[c[0],c[1],c[2],c[3]*fade*m];
  for(let n=0;n<6;n++){
   const x=sx+n*(sw+gap),sel=n===eq,have=gearAvailable12(n),dim=have?1:.4;

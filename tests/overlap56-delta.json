@@ -1,0 +1,9 @@
+{
+ "parentSha256": "0f83d76ed2be27520ec0d3bfd0d6afebb0908570c651dfa817ddd18dd7da3036",
+ "changes": [
+  {
+   "before": "text(s,width/2-textWidth9(s,px)/2,height*.20,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.20+52*k,15*k,COL9.white);",
+   "after": "text(s,width/2-textWidth9(s,px)/2,height*.11,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.11+50*k,15*k,COL9.white);"
+  }
+ ]
+}

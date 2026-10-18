@@ -5,7 +5,7 @@ const {loadHost,sha}=require('./deadends-cpu-host.cjs'),{delta,withoutCheese49}=
 const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8'),parent=path.join(__dirname,'.cheese49-parent.html');fs.writeFileSync(parent,withoutCheese49(html));
-const W=(f,seed)=>loadHost(f,{seed}).json('(()=>{const w=makeWorld();return {b:w.buildings,civ:w.civilians30,count:w.count,cheese:w.cheese48||[],props:Array.from(w.props.slice(0,w.propCount*16)),n:w.propCount}})()');
+const W=(f,seed)=>loadHost(f,{seed}).json('(()=>{const w=makeWorld();return {b:w.buildings,civ:(w.civilians30||[]).map(c=>[c.slot,c.outfit]),count:w.count,cheese:w.cheese48||[],props:Array.from(w.props.slice(0,w.propCount*16)),n:w.propCount}})()');
 check('every street gets up to 8 wheels, appended after the existing props, with the layout untouched',()=>{
  const out={};for(const s of ['4242&sandbox','73129&sandbox','99&sandbox']){const a=W(file,s),b=W(parent,s);assert.deepEqual(a.b,b.b);assert.deepEqual(a.civ,b.civ);assert.equal(a.count,b.count);
   assert.deepEqual(a.props.slice(0,b.n*16),b.props,'existing props unchanged');assert.equal(a.n,b.n+a.cheese.length);assert(a.cheese.length>=5&&a.cheese.length<=8);assert(a.n<=loadHost(file).json('CIV_BASE30'));

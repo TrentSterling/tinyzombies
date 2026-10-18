@@ -1,0 +1,37 @@
+{
+ "parentSha256": "ca905e0cf55a968c36fdbd7dde0f487d82a4578222d18e21495668fc6e85a984",
+ "changes": [
+  {
+   "before": " if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}",
+   "after": " if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);\n  // Characters hand something over as they join (caps match the pickups). SR[557] is reserve12 (L12.reserve/4), SR[558] items12\n  // (L12.items/4: x pipe bombs, y medkits, z molotovs). Pool Guy: ammo from his cooler. BBQ Dad: lighter fluid. Tiffany, Baby: a medkit. Timmy: two pipes.\n  let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];\n  if(t30==1u){rs.x=min(240.0,rs.x+60.0);rs.y=min(56.0,rs.y+12.0);}if(t30==2u){it.z=min(2.0,it.z+1.0);}if(t30==3u||t30==5u){it.y=min(3.0,it.y+1.0);}if(t30==4u){it.x=min(4.0,it.x+2.0);}\n  if(t30>0u){SR[558u]=it;SR[557u]=rs;}}"
+  },
+  {
+   "before": "type=[0,2,1,3,4,1,2,4][outfit];",
+   "after": "type=[0,2,1,3,4,5,2,4][outfit];"
+  },
+  {
+   "before": "['Trampoline Timmy','Bouncy Becky'][twin]][type];",
+   "after": "['Trampoline Timmy','Bouncy Becky'][twin],'Baby Buster'][type];"
+  },
+  {
+   "before": " modelSize=vec3f(.92);modelProne=0.0;",
+   "after": " modelSize=vec3f(select(.92,.52,kind30==5u));modelProne=0.0;"
+  },
+  {
+   "before": "if(waiting&&kind30==4u){lift30=.45+abs(sin(S.aux.x*3.2+f32(k)))*1.15;}",
+   "after": "if(waiting&&kind30==4u){lift30=.45+abs(sin(S.aux.x*3.2+f32(k)))*1.15;}if(waiting&&kind30==5u){lift30=.30+abs(sin(S.aux.x*6.0))*.05;}"
+  },
+  {
+   "before": " if(kind30==4u){let m=home+vec3f(0,.42,0);",
+   "after": " if(kind30==5u){let cr=home+vec3f(0,.30,0);let wood=vec3f(.96,.94,.88);box(cr,vec3f(1.0,.06,.66),vec3f(.55,.75,.95),1,0);\n  for(var e=0u;e<4u;e++){box(home+vec3f(select(-.48,.48,(e&1u)==1u),.40,select(-.31,.31,(e&2u)>0u)),vec3f(.06,.80,.06),wood,1,0);}\n  for(var sl=0u;sl<7u;sl++){let x=-.36+f32(sl)*.12;box(home+vec3f(x,.55,.31),vec3f(.03,.42,.03),wood,1,0);box(home+vec3f(x,.55,-.31),vec3f(.03,.42,.03),wood,1,0);}\n  box(home+vec3f(0,.77,.31),vec3f(1.0,.04,.05),wood,1,0);box(home+vec3f(0,.77,-.31),vec3f(1.0,.04,.05),wood,1,0);}\n if(kind30==4u){let m=home+vec3f(0,.42,0);"
+  },
+  {
+   "before": "lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']}];",
+   "after": "lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']},\n {join:['{n} is following you. Crawling, mostly.','{n} has joined. He bit a zombie back.'],saved:['{n} is safe. Nobody knows whose he is.','{n} made it. Diaper status: unknown.'],lost:['{n} crawled off somewhere. We will not discuss it.','We lost track of {n}. Someone check under the porch.']}];\nconst CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 PIPE BOMBS','+1 MEDKIT'];"
+  },
+  {
+   "before": "  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;civPrev47[c]=st;});",
+   "after": "  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;\n  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2;civPrev47[c]=st;});"
+  }
+ ]
+}

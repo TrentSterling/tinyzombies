@@ -50,6 +50,8 @@ Collapsing walls and buildings now crush infected. Any heavy wreck piece that is
 
 Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. Like Zombies Ate My Neighbors, nobody leaves while someone is still waiting at home: the shelter will not seal until every neighbor has been found (saved or lost), the objective line says how many are still home, and the minimap shows them as gold diamonds (mint once they follow you). The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
 
+The fallout shelter you evacuate to has a giant yellow radiation sign, hazard stripes along its walls and doorway, and a FALLOUT SHELTER label once you are within 32 m.
+
 On Maple Street the pipe bomb is a shaken-up soda can. It still lures the horde and blows up the same way, but it rattles on the ground and spits foam faster as the fuse runs down.
 
 Big kills are messier on Maple Street. A crush, a blast or point-blank buckshot (150+ damage at once) bursts an infected into shirt-colored chunks with a double blood spray and a popped head, and a run of them stacks into a SPLAT xN callout.

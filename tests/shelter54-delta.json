@@ -1,0 +1,13 @@
+{
+ "parentSha256": "0eba0d7eec554eaf394d7244d2f8df059de98dfe4bf3d3f79736d763d43fbdfb",
+ "changes": [
+  {
+   "before": "@compute @workgroup_size(64) fn build(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;\n if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();}",
+   "after": "// The evacuation shelter (u.route.zw; walls x-2.5..x+3, z-3..z+3, door in the west wall) dressed for the B-movie: a radiation sign\n// standing on the south wall, black-and-yellow stripes along the wall tops, and a striped threshold.\nfn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04);\n let c=vec3f(o.x+.25,2.95,o.y+2.75);box(c,vec3f(1.9,1.9,.10),k,1,0);box(c+vec3f(0,0,.02),vec3f(1.7,1.7,.10),y,1,.25);box(c+vec3f(0,0,.08),vec3f(.26,.26,.02),k,1,0);\n for(var b=0u;b<3u;b++){let a=1.5708+f32(b)*2.0944;for(var s=0u;s<6u;s++){let r=select(.34,.56,s>=3u);let da=(f32(s%3u)-1.0)*select(.30,.22,s>=3u);box(c+vec3f(cos(a+da)*r,sin(a+da)*r,.08),vec3f(.16,.16,.02),k,1,0);}}\n for(var s=0u;s<11u;s++){let t=-2.5+f32(s)*.5;let col=select(y,k,(s&1u)==1u);box(vec3f(o.x+t+.25,2.03,o.y+2.75),vec3f(.5,.06,.52),col,1,select(.15,0.0,(s&1u)==1u));box(vec3f(o.x+t+.25,2.03,o.y-2.75),vec3f(.5,.06,.52),col,1,select(.15,0.0,(s&1u)==1u));}\n for(var s=0u;s<12u;s++){let t=-1.5+f32(s)*.25;box(vec3f(o.x-2.9,.015,o.y+t+.125),vec3f(.8,.02,.25),select(y,k,(s&1u)==1u),1,0);}}\n@compute @workgroup_size(64) fn build(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;\n if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();exitDecor54();}"
+  },
+  {
+   "before": "function calloutsHUD30(k){cheeseHUD48(k);splatHUD51(k);",
+   "after": "// FALLOUT SHELTER hangs over the evacuation shelter once it is within 32 m.\nfunction shelterLabel54(k){const e=world.exit,d=Math.hypot(e[0]-playerValues[0],e[1]-playerValues[2]);if(d>32)return;const [sx,sy]=screenPoint(e[0],e[1],4.6);if(sx<40||sx>width-40||sy<30||sy>height-30)return;\n const s='FALLOUT SHELTER',px=26*k;text(s,sx-textWidth9(s,px)/2,sy,px,[1,.82,.12,clamp9((32-d)/6,0,1)]);}\nfunction calloutsHUD30(k){cheeseHUD48(k);splatHUD51(k);shelterLabel54(k);"
+  }
+ ]
+}

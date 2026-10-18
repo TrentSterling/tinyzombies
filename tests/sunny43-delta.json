@@ -1,0 +1,37 @@
+{
+ "parentSha256": "bd55865e51844cfec5b7f2f1cc2e99ca4db0b0c3c8b786d3f92d162c599e85b0",
+ "changes": [
+  {
+   "before": "noiseSeen34:vec4f };",
+   "after": "noiseSeen34:vec4f, floors42:array<vec4f,29> };"
+  },
+  {
+   "before": "@fragment fn fs(o:Out)->@location(0) vec4f {",
+   "after": "// Maple Street in daylight: asphalt streets, pale kerbs and sidewalks, a dithered lawn green with tufts, wood-plank floors inside houses.\n// House rectangles come from S.floors42 (written once at reset): two per vec4, each packed as (corner+96)*32+size in whole metres.\nfn floorAt42(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;if(p.x>x0&&p.x<x0+a-(x0+96.0)*32.0&&p.y>z0&&p.y<z0+b-(z0+96.0)*32.0){return true;}}}return false;}\nfn suburb42(p:vec2f,edge:f32,noise:f32,top:f32,own:vec3f)->vec3f {\n if(top>.05){return own;}\n let t=floor(p*4.0);let dither=f32((u32(abs(t.x+400.0))+u32(abs(t.y+400.0)))%2u);\n if(floorAt42(p)){let plank=fract(p.x*2.0);let seam=1.0-smoothstep(0.0,.06,min(plank,1.0-plank));return mix(vec3f(.66,.45,.27),vec3f(.58,.38,.22),dither*.5+noise*.3)*(1.0-seam*.35);}\n if(edge<0.0){return vec3f(.17,.18,.21)*(.92+noise*.16);}\n if(edge<.18){return vec3f(.70,.69,.64);}\n if(edge<1.7){let s=abs(fract(p+.5)-.5);let seam=1.0-smoothstep(0.0,.04,min(s.x,s.y));return vec3f(.60,.60,.56)*(.95+noise*.08)*(1.0-seam*.18);}\n let tuft=step(.93,rnd(u32(abs(t.x+500.0))*911u+u32(abs(t.y+500.0))*3571u));\n return mix(mix(vec3f(.085,.24,.12),vec3f(.10,.28,.14),dither),vec3f(.055,.17,.08),tuft*.8)*(.96+noise*.08);\n}\n@fragment fn fs(o:Out)->@location(0) vec4f {"
+  },
+  {
+   "before": "if(u.run.x==2.0){color=mix(color,vec3f(.25,.22,.19),.20);}",
+   "after": "if(u.run.x==2.0){color=mix(color,vec3f(.25,.22,.19),.20);}\n  if(u.run.x>5.0&&u.run.y<.5){color=suburb42(p,edge,noise,o.world.y,o.color.xyz);}"
+  },
+  {
+   "before": "let ambient=vec3f(.23,.29,.35)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+vec3f(.61,.72,.82)*diff*(.23+.77*sh);",
+   "after": "let sunny=u.run.x>5.0&&u.run.y<.5;let ambient=select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny)*diff*(.23+.77*sh);"
+  },
+  {
+   "before": "let fog=smoothstep(28.0,53.0,distance)*.42;linear=mix(linear,vec3f(.075,.14,.18),fog);",
+   "after": "let fog=smoothstep(28.0,53.0,distance)*select(.42,.18,sunny);linear=mix(linear,select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),fog);"
+  },
+  {
+   "before": "function nextSandbox25(){",
+   "after": "// House floors for the daylight ground shader (S.floors42 at float 3980): two rectangles per vec4, (corner+96)*32+size, whole metres.\nfunction packFloors42(st,buildings){let k=0;for(const b of buildings){if(k>=58)break;const x0=Math.round(b.x),z0=Math.round(b.z),w=Math.round(b.w),d=Math.round(b.d);if(w<1||d<1||w>31||d>31||x0<-96||z0<-96)continue;const o=3980+(k>>1)*4+(k&1)*2;st[o]=(x0+96)*32+w;st[o+1]=(z0+96)*32+d;k++;}return k;}\nfunction nextSandbox25(){"
+  },
+  {
+   "before": "applyCarry13(st);device.queue.writeBuffer(S,0,st);",
+   "after": "applyCarry13(st);if(SANDBOX25&&!settings.lab)packFloors42(st,world.buildings);device.queue.writeBuffer(S,0,st);"
+  },
+  {
+   "before": "fn artColor6(index:u32,kind:f32,variant:f32)->vec3f {\n var skin=vec3f(.24,.52,.33)*(0.85+variant*.27);",
+   "after": "// Maple Street dresses the common infected like ZAMN's: pale grey-green skin, brown/red/purple/blue tops and blue jeans, so they read on the lawn.\nfn artColor6(index:u32,kind:f32,variant:f32)->vec3f {\n let maple=u.run.x>5.0&&u.run.y<.5&&kind==0.0;\n if(maple&&index==3u){return array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(variant*4.0))];}\n if(maple&&index==4u){return vec3f(.17,.24,.44);}\n var skin=select(vec3f(.24,.52,.33)*(0.85+variant*.27),vec3f(.40,.57,.40)*(0.9+variant*.18),maple);"
+  }
+ ]
+}

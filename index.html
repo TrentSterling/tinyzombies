@@ -441,7 +441,7 @@ const COMMON=geometryWGSL16+`
 struct Uniforms { vp:mat4x4f, light:mat4x4f, clock:vec4f, inputMove:vec4f, aim:vec4f, config:vec4f, screen:vec4f, camera:vec4f, controls:vec4f, run:vec4f, worldInfo:vec4f, goals:vec4f, route:vec4f, v3:vec4f, v5:vec4f, gear12:vec4f, input12:vec4f, controlEdges12:vec4f, meta12:vec4f };
 struct Bullet3 { origin:vec4f, dir:vec4f, hit:vec4f, tag:vec4f };
 struct Buddy7 { p:vec4f, look:vec4f, ai:vec4f, destination7:vec4f, pack:vec4f, memory:vec4f, nav:vec4f, movement:vec4f, plan:vec4u, stats:vec4f, vital:vec4f, intent:vec4f, aim:vec4f, pathInfo:vec4f, misc:vec4f, flags:vec4f, route:array<vec4f,16> };
-struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16>, pad34:array<vec4f,2>, civ34:array<vec4f,12>, noiseRing34:array<vec4f,6>, noiseSeen34:vec4f };
+struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16>, pad34:array<vec4f,2>, civ34:array<vec4f,12>, noiseRing34:array<vec4f,6>, noiseSeen34:vec4f, floors42:array<vec4f,29> };
 struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f };
 struct Particle { p:vec4f, v:vec4f, c:vec4f, a:vec4f };
 struct Block { p:vec4f, extraData:vec4f };
@@ -2146,8 +2146,12 @@ fn beam6(a:vec3f,b:vec3f,color:vec3f,width:f32,glow:f32){
  if(abs(clip.x)>1.15+extent/u.screen.z||abs(clip.y)>1.15+extent/u.screen.w||length(b-a)<.001){return;}
  let i=atomicAdd(&C[8],1u);if(i<190000u){Boxes[i]=Box(vec4f(center,glow),vec4f(b-a,5),vec4f(color,width));}
 }
+// Maple Street dresses the common infected like ZAMN's: pale grey-green skin, brown/red/purple/blue tops and blue jeans, so they read on the lawn.
 fn artColor6(index:u32,kind:f32,variant:f32)->vec3f {
- var skin=vec3f(.24,.52,.33)*(0.85+variant*.27);
+ let maple=u.run.x>5.0&&u.run.y<.5&&kind==0.0;
+ if(maple&&index==3u){return array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(variant*4.0))];}
+ if(maple&&index==4u){return vec3f(.17,.24,.44);}
+ var skin=select(vec3f(.24,.52,.33)*(0.85+variant*.27),vec3f(.40,.57,.40)*(0.9+variant*.18),maple);
  if(kind==1.0){skin=vec3f(.48,.63,.23);}if(kind==2.0){skin=vec3f(.30,.40,.31);}
  if(kind==3.0){skin=vec3f(.49,.51,.19);}if(kind==5.0){skin=vec3f(.57,.21,.43);}if(kind==6.0){skin=vec3f(.24,.35,.28);}
  switch index {
@@ -3114,6 +3118,19 @@ fn routeGround9(p:vec2f)->f32 {var edge=1e6;
  edge=min(edge,length(p-vec2f(12.0,-28.0))-8.0);
  edge=min(edge,length(p-vec2f(40.0,32.0))-6.0);
  return edge; }
+// Maple Street in daylight: asphalt streets, pale kerbs and sidewalks, a dithered lawn green with tufts, wood-plank floors inside houses.
+// House rectangles come from S.floors42 (written once at reset): two per vec4, each packed as (corner+96)*32+size in whole metres.
+fn floorAt42(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;if(p.x>x0&&p.x<x0+a-(x0+96.0)*32.0&&p.y>z0&&p.y<z0+b-(z0+96.0)*32.0){return true;}}}return false;}
+fn suburb42(p:vec2f,edge:f32,noise:f32,top:f32,own:vec3f)->vec3f {
+ if(top>.05){return own;}
+ let t=floor(p*4.0);let dither=f32((u32(abs(t.x+400.0))+u32(abs(t.y+400.0)))%2u);
+ if(floorAt42(p)){let plank=fract(p.x*2.0);let seam=1.0-smoothstep(0.0,.06,min(plank,1.0-plank));return mix(vec3f(.66,.45,.27),vec3f(.58,.38,.22),dither*.5+noise*.3)*(1.0-seam*.35);}
+ if(edge<0.0){return vec3f(.17,.18,.21)*(.92+noise*.16);}
+ if(edge<.18){return vec3f(.70,.69,.64);}
+ if(edge<1.7){let s=abs(fract(p+.5)-.5);let seam=1.0-smoothstep(0.0,.04,min(s.x,s.y));return vec3f(.60,.60,.56)*(.95+noise*.08)*(1.0-seam*.18);}
+ let tuft=step(.93,rnd(u32(abs(t.x+500.0))*911u+u32(abs(t.y+500.0))*3571u));
+ return mix(mix(vec3f(.085,.24,.12),vec3f(.10,.28,.14),dither),vec3f(.055,.17,.08),tuft*.8)*(.96+noise*.08);
+}
 @fragment fn fs(o:Out)->@location(0) vec4f {
  var color=o.color.xyz;let n=o.normal;var wet=0.0;
  if(o.kind>3.5&&o.kind<4.5&&o.local.x>.015){let uv=select(select(o.world.xy,o.world.zy,abs(n.x)>.5),o.world.xz,abs(n.y)>.5);let q=fract(uv*4.0);let crack=abs(q.y-fract(q.x*1.73+.19));let split=abs(q.x-fract(q.y*2.21+.47));let line=1.0-smoothstep(.015,.045,max(0.0,min(crack,split)));color*=1.0-o.local.x*.18-line*smoothstep(.05,.75,o.local.x)*.57;}
@@ -3127,6 +3144,7 @@ fn routeGround9(p:vec2f)->f32 {var edge=1e6;
   if(u.run.y>.5&&edge>-.30&&edge<.20){color=vec3f(.32,.35,.35);}else if(u.run.y<=.5&&abs(edge)<.10){color=vec3f(.29,.32,.32);}let stripe=u.run.y>.5&&abs(edge+2.8)<.045&&fract((p.x+p.y)/2.0)>.40;
   if(stripe){color=vec3f(.44,.40,.25);}let seams=max(abs(fract(p/2.0)-.5).x,abs(fract(p/2.0)-.5).y);color*=.94+.06*(1.0-smoothstep(.485,.5,seams));
   if(u.run.x==2.0){color=mix(color,vec3f(.25,.22,.19),.20);}
+  if(u.run.x>5.0&&u.run.y<.5){color=suburb42(p,edge,noise,o.world.y,o.color.xyz);}
   if(u.run.x==3.0&&u.run.y<.5){
    for(var track=0u;track<2u;track++){let railOrigin=array<vec2f,2>(vec2f(-39,9.7),vec2f(-14,-8.3))[track];let railWidth=select(28.0,36.0,track==1u);let q=p-railOrigin;
     if(q.x>=0.0&&q.x<railWidth){if(q.y>=0.0&&q.y<.75){color=vec3f(.078,.133,.149);if(fract(q.x/(27.0/64.0))<8.0/27.0&&q.y>8.0/64.0&&q.y<39.0/64.0){color=vec3f(.345,.38,.345);}if(min(abs(q.y-9.0/64.0),abs(q.y-34.0/64.0))<1.5/64.0){color=vec3f(.62,.67,.64);}}if(q.y>=-8.0/64.0&&q.y< -2.0/64.0){color=vec3f(.796,.714,.416);}}
@@ -3153,14 +3171,14 @@ fn routeGround9(p:vec2f)->f32 {var edge=1e6;
   color=mix(color,vec3f(.045,.037,.032)*(0.8+noise*.35),smoothstep(.035,.65,charAmount));
   let coverage=smoothstep(.05,.6,blood)*select(1.0,1.0-charAmount*.90,scorch>0u&&charAge<age);wet=coverage*exp(-age*.075);color=mix(color,mix(vec3f(.23,.024,.024),vec3f(.54,.008,.021),exp(-age*.045))*(.83+noise*.17),coverage);color=mix(color,vec3f(.029,.024,.021),charAmount*.66);wet*=1.0-charAmount*.9;
  }
- let light=normalize(vec3f(-.5,.8,.4));let diff=max(0.0,dot(n,light));let sh=shadowAt(o.shadow,n);let ambient=vec3f(.23,.29,.35)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+vec3f(.61,.72,.82)*diff*(.23+.77*sh);
+ let light=normalize(vec3f(-.5,.8,.4));let diff=max(0.0,dot(n,light));let sh=shadowAt(o.shadow,n);let sunny=u.run.x>5.0&&u.run.y<.5;let ambient=select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny)*diff*(.23+.77*sh);
  var linear=pow(max(color,vec3f(.001)),vec3f(2.2))*lighting*2.2;
  let muzzle=S.gunOrigin.xyz+S.gunAim.xyz*.80;let dv=muzzle-o.world;linear+=pow(color,vec3f(1.6))*vec3f(1.8,.66,.08)*S.look.z/(.45+dot(dv,dv)*1.8)*(.35+max(0.0,dot(n,normalize(dv))));
  let bombD=vec3f(S.blast.x,.8,S.blast.y)-o.world;linear+=color*vec3f(4.0,1.0,.05)*S.blast.z/(.6+dot(bombD,bombD)*.22);
  let tc=clamp(vec2u((o.world.xz+96.0)/12.0),vec2u(0),vec2u(15));let tile=tc.x+16u*tc.y;let lightCount=min(8u,LT[tile*9u]);
  for(var li=0u;li<lightCount;li++){let l=Lights[LT[tile*9u+1u+li]];let delta=l.p.xyz-o.world;let dist=length(delta);let att=pow(max(0.0,1.0-dist/l.p.w),2.0);linear+=pow(color,vec3f(1.6))*l.c.xyz*l.c.w*att*(.16+max(0.0,dot(n,delta/max(dist,.01))));}
  if(wet>0.0){let eye=normalize(u.camera.xyz+vec3f(S.pos.x,0,S.pos.z)-o.world);let spec=pow(max(0.0,dot(normalize(light+eye),n)),52.0);linear+=vec3f(.7,.38,.25)*spec*wet*sh;}
- for(var gi=0u;gi<2u;gi++){let gp=select(u.goals.xy,u.goals.zw,gi==1u);let delta=vec3f(gp.x,.8,gp.y)-o.world;let on=S.goal[gi]>=2.4;linear+=color*select(vec3f(.8,.23,.025),vec3f(.02,.70,.31),on)/(.6+dot(delta,delta)*.7)*.4;}linear+=color*o.color.w;let distance=length(o.world.xz-S.pos.xz);let fog=smoothstep(28.0,53.0,distance)*.42;linear=mix(linear,vec3f(.075,.14,.18),fog);return vec4f(linear,1);
+ for(var gi=0u;gi<2u;gi++){let gp=select(u.goals.xy,u.goals.zw,gi==1u);let delta=vec3f(gp.x,.8,gp.y)-o.world;let on=S.goal[gi]>=2.4;linear+=color*select(vec3f(.8,.23,.025),vec3f(.02,.70,.31),on)/(.6+dot(delta,delta)*.7)*.4;}linear+=color*o.color.w;let distance=length(o.world.xz-S.pos.xz);let fog=smoothstep(28.0,53.0,distance)*select(.42,.18,sunny);linear=mix(linear,select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),fog);return vec4f(linear,1);
 }
 `;
 const postShader=`
@@ -3580,7 +3598,7 @@ function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBee
  st.set([0,0,2,0],L12.gear);st.set([30,8,15,0],L12.mag);st.set([180,48,9999,0],L12.reserve);st.set([2,1,1,100],L12.items);st.set([0,-1,100,0],L12.heal);resetGear12();
  if(world.source13){for(let id=0;id<3;id++){const p=world.source13.players[id+1],o=L7.team7+id*128;st.set([p.x/64-42,0,p.y/64-27,100],o);}st.set(st.subarray(L7.team7,L7.team7+4),L7.buddy);st.set([world.gate13,world.final13,world.startDoor13,0],L13.chapter);st.set([15,24,0,0],L13.director);}
  st.set([0,-1,0,0],L7.squad7);st.set([world.doorFirst7,world.doors7.length,0,0],L7.rules7);st.set([settings.lab?1:0,0,0,0],L7.journey7);st.set([0,0,20,0],L7.pace7);
- st.set([100,100,100,0],L13.botStamina);applyCarry13(st);device.queue.writeBuffer(S,0,st);playerValues.set(st);
+ st.set([100,100,100,0],L13.botStamina);applyCarry13(st);if(SANDBOX25&&!settings.lab)packFloors42(st,world.buildings);device.queue.writeBuffer(S,0,st);playerValues.set(st);
  updateUniforms(0);
  const enc=device.createCommandEncoder({label:'reset seeded compound'});for(const b of [C,pA,pB,Paint,WP,zHeads,pHeads])enc.clearBuffer(b);
  if(!world.initialZ13){pass(enc,'init',bindings.initA,MAX_Z/64);pass(enc,'init',bindings.initB,MAX_Z/64);}
@@ -3721,6 +3739,8 @@ function helpCard30(k){
  if(rules){const ry=y+100*k+11*row+8*k;rect(x+w*.06,ry,w*.88,2*k,[.36,.48,.48,.5]);centre('MAPLE STREET RULES',ry+14*k,24*k,COL9.violet);
   HELP_RULES30.forEach((r,i)=>centre(r,ry+56*k+i*26*k,15*k,i===1?COL9.gold:COL9.white));}
 }
+// House floors for the daylight ground shader (S.floors42 at float 3980): two rectangles per vec4, (corner+96)*32+size, whole metres.
+function packFloors42(st,buildings){let k=0;for(const b of buildings){if(k>=58)break;const x0=Math.round(b.x),z0=Math.round(b.z),w=Math.round(b.w),d=Math.round(b.d);if(w<1||d<1||w>31||d>31||x0<-96||z0<-96)continue;const o=3980+(k>>1)*4+(k&1)*2;st[o]=(x0+96)*32+w;st[o+1]=(z0+96)*32+d;k++;}return k;}
 function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}

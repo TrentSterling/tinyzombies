@@ -6,7 +6,7 @@ function loadHost(file){
  const html=fs.readFileSync(file,'utf8'),script=html.slice(html.indexOf('<script>')+8,html.lastIndexOf('</script>'));
  const marker='loadAudioBank9();\nmain().catch(fail);';assert.equal(script.split(marker).length,2);
  const forbidden=name=>()=>{throw Error('CPU navigation test forbids '+name);};
- const c={console,URLSearchParams,location:{search:'?seed=73129'},document:{getElementById(){return{}},addEventListener(){}},addEventListener(){},atob:s=>Buffer.from(s,'base64').toString('binary'),localStorage:{getItem(){return null}},innerWidth:1280,innerHeight:720,requestAnimationFrame:forbidden('animation'),fetch:forbidden('network'),navigator:{gpu:{requestAdapter:forbidden('WebGPU')}},performance:{now:()=>0}};
+ const c={console,URLSearchParams,location:{search:'?seed=73129&deadends'},document:{getElementById(){return{}},addEventListener(){}},addEventListener(){},atob:s=>Buffer.from(s,'base64').toString('binary'),localStorage:{getItem(){return null}},innerWidth:1280,innerHeight:720,requestAnimationFrame:forbidden('animation'),fetch:forbidden('network'),navigator:{gpu:{requestAdapter:forbidden('WebGPU')}},performance:{now:()=>0}};
  c.window=c;vm.createContext(c);vm.runInContext(script.replace(marker,''),c);return{html,run:code=>vm.runInContext(code,c)};
 }
 function makeModel(file,stage=1){

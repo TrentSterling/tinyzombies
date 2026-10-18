@@ -1,0 +1,17 @@
+{
+ "parentSha256": "f554ea2795c51d8e8db82a6b383a96639bef4748977df05a1c5b2a3f543e0584",
+ "changes": [
+  {
+   "before": "const SANDBOX25=params.has('sandbox'),SANDBOX_STAGE25=6;",
+   "after": "// Maple Street is the default game. The DEAD ENDS chapters are kept behind ?deadends (or ?campaign); ?sandbox still forces Maple Street.\nconst SANDBOX25=params.has('sandbox')||!(params.has('deadends')||params.has('campaign')),SANDBOX_STAGE25=6;"
+  },
+  {
+   "before": "try{savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}",
+   "after": "// A saved DEAD ENDS chapter must not pull a Maple Street player back into the campaign; it waits for ?deadends.\ntry{if(!SANDBOX25)savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}"
+  },
+  {
+   "before": "Preparing the quiet HUD and squad...",
+   "after": "Waking up the neighborhood..."
+  }
+ ]
+}

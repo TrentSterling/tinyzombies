@@ -3522,6 +3522,17 @@ function playAudio9(kind,category,level=.2,position=null,id=0,delay=0,rateScale=
 }
 function sound(kind){playAudio9(['rifle','shotgun','explosion','crit'][kind],kind===2?'explosion':kind===3?'impact':'weapon',kind===2?.58:kind===1?.34:kind===3?.21:.23,kind===2?[playerValues[20],playerValues[21]]:null);}
 function pipeBeep(remaining){if(playAudio9(remaining<1.5?'beepHigh':remaining<3?'beepMid':'beepLow','cue',.17,[playerValues[108],playerValues[109]]))diagnostics.audio.pipeBeeps++;}
+// Maple Street moments reuse the clip bank: a cheese kick cracks, a SPLAT is a low wet death, an eaten neighbor is a pitched-up death
+// (a scream) under a growl, a join beeps and a rescue plays latch-beep-beep. Counters only ever trigger on an increase.
+const mapleAudio62={kick:0,splat:0,eaten:0,joined:0,saved:0};
+function updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)return;const m=mapleAudio62;
+ const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[64]|0,saved=counters[66]|0;
+ if(kick>m.kick){playAudio9('crit','impact',.24,null,kick,0,.7);playAudio9('snap','cue',.12,null,kick,.02);}
+ if(splat>m.splat){playAudio9('death','death',.30,null,splat,0,.62);playAudio9('debris','debris',.18,null,splat,.03);}
+ if(eaten>m.eaten){playAudio9('death','death',.34,null,eaten,0,1.35);playAudio9('growl','zombie',.24,null,eaten,.12,.8);}
+ if(joined>m.joined)playAudio9('beepMid','cue',.15,null,joined);
+ if(saved>m.saved){playAudio9('latch','cue',.18,null,saved);playAudio9('beepHigh','cue',.16,null,saved,.12);playAudio9('beepHigh','cue',.16,null,saved,.24);}
+ Object.assign(m,{kick,splat,eaten,joined,saved});}
 function updateBombAudio(){
  const clock=playerValues[24]||0,fuse=playerValues[110]||0,total=playerValues[499]||0;
  if(settings.paused||!settings.started){nextPipeBeep=clock;return;}
@@ -4249,7 +4260,7 @@ function drawFrame(now){
  if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,384)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(384,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  updateEquipmentAudio12();
- updateBombAudio();
+ updateBombAudio();updateMapleAudio62();
  frameCallback=requestAnimationFrame(drawFrame);
  }catch(e){fail(e);}
 }

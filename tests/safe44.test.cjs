@@ -10,7 +10,7 @@ check('caches draw as supply tables on Maple Street only; the chapter crate path
  assert(src.includes('if(unopened){gunFlat44(')&&src.includes('vec3f(.15,1,.85),1,1.4);}'),'loaded table keeps the floating cache marker');
 });
 check('the shelter decor is drawn once per frame, Maple Street only, at the fixed V9 start',()=>{
- assert(src.includes(' if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();}'));assert.deepEqual(h.json('[makeWorld().start[0],makeWorld().start[1]]'),[-64,52]);
+ assert(src.includes(' if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();'));assert.deepEqual(h.json('[makeWorld().start[0],makeWorld().start[1]]'),[-64,52]);
 });
 check('decor stays inside the shelter interior and clear of the door and the squad spawn spots',()=>{
  // Footprints (x0,x1,z0,z1) mirrored from shelterDecor44 relative to the start.

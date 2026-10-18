@@ -1,0 +1,9 @@
+{
+ "parentSha256": "a9f61b709e02f30d59b5e3d3c5ef24136825e20d416ba9bea89182d2d71f58ab",
+ "changes": [
+  {
+   "before": "function cheeseHUD48(k){const n=counters[48]|0;",
+   "after": "function cheeseHUD48(k){const n=counters[48]|0;\n if(n===0)for(const c of world.cheese48||[]){if(Math.hypot(c.x-playerValues[0],c.z-playerValues[2])>7)continue;const [sx,sy]=screenPoint(c.x,c.z,1.35+.12*Math.abs(Math.sin(time*5)));if(sx<30||sx>width-30||sy<30||sy>height-30)continue;const s='KICK ME!';text(s,sx-textWidth9(s,15*k)/2,sy,15*k,COL9.gold);}"
+  }
+ ]
+}

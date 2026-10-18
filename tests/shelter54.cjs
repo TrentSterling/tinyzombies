@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),{sha}=require('./deadends-cpu-host.cjs');
 const delta=require('./shelter54-delta.json');
 function withoutShelter54(html){
+ html=require('./kick55.cjs').withoutKick55(html);
  if(!html.includes('fn exitDecor54('))return html;
  for(const [i,change]of [...delta.changes.entries()].reverse()){assert.equal(html.split(change.after).length,2,'Exact shelter hunk '+i);html=html.replace(change.after,change.before);}
  assert.equal(sha(html),delta.parentSha256,'Shelter inverse must restore immutable pre-shelter runtime');return html;

@@ -1,0 +1,25 @@
+{
+ "parentSha256": "cf94bdd8593a9b407cec2381acaeee63039541bac0d08a3170b7f6a6465d710e",
+ "changes": [
+  {
+   "before": "S.trails6[trail]=shot;S.trails6[trail].tag.z=S.aux.x;",
+   "after": "S.trails6[trail]=shot;S.trails6[trail].tag.z=S.aux.x;\n    // Maple Street: the player's pistol is a squirt gun. hit.w=1 marks its trail as a water stream for the renderer.\n    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){S.trails6[trail].hit.w=1.0;}"
+  },
+  {
+   "before": "    if(h.kind==3u){event(shot.hit.xyz+h.n*.05,dir*4.0+h.n*1.5+vec3f(0,1.6,0),vec3f(.67,.012,.032),7u,8u,seed+n*71u);}\n",
+   "after": "    if(h.kind==3u){event(shot.hit.xyz+h.n*.05,dir*4.0+h.n*1.5+vec3f(0,1.6,0),vec3f(.67,.012,.032),7u,8u,seed+n*71u);}\n    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){event(shot.hit.xyz+h.n*.05,dir*2.5+h.n*1.2+vec3f(0,2.2,0),vec3f(.38,.70,1.0),11u,10u,seed+n*53u);}\n"
+  },
+  {
+   "before": "   beam6(sh.origin.xyz+sh.dir.xyz*tail,sh.origin.xyz+sh.dir.xyz*tip,select(vec3f(.9,.88,.63),vec3f(1,.60,.035),crit),select(.028,.065,crit),select(1.3,4.0,crit)*fade);\n",
+   "after": "   let water=sh.hit.w>.5;\n   beam6(sh.origin.xyz+sh.dir.xyz*tail,sh.origin.xyz+sh.dir.xyz*tip,select(select(vec3f(.9,.88,.63),vec3f(1,.60,.035),crit),vec3f(.40,.75,1.0),water),select(select(.028,.065,crit),.075,water),select(select(1.3,4.0,crit),1.6,water)*fade);\n"
+  },
+  {
+   "before": "function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';",
+   "after": "function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';if(n===2&&SANDBOX25&&!((b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1))return 'SQUIRT GUN';"
+  },
+  {
+   "before": "gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL'",
+   "after": "gearLabel14(2)==='FIRE AXE'?'AXE':SANDBOX25?'SQUIRT':'PISTOL'"
+  }
+ ]
+}

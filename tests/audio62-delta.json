@@ -1,0 +1,13 @@
+{
+ "parentSha256": "5efdf0a059b7a035177400c55bb3e40c8e219d12aab68a6e64b96f1293346660",
+ "changes": [
+  {
+   "before": "function updateBombAudio(){\n",
+   "after": "// Maple Street moments reuse the clip bank: a cheese kick cracks, a SPLAT is a low wet death, an eaten neighbor is a pitched-up death\n// (a scream) under a growl, a join beeps and a rescue plays latch-beep-beep. Counters only ever trigger on an increase.\nconst mapleAudio62={kick:0,splat:0,eaten:0,joined:0,saved:0};\nfunction updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)return;const m=mapleAudio62;\n const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[64]|0,saved=counters[66]|0;\n if(kick>m.kick){playAudio9('crit','impact',.24,null,kick,0,.7);playAudio9('snap','cue',.12,null,kick,.02);}\n if(splat>m.splat){playAudio9('death','death',.30,null,splat,0,.62);playAudio9('debris','debris',.18,null,splat,.03);}\n if(eaten>m.eaten){playAudio9('death','death',.34,null,eaten,0,1.35);playAudio9('growl','zombie',.24,null,eaten,.12,.8);}\n if(joined>m.joined)playAudio9('beepMid','cue',.15,null,joined);\n if(saved>m.saved){playAudio9('latch','cue',.18,null,saved);playAudio9('beepHigh','cue',.16,null,saved,.12);playAudio9('beepHigh','cue',.16,null,saved,.24);}\n Object.assign(m,{kick,splat,eaten,joined,saved});}\nfunction updateBombAudio(){\n"
+  },
+  {
+   "before": " updateBombAudio();",
+   "after": " updateBombAudio();updateMapleAudio62();"
+  }
+ ]
+}

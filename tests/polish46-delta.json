@@ -1,0 +1,73 @@
+{
+ "parentSha256": "54faeb9703362822a4b021a06d43635dc5c3f6bdc76c4932dabd552b8920658f",
+ "changes": [
+  {
+   "before": "if(!b.authored||b.doors[1])addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);",
+   "after": "// Maple Street houses have a plain 2 m front doorway, not a roll-up shutter.\n   if(b.authored?b.doors[1]:!SANDBOX25)addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);"
+  },
+  {
+   "before": "wall(hx,hz+hd,hw,false,4.5,mat);",
+   "after": "wall(hx,hz+hd,hw,false,2,mat);"
+  },
+  {
+   "before": " function yard45(hx,hz,hw,hd){",
+   "after": " // Picket fences: a rail along the bottom and every other slat standing .75 m, one voxel thick, so there are real gaps between slats.\n function picket45(x,z,length,gate=0){const n=Math.round(length*4),gs=[],bx=Math.round((x+96)*4),bz=Math.round((z+96)*4)+1;\n  for(let i=0;i<n;i++){if(gate&&Math.abs((i+.5)*.25-length*.5)<gate*.5)continue;const s=Math.floor(i/16);if(gs[s]===undefined)gs[s]=newGroup();for(let y=0;y<3;y++)if(y===0||i%2===0)add(bx+i,y,bz,7,gs[s]);}}\n function yard45(hx,hz,hw,hd){"
+  },
+  {
+   "before": "if(ok45(hx-1.25,fz+depth,hx+hw+1.25,fz+depth+.5)){wall(hx-1.25,fz+depth,hw+2.5,false,3,7,.75);",
+   "after": "if(ok45(hx-1.25,fz+depth,hx+hw+1.25,fz+depth+.5)){picket45(hx-1.25,fz+depth,hw+2.5,3);"
+  },
+  {
+   "before": "wall(x,cz-6,2,false,0,7,.75);}",
+   "after": "picket45(x,cz-6,2);}"
+  },
+  {
+   "before": "if(mat==7u){color=select(vec3f(.84,.84,.80),vec3f(.52,.54,.50),(u32(floor((b.p.x+b.p.z)*4.0+.5))&1u)==1u&&b.p.y>.3);}",
+   "after": "if(mat==7u){color=vec3f(.86,.86,.82);}"
+  },
+  {
+   "before": "fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {",
+   "after": "// Inside a backyard pool (floors42 entries flagged +16)? Wading costs speed on Maple Street.\nfn inPool45(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;let w=a-(x0+96.0)*32.0;let d=b-(z0+96.0)*32.0;if(w>=16.0&&p.x>x0&&p.x<x0+w-16.0&&p.y>z0&&p.y<z0+d-16.0){return true;}}}return false;}\nfn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {"
+  },
+  {
+   "before": "if(searching){speed*=.55;}",
+   "after": "if(searching){speed*=.55;}if(u.run.x>5.0&&u.run.y<.5&&inPool45(z.p.xz)){speed*=.45;}"
+  },
+  {
+   "before": "fn haveGear12(n:u32)->bool {if(n<3u){return true;}return S.items12[n-3u]>0.0;}",
+   "after": "// Inside a backyard pool (floors42 entries flagged +16)? Wading costs speed on Maple Street.\nfn inPool45(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;let w=a-(x0+96.0)*32.0;let d=b-(z0+96.0)*32.0;if(w>=16.0&&p.x>x0&&p.x<x0+w-16.0&&p.y>z0&&p.y<z0+d-16.0){return true;}}}return false;}\nfn haveGear12(n:u32)->bool {if(n<3u){return true;}return S.items12[n-3u]>0.0;}"
+  },
+  {
+   "before": "let speed=select(select(1.0,.4,S.flags12.w>0.0)",
+   "after": "let speed=select(1.0,.55,u.run.x>5.0&&u.run.y<.5&&inPool45(S.pos.xz))*select(select(1.0,.4,S.flags12.w>0.0)"
+  },
+  {
+   "before": "let legs=select(vec3f(.13,.22,.20),vec3f(.19,.14,.105),player);let top=select(skin,select(vec3f(.32,.67,.19),vec3f(.56,.19,.69),typ< -1.5),player);",
+   "after": "let legs=select(vec3f(.13,.22,.20),select(vec3f(.19,.14,.105),vec3f(.16,.22,.42),player&&u.run.x>5.0&&u.run.y<.5),player);let top=select(skin,select(vec3f(.32,.67,.19),vec3f(.56,.19,.69),typ< -1.5),player);\n // Maple Street player: a ZAMN nod (blonde spikes, 3D glasses, black skull tee, jeans) that pops on the lawn.\n let zeke=player&&typ> -1.5&&u.run.x>5.0&&u.run.y<.5;let hair=select(top,vec3f(.98,.82,.22),zeke);"
+  },
+  {
+   "before": "part(base,vec3f(0,.3125,0),vec3f(.375,.25,.375),select(skin*.8,select(vec3f(.41,.27,.12),vec3f(.37,.11,.46),typ< -1.5),player),face,0);",
+   "after": "part(base,vec3f(0,.3125,0),vec3f(.375,.25,.375),select(select(skin*.8,select(vec3f(.41,.27,.12),vec3f(.37,.11,.46),typ< -1.5),player),vec3f(.09,.09,.11),zeke),face,0);\n if(zeke){part(base,vec3f(0,.33,.19),vec3f(.15,.13,.02),vec3f(.92,.92,.88),face,0);}"
+  },
+  {
+   "before": "if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),top,face,0);part(base,vec3f(0,.6875,-.25),vec3f(.5,.5,.125),top,face,0);part(base,vec3f(0,.68,.255),vec3f(.375,.125,.02),vec3f(.035,.045,.04),face,0);}",
+   "after": "if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),hair,face,0);part(base,vec3f(0,.6875,-.25),vec3f(.5,.5,.125),hair,face,0);part(base,vec3f(0,.68,.255),vec3f(.375,.125,.02),select(vec3f(.035,.045,.04),vec3f(.95,.95,.92),zeke),face,0);}\n if(zeke){part(base,vec3f(-.09,.68,.268),vec3f(.12,.08,.012),vec3f(.85,.10,.10),face,.2);part(base,vec3f(.09,.68,.268),vec3f(.12,.08,.012),vec3f(.15,.35,.95),face,.2);\n  for(var sp=0u;sp<5u;sp++){let q=vec2f(f32(sp%3u)-1.0,f32(sp/3u)-.5)*vec2f(.16,.18);part(base,vec3f(q.x,1.04+f32(sp%2u)*.04,q.y),vec3f(.09,.12,.09),vec3f(.98,.82,.22),face,0);}}"
+  },
+  {
+   "before": "function pill30(label,cx,cy,px,col){",
+   "after": "// The maps are GPU quads under the 2D overlay; their panels are drawn on the overlay, so cut a hole over the map or the panel hides it.\nfunction hudHole30(x,y,w,h){if(hud2d30){const s=hudScale30;hud2d30.clearRect(x*s,y*s,w*s,h*s);}}\nfunction pill30(label,cx,cy,px,col){"
+  },
+  {
+   "before": "uiQuad9(x,y,sz,sz,[1,1,1,1],130);\n  text('Tab  Field map'",
+   "after": "uiQuad9(x,y,sz,sz,[1,1,1,1],130);hudHole30(x,y,sz,sz);\n  text('Tab  Field map'"
+  },
+  {
+   "before": "uiQuad9(x,y,sz,sz,[1,1,1,1],130);\n  const mission=",
+   "after": "uiQuad9(x,y,sz,sz,[1,1,1,1],130);hudHole30(x,y,sz,sz);\n  const mission="
+  },
+  {
+   "before": "text(world.chapter8.name.replaceAll('_',' ').toLowerCase()+'  /  Chapter '+stage,x-2*k,y-21*k,14*k,COL9.soft);",
+   "after": "text(SANDBOX25?'Maple Street  /  Pleasant Acres':world.chapter8.name.replaceAll('_',' ').toLowerCase()+'  /  Chapter '+stage,x-2*k,y-21*k,14*k,COL9.soft);"
+  }
+ ]
+}

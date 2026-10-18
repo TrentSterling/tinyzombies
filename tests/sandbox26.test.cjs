@@ -23,7 +23,7 @@ check('every seed rerolls the street and keeps every objective reachable',()=>{
 check('houses are small, doored and inside the support-group budget',()=>{
  const h=sandbox(99);h.run('world=makeWorld()');const b=h.json('world.buildings');assert(b.length>=12);
  for(const x of b){assert(x.w>=8&&x.w<=10&&x.d>=7&&x.d<=8,'house size '+JSON.stringify(x));}
- assert(h.json('world.groupCount')<h.json('MAX_GROUPS'));assert.equal(h.json('world.doors7.length'),b.length+1,'one garage door per house plus the start door');
+ assert(h.json('world.groupCount')<h.json('MAX_GROUPS'));assert.equal(h.json('world.doors7.length'),h.json("typeof hudHole30==='function'")?1:b.length+1,'start door, plus one garage door per house before polish46 gave houses plain doorways');
 });
 check('campy announcer lines exist for every legacy announcement code',()=>{
  const h=sandbox(1);for(const code of [2,4,6,7,9,10,11,14,15])assert(h.json(`sandboxBanner25(${code},0)`).length>8,'line '+code);

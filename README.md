@@ -19,6 +19,8 @@ Maple Street is in daylight now, styled after Zombies Ate My Neighbors:
 
 The DEAD ENDS chapters keep their night look.
 
+The start shelter is dressed like a Left 4 Dead safe room: a wooden gun rack of rifles on the back wall, an armory table with a shotgun, a rifle, an ammo can, a medkit and a lit work lamp, a stack of supply crates and a cot. Supply caches around the street are folding tables laid out with guns, ammo cans, a medkit and pipe bombs. Once looted, only the bare table and an empty can are left.
+
 Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
 
 - It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).

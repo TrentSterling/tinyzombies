@@ -3898,6 +3898,15 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
  centre('Rescue your neighbors. Drop the houses on everyone else. Kick the cheese.',height*.65,17*k,[1,1,.96,1]);
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit   /   ? controls',height*.71,14*k,[1,.97,.86,1]);
 }
+// ZAMN-style level card for the first 3.6 s of a run: LEVEL 1, a drippy ZOMBIE PANIC!, and the victim count. It slams in and fades out.
+function levelCard59(k){const t=playerValues[24]||0;if(!hud2d30||t>=3.6||!settings.started)return;const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;
+ const a=clamp9(Math.min(t/.25,(3.6-t)/.6),0,1),slam=1+Math.max(0,.25-t)*1.6;ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(10,6,20,.55)';ctx.fillRect(0,H*.24,W,H*.34);
+ ctx.textBaseline='alphabetic';ctx.lineJoin='round';const big='ZOMBIE PANIC!',px=Math.round(96*k*s*slam);ctx.font=px+'px Bangers,Impact,"Arial Black",sans-serif';const bw=ctx.measureText(big).width,bx=(W-bw)/2,by=H*.47;
+ ctx.fillStyle='#3d9a1c';for(let d=0;d<9;d++){const x=bx+bw*((d*.1093+.05)%1),len=(14+((d*29)%5)*8)*k*s*Math.min(1,t*1.4),w=(8+(d%3)*3)*k*s;ctx.beginPath();ctx.roundRect(x,by-12*k*s,w,len+12*k*s,w/2);ctx.fill();}
+ ctx.lineWidth=14*k*s;ctx.strokeStyle='#0b0b08';ctx.strokeText(big,bx,by);const g=ctx.createLinearGradient(0,by-px,0,by);g.addColorStop(0,'#c8ff4a');g.addColorStop(1,'#2f8a1c');ctx.fillStyle=g;ctx.fillText(big,bx,by);
+ const top='LEVEL 1',tp=Math.round(34*k*s);ctx.font=tp+'px Bangers,Impact,sans-serif';const tw=ctx.measureText(top).width;ctx.lineWidth=8*k*s;ctx.strokeText(top,(W-tw)/2,H*.31);ctx.fillStyle='#f6d43a';ctx.fillText(top,(W-tw)/2,H*.31);
+ const vic='VICTIMS: '+(world.civilians30?.length||0),vp=Math.round(30*k*s);ctx.font=vp+'px Bangers,Impact,sans-serif';const vw=ctx.measureText(vic).width;ctx.strokeText(vic,(W-vw)/2,H*.55);ctx.fillStyle='#ff4fa3';ctx.fillText(vic,(W-vw)/2,H*.55);
+ ctx.restore();}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
@@ -3991,6 +4000,7 @@ function hud(){
   drawLoadout25(k,eq);
   if(SANDBOX25)calloutsHUD30(k);
   if(SANDBOX25)zamnHUD52(k);
+  if(SANDBOX25)levelCard59(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}

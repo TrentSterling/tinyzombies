@@ -1,0 +1,9 @@
+{
+ "parentSha256": "aaedb6d94839805e742516d8bf899200da9349d7ee32abb916ea13e6d03cc6c4",
+ "changes": [
+  {
+   "before": " if(maple&&index==4u){return vec3f(.17,.24,.44);}\n",
+   "after": " if(maple&&index==4u){return vec3f(.17,.24,.44);}\n // Maple Street specials are dressed as B-movie monsters: runner werewolf (fur, yellow eyes), brute hockey-mask maniac (plaid, jeans),\n // leaper mummy (wraps, red eyes), screamer pink Martian, bloater swamp blob. Colors only; the boxes are unchanged.\n if(u.run.x>5.0&&u.run.y<.5&&kind>0.0){\n  if(kind==1.0){switch index {case 0u:{return vec3f(.44,.30,.17)*(0.9+variant*.2);}case 1u:{return vec3f(.26,.17,.10);}case 2u:{return vec3f(.58,.43,.27);}case 3u:{return vec3f(.52,.54,.60);}case 4u:{return vec3f(.18,.20,.30);}case 5u:{return vec3f(1,.86,.10);}default:{}}}\n  if(kind==2.0){switch index {case 0u:{return vec3f(.93,.91,.84);}case 1u:{return vec3f(.12,.10,.10);}case 2u:{return vec3f(.98,.97,.92);}case 3u:{return vec3f(.66,.10,.08);}case 4u:{return vec3f(.16,.22,.40);}default:{}}}\n  if(kind==4.0){let wrap=vec3f(.84,.78,.60)*(0.92+variant*.12);switch index {case 0u,2u,3u,4u:{return wrap;}case 1u:{return wrap*.72;}case 5u:{return vec3f(1,.12,.05);}default:{}}}\n  if(kind==5.0){switch index {case 0u:{return vec3f(.96,.46,.72);}case 1u:{return vec3f(.62,.22,.48);}case 2u:{return vec3f(1,.68,.86);}case 3u:{return vec3f(.20,.85,.80);}case 5u:{return vec3f(.15,1,.35);}default:{}}}\n  if(kind==6.0){switch index {case 0u:{return vec3f(.30,.42,.16);}case 1u:{return vec3f(.18,.26,.10);}case 2u:{return vec3f(.46,.58,.22);}default:{}}}\n }\n"
+  }
+ ]
+}

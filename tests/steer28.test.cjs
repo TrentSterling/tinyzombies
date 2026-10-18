@@ -32,7 +32,7 @@ check('publish keeps the squad lane in nav units with INF, heard lane goes to th
 check('heard infected path on the heard lane and fall back to the squad lane when it has no route',()=>{
  const z=src.zombies;assert(z.includes('var heard=false;if(S.noise.z>0.0&&distance>14.0&&length(z.p.xz-S.noise.xy)<S.noise.w){goalPoint=S.noise.xy;heard=true;}')||z.includes('var heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}'),'heard goal (single slot, or the noise ring since ring36)');
  assert(z.includes('goalPoint=S.alarm.xy;heard=true;'));assert(z.includes('goalPoint=pipe.xy;heard=true;'));
- assert(z.includes('flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard))'));assert(z.includes('if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}'));
+ const lane=z.includes('heard||victim==5u')?'heard||victim==5u':'heard';assert(z.includes('flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,'+lane+'))'));assert(z.includes('if('+(lane==='heard'?'heard':'(heard||victim==5u)')+'&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}'),'heard lane, plus neighbor hunters since hunt41');
 });
 check('queues match the leader instead of braking to 8 percent; crowd contacts are circles',()=>{
  assert(src.zombies.includes('let wanted=dir*mix(max(speed*.08,leaderSpeed),speed,forwardSpace)+'));assert(src.zombies.includes('leaderSpeed=clamp(dot(other.v.xy,dir),0.0,speed);'));

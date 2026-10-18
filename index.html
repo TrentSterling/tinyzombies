@@ -2564,6 +2564,8 @@ fn routeAhead14(amount:f32)->vec2f {
  let routeDistance=clamp(along+amount,0.0,traveled);traveled=0.0;for(var i=0u;i+1u<count;i++){let len=distance(route[i],route[i+1u]);if(routeDistance<=traveled+len){return mix(route[i],route[i+1u],(routeDistance-traveled)/len);}traveled+=len;}return route[count-1u];
 }
 fn sourceAdvance14(id:u32)->vec2f {
+ // Maple Street has no authored route: hold a slot 1.2-2.2 m behind and beside the player, facing the way they walk (or aim, standing still).
+ if(u.run.x>5.0){let dir=select(safe2(S.look.xy),safe2(S.motion.xy),length(S.motion.xy)>.3);let side=select(.95,-.95,id==1u);let back=select(1.2,2.2,id==2u);return walkGoal14(S.pos.xz-dir*back+vec2f(-dir.y,dir.x)*side);}
  if(u.run.x==1.0&&distance(S.pos.xz,routeAhead14(0.0))>4.0){let dir=safe2(S.look.xy);let side=select(.95,-.95,id==1u);let back=select(1.2,2.2,id==2u);return walkGoal14(S.pos.xz-dir*back+vec2f(-dir.y,dir.x)*side);}
  let desired=routeAhead14(array<f32,3>(120.0,65.0,-95.0)[id]/64.0);let ahead=routeAhead14(80.0/64.0);let dir=safe2(ahead-S.pos.xz);let side=select(62.0,-65.0,id==1u)/64.0;
  return walkGoal14(desired+vec2f(-dir.y,dir.x)*side);
@@ -2665,7 +2667,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    if(a.ai.w<=0.0||a.plan.y==0u){
     a.ai.w=.32;let hazard=danger7(a.p.xz);var goal=0u;var destination7=vec4f(S.pos.xyz,-1);var goalScore=select(140.0,710.0,distance(a.p.xz,S.pos.xz)>select(450.0,1100.0,S.botFuel15[id]>.5)/64.0);
     var formation=sourceAdvance14(id);destination7.x=formation.x;destination7.z=formation.y;
-    let anchorInside=chapterInside16(S.pos.xz,u.run.x);
+    let anchorInside=u.run.x<=5.0&&chapterInside16(S.pos.xz,u.run.x);
     if(anchorInside){goal=11u;goalScore=880.0;let sid=id+1u;formation=walkGoal14(chapterBounds16(u.run.x).xy+vec2f((180.0+f32(sid%2u)*105.0)/64.0,(140.0+f32(sid/2u)*90.0)/64.0));destination7=vec4f(formation.x,0,formation.y,-1);}
     if(S.orders.x>.5&&S.order13.z==f32(id)&&goalScore<590.0){goal=7u;destination7=vec4f(S.orders.y,0,S.orders.z,-1);goalScore=590.0;if(S.order13.x==2.0){let t=u32(S.order13.y);if(S.team7[t].p.w<=0.0&&S.botLife13[t].y<.5){goal=2u;destination7=vec4f(S.team7[t].p.xyz,f32(t));goalScore=1020.0;}}}
     if(S.botFuel15[id]>.5&&goalScore<700.0){goal=7u;destination7=vec4f(u.goals.x,0,u.goals.y,-1);goalScore=700.0;}
@@ -2869,7 +2871,7 @@ let d=distance(a.p.xz,destination7);
  while(at>0&&num<128u){reverse[num]=nodes[u32(at)].cell;num++;at=nodes[u32(at)].parent;}
  var count=min(num,16u);for(var k=0u;k<count;k++){let p=vec2f(reverse[num-1u-k])+.5-HALF;S.team7[id].route[k]=vec4f(p.x,0,p.y,0);}
  // Mercer exterior can offer a coarse partial detour beside a fine doorway; try the bounded fine route first.
- if(u.run.x==1.0&&count>0u&&d<12.0&&any(nodes[bestID].cell!=finish)){let localCount24=localPath15(id,a.p.xz,destination7,true);if(localCount24>0u){count=localCount24;}}
+ if((u.run.x==1.0||u.run.x>5.0)&&count>0u&&d<12.0&&any(nodes[bestID].cell!=finish)){let localCount24=localPath15(id,a.p.xz,destination7,true);if(localCount24>0u){count=localCount24;}}
  if(count==0u&&d<12.0){count=localPath15(id,a.p.xz,destination7,false);}
  S.team7[id].pathInfo.x=f32(count);S.team7[id].pathInfo.y=0.0;S.team7[id].pathInfo.w+=1.0;atomicAdd(&C[86],expanded);if(count==0u){atomicAdd(&C[87],1u);}
 }

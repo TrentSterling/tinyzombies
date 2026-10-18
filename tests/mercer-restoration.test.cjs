@@ -59,9 +59,10 @@ check('maximum 12 sleeping off-screen actors recruited without filling retreat s
 });
 check('safehouse, down, pin and other chapters suppress Mercer pressure',()=>{for(const state of ['safe','down','pin','other']){const c=pressure();c.u.config.x=0;c.S.progress8.x=10;if(state==='safe')c.safe=true;if(state==='down')c.S.player7.x=20;if(state==='pin')c.S.flags12.w=1;if(state==='other')c.u.run.x=2;c.mercerPressure24(1,0,true,false);assert.equal(c.waves.length,0);if(state!=='other')assert.equal(c.S.progress8.z,0);}});
 check('off-route formation follows player while other chapters retain exact route formation',()=>{
- const raw=fragment(html,'fn sourceAdvance14(');let code=scalar(raw).replace('array<f32,3>(120.0,65.0,-95.0)','[120.0,65.0,-95.0]').replace('ahead-S.pos.xz','sub(ahead,S.pos.xz)').replace('S.pos.xz-dir*back+vec2f(-dir.y,dir.x)*side','add(sub(S.pos.xz,mul(dir,back)),mul(vec2f(-dir.y,dir.x),side))').replace('desired+vec2f(-dir.y,dir.x)*side','add(desired,mul(vec2f(-dir.y,dir.x),side))');
+ const raw=fragment(html,'fn sourceAdvance14(');let code=scalar(raw).replace('array<f32,3>(120.0,65.0,-95.0)','[120.0,65.0,-95.0]').replace('ahead-S.pos.xz','sub(ahead,S.pos.xz)').replaceAll('S.pos.xz-dir*back+vec2f(-dir.y,dir.x)*side','add(sub(S.pos.xz,mul(dir,back)),mul(vec2f(-dir.y,dir.x),side))').replace('desired+vec2f(-dir.y,dir.x)*side','add(desired,mul(vec2f(-dir.y,dir.x),side))');
  const c=context();c.routeAhead14=()=>vn(2,0,0);c.walkGoal14=p=>p;vm.runInContext(code,c);
  for(let id=0;id<3;id++){assert(dist(c.sourceAdvance14(id),c.S.pos.xz)<3);c.u.run.x=2;assert(dist(c.sourceAdvance14(id),vn(2,0,0))<2);c.u.run.x=1;}
+ if(raw.includes('u.run.x>5.0')){c.u.run.x=6;c.S.motion=c.S.motion||vn(0,0,0,0);for(let id=0;id<3;id++)assert(dist(c.sourceAdvance14(id),c.S.pos.xz)<2.5,'Maple Street slot stays with the player (bots48)');c.u.run.x=1;}
 });
 check('axe contact is ray-bounded, one pulse per swing, Mercer-only and structural-safe',()=>{
  const raw=fragment(html,'if(u.run.x==1.0&&u.run.y<.5&&hit.kind==2u');let code=scalar(raw).replace('o+dir*(hit.t+.1)','add(o,mul(dir,hit.t+.1))');

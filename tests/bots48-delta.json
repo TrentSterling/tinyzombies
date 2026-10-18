@@ -1,0 +1,17 @@
+{
+ "parentSha256": "5988998eb0c92e14a225dd176dbcfb441c0a8e5ef562b6a97c68045569df4e7b",
+ "changes": [
+  {
+   "before": "fn sourceAdvance14(id:u32)->vec2f {\n if(u.run.x==1.0&&distance(S.pos.xz,routeAhead14(0.0))>4.0){",
+   "after": "fn sourceAdvance14(id:u32)->vec2f {\n // Maple Street has no authored route: hold a slot 1.2-2.2 m behind and beside the player, facing the way they walk (or aim, standing still).\n if(u.run.x>5.0){let dir=select(safe2(S.look.xy),safe2(S.motion.xy),length(S.motion.xy)>.3);let side=select(.95,-.95,id==1u);let back=select(1.2,2.2,id==2u);return walkGoal14(S.pos.xz-dir*back+vec2f(-dir.y,dir.x)*side);}\n if(u.run.x==1.0&&distance(S.pos.xz,routeAhead14(0.0))>4.0){"
+  },
+  {
+   "before": "let anchorInside=chapterInside16(S.pos.xz,u.run.x);",
+   "after": "let anchorInside=u.run.x<=5.0&&chapterInside16(S.pos.xz,u.run.x);"
+  },
+  {
+   "before": "if(u.run.x==1.0&&count>0u&&d<12.0&&any(nodes[bestID].cell!=finish)",
+   "after": "if((u.run.x==1.0||u.run.x>5.0)&&count>0u&&d<12.0&&any(nodes[bestID].cell!=finish)"
+  }
+ ]
+}

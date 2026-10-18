@@ -1,0 +1,41 @@
+{
+ "parentSha256": "2131b839b4cc725060eda3e245d421b851f37caa09ec3b495159f52d306ef966",
+ "changes": [
+  {
+   "before": "\n\n if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');",
+   "after": "\n // Cheese wheels (prop 32): one outside the start shelter, one beside each BBQ Dad's grill, one past every third yard gate (8 at most).\n // Fixed spots, no rand(); a spot with any voxel nearby is skipped. data.x 1 (live), data.z spin, aux.xy velocity, aux.zw last heading.\n const cheese48=[];\n if(SANDBOX25&&!settings.lab){const free48=(x,z)=>{for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)for(let y=0;y<4;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;return Math.abs(x)<88&&Math.abs(z)<88;};\n  const spots=[[start[0]+6.5,start[1]+3.5],...civilians30.filter(c=>c.type===2).map(c=>[c.x-1.3,c.z]),...gates45.filter((_,i)=>i%3===1).map(g=>[g.x+3.2,g.z+2.2])];\n  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=CIV_BASE30)break;if(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2))continue;const index=propCount++;props.set([x,.45,z,32,1,0,0,0,0,0,1,0,x,z,0,0],index*16);cheese48.push({x,z,index});}}\n\n if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');"
+  },
+  {
+   "before": " return {pools45,civilians30,flow9:",
+   "after": " return {cheese48,pools45,civilians30,flow9:"
+  },
+  {
+   "before": "@group(0) @binding(5) var<storage,read> G:array<u32>;\n`+EMIT+`\nfn sourceProps15(){",
+   "after": "@group(0) @binding(5) var<storage,read> G:array<u32>;\n@group(0) @binding(6) var<storage,read> O:array<u32>;\n`+EMIT+SOLID+`\n// Cheese wheels (prop 32): walking into one at rest kicks it at 9.5 m/s, a shove sends it at 12, a blast blows it away at 12.\n// It rolls with light friction (about 30 m), bounces off walls at 55%, and C[48] counts kicks for the HUD.\nfn cheese48(c0:Prop)->Prop {var c=c0;let dt=u.clock.x;var v=c.aux.xy;let away=c.p.xz-S.pos.xz;let near=length(away);var kick=0.0;\n if(length(v)<3.0&&near<1.0&&length(S.motion.xy)>.3){kick=9.5;}\n if(meleeInside8(c.p.xyz,vec3f(.5),S.melee8,S.meleeDir8)){kick=12.0;}\n if(kick>0.0){v=select(safe2(away),safe2(S.motion.xy),near<.05)*kick;atomicAdd(&C[48],1u);}\n if(S.aux.w>0.0&&length(S.blast.xy-c.p.xz)<S.blast.w){v=safe2(c.p.xz-S.blast.xy+vec2f(.001,0))*12.0;}\n let h=vec3f(.40,.38,.40);\n let nx=c.p.x+v.x*dt;if(blocked(vec3f(nx+sign(v.x)*.05,.45,c.p.z),h)){v.x=-v.x*.55;}else{c.p.x=nx;}\n let nz=c.p.z+v.y*dt;if(blocked(vec3f(c.p.x,.45,nz+sign(v.y)*.05),h)){v.y=-v.y*.55;}else{c.p.z=nz;}\n v*=exp(-dt*.30);if(length(v)<.25){v=vec2f(0);}\n c.data.z=c.data.z+length(v)*dt/.45;c.p.y=.45;c.aux=vec4f(v,select(c.aux.zw,safe2(v),length(v)>.1));return c;}\nfn sourceProps15(){"
+  },
+  {
+   "before": "  if(pr.p.w>=7.0){continue;}",
+   "after": "  if(pr.p.w==32.0){P[i]=cheese48(pr);continue;}\n  if(pr.p.w>=7.0){continue;}"
+  },
+  {
+   "before": "bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups]]);",
+   "after": "bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups],[6,O]]);"
+  },
+  {
+   "before": "let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0&&pr.p.w!=10.0)||pr.data.x<=0.0){return;}",
+   "after": "let pr=P[i];\n // A cheese wheel rolling faster than 2 m/s crushes whatever stands in its 0.8 m footprint (the zombie pass reads the crush bit).\n if(pr.p.w==32.0){if(length(pr.aux.xy)>2.0){let a=clamp(vec2i(floor((pr.p.xz-vec2f(.4)+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((pr.p.xz+vec2f(.4)+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],0x10000000u);}}}return;}\n if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0&&pr.p.w!=10.0)||pr.data.x<=0.0){return;}"
+  },
+  {
+   "before": "  if(pr.p.w==8.0){let live=pr.data.x>0.0;",
+   "after": "  // Cheese wheel: upright, rolling along its heading; rind rim and cheese faces from three boxes (an octagon), a notch that spins.\n  if(pr.p.w==32.0){let alongX=abs(pr.aux.z)>=abs(pr.aux.w);let r=.45;let w=.40;\n   for(var b=0u;b<3u;b++){let pr2=array<vec2f,3>(vec2f(2.0,.78),vec2f(.78,2.0),vec2f(1.5,1.5))[b]*r;\n    box(p,select(vec3f(w,pr2.y,pr2.x),vec3f(pr2.x,pr2.y,w),alongX),vec3f(.86,.56,.14),1,0);box(p,select(vec3f(w+.03,pr2.y*.86,pr2.x*.86),vec3f(pr2.x*.86,pr2.y*.86,w+.03),alongX),vec3f(.99,.83,.30),1,0);}\n   let a=pr.data.z;let o=vec2f(cos(a),sin(a))*r*.6;box(p+select(vec3f(0,o.y,o.x),vec3f(o.x,o.y,0),alongX),select(vec3f(w+.05,.13,.13),vec3f(.13,.13,w+.05),alongX),vec3f(.62,.36,.07),1,0);\n   let o2=vec2f(cos(a+2.4),sin(a+2.4))*r*.35;box(p+select(vec3f(0,o2.y,o2.x),vec3f(o2.x,o2.y,0),alongX),select(vec3f(w+.05,.08,.08),vec3f(.08,.08,w+.05),alongX),vec3f(.80,.62,.18),1,0);}\n  if(pr.p.w==8.0){let live=pr.data.x>0.0;"
+  },
+  {
+   "before": "'Blasts, alarms and gunfire are loud. The whole street hears.'];",
+   "after": "'Blasts, alarms and gunfire are loud. The whole street hears.','Walk into a cheese wheel. It flattens everything in its path.'];"
+  },
+  {
+   "before": "function calloutsHUD30(k){",
+   "after": "// Every kick of a cheese wheel (C[48]) flashes a banner and a line.\nlet cheeseSeen48=0,cheeseUntil48=0,cheeseLine48='';const CHEESE_LINES48=['Aged twelve months. Rolled for thirty metres.','Wisconsin sends its regards.','It is a cheese wheel. It does not stop.','Grate work.','That is gouda.'];\nfunction cheeseHUD48(k){const n=counters[48]|0;if(n<cheeseSeen48)cheeseSeen48=n;if(n>cheeseSeen48){cheeseSeen48=n;cheeseUntil48=time+1.8;cheeseLine48=CHEESE_LINES48[n%CHEESE_LINES48.length];}\n if(time<cheeseUntil48){const px=(42+5*Math.sin((cheeseUntil48-time)*10))*k,s='SAY CHEESE!';text(s,width/2-textWidth9(s,px)/2,height*.20,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.20+52*k,15*k,COL9.white);}}\nfunction calloutsHUD30(k){cheeseHUD48(k);"
+  }
+ ]
+}

@@ -434,6 +434,12 @@ function makeWorld(){
    else if(type===2||type===4){const yx=b.x+b.w*(type===2?.28:.7),yz=b.z+b.d+2.6;if(clear30(yx,yz)&&clear30(yx+(type===2?1:1.1),yz)&&clear30(yx-(type===2?0:1.1),yz))[x,z]=[yx,yz];else type=0;}
    const twin=civilians30.filter(n=>n.type===type).length%2;const name=[['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'][outfit],['Pool Guy Phil','Lorraine the Lounger'][twin],['BBQ Dad','Grill Sergeant Gus'][twin],['Tiffany','Brittany'][twin],['Trampoline Timmy','Bouncy Becky'][twin]][type];
    props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,type,0],slot*16);civilians30.push({x,z,slot,outfit,type,name});}}
+ // Cheese wheels (prop 32): one outside the start shelter, one beside each BBQ Dad's grill, one past every third yard gate (8 at most).
+ // Fixed spots, no rand(); a spot with any voxel nearby is skipped. data.x 1 (live), data.z spin, aux.xy velocity, aux.zw last heading.
+ const cheese48=[];
+ if(SANDBOX25&&!settings.lab){const free48=(x,z)=>{for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)for(let y=0;y<4;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;return Math.abs(x)<88&&Math.abs(z)<88;};
+  const spots=[[start[0]+6.5,start[1]+3.5],...civilians30.filter(c=>c.type===2).map(c=>[c.x-1.3,c.z]),...gates45.filter((_,i)=>i%3===1).map(g=>[g.x+3.2,g.z+2.2])];
+  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=CIV_BASE30)break;if(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2))continue;const index=propCount++;props.set([x,.45,z,32,1,0,0,0,0,0,1,0,x,z,0,0],index*16);cheese48.push({x,z,index});}}
 
  if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');
  const occ=new Uint32Array(OCC_SIZE+NAV_SIZE*3+DYNAMIC_SIZE),blocks=new Float32Array(MAX_WORLD*8),chunks=new Uint32Array(CHUNK_COUNT*4);
@@ -455,7 +461,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {cheese48,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -2410,6 +2416,12 @@ fn shelterDecor44(){let o=vec2f(-64.0,52.0);
    box(p+vec3f(0,.44,.42),vec3f(.26,.12,.02),select(vec3f(.1,.19,.19),vec3f(.5,1,.9),unopened),1,select(0.0,1.2,unopened));
    if(unopened){for(var k=0u;k<4u;k++){let q=vec2f(select(-.92,.92,(k&1u)>0u),select(-.70,.70,(k&2u)>0u));box(p+vec3f(q.x,.02,q.y),vec3f(.22,.035,.22),vec3f(.10,.85,.8),1,.8);}box(p+vec3f(0,1.4+sin(S.aux.x*2.5)*.05,0),vec3f(.10,.25,.10),vec3f(.15,1,.85),1,1.4);}
   }
+  // Cheese wheel: upright, rolling along its heading; rind rim and cheese faces from three boxes (an octagon), a notch that spins.
+  if(pr.p.w==32.0){let alongX=abs(pr.aux.z)>=abs(pr.aux.w);let r=.45;let w=.40;
+   for(var b=0u;b<3u;b++){let pr2=array<vec2f,3>(vec2f(2.0,.78),vec2f(.78,2.0),vec2f(1.5,1.5))[b]*r;
+    box(p,select(vec3f(w,pr2.y,pr2.x),vec3f(pr2.x,pr2.y,w),alongX),vec3f(.86,.56,.14),1,0);box(p,select(vec3f(w+.03,pr2.y*.86,pr2.x*.86),vec3f(pr2.x*.86,pr2.y*.86,w+.03),alongX),vec3f(.99,.83,.30),1,0);}
+   let a=pr.data.z;let o=vec2f(cos(a),sin(a))*r*.6;box(p+select(vec3f(0,o.y,o.x),vec3f(o.x,o.y,0),alongX),select(vec3f(w+.05,.13,.13),vec3f(.13,.13,w+.05),alongX),vec3f(.62,.36,.07),1,0);
+   let o2=vec2f(cos(a+2.4),sin(a+2.4))*r*.35;box(p+select(vec3f(0,o2.y,o2.x),vec3f(o2.x,o2.y,0),alongX),select(vec3f(w+.05,.08,.08),vec3f(.08,.08,w+.05),alongX),vec3f(.80,.62,.18),1,0);}
   if(pr.p.w==8.0){let live=pr.data.x>0.0;box(p+vec3f(0,.42,0),vec3f(.18,.84,.18),vec3f(.22,.26,.25),1,0);box(p+vec3f(0,.89,0),vec3f(.58,.42,.42),vec3f(.25,.31,.33),1,0);box(p+vec3f(0,.9,.222),vec3f(.32,.22,.025),select(vec3f(.11,.17,.18),vec3f(1,.55,.05),live),1,select(0.0,1.0,live));
    let slab=Props[u32(pr.aux.x)];let across=slab.p.x-p.x;box(vec3f(p.x+across*.5,.045,p.z),vec3f(abs(across),.025,.07),vec3f(.78,.56,.14),1,0);box(vec3f(slab.p.x,.045,(p.z+slab.p.z)*.5),vec3f(.07,.025,abs(slab.p.z-p.z)),vec3f(.78,.56,.14),1,0);
   }
@@ -2939,7 +2951,10 @@ const crowdShader=COMMON+`
 const dynamicShader=COMMON+`
 @group(0) @binding(1) var<storage,read> P:array<Prop>;
 @group(0) @binding(2) var<storage,read_write> O:array<atomic<u32>>;
-@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0&&pr.p.w!=10.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask|select(mask<<16u,0u,pr.p.w==9.0));}}}
+@compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=u32(u.worldInfo.y)){return;}let pr=P[i];
+ // A cheese wheel rolling faster than 2 m/s crushes whatever stands in its 0.8 m footprint (the zombie pass reads the crush bit).
+ if(pr.p.w==32.0){if(length(pr.aux.xy)>2.0){let a=clamp(vec2i(floor((pr.p.xz-vec2f(.4)+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((pr.p.xz+vec2f(.4)+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],0x10000000u);}}}return;}
+ if((pr.p.w!=4.0&&pr.p.w!=5.0&&pr.p.w!=9.0&&pr.p.w!=10.0)||pr.data.x<=0.0){return;}let lo=pr.p.xyz-pr.aux.xyz*.5+vec3f(.001);let hi=pr.p.xyz+pr.aux.xyz*.5-vec3f(.001);if(lo.y>=3.0||hi.y<0.0){return;}let y0=u32(clamp(floor(lo.y*4.0),0.0,11.0));let y1=u32(clamp(floor(hi.y*4.0),0.0,11.0));let mask=((1u<<(y1+1u))-1u)^((1u<<y0)-1u);let a=clamp(vec2i(floor((lo.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));let b=clamp(vec2i(floor((hi.xz+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));for(var z=a.y;z<=b.y;z++){for(var x=a.x;x<=b.x;x++){atomicOr(&O[DYNAMIC_OFFSET+u32(x+DYNAMIC_GRID*z)],mask|select(mask<<16u,0u,pr.p.w==9.0));}}}
 `;
 const lightsShader=COMMON+`
 struct PointLight{p:vec4f,c:vec4f};
@@ -3034,7 +3049,20 @@ const propsShader=COMMON+`
 @group(0) @binding(3) var<storage,read_write> P:array<Prop>;
 @group(0) @binding(4) var<storage,read_write> E:array<Event>;
 @group(0) @binding(5) var<storage,read> G:array<u32>;
-`+EMIT+`
+@group(0) @binding(6) var<storage,read> O:array<u32>;
+`+EMIT+SOLID+`
+// Cheese wheels (prop 32): walking into one at rest kicks it at 9.5 m/s, a shove sends it at 12, a blast blows it away at 12.
+// It rolls with light friction (about 30 m), bounces off walls at 55%, and C[48] counts kicks for the HUD.
+fn cheese48(c0:Prop)->Prop {var c=c0;let dt=u.clock.x;var v=c.aux.xy;let away=c.p.xz-S.pos.xz;let near=length(away);var kick=0.0;
+ if(length(v)<3.0&&near<1.0&&length(S.motion.xy)>.3){kick=9.5;}
+ if(meleeInside8(c.p.xyz,vec3f(.5),S.melee8,S.meleeDir8)){kick=12.0;}
+ if(kick>0.0){v=select(safe2(away),safe2(S.motion.xy),near<.05)*kick;atomicAdd(&C[48],1u);}
+ if(S.aux.w>0.0&&length(S.blast.xy-c.p.xz)<S.blast.w){v=safe2(c.p.xz-S.blast.xy+vec2f(.001,0))*12.0;}
+ let h=vec3f(.40,.38,.40);
+ let nx=c.p.x+v.x*dt;if(blocked(vec3f(nx+sign(v.x)*.05,.45,c.p.z),h)){v.x=-v.x*.55;}else{c.p.x=nx;}
+ let nz=c.p.z+v.y*dt;if(blocked(vec3f(c.p.x,.45,nz+sign(v.y)*.05),h)){v.y=-v.y*.55;}else{c.p.z=nz;}
+ v*=exp(-dt*.30);if(length(v)<.25){v=vec2f(0);}
+ c.data.z=c.data.z+length(v)*dt/.45;c.p.y=.45;c.aux=vec4f(v,select(c.aux.zw,safe2(v),length(v)>.1));return c;}
 fn sourceProps15(){
  if(u.clock.x<=0.0||S.goal.w>0.0){return;}
  atomicStore(&C[52],0u);
@@ -3064,6 +3092,7 @@ fn sourceProps15(){
  // One bounded owner makes barrel-chain state deterministic (no in-dispatch races).
  atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];
   if(pr.p.w==5.0){pr.p.y=3.0-S.escape.x*2.0;P[i]=pr;continue;}
+  if(pr.p.w==32.0){P[i]=cheese48(pr);continue;}
   if(pr.p.w>=7.0){continue;}
   if(pr.p.w==2.0||pr.p.w==3.0||pr.p.w==6.0){
    if(pr.data.x<=0.0){continue;}var hurt=0.0;
@@ -3654,7 +3683,7 @@ function buildComputeBindings(){
  bindings.groupClear=bg(compute.groupClear,[[1,Groups]]);
  bindings.support=bg(compute.support,[[0,U],[1,W],[2,Groups]]);
  bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);
- bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups]]);
+ bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups],[6,O]]);
  bindings.drip=bg(compute.drip,[[0,U],[1,W],[2,O],[3,WP],[4,S]]);
  bindings.meshReset=bg(compute.meshReset,[[1,Chunks],[2,C]]);
  bindings.mesh=bg(compute.mesh,[[1,O],[2,Chunks],[3,FaceCache],[4,C]]);
@@ -3787,7 +3816,11 @@ function neighborsHUD30(k){
 }
 // Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.
 const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};
-function calloutsHUD30(k){
+// Every kick of a cheese wheel (C[48]) flashes a banner and a line.
+let cheeseSeen48=0,cheeseUntil48=0,cheeseLine48='';const CHEESE_LINES48=['Aged twelve months. Rolled for thirty metres.','Wisconsin sends its regards.','It is a cheese wheel. It does not stop.','Grate work.','That is gouda.'];
+function cheeseHUD48(k){const n=counters[48]|0;if(n<cheeseSeen48)cheeseSeen48=n;if(n>cheeseSeen48){cheeseSeen48=n;cheeseUntil48=time+1.8;cheeseLine48=CHEESE_LINES48[n%CHEESE_LINES48.length];}
+ if(time<cheeseUntil48){const px=(42+5*Math.sin((cheeseUntil48-time)*10))*k,s='SAY CHEESE!';text(s,width/2-textWidth9(s,px)/2,height*.20,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.20+52*k,15*k,COL9.white);}}
+function calloutsHUD30(k){cheeseHUD48(k);
  const crushed=counters[34]|0,chain=counters[46]|0;
  if(crushed<callout30.crushed||chain<callout30.chain)Object.assign(callout30,{crushed,chain,crushBurst:0,chainBurst:0});
  if(crushed>callout30.crushed){callout30.crushBurst=time-callout30.crushAt<1.5?callout30.crushBurst+crushed-callout30.crushed:crushed-callout30.crushed;callout30.crushAt=time;callout30.crushed=crushed;}
@@ -3821,7 +3854,7 @@ function evacCard30(k){
 // Controls as key caps in two columns; the sandbox adds its three house rules underneath.
 const HELP_KEYS30=[[[['W','A','S','D'],'Move'],[['Mouse'],'Aim'],[['LMB'],'Fire / use gear'],[['RMB','Space'],'Shove'],[['1','2','3'],'Guns'],[['R'],'Reload'],[['Q'],'Last gun'],[['4','G'],'Throwables'],[['5','F'],'Medkit: LMB self, RMB ally']],
  [[['Shift'],'Sprint'],[['V'],'Drag a body'],[['X'],'Order the squad'],[['E'],'Interact'],[['Tab'],'Field map'],[['Wheel'],'Cycle gear'],[['Ctrl','Wheel'],'Zoom'],[['M'],'Mute'],[['Backspace'],'Restart'],[['Esc'],'Pause'],[['?'],'This card']]];
-const HELP_RULES30=['Find neighbors shouting HELP! and walk them to the shelter.','Knock a house down and the wreck crushes whoever is underneath.','Blasts, alarms and gunfire are loud. The whole street hears.'];
+const HELP_RULES30=['Find neighbors shouting HELP! and walk them to the shelter.','Knock a house down and the wreck crushes whoever is underneath.','Blasts, alarms and gunfire are loud. The whole street hears.','Walk into a cheese wheel. It flattens everything in its path.'];
 function keycap30(label,x,cy,px){const tw=textWidth9(label,px),w=Math.max(px*1.9,tw+px*1.1),h=px*1.85,y=cy-h/2,b=Math.max(1.5,px*.08);
  rect(x,y,w,h,[.10,.17,.19,.95]);rect(x,y+h-b*2.2,w,b*2.2,[.02,.05,.06,.95]);rect(x,y,w,b,[.36,.48,.48,.9]);text(label,x+(w-tw)/2,cy-px*.82,px,COL9.white);return w;}
 function helpCard30(k){

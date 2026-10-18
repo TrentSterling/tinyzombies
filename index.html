@@ -1843,6 +1843,11 @@ if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let a
  if(damage>0.0){z.p.w-=damage;z.extraData.y=1.0;z.v.w=max(z.v.w,8.0);
   if(z.p.w<=0.0){atomicAdd(&C[0],1u);if(heHurt){atomicAdd(&C[44],1u);}z.v.w=select(18.0,5.0,S.wave.x>1.5)+rnd(i+u32(S.aux.x*100.0))*4.0;event(z.p.xyz,impulse,vec3f(.29,.55,.35),select(0u,9u,kind==6.0),128u,i+atomicLoad(&C[18])*153u);
     event(z.p.xyz+vec3f(0,select(.55,1.2,kind==6.0),0),impulse*.55,vec3f(.66,.012,.029),7u,select(48u,96u,kind==6.0),i+atomicLoad(&C[18])*917u);
+    // Overkill on Maple Street bursts the body: shirt-coloured chunks fly, the blood spray doubles and widens, and the head pops up.
+    // C[51] counts bursts for the SPLAT callout.
+    if(damage>=150.0&&u.run.x>5.0&&u.run.y<.5&&kind==0.0){let up=impulse*1.7+vec3f(0,4.5,0);let cloth=array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(z.extraData.x*4.0))];
+     event(z.p.xyz+vec3f(0,.55,0),up,cloth,0u,56u,i+atomicLoad(&C[18])*331u);event(z.p.xyz+vec3f(0,.45,0),up*1.25,vec3f(.72,.015,.03),7u,96u,i+atomicLoad(&C[18])*577u);
+     event(z.p.xyz+vec3f(0,1.0,0),vec3f(impulse.x*.25,8.0,impulse.z*.25),vec3f(.40,.57,.40),0u,20u,i+atomicLoad(&C[18])*743u);atomicAdd(&C[51],1u);}
     if(kind==6.0){atomicAdd(&C[58],1u);event(z.p.xyz+vec3f(0,1,0),vec3f(0,5,0),vec3f(.3),9u,128u,i+atomicLoad(&C[18])*317u);}
     if(burning){atomicAdd(&C[61],1u);}if(kind==3.0){atomicAdd(&C[21],1u);event(z.p.xyz,vec3f(0,4,0),vec3f(.9,.25,.03),2u,64u,i+5u);}}
  }
@@ -3832,7 +3837,11 @@ const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:
 let cheeseSeen48=0,cheeseUntil48=0,cheeseLine48='';const CHEESE_LINES48=['Aged twelve months. Rolled for thirty metres.','Wisconsin sends its regards.','It is a cheese wheel. It does not stop.','Grate work.','That is gouda.'];
 function cheeseHUD48(k){const n=counters[48]|0;if(n<cheeseSeen48)cheeseSeen48=n;if(n>cheeseSeen48){cheeseSeen48=n;cheeseUntil48=time+1.8;cheeseLine48=CHEESE_LINES48[n%CHEESE_LINES48.length];}
  if(time<cheeseUntil48){const px=(42+5*Math.sin((cheeseUntil48-time)*10))*k,s='SAY CHEESE!';text(s,width/2-textWidth9(s,px)/2,height*.20,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.20+52*k,15*k,COL9.white);}}
-function calloutsHUD30(k){cheeseHUD48(k);
+// Overkill bursts (C[51]) within 1.2 s of each other stack into a SPLAT xN callout.
+let splatSeen51=0,splatBurst51=0,splatAt51=-9;
+function splatHUD51(k){const n=counters[51]|0;if(n<splatSeen51)splatSeen51=n;if(n>splatSeen51){splatBurst51=time-splatAt51<1.2?splatBurst51+n-splatSeen51:n-splatSeen51;splatAt51=time;splatSeen51=n;}
+ if(splatBurst51>=1&&time-splatAt51<1.2){const s=splatBurst51>1?'SPLAT x'+splatBurst51:'SPLAT!',px=(30+Math.min(16,splatBurst51*2))*k;text(s,width*.72-textWidth9(s,px)/2,height*.36,px,COL9.red);}}
+function calloutsHUD30(k){cheeseHUD48(k);splatHUD51(k);
  const crushed=counters[34]|0,chain=counters[46]|0;
  if(crushed<callout30.crushed||chain<callout30.chain)Object.assign(callout30,{crushed,chain,crushBurst:0,chainBurst:0});
  if(crushed>callout30.crushed){callout30.crushBurst=time-callout30.crushAt<1.5?callout30.crushBurst+crushed-callout30.crushed:crushed-callout30.crushed;callout30.crushAt=time;callout30.crushed=crushed;}

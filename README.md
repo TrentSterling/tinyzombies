@@ -48,6 +48,14 @@ Collapsing walls and buildings now crush infected. Any heavy wreck piece that is
 
 Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, Linda, Coach Dale, Mrs. Henderson, Todd, Pastor Ray and Kimberly, in bathrobes, HOA polos and hi-vis vests, each with a bobbing "!" and a HELP! tag. Walk up to one and they follow you, finding their own way around walls and through breaches. Awake infected go for them and bite on contact, so noise near a house can cost you a neighbor. Bring them into the fallout shelter to save them. Like Zombies Ate My Neighbors, nobody leaves while someone is still waiting at home: the shelter will not seal until every neighbor has been found (saved or lost), the objective line says how many are still home, and the minimap shows them as gold diamonds (mint once they follow you). The HUD keeps the tally (saved / lost / out there), the announcer reacts, and the evacuation card counts who made it.
 
+Some neighbors are characters, Zombies Ate My Neighbors style:
+- **Pool Guy Phil** (or Lorraine the Lounger) floats in the backyard pool on a red-and-white inner tube.
+- **BBQ Dad** (or Grill Sergeant Gus) wears a chef hat by a smoking grill in the front yard.
+- **Trampoline Timmy** (or Bouncy Becky) bounces on a trampoline.
+- **Tiffany** (or Brittany) jumps around indoors with pom-poms.
+
+Each has their own lines when they join, make it or don't. The quips name the neighbor it actually happened to, and rescuing a character flashes a big banner (BBQ DAD RESCUED!).
+
 On a software GPU running the real shaders, a neighbor followed the player 73 m across town into the shelter; another, cornered by three awake infected, was lost in about 3 seconds.
 
 A group of neighbors follows as a loose two-wide column behind you instead of piling onto one spot. When you stop, they gather on their own side of you. They hurry (3.6 m/s) when more than 4 m behind, and they sidestep awake infected within 2.2 m without backing away from you. In the same software-GPU test, four neighbors escorted 30 m past six awake infected lost 26 HP between them (previously 91). They stayed about 2.9 m behind you on average (previously 4.5 m, all four stacked within 0.2 m of each other).

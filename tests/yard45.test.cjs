@@ -7,7 +7,7 @@ const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8'),parent=path.join(__dirname,'.yard45-parent.html');fs.writeFileSync(parent,withoutYard45(html));
 const h=loadHost(file);
-const W=(f,seed)=>loadHost(f,{seed}).json('(()=>{const w=makeWorld();const m={};for(let i=4;i<w.count*8;i+=8)m[w.blocks[i]]=(m[w.blocks[i]]||0)+1;let g=0;for(let i=7;i<w.blocks.length;i+=8)if(w.blocks[i]>g)g=w.blocks[i];return {b:w.buildings,civ:w.civilians30,start:w.start,caches:w.caches,pools:w.pools45||[],m,g,count:w.count}})()');
+const W=(f,seed)=>loadHost(f,{seed}).json('(()=>{const w=makeWorld();const m={};for(let i=4;i<w.count*8;i+=8)m[w.blocks[i]]=(m[w.blocks[i]]||0)+1;let g=0;for(let i=7;i<w.blocks.length;i+=8)if(w.blocks[i]>g)g=w.blocks[i];return {b:w.buildings,civ:(w.civilians30||[]).map(c=>[c.slot,c.outfit]),start:w.start,caches:w.caches,pools:w.pools45||[],m,g,count:w.count}})()');
 check('street layout is unchanged: same houses, neighbors, start and caches as before the yards',()=>{
  for(const s of ['4242&sandbox','73129&sandbox','99&sandbox']){const a=W(file,s),b=W(parent,s);assert.deepEqual(a.b,b.b,s+' houses');assert.deepEqual(a.civ,b.civ,s+' neighbors');assert.deepEqual(a.caches,b.caches,s+' caches');}
 });

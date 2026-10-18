@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:radial-gradient(ellipse at 30% 40%,#163039,#0b1b22 70%);color:#e1e9d2;font:500 17px/1.65 Rubik,'Segoe UI',system-ui,sans-serif;z-index:2}#boot h1{font:clamp(44px,9vw,120px)/1 Bangers,Impact,'Arial Black',sans-serif;letter-spacing:.03em;color:#f0f7ee;text-shadow:0 5px 0 #03090c,0 0 32px rgba(255,189,97,.25);margin:0 0 18px}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
-</style></head><body><canvas id="game" tabindex="0" aria-label="Tiny Zombies compute prototype"></canvas><div id="boot"><h1>TINY ZOMBIES</h1><p>Preparing the quiet HUD and squad...</p></div><noscript>This game requires JavaScript and WebGPU.</noscript><script>
+</style></head><body><canvas id="game" tabindex="0" aria-label="Tiny Zombies compute prototype"></canvas><div id="boot"><h1>TINY ZOMBIES</h1><p>Waking up the neighborhood...</p></div><noscript>This game requires JavaScript and WebGPU.</noscript><script>
 /* TINY ZOMBIES — NO ONE LEFT / V9 — QUIET HUD
    Native WebGPU/WGSL. No libraries, fetches, image assets, or WASM. CPU authors the sparse world; GPU owns runtime entities and mission decisions.
    Four world voxels/metre. Characters authored on a 16^3, 1/16 m lattice.
@@ -22,7 +22,8 @@ const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
 // Maple Street sandbox: the open V9 town mission with the full horde, campy and rerollable.
-const SANDBOX25=params.has('sandbox'),SANDBOX_STAGE25=6;
+// Maple Street is the default game. The DEAD ENDS chapters are kept behind ?deadends (or ?campaign); ?sandbox still forces Maple Street.
+const SANDBOX25=params.has('sandbox')||!(params.has('deadends')||params.has('campaign')),SANDBOX_STAGE25=6;
 const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
@@ -65,7 +66,8 @@ function parseCheckpoint13(raw){
   return {...v,downs:Number.isInteger(v.downs)&&v.downs>=0&&v.downs<=9999?v.downs:null,stage:v.map+1,carry:v.carry.map(p=>({hp:bounded(p?.hp,0,100,65),dead:!!p?.dead,meds:Math.floor(bounded(p?.meds,0,9,1)),bombs:Math.floor(bounded(p?.bombs,0,9,1)),molotovs:Math.floor(bounded(p?.molotovs,0,9,1)),weapon:Math.floor(bounded(p?.weapon,0,2,0)),upgrades:Math.floor(bounded(p?.upgrades,0,7,0))}))};
  }catch{return null;}
 }
-try{savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}
+// A saved DEAD ENDS chapter must not pull a Maple Street player back into the campaign; it waits for ?deadends.
+try{if(!SANDBOX25)savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}
 function clearCheckpoint(){savedCheckpoint=null;chapterCarry13=null;chapterEntry15=null;completedBoundary15=false;finalResult19=null;campaignDowns19=0;campaignKills13=campaignTime13=0;try{localStorage.removeItem(checkpointKey);}catch(e){diagnostics.notes.push('Checkpoint reset storage unavailable: '+e.message);}}
 function saveBoundary13(){
  if(checkpointWritten13||seedRequested||resetRequested||!world.source13||stage>SOURCE_CHAPTERS16||playerValues[67]!==1||settings.practice||settings.lab||settings.demo)return;

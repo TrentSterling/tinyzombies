@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),{sha}=require('./deadends-cpu-host.cjs');
 const delta=require('./align38-delta.json');
 function withoutAlign38(html){
+ html=require('./search39.cjs').withoutSearch39(html);
  if(!html.includes('const CRUSH_LEAD30='))return html;
  for(const [i,change]of [...delta.changes.entries()].reverse()){assert.equal(html.split(change.after).length,2,'Exact alignment hunk '+i);html=html.replace(change.after,change.before);}
  assert.equal(sha(html),delta.parentSha256,'Alignment inverse must restore immutable pre-alignment-fix runtime');return html;

@@ -1,0 +1,9 @@
+{
+ "parentSha256": "d1b4ed832f09a0508f6b61775244b30a86b26c8328a1b4a7d2e335b785b0c5d7",
+ "changes": [
+  {
+   "before": "     event(z.p.xyz+vec3f(0,1.0,0),vec3f(impulse.x*.25,8.0,impulse.z*.25),vec3f(.40,.57,.40),0u,20u,i+atomicLoad(&C[18])*743u);atomicAdd(&C[51],1u);}\n",
+   "after": "     event(z.p.xyz+vec3f(0,1.0,0),vec3f(impulse.x*.25,8.0,impulse.z*.25),vec3f(.40,.57,.40),0u,20u,i+atomicLoad(&C[18])*743u);atomicAdd(&C[51],1u);}\n    // Ordinary Maple Street kills still tear the shirt and throw an extra spurt, so every gun kill is messy, not just overkills.\n    else if(u.run.x>5.0&&u.run.y<.5&&kind==0.0){let cloth=array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(z.extraData.x*4.0))];\n     event(z.p.xyz+vec3f(0,.6,0),impulse*1.2+vec3f(0,3.0,0),cloth,0u,18u,i+atomicLoad(&C[18])*389u);event(z.p.xyz+vec3f(0,.5,0),impulse*.9+vec3f(0,2.0,0),vec3f(.70,.014,.03),7u,32u,i+atomicLoad(&C[18])*613u);}\n"
+  }
+ ]
+}

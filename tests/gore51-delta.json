@@ -1,0 +1,13 @@
+{
+ "parentSha256": "825ecfa730bcd9b41538455100984d5dd4aaca7af94d0fdc1126d47752029d2a",
+ "changes": [
+  {
+   "before": "    event(z.p.xyz+vec3f(0,select(.55,1.2,kind==6.0),0),impulse*.55,vec3f(.66,.012,.029),7u,select(48u,96u,kind==6.0),i+atomicLoad(&C[18])*917u);",
+   "after": "    event(z.p.xyz+vec3f(0,select(.55,1.2,kind==6.0),0),impulse*.55,vec3f(.66,.012,.029),7u,select(48u,96u,kind==6.0),i+atomicLoad(&C[18])*917u);\n    // Overkill on Maple Street bursts the body: shirt-coloured chunks fly, the blood spray doubles and widens, and the head pops up.\n    // C[51] counts bursts for the SPLAT callout.\n    if(damage>=150.0&&u.run.x>5.0&&u.run.y<.5&&kind==0.0){let up=impulse*1.7+vec3f(0,4.5,0);let cloth=array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(z.extraData.x*4.0))];\n     event(z.p.xyz+vec3f(0,.55,0),up,cloth,0u,56u,i+atomicLoad(&C[18])*331u);event(z.p.xyz+vec3f(0,.45,0),up*1.25,vec3f(.72,.015,.03),7u,96u,i+atomicLoad(&C[18])*577u);\n     event(z.p.xyz+vec3f(0,1.0,0),vec3f(impulse.x*.25,8.0,impulse.z*.25),vec3f(.40,.57,.40),0u,20u,i+atomicLoad(&C[18])*743u);atomicAdd(&C[51],1u);}"
+  },
+  {
+   "before": "function calloutsHUD30(k){cheeseHUD48(k);",
+   "after": "// Overkill bursts (C[51]) within 1.2 s of each other stack into a SPLAT xN callout.\nlet splatSeen51=0,splatBurst51=0,splatAt51=-9;\nfunction splatHUD51(k){const n=counters[51]|0;if(n<splatSeen51)splatSeen51=n;if(n>splatSeen51){splatBurst51=time-splatAt51<1.2?splatBurst51+n-splatSeen51:n-splatSeen51;splatAt51=time;splatSeen51=n;}\n if(splatBurst51>=1&&time-splatAt51<1.2){const s=splatBurst51>1?'SPLAT x'+splatBurst51:'SPLAT!',px=(30+Math.min(16,splatBurst51*2))*k;text(s,width*.72-textWidth9(s,px)/2,height*.36,px,COL9.red);}}\nfunction calloutsHUD30(k){cheeseHUD48(k);splatHUD51(k);"
+  }
+ ]
+}

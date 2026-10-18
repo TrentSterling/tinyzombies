@@ -2359,8 +2359,11 @@ fn shelterDecor44(){let o=vec2f(-64.0,52.0);
   for(var bi=0u;bi<16u;bi++){let pipe=S.pipes12[bi];if(pipe.z<=0.0){continue;}
     let t=clamp((3.15-pipe.z)/.45,0.0,1.0);let xz=mix(S.pipeStarts12[bi].xy,pipe.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*1.4,xz.y);
     let pulse=.45+.55*abs(sin(S.aux.x*(5.0+12.0*(1.0-pipe.z/3.15))));
-    box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);
-    box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);
+    if(u.run.x>5.0&&u.run.y<.5){let fuse=1.0-pipe.z/3.15;let c=p+vec3f(sin(S.aux.x*42.0+f32(bi))*.035*pulse,.04,cos(S.aux.x*37.0+f32(bi))*.02*pulse);
+     box(c,vec3f(.20,.32,.20),vec3f(.86,.10,.12),1,0);box(c+vec3f(0,.17,0),vec3f(.17,.03,.17),vec3f(.80,.82,.84),1,0);box(c+vec3f(0,-.02,.102),vec3f(.13,.11,.012),vec3f(.98,.98,.95),1,0);box(c+vec3f(0,-.02,.109),vec3f(.06,.05,.006),vec3f(.86,.10,.12),1,0);
+     for(var f=0u;f<6u;f++){let ph=fract(S.aux.x*(1.4+3.0*fuse)+f32(f)/6.0);box(c+vec3f(sin(f32(f)*2.1)*.14*ph,.22+ph*(.5+fuse*.8),cos(f32(f)*1.7)*.14*ph),vec3f(.08*(1.0-ph*.5)),vec3f(.97,.93,.84),1,.1);}}
+    else{box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);
+    box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);}
   }
   if(u.run.y<.5&&S.cell.w<2.0&&(u.run.x>5.0||S.cell.w==1.0)){var pos=S.cell.xyz+vec3f(0,.34,0);if(S.cell.w==1.0){pos=S.pos.xyz+vec3f(-.38,.62,0);}
    box(pos,vec3f(.50,.56,.44),vec3f(.09,.35,.40),1,0);box(pos+vec3f(0,.02,.228),vec3f(.30,.34,.022),vec3f(.20,.93,1),1,1.1);box(pos+vec3f(0,.32,0),vec3f(.38,.08,.26),vec3f(.63,.66,.5),1,0);
@@ -3526,8 +3529,8 @@ function updateAudioWorld9(z,count,props){
 }
 
 function ordnanceHint(pipe){
- if(pipe&&playerValues[110]>0)toolHint='A pipe bomb is already active.';
- else if(pipe&&playerValues[111]>0)toolHint='Pipe bomb ready in '+Math.ceil(playerValues[111])+'s.';
+ if(pipe&&playerValues[110]>0)toolHint=SANDBOX25?'A soda can is already fizzing.':'A pipe bomb is already active.';
+ else if(pipe&&playerValues[111]>0)toolHint=(SANDBOX25?'Next soda can in ':'Pipe bomb ready in ')+Math.ceil(playerValues[111])+'s.';
  else if(!settings.lab&&playerValues[428]<1)toolHint='Find ordnance to throw another bomb.';
  else return;
  toolHintUntil=time+2.2;
@@ -3535,7 +3538,7 @@ function ordnanceHint(pipe){
 // DEAD ENDS control contract, pinned a547496c931a047c832a21d35165026df091025b.
 // Input emits monotonic edges; the GPU owns inventory, cooldowns and consumption.
 const GEAR12=['M4 CARBINE','PUMP SHOTGUN','9MM PISTOL','PIPE BOMB','MOLOTOV','MEDKIT'];
-function gearLabel14(n){const b=playerValues[L13.upgrades]|0;return n===0&&(b&1)?'R7 HEAVY RIFLE':n===1&&(b&2)?'AUTO SHOTGUN':n===2&&(b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1?'FIRE AXE':GEAR12[n];}
+function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';return n===0&&(b&1)?'R7 HEAVY RIFLE':n===1&&(b&2)?'AUTO SHOTGUN':n===2&&(b&4)&&!playerValues[L7.player7]&&playerValues[447]!==1?'FIRE AXE':GEAR12[n];}
 const GUN12=[{clip:30,reserve:180,rate:.098,reload:1.8},{clip:8,reserve:48,rate:.69,reload:.48},{clip:15,reserve:9999,rate:.21,reload:1.15}];
 const L12={gear:2220,mag:2224,reserve:2228,items:2232,ack:2236,flags:2240,reload:2244,heal:2248,events:2252,edges:2256,extraShot:2260,throw:2276,throwFrom:2280,pipes:2284,pipeStarts:2348,flights:2412,flightStarts:2476,stateFloats:2540};
 const input12={selected:0,lastGun:0,previous:2,seq:1,attack:0,reload:0,release:0,blocked:false,throwable:3,wheelAt:-Infinity,drag:0,order:0,cancel:0};
@@ -3800,7 +3803,7 @@ const FIELD_MODS=[
 ];
 const MISSION_LABELS=['Find Violet','Start relay A','Recover the cell','Power relay B','Reach the safehouse'];
 // Sandbox voice: a calm announcer, a neighborhood that is very much on fire.
-const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke generator online. Everyone heard that.','Battery installed. Please stand well back.'],4:'Power restored. Property values recovering.',6:'The casserole dish was full of ammo. Classic Linda.',7:'Structural solution applied.',9:'Pipe bombs earned. Keep up the good work.',10:'The whole neighborhood is coming over to say hi.',11:'Somebody screamed. Rude.',14:'You dropped the battery. Gary is disappointed.',15:'Maple Street evacuated. HOA fees waived.'};
+const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke generator online. Everyone heard that.','Battery installed. Please stand well back.'],4:'Power restored. Property values recovering.',6:'The casserole dish was full of ammo. Classic Linda.',7:'Structural solution applied.',9:'Soda cans earned. Shake well before throwing.',10:'The whole neighborhood is coming over to say hi.',11:'Somebody screamed. Rude.',14:'You dropped the battery. Gary is disappointed.',15:'Maple Street evacuated. HOA fees waived.'};
 function sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}
 const SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];
 const CIV_NAMES30=['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'];
@@ -3811,7 +3814,7 @@ const CIV_TYPE_LINES47=[null,
  {join:['{n} is cheering you on. Gimme a Z!','{n} joined the squad. Literally a squad now.'],saved:['{n} made it! Two bits, four bits, survival!','{n} is safe and doing a cartwheel about it.'],lost:['{n} is down. No more pyramids.','We lost {n}. Somebody tell the boosters.']},
  {join:['{n} bounced off the trampoline and onto your team.','{n} is following you. Bouncing, mostly.'],saved:['{n} is safe and wants to go back for the trampoline.','{n} made it. Highest score: forty bounces.'],lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']},
  {join:['{n} is following you. Crawling, mostly.','{n} has joined. He bit a zombie back.'],saved:['{n} is safe. Nobody knows whose he is.','{n} made it. Diaper status: unknown.'],lost:['{n} crawled off somewhere. We will not discuss it.','We lost track of {n}. Someone check under the porch.']}];
-const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 PIPE BOMBS','+1 MEDKIT'];
+const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 SODA CANS','+1 MEDKIT'];
 const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],
  saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
@@ -3931,7 +3934,7 @@ function drawLoadout25(k,eq){
  const up=playerValues[L13.upgrades]|0,items=[0,1,2].map(i=>Math.round(playerValues[L12.items+i]||0)),reserves=[0,1].map(i=>Math.round(playerValues[L12.reserve+i]||0));
  const sig=[eq,up,...items,...reserves].join();if(sig!==loadoutSig25){loadoutSig25=sig;loadoutAt25=time;}
  const fade=clamp9(1-(time-loadoutAt25-2.5)/.6,0,1);if(fade<=0)return;
- const names=[up&1?'R7 RIFLE':'CARBINE',up&2?'AUTO SG':'PUMP',gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL','PIPE','MOLOTOV','MEDKIT'],keys=['1','2','3','4','4','5'];
+ const names=[up&1?'R7 RIFLE':'CARBINE',up&2?'AUTO SG':'PUMP',gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL',SANDBOX25?'SODA':'PIPE','MOLOTOV','MEDKIT'],keys=['1','2','3','4','4','5'];
  const sw=84*k,sh=42*k,gap=6*k,sx=width/2-(6*sw+5*gap)/2,sy=height-sh-16*k,a=(c,m=1)=>[c[0],c[1],c[2],c[3]*fade*m];
  for(let n=0;n<6;n++){
   const x=sx+n*(sw+gap),sel=n===eq,have=gearAvailable12(n),dim=have?1:.4;
@@ -3970,7 +3973,7 @@ function hud(){
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
   if(playerValues[110]>0){
    const fuse=playerValues[110],total=playerValues[499]||6,t=clamp9((total-fuse)/.45,0,1),bx=playerValues[497]+(playerValues[108]-playerValues[497])*t,bz=playerValues[498]+(playerValues[109]-playerValues[498])*t;
-   const [sx,sy]=screenPoint(bx,bz,.55+Math.sin(t*Math.PI)*2.8);const label='Pipe bomb '+fuse.toFixed(1)+'s';
+   const [sx,sy]=screenPoint(bx,bz,.55+Math.sin(t*Math.PI)*2.8);const label=(SANDBOX25?'Soda can ':'Pipe bomb ')+fuse.toFixed(1)+'s';
    if(sx>40&&sx<width-40&&sy>24&&sy<height-30){disk9(sx,sy-10*k,10*k,clamp9(fuse/total,0,1),COL9.gold);text(label,sx-textWidth9(label,12*k)/2,sy-40*k,12*k,COL9.gold);}
   }
   {let lbl=eq<3?(reload>0?'RELOADING '+reload.toFixed(1)+'s':ammo===0?'EMPTY - R RELOAD / 1 2 3 SWITCH':''):eq===5?(playerValues[L12.heal]>0?(playerValues[L12.heal+1]>=0?'HEALING TEAMMATE':'HEALING'):'HOLD LMB: SELF / RMB: ALLY'):'LMB THROW / Q LAST GUN';

@@ -1,0 +1,17 @@
+{
+ "parentSha256": "5d81feaabdb302e23e36dc2b51983bae955927e697b418eaf25345586718d4cf",
+ "changes": [
+  {
+   "before": "var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}",
+   "after": "var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}\n // Waiting neighbors shout HELP!, so they are heard too, 8 m (80) behind any real noise. The mirror is only written in the sandbox.\n for(var k=0u;k<12u;k++){let nb=S.civ34[k];if(nb.z>.5&&nb.z<1.5&&navcell(nb.xy)==i){heard=min(heard,80u);}}"
+  },
+  {
+   "before": "var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard));",
+   "after": "var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));"
+  },
+  {
+   "before": "if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}",
+   "after": "if((heard||victim==5u)&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}"
+  }
+ ]
+}

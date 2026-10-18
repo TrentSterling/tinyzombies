@@ -3,6 +3,7 @@
 const assert=require('node:assert/strict'),{sha}=require('./deadends-cpu-host.cjs');
 const delta=require('./panic40-delta.json');
 function withoutPanic40(html){
+ html=require('./hunt41.cjs').withoutHunt41(html);
  if(!html.includes('let panic=c.data.y<1.5'))return html;
  for(const [i,change]of [...delta.changes.entries()].reverse()){assert.equal(html.split(change.after).length,2,'Exact panic hunk '+i);html=html.replace(change.after,change.before);}
  assert.equal(sha(html),delta.parentSha256,'Panic inverse must restore immutable pre-panic runtime');return html;

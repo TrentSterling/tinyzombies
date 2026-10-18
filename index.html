@@ -1707,9 +1707,9 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   else if(z.v.w<=0.0){z.sense13.w=0.0;}
   else if(z.sense13.w>2048.0&&distance>18.0&&victim==0u){let spot=vec2f(z.sense13.z,z.sense13.w-4096.0);if(length(spot-z.p.xz)<10.0){let ang=rnd(i*313u)*6.2831853+S.aux.x*.35;goalPoint=spot+vec2f(cos(ang),sin(ang))*(1.5+rnd(i*577u)*3.5);searching=true;}}
  }
- let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard));
+ let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));
  // No route to what was heard (or already there): fall back to hunting the squad.
- if(heard&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}
+ if((heard||victim==5u)&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}
  // Short direct line-of-sight segments preserve natural motion inside a room.
  var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));let bodySide=vec2f(-direct.y,direct.x)*footprint(kind);for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||solid(vec3f(probe.x+bodySide.x,.36,probe.y+bodySide.y))>0u||solid(vec3f(probe.x-bodySide.x,.36,probe.y-bodySide.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
  if(sight&&!searching&&targetDistance<select(480.0/64.0,780.0/64.0,z.v.w>0.0)){z.v.w=10.0;awake=true;}
@@ -2905,7 +2905,9 @@ fn laneCode30(p:vec2f,dir:vec2f)->u32 {
 @compute @workgroup_size(64) fn init(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=NAV_N){return;}let p=vec2f(f32(i%192u)+.5,f32(i/192u)+.5)-HALF;
  // Lane 0, low 16 bits: the squad (player 0, living bots +40 so the player stays preferred). Lane 1, high 16 bits: what the horde heard.
  var squad=select(65535u,0u,navcell(S.pos.xz)==i);for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&navcell(S.team7[k].p.xz)==i){squad=min(squad,40u);}}
- var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
+ var heard=65535u;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(r.z>0.0&&navcell(r.xy)==i){heard=0u;}}
+ // Waiting neighbors shout HELP!, so they are heard too, 8 m (80) behind any real noise. The mirror is only written in the sandbox.
+ for(var k=0u;k<12u;k++){let nb=S.civ34[k];if(nb.z>.5&&nb.z<1.5&&navcell(nb.xy)==i){heard=min(heard,80u);}}if(S.alarm.z>0.0&&navcell(S.alarm.xy)==i){heard=0u;}
  for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&navcell(pipe.xy)==i){heard=0u;}}
  let source=squad<65535u||heard<65535u;
  // A cell is walkable if a body fits at its centre or 0.3 m off it: walls running through a cell leave the other half usable.

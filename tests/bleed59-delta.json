@@ -1,0 +1,9 @@
+{
+ "parentSha256": "7fb4334ade6b3b0e40233c41310798624945d42dfb51c7133cc99f4636718ce6",
+ "changes": [
+  {
+   "before": " atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];\n",
+   "after": " // A landed bite or swipe on the player (this frame's hit, kept in S.pace7.w by begin()) spurts blood off them, more for harder hits.\n {let bite=u32(S.pace7.w)%256u;if(bite>0u&&S.pos.w>0.0){event(vec3f(S.pos.x,.7,S.pos.z),vec3f(0,3.0,0),vec3f(.72,.015,.03),7u,12u+bite*2u,bite*911u+u32(S.aux.x*60.0));}}\n atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];\n"
+  }
+ ]
+}

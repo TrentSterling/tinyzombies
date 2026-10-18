@@ -429,10 +429,10 @@ function makeWorld(){
   // Types by order (no extra rand): 0 indoors, 1 Pool Guy (needs this house's pool), 2 BBQ Dad and 4 Trampoline Timmy in the front yard,
   // 3 Tiffany indoors. A yard or pool spot with anything standing in it falls back to indoors.
   const clear30=(x,z)=>{for(let dx=-3;dx<=3;dx++)for(let dz=-3;dz<=3;dz++)for(let y=0;y<6;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;return Math.abs(x)<90&&Math.abs(z)<90;};
-  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,outfit=civilians30.length;let x=b.x+b.w/2,z=b.z+b.d*.6,type=[0,2,1,3,4,1,2,4][outfit];
+  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,outfit=civilians30.length;let x=b.x+b.w/2,z=b.z+b.d*.6,type=[0,2,1,3,4,5,2,4][outfit];
    if(type===1){const pool=pools45.find(p=>Math.abs(p.x-(b.x+b.w/2-2))<1.5&&p.z<b.z);if(pool){x=pool.x+pool.w/2;z=pool.z+pool.d/2;}else type=0;}
    else if(type===2||type===4){const yx=b.x+b.w*(type===2?.28:.7),yz=b.z+b.d+2.6;if(clear30(yx,yz)&&clear30(yx+(type===2?1:1.1),yz)&&clear30(yx-(type===2?0:1.1),yz))[x,z]=[yx,yz];else type=0;}
-   const twin=civilians30.filter(n=>n.type===type).length%2;const name=[['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'][outfit],['Pool Guy Phil','Lorraine the Lounger'][twin],['BBQ Dad','Grill Sergeant Gus'][twin],['Tiffany','Brittany'][twin],['Trampoline Timmy','Bouncy Becky'][twin]][type];
+   const twin=civilians30.filter(n=>n.type===type).length%2;const name=[['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'][outfit],['Pool Guy Phil','Lorraine the Lounger'][twin],['BBQ Dad','Grill Sergeant Gus'][twin],['Tiffany','Brittany'][twin],['Trampoline Timmy','Bouncy Becky'][twin],'Baby Buster'][type];
    props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,type,0],slot*16);civilians30.push({x,z,slot,outfit,type,name});}}
  // Cheese wheels (prop 32): one outside the start shelter, one beside each BBQ Dad's grill, one past every third yard gate (8 at most).
  // Fixed spots, no rand(); a spot with any voxel nearby is skipped. data.x 1 (live), data.z spin, aux.xy velocity, aux.zw last heading.
@@ -2293,9 +2293,9 @@ fn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.da
  let dir=select(vec2f(0,1),c.aux.zw,length(c.aux.zw)>.1);var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}
  // Types (more.z): 1 floats in the pool on an inner tube, 2 grills by the front fence, 3 cheers with pom-poms, 4 bounces on a trampoline.
  let kind30=u32(c.more.z);let waiting=c.data.y<1.5&&c.data.z<=0.0;let home=vec3f(c.more.x,0,c.more.y);
- var lift30=0.0;if(waiting&&kind30==1u){lift30=-.42+.04*sin(S.aux.x*2.0+f32(k));}if(waiting&&kind30==3u){lift30=abs(sin(S.aux.x*5.0+f32(k)))*.28;}if(waiting&&kind30==4u){lift30=.45+abs(sin(S.aux.x*3.2+f32(k)))*1.15;}
+ var lift30=0.0;if(waiting&&kind30==1u){lift30=-.42+.04*sin(S.aux.x*2.0+f32(k));}if(waiting&&kind30==3u){lift30=abs(sin(S.aux.x*5.0+f32(k)))*.28;}if(waiting&&kind30==4u){lift30=.45+abs(sin(S.aux.x*3.2+f32(k)))*1.15;}if(waiting&&kind30==5u){lift30=.30+abs(sin(S.aux.x*6.0))*.05;}
  let base30=c.p.xyz+vec3f(0,lift30,0);
- modelSize=vec3f(.92);modelProne=0.0;let stride=sin(S.aux.x*11.0+f32(k))*min(1.0,length(c.aux.xy))*.09;let lift=abs(stride)*.55;let panic=c.data.z>0.0;
+ modelSize=vec3f(select(.92,.52,kind30==5u));modelProne=0.0;let stride=sin(S.aux.x*11.0+f32(k))*min(1.0,length(c.aux.xy))*.09;let lift=abs(stride)*.55;let panic=c.data.z>0.0;
  for(var j=0u;j<15u;j++){let v=FRIEND7[j*2u];let sz=FRIEND7[j*2u+1u];var color=skin;
   switch u32(v.w){case 1u:{color=cloth;}case 2u:{color=cloth*.55;}case 3u:{color=vec3f(.20,.16,.12);}case 4u:{color=vec3f(.03);}case 5u:{color=vec3f(.92,.92,.78);}default:{}}
   part(base30,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.12*abs(sin(S.aux.x*14.0)),panic&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
@@ -2309,6 +2309,10 @@ fn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.da
   box(g+vec3f(0,.70,0),vec3f(.62,.26,.62),vec3f(.07,.07,.08),1,0);box(g+vec3f(0,.85,0),vec3f(.50,.03,.50),vec3f(1,.42,.08),1,1.2);box(g+vec3f(0,.88,0),vec3f(.56,.02,.06),vec3f(.25,.25,.27),1,0);
   for(var s=0u;s<3u;s++){let ph=fract(S.aux.x*.45+f32(s)/3.0);box(g+vec3f(sin(ph*7.0+f32(s))*.12,.95+ph*1.6,0),vec3f(.18+ph*.25),vec3f(.62,.62,.64)*(1.0-ph*.3),1,0);}}
  if(kind30==3u){let up=.95+lift30*.3;for(var h=0u;h<2u;h++){let sx=select(-.40,.40,h==1u);box(base30+vec3f(sx,up,0),vec3f(.26,.24,.26),select(vec3f(.98,.85,.15),vec3f(.92,.18,.30),h==1u),1,.15);}}
+ if(kind30==5u){let cr=home+vec3f(0,.30,0);let wood=vec3f(.96,.94,.88);box(cr,vec3f(1.0,.06,.66),vec3f(.55,.75,.95),1,0);
+  for(var e=0u;e<4u;e++){box(home+vec3f(select(-.48,.48,(e&1u)==1u),.40,select(-.31,.31,(e&2u)>0u)),vec3f(.06,.80,.06),wood,1,0);}
+  for(var sl=0u;sl<7u;sl++){let x=-.36+f32(sl)*.12;box(home+vec3f(x,.55,.31),vec3f(.03,.42,.03),wood,1,0);box(home+vec3f(x,.55,-.31),vec3f(.03,.42,.03),wood,1,0);}
+  box(home+vec3f(0,.77,.31),vec3f(1.0,.04,.05),wood,1,0);box(home+vec3f(0,.77,-.31),vec3f(1.0,.04,.05),wood,1,0);}
  if(kind30==4u){let m=home+vec3f(0,.42,0);box(m,vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);
   for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}
   for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}
@@ -2473,7 +2477,12 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  let live=c.p.w==30.0;SR[976u+k]=vec4f(c.p.x,c.p.z,select(0.0,c.data.y,live),c.data.x);
  if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}
  let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
- if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}
+ if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);
+  // Characters hand something over as they join (caps match the pickups). SR[557] is reserve12 (L12.reserve/4), SR[558] items12
+  // (L12.items/4: x pipe bombs, y medkits, z molotovs). Pool Guy: ammo from his cooler. BBQ Dad: lighter fluid. Tiffany, Baby: a medkit. Timmy: two pipes.
+  let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];
+  if(t30==1u){rs.x=min(240.0,rs.x+60.0);rs.y=min(56.0,rs.y+12.0);}if(t30==2u){it.z=min(2.0,it.z+1.0);}if(t30==3u||t30==5u){it.y=min(3.0,it.y+1.0);}if(t30==4u){it.x=min(4.0,it.x+2.0);}
+  if(t30>0u){SR[558u]=it;SR[557u]=rs;}}
  // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.
  var bites=0u;var away=vec2f(0);var flee=vec2f(0);let cell=vec2i(floor(me+HALF));
  for(var dz=-4;dz<=4;dz++){for(var dx=-4;dx<=4;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
@@ -3795,7 +3804,9 @@ const CIV_TYPE_LINES47=[null,
  {join:['{n} is following you. Still in the inner tube.','{n} climbed out of the pool. Nobody is drying off.'],saved:['{n} is safe and dripping on everything.','{n} made it and asked if the shelter has a hot tub.'],lost:['{n} is gone. Adult swim is over.','We lost {n}. The pool is closed until further notice.']},
  {join:['{n} is with you. The burgers are not.','{n} left the grill on. That is a later problem.'],saved:['{n} is safe and already asking where the grill is.','{n} made it and is explaining charcoal to strangers.'],lost:['We lost {n}. Medium-well.','{n} is gone. The burgers are burning.']},
  {join:['{n} is cheering you on. Gimme a Z!','{n} joined the squad. Literally a squad now.'],saved:['{n} made it! Two bits, four bits, survival!','{n} is safe and doing a cartwheel about it.'],lost:['{n} is down. No more pyramids.','We lost {n}. Somebody tell the boosters.']},
- {join:['{n} bounced off the trampoline and onto your team.','{n} is following you. Bouncing, mostly.'],saved:['{n} is safe and wants to go back for the trampoline.','{n} made it. Highest score: forty bounces.'],lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']}];
+ {join:['{n} bounced off the trampoline and onto your team.','{n} is following you. Bouncing, mostly.'],saved:['{n} is safe and wants to go back for the trampoline.','{n} made it. Highest score: forty bounces.'],lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']},
+ {join:['{n} is following you. Crawling, mostly.','{n} has joined. He bit a zombie back.'],saved:['{n} is safe. Nobody knows whose he is.','{n} made it. Diaper status: unknown.'],lost:['{n} crawled off somewhere. We will not discuss it.','We lost track of {n}. Someone check under the porch.']}];
+const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 PIPE BOMBS','+1 MEDKIT'];
 const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],
  saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
@@ -3806,7 +3817,8 @@ function neighborsHUD30(k){
  if(civPrevWorld47!==world){civPrevWorld47=world;civPrev47=world.civilians30.map(()=>1);civBanner47='';}
  world.civilians30.forEach((n,c)=>{const st=Math.round(playerValues[CIV_STATE30+c*4+2]);if(st<2||st>4||st===civPrev47[c])return;const kind=st===2?'join':st===3?'saved':'lost';
   const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
-  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;civPrev47[c]=st;});
+  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;
+  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2;civPrev47[c]=st;});
  for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);

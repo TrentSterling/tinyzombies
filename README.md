@@ -56,7 +56,13 @@ Some neighbors are characters, Zombies Ate My Neighbors style:
 - **Trampoline Timmy** (or Bouncy Becky) bounces on a trampoline.
 - **Tiffany** (or Brittany) jumps around indoors with pom-poms.
 
-Each has their own lines when they join, make it or don't. The quips name the neighbor it actually happened to, and rescuing a character flashes a big banner (BBQ DAD RESCUED!).
+Each has their own lines when they join, make it or don't. Characters also hand you something as they join:
+- **Pool Guy:** tops up your ammo from his cooler.
+- **BBQ Dad:** a molotov (lighter fluid).
+- **Tiffany:** a medkit.
+- **Trampoline Timmy:** two pipe bombs.
+
+**Baby Buster** waits in a crib (and gives a medkit too). The quips name the neighbor it actually happened to, and rescuing a character flashes a big banner (BBQ DAD RESCUED!).
 
 On a software GPU running the real shaders, a neighbor followed the player 73 m across town into the shelter; another, cornered by three awake infected, was lost in about 3 seconds.
 

@@ -8,7 +8,7 @@ const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn(
 const html=fs.readFileSync(file,'utf8');
 check('types follow the fixed order, fall back indoors without a pool or a clear yard, and every name on a street is unique',()=>{
  const seen={};for(let s=1;s<=16;s++){const h=loadHost(file,{seed:(s*7919)+'&sandbox'});const r=h.json('(()=>{const w=makeWorld();return w.civilians30.map((c,i)=>({i,type:c.type,name:c.name,x:c.x,z:c.z,more:Array.from(w.props.slice(c.slot*16+12,c.slot*16+15)),pool:(w.pools45||[]).some(p=>c.x>p.x&&c.x<p.x+p.w&&c.z>p.z&&c.z<p.z+p.d)}))})()');
-  for(const c of r){assert([0,[0,2,1,3,4,1,2,4][c.i]].includes(c.type),'order');assert.deepEqual(c.more,[Math.fround(c.x),Math.fround(c.z),c.type],'type and home in more');if(c.type===1)assert(c.pool,'pool guy is in a pool');seen[c.type]=(seen[c.type]||0)+1;}
+  for(const c of r){assert([0,[0,2,1,3,4,1,2,4][c.i],[0,2,1,3,4,5,2,4][c.i]].includes(c.type),'order (slot 5 is Baby Buster since reward50)');assert.deepEqual(c.more,[Math.fround(c.x),Math.fround(c.z),c.type],'type and home in more');if(c.type===1)assert(c.pool,'pool guy is in a pool');seen[c.type]=(seen[c.type]||0)+1;}
   assert.equal(new Set(r.map(c=>c.name)).size,r.length,'unique names');}
  for(const t of [0,1,2,3,4])assert(seen[t]>0,'type '+t+' appears');return {typeCounts:seen};
 });

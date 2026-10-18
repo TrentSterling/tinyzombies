@@ -2495,7 +2495,8 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  let live=c.p.w==30.0;SR[976u+k]=vec4f(c.p.x,c.p.z,select(0.0,c.data.y,live),c.data.x);
  if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}
  let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
- if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);
+ // Tallies live in C[64] joined, C[65] lost, C[66] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.
+ if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);
   // Characters hand something over as they join (caps match the pickups). SR[557] is reserve12 (L12.reserve/4), SR[558] items12
   // (L12.items/4: x pipe bombs, y medkits, z molotovs). Pool Guy: ammo from his cooler. BBQ Dad: lighter fluid. Tiffany, Baby: a medkit. Timmy: two pipes.
   let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];
@@ -2523,11 +2524,11 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.
  let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}
  c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
- if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
+ if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[65],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
  if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}
  c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));
- let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[29],1u);}
+ let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[66],1u);}
  Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);
 }
 `;
@@ -3117,6 +3118,11 @@ fn sourceProps15(){
 @compute @workgroup_size(1) fn update(){
  if(u.run.x<=5.0&&u.run.y<.5){sourceProps15();return;}
  // One bounded owner makes barrel-chain state deterministic (no in-dispatch races).
+ // A neighbor the infected just ate (state 4) bursts once: shirt scraps, a fountain of blood and the head. 4.25 marks it spent
+ // (the HUD still rounds it to 4). C[57] counts these for the callout.
+ for(var ck=0u;ck<12u;ck++){var cv=P[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y!=4.0){continue;}cv.data.y=4.25;P[CIV_BASE30+ck]=cv;let at=vec3f(cv.p.x,.55,cv.p.z);let seed=ck*977u+u32(S.aux.x*60.0);
+  let shirt=array<vec3f,4>(vec3f(.95,.55,.70),vec3f(.35,.65,.95),vec3f(.98,.85,.30),vec3f(.55,.85,.45))[ck%4u];
+  event(at,vec3f(0,5.5,0),shirt,0u,40u,seed);event(at,vec3f(0,7.0,0),vec3f(.72,.015,.03),7u,120u,seed*331u);event(at+vec3f(0,.5,0),vec3f(0,9.0,0),vec3f(.93,.72,.55),0u,16u,seed*743u);atomicAdd(&C[57],1u);}
  atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];
   if(pr.p.w==5.0){pr.p.y=3.0-S.escape.x*2.0;P[i]=pr;continue;}
   if(pr.p.w==32.0){P[i]=cheese48(pr);continue;}
@@ -3817,7 +3823,7 @@ const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke 
 function sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}
 const SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];
 const CIV_NAMES30=['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'];
-let civPrev47=[],civPrevWorld47=null,civBanner47='',civBannerUntil47=0;
+let civPrev47=[],civPrevWorld47=null,civBanner47='',civBannerUntil47=0,civBannerCol47=null;
 const CIV_TYPE_LINES47=[null,
  {join:['{n} is following you. Still in the inner tube.','{n} climbed out of the pool. Nobody is drying off.'],saved:['{n} is safe and dripping on everything.','{n} made it and asked if the shelter has a hot tub.'],lost:['{n} is gone. Adult swim is over.','We lost {n}. The pool is closed until further notice.']},
  {join:['{n} is with you. The burgers are not.','{n} left the grill on. That is a later problem.'],saved:['{n} is safe and already asking where the grill is.','{n} made it and is explaining charcoal to strangers.'],lost:['We lost {n}. Medium-well.','{n} is gone. The burgers are burning.']},
@@ -3830,18 +3836,19 @@ const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is 
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
 let civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;
 function neighborsHUD30(k){
- const total=world.civilians30.length,joined=counters[24]|0,saved=counters[29]|0,lost=counters[25]|0;
+ const total=world.civilians30.length,joined=counters[64]|0,saved=counters[66]|0,lost=counters[65]|0;
  // Quips name the neighbor whose state actually changed (mirror states: 1 waiting, 2 following, 3 saved, 4 lost); typed rescues get a banner.
  if(civPrevWorld47!==world){civPrevWorld47=world;civPrev47=world.civilians30.map(()=>1);civBanner47='';}
  world.civilians30.forEach((n,c)=>{const st=Math.round(playerValues[CIV_STATE30+c*4+2]);if(st<2||st>4||st===civPrev47[c])return;const kind=st===2?'join':st===3?'saved':'lost';
   const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
-  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;
-  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2;civPrev47[c]=st;});
+  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4,civBannerCol47=COL9.gold;
+  if(st===4)civBanner47=(n.name||'A NEIGHBOR').toUpperCase()+' GOT EATEN!',civBannerUntil47=time+2.6,civBannerCol47=COL9.red;
+  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});
  for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);
  if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
- if(civBanner47&&time<civBannerUntil47){const px=(40+6*Math.sin((civBannerUntil47-time)*9))*k;text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,COL9.gold);}
+ if(civBanner47&&time<civBannerUntil47){const px=(40+6*Math.sin((civBannerUntil47-time)*9))*k;text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,civBannerCol47||COL9.gold);}
  for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
 }
 // Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.
@@ -3893,7 +3900,7 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
  for(let i=0;i<10;i++){const on=hp*10>i+.05;rect(x+i*(cw+3*k),y,cw,ch,on?(hp<.3?[1,.32,.30,1]:[.36,.66,1,1]):[.10,.16,.22,.9]);if(on)rect(x+i*(cw+3*k),y,cw,4*k,[.75,.88,1,.9]);}
- const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[29]|0)*500;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}
+ const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[66]|0)*500;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}
 function titleCard30(k){
  if(hud2d30){poster52(k);return;}
  panel9(width*.2,height*.18,width*.6,height*.62,.84);rect(width*.2,height*.18,width*.6,5*k,COL9.gold);
@@ -3906,7 +3913,7 @@ function titleCard30(k){
 }
 function evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}
 function evacCard30(k){
- const total=world.civilians30?.length||0,saved=counters[29]|0,lost=counters[25]|0,t=Math.round(playerValues[24]||0);
+ const total=world.civilians30?.length||0,saved=counters[66]|0,lost=counters[65]|0,t=Math.round(playerValues[24]||0);
  panel9(width*.24,height*.2,width*.52,height*.6,.92);rect(width*.24,height*.2,width*.52,5*k,COL9.green);
  centre('MAPLE STREET EVACUATED',height*.235,44*k,COL9.green);centre(saved+' / '+total+' NEIGHBORS SAVED',height*.35,34*k,COL9.gold);
  centre(fmt(counters[0])+' put down   /   '+(counters[34]|0)+' crushed   /   '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0'),height*.455,16*k,COL9.white);
@@ -4113,7 +4120,7 @@ function hud(){
   if(won&&SANDBOX25){evacCard30(k);}
   else if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
-   centre(SANDBOX25?(counters[29]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
+   centre(SANDBOX25?(counters[66]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
    else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
    if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);

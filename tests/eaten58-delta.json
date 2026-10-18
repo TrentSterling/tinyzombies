@@ -1,0 +1,53 @@
+{
+ "parentSha256": "27807d4cc1361733b9bb2ee69d1ec4ff5abd7b3db7493860fe04797ecd9b9f2b",
+ "changes": [
+  {
+   "before": " atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];\n",
+   "after": " // A neighbor the infected just ate (state 4) bursts once: shirt scraps, a fountain of blood and the head. 4.25 marks it spent\n // (the HUD still rounds it to 4). C[57] counts these for the callout.\n for(var ck=0u;ck<12u;ck++){var cv=P[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y!=4.0){continue;}cv.data.y=4.25;P[CIV_BASE30+ck]=cv;let at=vec3f(cv.p.x,.55,cv.p.z);let seed=ck*977u+u32(S.aux.x*60.0);\n  let shirt=array<vec3f,4>(vec3f(.95,.55,.70),vec3f(.35,.65,.95),vec3f(.98,.85,.30),vec3f(.55,.85,.45))[ck%4u];\n  event(at,vec3f(0,5.5,0),shirt,0u,40u,seed);event(at,vec3f(0,7.0,0),vec3f(.72,.015,.03),7u,120u,seed*331u);event(at+vec3f(0,.5,0),vec3f(0,9.0,0),vec3f(.93,.72,.55),0u,16u,seed*743u);atomicAdd(&C[57],1u);}\n atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];\n"
+  },
+  {
+   "before": "let civPrev47=[],civPrevWorld47=null,civBanner47='',civBannerUntil47=0;",
+   "after": "let civPrev47=[],civPrevWorld47=null,civBanner47='',civBannerUntil47=0,civBannerCol47=null;"
+  },
+  {
+   "before": "  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;\n",
+   "after": "  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4,civBannerCol47=COL9.gold;\n  if(st===4)civBanner47=(n.name||'A NEIGHBOR').toUpperCase()+' GOT EATEN!',civBannerUntil47=time+2.6,civBannerCol47=COL9.red;\n"
+  },
+  {
+   "before": "  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2;civPrev47[c]=st;});",
+   "after": "  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});"
+  },
+  {
+   "before": "text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,COL9.gold);}",
+   "after": "text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,civBannerCol47||COL9.gold);}"
+  },
+  {
+   "before": " if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);",
+   "after": " // Tallies live in C[64] joined, C[65] lost, C[66] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.\n if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);"
+  },
+  {
+   "before": "c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;",
+   "after": "c.data.y=4.0;atomicAdd(&C[65],1u);Props[slot]=c;"
+  },
+  {
+   "before": "{c.data.y=3.0;atomicAdd(&C[29],1u);}",
+   "after": "{c.data.y=3.0;atomicAdd(&C[66],1u);}"
+  },
+  {
+   "before": " const total=world.civilians30.length,joined=counters[24]|0,saved=counters[29]|0,lost=counters[25]|0;",
+   "after": " const total=world.civilians30.length,joined=counters[64]|0,saved=counters[66]|0,lost=counters[65]|0;"
+  },
+  {
+   "before": "(counters[34]|0)*25+(counters[29]|0)*500;",
+   "after": "(counters[34]|0)*25+(counters[66]|0)*500;"
+  },
+  {
+   "before": " const total=world.civilians30?.length||0,saved=counters[29]|0,lost=counters[25]|0,t=",
+   "after": " const total=world.civilians30?.length||0,saved=counters[66]|0,lost=counters[65]|0,t="
+  },
+  {
+   "before": "centre(SANDBOX25?(counters[29]|0)+'/'",
+   "after": "centre(SANDBOX25?(counters[66]|0)+'/'"
+  }
+ ]
+}

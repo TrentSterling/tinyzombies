@@ -1,0 +1,25 @@
+{
+ "parentSha256": "875fb60b9c9973b202f45f1abd246abbd448c4002419337b984743a6021cdc3e",
+ "changes": [
+  {
+   "before": "var bites=0u;var away=vec2f(0);let cell=vec2i(floor(me+HALF));\n for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){",
+   "after": "var bites=0u;var away=vec2f(0);var flee=vec2f(0);let cell=vec2i(floor(me+HALF));\n for(var dz=-4;dz<=4;dz++){for(var dx=-4;dx<=4;dx++){"
+  },
+  {
+   "before": "if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}",
+   "after": "if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}if(ed<4.0&&ed>.001){flee+=(me-e.p.xz)/ed*(4.0-ed)/4.0;}"
+  },
+  {
+   "before": "if(sl>3.8){stride2*=3.8/sl;}\n }",
+   "after": "if(sl>3.8){stride2*=3.8/sl;}\n }\n // Waiting neighbors do not stand still to be eaten: awake infected within 4 m (searched over 9x9 cells) send them backing away at 2 m/s,\n // which buys the player a few seconds. The mirror flags it (+.25) for the HUD.\n // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.\n let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}"
+  },
+  {
+   "before": "Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);\n}",
+   "after": "Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);\n}"
+  },
+  {
+   "before": "text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);",
+   "after": "const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);"
+  }
+ ]
+}

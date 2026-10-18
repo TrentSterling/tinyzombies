@@ -2384,9 +2384,9 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
  if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}
  // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.
- var bites=0u;var away=vec2f(0);let cell=vec2i(floor(me+HALF));
- for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
-  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0){let ed=distance(e.p.xz,me);if(ed<footprint(e.extraData.z)+.42){bites++;}if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}}}}}
+ var bites=0u;var away=vec2f(0);var flee=vec2f(0);let cell=vec2i(floor(me+HALF));
+ for(var dz=-4;dz<=4;dz++){for(var dx=-4;dx<=4;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
+  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0){let ed=distance(e.p.xz,me);if(ed<footprint(e.extraData.z)+.42){bites++;}if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}if(ed<4.0&&ed>.001){flee+=(me-e.p.xz)/ed*(4.0-ed)/4.0;}}}}}
  // Followers take their own place in a loose two-wide column behind the player (by join order) and spread from each other,
  // so four of them never stack on one spot. They walk at 2.6 m/s near the player and 3.6 m/s when more than 4 m behind.
  var stride2=vec2f(0);
@@ -2400,13 +2400,17 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
   let gap=distance(goal,me);if(gap>.35){stride2=civStep30(me,goal)*select(2.6,3.6,d>4.0)*clamp(gap/1.2,.35,1.0);}
   let fwd=safe2(stride2);let dodge=away-fwd*min(0.0,dot(away,fwd));stride2+=sep*3.0+dodge*2.4;let sl=length(stride2);if(sl>3.8){stride2*=3.8/sl;}
  }
+ // Waiting neighbors do not stand still to be eaten: awake infected within 4 m (searched over 9x9 cells) send them backing away at 2 m/s,
+ // which buys the player a few seconds. The mirror flags it (+.25) for the HUD.
+ // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.
+ let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}
  c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
  if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
  if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}
  c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));
  let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[29],1u);}
- Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);
+ Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);
 }
 `;
 // Falling heavy wreckage (6+ voxels, dropping or flung, bottom below 1.2 m) marks the dynamic cells under it; infected there are crushed.
@@ -3666,7 +3670,7 @@ function neighborsHUD30(k){
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);
  if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
- for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
+ for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
 }
 // Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.
 const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};

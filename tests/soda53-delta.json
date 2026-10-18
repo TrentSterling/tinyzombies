@@ -1,0 +1,37 @@
+{
+ "parentSha256": "3a4e10cc7e2fcf8d1a62d3139acfba21533b6901ae7302a12592a43c32c23de7",
+ "changes": [
+  {
+   "before": "    box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);\n    box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);",
+   "after": "    if(u.run.x>5.0&&u.run.y<.5){let fuse=1.0-pipe.z/3.15;let c=p+vec3f(sin(S.aux.x*42.0+f32(bi))*.035*pulse,.04,cos(S.aux.x*37.0+f32(bi))*.02*pulse);\n     box(c,vec3f(.20,.32,.20),vec3f(.86,.10,.12),1,0);box(c+vec3f(0,.17,0),vec3f(.17,.03,.17),vec3f(.80,.82,.84),1,0);box(c+vec3f(0,-.02,.102),vec3f(.13,.11,.012),vec3f(.98,.98,.95),1,0);box(c+vec3f(0,-.02,.109),vec3f(.06,.05,.006),vec3f(.86,.10,.12),1,0);\n     for(var f=0u;f<6u;f++){let ph=fract(S.aux.x*(1.4+3.0*fuse)+f32(f)/6.0);box(c+vec3f(sin(f32(f)*2.1)*.14*ph,.22+ph*(.5+fuse*.8),cos(f32(f)*1.7)*.14*ph),vec3f(.08*(1.0-ph*.5)),vec3f(.97,.93,.84),1,.1);}}\n    else{box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);\n    box(p+vec3f(.03,.08,0),vec3f(.13,.04,.16),vec3f(.65,.31,.10),1,.15);box(p+vec3f(-.24,.13,0),vec3f(.035+.035*pulse),vec3f(1,.32,.04),3,2.0*pulse);}"
+  },
+  {
+   "before": "function gearLabel14(n){const b=playerValues[L13.upgrades]|0;return ",
+   "after": "function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25)return 'SODA CAN';return "
+  },
+  {
+   "before": "gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL','PIPE','MOLOTOV','MEDKIT']",
+   "after": "gearLabel14(2)==='FIRE AXE'?'AXE':'PISTOL',SANDBOX25?'SODA':'PIPE','MOLOTOV','MEDKIT']"
+  },
+  {
+   "before": "9:'Pipe bombs earned. Keep up the good work.'",
+   "after": "9:'Soda cans earned. Shake well before throwing.'"
+  },
+  {
+   "before": "const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 PIPE BOMBS','+1 MEDKIT'];",
+   "after": "const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 SODA CANS','+1 MEDKIT'];"
+  },
+  {
+   "before": "const label='Pipe bomb '+fuse.toFixed(1)+'s';",
+   "after": "const label=(SANDBOX25?'Soda can ':'Pipe bomb ')+fuse.toFixed(1)+'s';"
+  },
+  {
+   "before": "toolHint='A pipe bomb is already active.';",
+   "after": "toolHint=SANDBOX25?'A soda can is already fizzing.':'A pipe bomb is already active.';"
+  },
+  {
+   "before": "toolHint='Pipe bomb ready in '+Math.ceil(playerValues[111])+'s.';",
+   "after": "toolHint=(SANDBOX25?'Next soda can in ':'Pipe bomb ready in ')+Math.ceil(playerValues[111])+'s.';"
+  }
+ ]
+}

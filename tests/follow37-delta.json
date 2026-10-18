@@ -1,0 +1,13 @@
+{
+ "parentSha256": "469a4bb6e0914ecd1466dff8863748690ae2175e8b344b457cebeabc94f4eeeb",
+ "changes": [
+  {
+   "before": " var stride2=vec2f(0);if(c.data.y>1.5&&d>1.7&&player.w>0.0){stride2=civStep30(me,player.xz)*select(2.1,2.9,d>6.0);}\n // Awake infected in contact bite.\n var bites=0u;let cell=vec2i(floor(me+HALF));",
+   "after": " // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.\n var bites=0u;var away=vec2f(0);let cell=vec2i(floor(me+HALF));"
+  },
+  {
+   "before": "let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42){bites++;}}}}",
+   "after": "let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0){let ed=distance(e.p.xz,me);if(ed<footprint(e.extraData.z)+.42){bites++;}if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}}}}}\n // Followers take their own place in a loose two-wide column behind the player (by join order) and spread from each other,\n // so four of them never stack on one spot. They walk at 2.6 m/s near the player and 3.6 m/s when more than 4 m behind.\n var stride2=vec2f(0);\n if(c.data.y>1.5&&player.w>0.0){\n  var rank=0u;var sep=vec2f(0);\n  for(var j=0u;j<12u;j++){if(j==k){continue;}let o=Props[CIV_BASE30+j];if(o.p.w!=30.0||o.data.y<.5||o.data.y>2.5){continue;}if(j<k&&o.data.y>1.5){rank++;}let od=distance(o.p.xz,me);if(od<.9&&od>.001){sep+=(me-o.p.xz)/od*(.9-od);}}\n  // Standing still they gather on their own side of the player; a sideways slot there would make them orbit.\n  let heading=SR[1].xy;let moving=length(heading)>.3;var back=safe2(me-player.xz);if(moving){back=-safe2(heading);}\n  let side=vec2f(-back.y,back.x)*select(-.6,.6,(rank&1u)==1u)*select(0.0,1.0,moving);var goal=player.xz+back*(1.4+f32(rank/2u)*.9)+side;\n  if(solid(vec3f(goal.x,.36,goal.y))>0u){goal=player.xz+back*1.4;}\n  let gap=distance(goal,me);if(gap>.35){stride2=civStep30(me,goal)*select(2.6,3.6,d>4.0)*clamp(gap/1.2,.35,1.0);}\n  let fwd=safe2(stride2);let dodge=away-fwd*min(0.0,dot(away,fwd));stride2+=sep*3.0+dodge*2.4;let sl=length(stride2);if(sl>3.8){stride2*=3.8/sl;}\n }"
+  }
+ ]
+}

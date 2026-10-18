@@ -29,6 +29,8 @@ Every Maple Street now hides 4 to 8 neighbors inside its houses: Brenda, Marv, L
 
 On a software GPU running the real shaders, a neighbor followed the player 73 m across town into the shelter; another, cornered by three awake infected, was lost in about 3 seconds.
 
+A group of neighbors follows as a loose two-wide column behind you instead of piling onto one spot. When you stop, they gather on their own side of you. They hurry (3.6 m/s) when more than 4 m behind, and they sidestep awake infected within 2.2 m without backing away from you. In the same software-GPU test, four neighbors escorted 30 m past six awake infected lost 26 HP between them (previously 91). They stayed about 2.9 m behind you on average (previously 4.5 m, all four stacked within 0.2 m of each other).
+
 ## Hordes that hear things
 
 Infected now follow two flow fields that share one buffer: one toward the squad (you, plus living bots at a small penalty) and one toward whatever they heard (gunfire and blasts far from the squad, alarms, a landed pipe bomb). A lured infected walks around the house to the pipe instead of grinding against the wall toward you. Following is smoother (the 8-way step blends with the field's slope), queues match the speed of the infected ahead instead of braking and surging, and crowd contacts push along the true separation instead of flipping between axes.

@@ -12,6 +12,13 @@ This checkout restores a larger connected Chapter 1 district, destructible wall 
 
 ## Maple Street (default)
 
+Maple Street is in daylight now, styled after Zombies Ate My Neighbors:
+- **Ground:** asphalt streets, pale curbs and sidewalks, a dithered emerald lawn with darker tufts, and wood-plank floors inside the houses. Wall tops keep their brick colors.
+- **Lighting:** the sun is warm, and the blue-black night fog is now a light haze.
+- **Infected:** common infected dress like ZAMN's: grey-green skin, brown, red, purple or blue tops, and blue jeans, so they stand out against the grass.
+
+The DEAD ENDS chapters keep their night look.
+
 Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
 
 - It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).

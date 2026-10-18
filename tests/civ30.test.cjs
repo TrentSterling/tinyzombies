@@ -20,7 +20,7 @@ check('chapters and plain URLs get no neighbors and no civilian dispatch',()=>{
 });
 check('civilian pass: join at 2.2 m, follow on the squad field, bites from awake infected, saved in the shelter, HUD mirror',()=>{
  const s=loadHost(file).sources.civilians30;
- for(const k of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}','stride2=civStep30(me,player.xz)','e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42','c.data.y=4.0;atomicAdd(&C[25],1u);','c.data.y=3.0;atomicAdd(&C[29],1u);','SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);','stepOpen30(wc,wn,d,','portal30('])assert(s.includes(k),k);
+ for(const k of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}',...(s.includes('Followers take their own place')?['stride2=civStep30(me,goal)','if(ed<footprint(e.extraData.z)+.42){bites++;}']:['stride2=civStep30(me,player.xz)','e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42']),'c.data.y=4.0;atomicAdd(&C[25],1u);','c.data.y=3.0;atomicAdd(&C[29],1u);','SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);','stepOpen30(wc,wn,d,','portal30('])assert(s.includes(k),k);
  assert.equal(h0().json('CIV_STATE30')/4,976,'mirror sits in the unused State tail');assert(h0().json('L13.stateFloats')<=3904);
  function h0(){return loadHost(file);}
 });

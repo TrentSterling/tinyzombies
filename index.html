@@ -2373,11 +2373,23 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}
  let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
  if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);}
- var stride2=vec2f(0);if(c.data.y>1.5&&d>1.7&&player.w>0.0){stride2=civStep30(me,player.xz)*select(2.1,2.9,d>6.0);}
- // Awake infected in contact bite.
- var bites=0u;let cell=vec2i(floor(me+HALF));
+ // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.
+ var bites=0u;var away=vec2f(0);let cell=vec2i(floor(me+HALF));
  for(var dz=-1;dz<=1;dz++){for(var dx=-1;dx<=1;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
-  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42){bites++;}}}}
+  for(var q=0u;q<24u&&it>0u;q++){let j=it-1u;it=H[ZHEADS+j];let e=Z[j];if(e.p.w>0.0&&e.v.w>0.0){let ed=distance(e.p.xz,me);if(ed<footprint(e.extraData.z)+.42){bites++;}if(ed<2.2&&ed>.001){away+=(me-e.p.xz)/ed*(2.2-ed)/2.2;}}}}}
+ // Followers take their own place in a loose two-wide column behind the player (by join order) and spread from each other,
+ // so four of them never stack on one spot. They walk at 2.6 m/s near the player and 3.6 m/s when more than 4 m behind.
+ var stride2=vec2f(0);
+ if(c.data.y>1.5&&player.w>0.0){
+  var rank=0u;var sep=vec2f(0);
+  for(var j=0u;j<12u;j++){if(j==k){continue;}let o=Props[CIV_BASE30+j];if(o.p.w!=30.0||o.data.y<.5||o.data.y>2.5){continue;}if(j<k&&o.data.y>1.5){rank++;}let od=distance(o.p.xz,me);if(od<.9&&od>.001){sep+=(me-o.p.xz)/od*(.9-od);}}
+  // Standing still they gather on their own side of the player; a sideways slot there would make them orbit.
+  let heading=SR[1].xy;let moving=length(heading)>.3;var back=safe2(me-player.xz);if(moving){back=-safe2(heading);}
+  let side=vec2f(-back.y,back.x)*select(-.6,.6,(rank&1u)==1u)*select(0.0,1.0,moving);var goal=player.xz+back*(1.4+f32(rank/2u)*.9)+side;
+  if(solid(vec3f(goal.x,.36,goal.y))>0u){goal=player.xz+back*1.4;}
+  let gap=distance(goal,me);if(gap>.35){stride2=civStep30(me,goal)*select(2.6,3.6,d>4.0)*clamp(gap/1.2,.35,1.0);}
+  let fwd=safe2(stride2);let dodge=away-fwd*min(0.0,dot(away,fwd));stride2+=sep*3.0+dodge*2.4;let sl=length(stride2);if(sl>3.8){stride2*=3.8/sl;}
+ }
  c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
  if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[25],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;

@@ -7,7 +7,7 @@ const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn(
 const html=fs.readFileSync(file,'utf8'),h=loadHost(file),civ=Object.values(h.sources).find(s=>s.includes('fn civStep30('));
 check('the hardcoded state slots match L12',()=>{assert.equal(h.json('L12.reserve/4'),557);assert.equal(h.json('L12.items/4'),558);assert(civ.includes('var it=SR[558u];var rs=SR[557u];'));});
 check('rewards per type, capped like the pickups, only on the join edge',()=>{
- const j=civ.indexOf('if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[24],1u);'),r=civ.indexOf('if(t30>0u){SR[558u]=it;SR[557u]=rs;}}');assert(j>0&&r>j&&r-j<900,'inside the join branch');
+ const j=civ.indexOf('if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);'),r=civ.indexOf('if(t30>0u){SR[558u]=it;SR[557u]=rs;}}');assert(j>0&&r>j&&r-j<900,'inside the join branch');
  for(const f of ['if(t30==1u){rs.x=min(240.0,rs.x+60.0);rs.y=min(56.0,rs.y+12.0);}','if(t30==2u){it.z=min(2.0,it.z+1.0);}','if(t30==3u||t30==5u){it.y=min(3.0,it.y+1.0);}','if(t30==4u){it.x=min(4.0,it.x+2.0);}'])assert(civ.includes(f),f);
  assert.deepEqual(h.json('CIV_REWARD47').map(x=>x.replace('SODA CANS','PIPE BOMBS')),['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 PIPE BOMBS','+1 MEDKIT']);
 });

@@ -16,7 +16,7 @@ check('the poster fills the screen yellow, draws the spiral, eleven drips and th
 });
 check('without the overlay the old title card still draws',()=>{const h=loadHost(file,{plain:true});h.run('reset();hud2d30=null;glyphCount=0;titleCard30(1)');assert(h.json('glyphCount')>40);});
 check('ZAMN status block: ten health cells, red when low, and a six-digit score',()=>{
- const h=host();h.run('counters[0]=137;counters[34]=12;counters[29]=2;playerValues[3]=70;hud2d30.log.length=0;zamnHUD52(1)');let log=h.json('hud2d30.log');
+ const h=host();h.run('counters[0]=137;counters[34]=12;counters[66]=2;playerValues[3]=70;hud2d30.log.length=0;zamnHUD52(1)');let log=h.json('hud2d30.log');
  const cells=log.filter(e=>e[0]==='rect'&&e[4]===26);assert.equal(cells.length,10);assert.equal(cells.filter(e=>e[5]==='rgba(92,168,255,1)').length,7);
  assert(log.some(e=>e[0]==='fill'&&e[1]==='002670'),'137*10+12*25+2*500');
  h.run('playerValues[3]=20;hud2d30.log.length=0;zamnHUD52(1)');log=h.json('hud2d30.log');assert.equal(log.filter(e=>e[0]==='rect'&&e[4]===26&&e[5]==='rgba(255,82,77,1)').length,2);

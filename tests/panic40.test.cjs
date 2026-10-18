@@ -12,7 +12,7 @@ check('the infected scan covers 4 m (9x9 cells) and builds a flee vector; bites 
 });
 check('only waiting neighbors panic, at 2 m/s, and never step further than 3 m from home',()=>{
  assert(civ.includes('let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}'));
- assert(html.includes('props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,0,0],slot*16)'),'home stored in more.xy at spawn');
+ assert(html.includes('props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,0,0],slot*16)')||html.includes('props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,type,0],slot*16)'),'home stored in more.xy at spawn');
  const n=v=>{const l=Math.hypot(...v);return l?v.map(x=>x/l):[0,0];};
  for(const [me,flee] of [[[3.2,0],[1,0]],[[3.2,0],[1,1]],[[0,-3.5],[.2,-1]],[[2.5,2.5],[1,0]]]){let s=n(flee).map(v=>v*2);const out=me,o=n(out);if(Math.hypot(...out)>3){const d=Math.max(0,s[0]*o[0]+s[1]*o[1]);s=[s[0]-o[0]*d,s[1]-o[1]*d];}
   if(Math.hypot(...me)>3)assert(s[0]*o[0]+s[1]*o[1]<=1e-9,'no outward step past the tether');}

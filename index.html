@@ -426,7 +426,14 @@ function makeWorld(){
  const civilians30=[];
  if(SANDBOX25&&!settings.lab){const homes=buildings.filter(b=>!b.authored&&Math.hypot(b.x+b.w/2-start[0],b.z+b.d/2-start[1])>18);
   for(let n=homes.length-1;n>0;n--){const k=Math.floor(rand()*(n+1));[homes[n],homes[k]]=[homes[k],homes[n]];}
-  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,x=b.x+b.w/2,z=b.z+b.d*.6,outfit=civilians30.length;props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,0,0],slot*16);civilians30.push({x,z,slot,outfit});}}
+  // Types by order (no extra rand): 0 indoors, 1 Pool Guy (needs this house's pool), 2 BBQ Dad and 4 Trampoline Timmy in the front yard,
+  // 3 Tiffany indoors. A yard or pool spot with anything standing in it falls back to indoors.
+  const clear30=(x,z)=>{for(let dx=-3;dx<=3;dx++)for(let dz=-3;dz<=3;dz++)for(let y=0;y<6;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;return Math.abs(x)<90&&Math.abs(z)<90;};
+  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,outfit=civilians30.length;let x=b.x+b.w/2,z=b.z+b.d*.6,type=[0,2,1,3,4,1,2,4][outfit];
+   if(type===1){const pool=pools45.find(p=>Math.abs(p.x-(b.x+b.w/2-2))<1.5&&p.z<b.z);if(pool){x=pool.x+pool.w/2;z=pool.z+pool.d/2;}else type=0;}
+   else if(type===2||type===4){const yx=b.x+b.w*(type===2?.28:.7),yz=b.z+b.d+2.6;if(clear30(yx,yz)&&clear30(yx+(type===2?1:1.1),yz)&&clear30(yx-(type===2?0:1.1),yz))[x,z]=[yx,yz];else type=0;}
+   const twin=civilians30.filter(n=>n.type===type).length%2;const name=[['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'][outfit],['Pool Guy Phil','Lorraine the Lounger'][twin],['BBQ Dad','Grill Sergeant Gus'][twin],['Tiffany','Brittany'][twin],['Trampoline Timmy','Bouncy Becky'][twin]][type];
+   props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,type,0],slot*16);civilians30.push({x,z,slot,outfit,type,name});}}
 
  if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');
  const occ=new Uint32Array(OCC_SIZE+NAV_SIZE*3+DYNAMIC_SIZE),blocks=new Float32Array(MAX_WORLD*8),chunks=new Uint32Array(CHUNK_COUNT*4);
@@ -2278,13 +2285,27 @@ fn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.da
  let o=u32(c.data.w)%6u;let cloth=array<vec3f,6>(vec3f(.95,.55,.72),vec3f(.18,.42,.86),vec3f(.96,.86,.12),vec3f(.93,.93,.90),vec3f(.40,.70,.30),vec3f(.62,.36,.18))[o];
  let skin=array<vec3f,3>(vec3f(.86,.64,.41),vec3f(.53,.34,.22),vec3f(.95,.76,.62))[o%3u];
  let dir=select(vec2f(0,1),c.aux.zw,length(c.aux.zw)>.1);var face=0u;if(abs(dir.x)>abs(dir.y)){face=select(3u,1u,dir.x>0.0);}else{face=select(2u,0u,dir.y>0.0);}
+ // Types (more.z): 1 floats in the pool on an inner tube, 2 grills by the front fence, 3 cheers with pom-poms, 4 bounces on a trampoline.
+ let kind30=u32(c.more.z);let waiting=c.data.y<1.5&&c.data.z<=0.0;let home=vec3f(c.more.x,0,c.more.y);
+ var lift30=0.0;if(waiting&&kind30==1u){lift30=-.42+.04*sin(S.aux.x*2.0+f32(k));}if(waiting&&kind30==3u){lift30=abs(sin(S.aux.x*5.0+f32(k)))*.28;}if(waiting&&kind30==4u){lift30=.45+abs(sin(S.aux.x*3.2+f32(k)))*1.15;}
+ let base30=c.p.xyz+vec3f(0,lift30,0);
  modelSize=vec3f(.92);modelProne=0.0;let stride=sin(S.aux.x*11.0+f32(k))*min(1.0,length(c.aux.xy))*.09;let lift=abs(stride)*.55;let panic=c.data.z>0.0;
  for(var j=0u;j<15u;j++){let v=FRIEND7[j*2u];let sz=FRIEND7[j*2u+1u];var color=skin;
   switch u32(v.w){case 1u:{color=cloth;}case 2u:{color=cloth*.55;}case 3u:{color=vec3f(.20,.16,.12);}case 4u:{color=vec3f(.03);}case 5u:{color=vec3f(.92,.92,.78);}default:{}}
-  part(c.p.xyz,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.12*abs(sin(S.aux.x*14.0)),panic&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
+  part(base30,v.xyz+vec3f(0,select(0.0,lift,j==2u||j==3u)+select(0.0,.12*abs(sin(S.aux.x*14.0)),panic&&(j==4u||j==5u)),sz.w*stride),sz.xyz,color,face,0);
  }
  modelSize=vec3f(1);
- if(c.data.y<1.5){let bob=.06*sin(S.aux.x*4.0+f32(k));box(c.p.xyz+vec3f(0,1.45+bob,0),vec3f(.10,.28,.10),vec3f(1,.80,.20),3,1.6);box(c.p.xyz+vec3f(0,1.17+bob,0),vec3f(.10,.08,.10),vec3f(1,.80,.20),3,1.6);}
+ if(c.data.y<1.5){let bob=.06*sin(S.aux.x*4.0+f32(k));box(base30+vec3f(0,1.45+bob,0),vec3f(.10,.28,.10),vec3f(1,.80,.20),3,1.6);box(base30+vec3f(0,1.17+bob,0),vec3f(.10,.08,.10),vec3f(1,.80,.20),3,1.6);}
+ if(kind30==1u){let t=base30+vec3f(0,.52,0);let red=vec3f(.95,.18,.14);let white=vec3f(.97,.97,.94);
+  box(t+vec3f(0,0,.44),vec3f(1.0,.22,.22),red,1,0);box(t-vec3f(0,0,.44),vec3f(1.0,.22,.22),white,1,0);box(t+vec3f(.44,0,0),vec3f(.22,.22,.66),white,1,0);box(t-vec3f(.44,0,0),vec3f(.22,.22,.66),red,1,0);}
+ if(kind30==2u){box(base30+vec3f(0,1.06,0),vec3f(.40,.10,.40),vec3f(.96,.96,.94),1,0);box(base30+vec3f(0,1.20,0),vec3f(.46,.20,.46),vec3f(.98,.98,.96),1,0);
+  let g=home+vec3f(1.0,0,0);for(var l=0u;l<3u;l++){let a=f32(l)*2.094;box(g+vec3f(cos(a)*.20,.30,sin(a)*.20),vec3f(.05,.60,.05),vec3f(.08,.08,.09),1,0);}
+  box(g+vec3f(0,.70,0),vec3f(.62,.26,.62),vec3f(.07,.07,.08),1,0);box(g+vec3f(0,.85,0),vec3f(.50,.03,.50),vec3f(1,.42,.08),1,1.2);box(g+vec3f(0,.88,0),vec3f(.56,.02,.06),vec3f(.25,.25,.27),1,0);
+  for(var s=0u;s<3u;s++){let ph=fract(S.aux.x*.45+f32(s)/3.0);box(g+vec3f(sin(ph*7.0+f32(s))*.12,.95+ph*1.6,0),vec3f(.18+ph*.25),vec3f(.62,.62,.64)*(1.0-ph*.3),1,0);}}
+ if(kind30==3u){let up=.95+lift30*.3;for(var h=0u;h<2u;h++){let sx=select(-.40,.40,h==1u);box(base30+vec3f(sx,up,0),vec3f(.26,.24,.26),select(vec3f(.98,.85,.15),vec3f(.92,.18,.30),h==1u),1,.15);}}
+ if(kind30==4u){let m=home+vec3f(0,.42,0);box(m,vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);
+  for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}
+  for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}
 }
 // Long guns lie along +x on tables (boxes are axis-aligned). kind 0 rifle, 1 pump shotgun. c is the receiver centre.
 fn gunFlat44(c:vec3f,kind:u32){let wood=vec3f(.45,.27,.13);let steel=vec3f(.11,.12,.13);
@@ -3738,16 +3759,28 @@ const SANDBOX_LINES25={2:'Car battery acquired. Technically theft.',3:['Karaoke 
 function sandboxBanner25(code,value){const line=SANDBOX_LINES25[code];return Array.isArray(line)?line[value>.5?1:0]:line||'';}
 const SQUAD25=()=>SANDBOX25?['Gary','Doris','Chad']:['Mara','Rook','Kit'];
 const CIV_NAMES30=['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'];
+let civPrev47=[],civPrevWorld47=null,civBanner47='',civBannerUntil47=0;
+const CIV_TYPE_LINES47=[null,
+ {join:['{n} is following you. Still in the inner tube.','{n} climbed out of the pool. Nobody is drying off.'],saved:['{n} is safe and dripping on everything.','{n} made it and asked if the shelter has a hot tub.'],lost:['{n} is gone. Adult swim is over.','We lost {n}. The pool is closed until further notice.']},
+ {join:['{n} is with you. The burgers are not.','{n} left the grill on. That is a later problem.'],saved:['{n} is safe and already asking where the grill is.','{n} made it and is explaining charcoal to strangers.'],lost:['We lost {n}. Medium-well.','{n} is gone. The burgers are burning.']},
+ {join:['{n} is cheering you on. Gimme a Z!','{n} joined the squad. Literally a squad now.'],saved:['{n} made it! Two bits, four bits, survival!','{n} is safe and doing a cartwheel about it.'],lost:['{n} is down. No more pyramids.','We lost {n}. Somebody tell the boosters.']},
+ {join:['{n} bounced off the trampoline and onto your team.','{n} is following you. Bouncing, mostly.'],saved:['{n} is safe and wants to go back for the trampoline.','{n} made it. Highest score: forty bounces.'],lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']}];
 const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],
  saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
 let civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;
 function neighborsHUD30(k){
  const total=world.civilians30.length,joined=counters[24]|0,saved=counters[29]|0,lost=counters[25]|0;
- for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind]){const pick=CIV_LINES30[kind==='joined'?'join':kind];const who=CIV_NAMES30[(now*3+total)%CIV_NAMES30.length];civNote30=pick[now%pick.length].replaceAll('{n}',who);civNoteUntil30=time+4;civSeen30[kind]=now;}}
+ // Quips name the neighbor whose state actually changed (mirror states: 1 waiting, 2 following, 3 saved, 4 lost); typed rescues get a banner.
+ if(civPrevWorld47!==world){civPrevWorld47=world;civPrev47=world.civilians30.map(()=>1);civBanner47='';}
+ world.civilians30.forEach((n,c)=>{const st=Math.round(playerValues[CIV_STATE30+c*4+2]);if(st<2||st>4||st===civPrev47[c])return;const kind=st===2?'join':st===3?'saved':'lost';
+  const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
+  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4;civPrev47[c]=st;});
+ for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);
  if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
+ if(civBanner47&&time<civBannerUntil47){const px=(40+6*Math.sin((civBannerUntil47-time)*9))*k;text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,COL9.gold);}
  for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
 }
 // Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.

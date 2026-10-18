@@ -313,9 +313,12 @@ function makeWorld(){
  const pools45=[],gates45=[];
  const empty45=(x0,z0,x1,z1)=>{for(let x=Math.floor((x0+96)*4);x<Math.ceil((x1+96)*4);x++)for(let z=Math.floor((z0+96)*4);z<Math.ceil((z1+96)*4);z++){const c=cells.get(keyCell(x,0,z));if(c&&c[3]!==6&&c[3]!==7)return false;}return true;};
  const ok45=(x0,z0,x1,z1)=>{const cx=(x0+x1)/2,cz=(z0+z1)/2,r=Math.max(x1-x0,z1-z0)/2;return x0>-90&&x1<90&&z0>-90&&z1<90&&free(cx,cz,r)&&flowFree9(cx,cz,r)&&freightFree9(cx,cz,r)&&empty45(x0-.5,z0-.5,x1+.5,z1+.5);};
+ // Picket fences: a rail along the bottom and every other slat standing .75 m, one voxel thick, so there are real gaps between slats.
+ function picket45(x,z,length,gate=0){const n=Math.round(length*4),gs=[],bx=Math.round((x+96)*4),bz=Math.round((z+96)*4)+1;
+  for(let i=0;i<n;i++){if(gate&&Math.abs((i+.5)*.25-length*.5)<gate*.5)continue;const s=Math.floor(i/16);if(gs[s]===undefined)gs[s]=newGroup();for(let y=0;y<3;y++)if(y===0||i%2===0)add(bx+i,y,bz,7,gs[s]);}}
  function yard45(hx,hz,hw,hd){const fz=hz+hd+.5,depth=4.5;
   for(const x of [hx-1.25,hx+hw+.75])if(ok45(x,fz+.5,x+.5,fz+depth))wall(x,fz+.5,depth-.5,true,0,6,1.0);
-  if(ok45(hx-1.25,fz+depth,hx+hw+1.25,fz+depth+.5)){wall(hx-1.25,fz+depth,hw+2.5,false,3,7,.75);gates45.push({x:hx+hw/2,z:fz+depth});}
+  if(ok45(hx-1.25,fz+depth,hx+hw+1.25,fz+depth+.5)){picket45(hx-1.25,fz+depth,hw+2.5,3);gates45.push({x:hx+hw/2,z:fz+depth});}
   const px=Math.round(hx+hw/2-2),pz=Math.round(hz-4.25);if(ok45(px,pz,px+4,pz+3))pools45.push({x:px,z:pz,w:4,d:3});
  }
  function houses25(cx,cz,id){
@@ -323,10 +326,10 @@ function makeWorld(){
    const hw=8+Math.floor(rand()*3),hd=7+Math.floor(rand()*2),hx=hx0+Math.floor(rand()*2),hz=hz0+Math.floor(rand()*2);
    if(!free(hx+hw/2,hz+hd/2,6)||!flowFree9(hx+hw/2,hz+hd/2,6)||!freightFree9(hx+hw/2,hz+hd/2,6))continue;
    const mat=rand()<.4?3:8+((hx*7+hz*13)%3+3)%3,westDoor=rand()<.5;
-   wall(hx,hz,hw,false,0,mat);wall(hx,hz+hd,hw,false,4.5,mat);wall(hx,hz,hd,true,westDoor?2:0,mat);wall(hx+hw-.5,hz,hd,true,westDoor?0:2,mat);
+   wall(hx,hz,hw,false,0,mat);wall(hx,hz+hd,hw,false,2,mat);wall(hx,hz,hd,true,westDoor?2:0,mat);wall(hx+hw-.5,hz,hd,true,westDoor?0:2,mat);
    buildings.push({x:hx,z:hz,w:hw,d:hd});if(rand()<.7)shelf(hx+1,hz+1);yard45(hx,hz,hw,hd);
   }
-  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6)&&!gates45.some(g=>Math.abs(g.z-(cz-6))<3&&x<g.x+2&&x+2>g.x-2))wall(x,cz-6,2,false,0,7,.75);}
+  if(rand()<.75)for(let x=cx-22;x<cx;x+=2){if(x>=cx-13&&x<cx-9)continue;if(free(x+1,cz-6,.6)&&flowFree9(x+1,cz-6,.6)&&freightFree9(x+1,cz-6,.6)&&!gates45.some(g=>Math.abs(g.z-(cz-6))<3&&x<g.x+2&&x+2>g.x-2))picket45(x,cz-6,2);}
   crate(cx+6+Math.floor(rand()*4),cz+6+Math.floor(rand()*3),2);crate(cx-10+Math.floor(rand()*3),cz+13,1.5);if(rand()<.4)crate(cx+11,cz+8,1.25);
  }
  // Sixteen districts share a 12 m street network. Buildings occupy islands, never the full district.
@@ -398,7 +401,8 @@ function makeWorld(){
   const addDoor7=(x,z,sx,sz,closed,startDoor=false)=>{const index=propCount++;props.set([x,closed?1:3.4,z,9,28,closed?1:0,0,startDoor?1:0,sx,2,sz,0,0,0,0,0],index*16);doors7.push({index,x,z,sx,sz,startDoor});};
   addDoor7(sx+3.75,sz,.5,3.5,true,true);
   for(const b of buildings){
-   if(!b.authored||b.doors[1])addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);
+   // Maple Street houses have a plain 2 m front doorway, not a roll-up shutter.
+   if(b.authored?b.doors[1]:!SANDBOX25)addDoor7(b.x+b.w*.5,b.z+b.d+.25,4.5,.5,false);
    if(b.authored&&b.doors[0])addDoor7(b.x+b.w*.5,b.z+.25,4.5,.5,false);
    if(b.authored&&b.doors[2])addDoor7(b.x+.25,b.z+b.d*.5,.5,3.5,false);
    if(b.authored&&b.doors[3])addDoor7(b.x+b.w-.25,b.z+b.d*.5,.5,3.5,false);
@@ -1090,6 +1094,8 @@ const beginShader=COMMON+`
 fn wallRay(o:vec2f,d:vec2f,maxT:f32)->f32 {
  for(var i=1u;i<120u;i++){let t=f32(i)*.125;if(t>maxT){break;}let p=o+d*t;if(solid(vec3f(p.x,.55,p.y))>0u||(O[DYNAMIC_OFFSET+dynCell(p)]&4u)!=0u){return t;}}return maxT;
 }
+// Inside a backyard pool (floors42 entries flagged +16)? Wading costs speed on Maple Street.
+fn inPool45(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;let w=a-(x0+96.0)*32.0;let d=b-(z0+96.0)*32.0;if(w>=16.0&&p.x>x0&&p.x<x0+w-16.0&&p.y>z0&&p.y<z0+d-16.0){return true;}}}return false;}
 fn haveGear12(n:u32)->bool {if(n<3u){return true;}return S.items12[n-3u]>0.0;}
 fn axeEquipped14()->bool {return (u32(S.upgrades14.x)&4u)!=0u&&S.gear12.x==2.0&&S.player7.x==0.0&&S.cell.w!=1.0&&S.flags12.w==0.0&&S.pos.w>0.0;}
 fn reloadGun12(){
@@ -1234,7 +1240,7 @@ fn equipment12(dt:f32){
  if(S.flags12.w>0.0){mv=vec2f(0);}
  let dir=safe2(aim);if(S.flags12.w==0.0&&length(dir)>.1){S.look.x=dir.x;S.look.y=dir.y;}
  S.motion.w=0.0;
- let speed=select(select(1.0,.4,S.flags12.w>0.0)*select(205.0/64.0,205.0/64.0*1.42,S.flags12.z>.5)*select(1.0,.67,S.squad7.y>=0.0)*select(1.0,.9,S.cell.w==1.0)*select(1.0,.15,S.heal12.x>0.0),.60,downed);
+ let speed=select(1.0,.55,u.run.x>5.0&&u.run.y<.5&&inPool45(S.pos.xz))*select(select(1.0,.4,S.flags12.w>0.0)*select(205.0/64.0,205.0/64.0*1.42,S.flags12.z>.5)*select(1.0,.67,S.squad7.y>=0.0)*select(1.0,.9,S.cell.w==1.0)*select(1.0,.15,S.heal12.x>0.0),.60,downed);
  mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
  var p=S.pos.xyz;let h=vec3f(.24,.30,.24);let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}
  p.x=clamp(p.x,-95.3,95.3);p.z=clamp(p.z,-95.3,95.3);S.pos=vec4f(p,S.pos.w);S.motion.x=mv.x;S.motion.y=mv.y;S.anim8.x+=length(movement)*5.0;
@@ -1669,6 +1675,8 @@ const zombieShader=COMMON+`
 `+SOLID.replace(/O\[([^\]]+)\]/g,'atomicLoad(&O[$1])')+EMIT+`
 // The closest remembered noise this position is inside the radius of, or 6 when it hears none.
 fn ringHeard34(p:vec2f)->u32 {var best=6u;var bd=1e9;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];let d=distance(p,r.xy);if(r.z>0.0&&d<r.w&&d<bd){bd=d;best=k;}}return best;}
+// Inside a backyard pool (floors42 entries flagged +16)? Wading costs speed on Maple Street.
+fn inPool45(p:vec2f)->bool {for(var k=0u;k<29u;k++){let f=S.floors42[k];if(f.x==0.0){break;}for(var h=0u;h<2u;h++){let a=select(f.x,f.z,h==1u);let b=select(f.y,f.w,h==1u);if(a==0.0){continue;}let x0=floor(a/32.0)-96.0;let z0=floor(b/32.0)-96.0;let w=a-(x0+96.0)*32.0;let d=b-(z0+96.0)*32.0;if(w>=16.0&&p.x>x0&&p.x<x0+w-16.0&&p.y>z0&&p.y<z0+d-16.0){return true;}}}return false;}
 fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let cost=atomicLoad(&O[base+here]);
  var best=1e9;var result=vec2f(0);let rotate=hash(id)%8u;
@@ -1735,7 +1743,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
    var speed=(92.0+z.extraData.x*29.0)/64.0;
   if(kind>0.0){speed=array<f32,7>(108.0,225.0,72.0,83.0,151.0,83.0,72.0)[u32(kind)]/64.0;}
   if(!awake){speed=select((29.0+rnd(i*31u)*18.0)/64.0,0.0,fract(wanderClock/5.5)>.65);}
-  if(z.combat13.y>0.0){speed*=.06;}if(searching){speed*=.55;}
+  if(z.combat13.y>0.0){speed*=.06;}if(searching){speed*=.55;}if(u.run.x>5.0&&u.run.y<.5&&inPool45(z.p.xz)){speed*=.45;}
 
  var velocity=mix(z.v.xy,dir*speed,1.0-exp(-dt*12.0))+z.history.zw;
  var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
@@ -2209,13 +2217,18 @@ fn model(base:vec3f,dir:vec2f,phase:f32,variant:f32,player:bool,flash:f32,typ:f3
  modelSize=vec3f(1);if(typ==2.0){modelSize=vec3f(1.4);}if(typ==3.0){modelSize=vec3f(1.2,1.08,1.2);}
  modelProne=select(select(0.0,1.0,typ==4.0),-1.0,typ==-3.0);
  let walk=clamp(length(S.motion.xy),0.0,1.0);let bob=(.5-.5*cos(phase*2.0))*.026*walk;let stride=sin(phase)*.10*walk;let punch=sin(clamp(S.anim8.z/.30,0.0,1.0)*3.14159265);let reload=select(0.0,1.0,S.weapons.y>0.0);var skin=select(vec3f(.28,.53,.35)*(0.88+variant*.25),vec3f(.94,.73,.40),player);if(typ==1.0){skin=vec3f(.43,.64,.29);}if(typ==2.0){skin=vec3f(.29,.38,.31);}if(typ==3.0){skin=vec3f(.51,.51,.22);}if(typ==5.0){skin=vec3f(.55,.20,.45);}
- let legs=select(vec3f(.13,.22,.20),vec3f(.19,.14,.105),player);let top=select(skin,select(vec3f(.32,.67,.19),vec3f(.56,.19,.69),typ< -1.5),player);
+ let legs=select(vec3f(.13,.22,.20),select(vec3f(.19,.14,.105),vec3f(.16,.22,.42),player&&u.run.x>5.0&&u.run.y<.5),player);let top=select(skin,select(vec3f(.32,.67,.19),vec3f(.56,.19,.69),typ< -1.5),player);
+ // Maple Street player: a ZAMN nod (blonde spikes, 3D glasses, black skull tee, jeans) that pops on the lawn.
+ let zeke=player&&typ> -1.5&&u.run.x>5.0&&u.run.y<.5;let hair=select(top,vec3f(.98,.82,.22),zeke);
  part(base,vec3f(0,.6875+bob,0),vec3f(.493,.493,.493),mix(skin,vec3f(1,.74,.45),flash*.45),face,0);
- part(base,vec3f(0,.3125,0),vec3f(.375,.25,.375),select(skin*.8,select(vec3f(.41,.27,.12),vec3f(.37,.11,.46),typ< -1.5),player),face,0);
+ part(base,vec3f(0,.3125,0),vec3f(.375,.25,.375),select(select(skin*.8,select(vec3f(.41,.27,.12),vec3f(.37,.11,.46),typ< -1.5),player),vec3f(.09,.09,.11),zeke),face,0);
+ if(zeke){part(base,vec3f(0,.33,.19),vec3f(.15,.13,.02),vec3f(.92,.92,.88),face,0);}
  if(typ!=4.0){part(base,vec3f(-.125,.09375+max(0.0,sin(phase))*.05*walk,-stride),vec3f(.125,.1875,.1875),legs,face,0);part(base,vec3f(.125,.09375+max(0.0,-sin(phase))*.05*walk,stride),vec3f(.125,.1875,.1875),legs,face,0);}
  part(base,vec3f(-.3125,.31+stride*.3+.14*reload,.12+.06*reload),vec3f(.125,.1875,.1875),skin,face,0);part(base,vec3f(.3125,.31-stride*.3+.10*punch,.12+.38*punch),vec3f(.125,.1875,.1875),skin,face,0);
  if(player){let hair=vec3f(.065,.045,.03);part(base,vec3f(0,1.0625,-.15625),vec3f(.125,.125,.1875),hair,face,0);part(base,vec3f(0,1.125,0),vec3f(.125,.25,.1875),hair,face,0);part(base,vec3f(0,1.0625,.15625),vec3f(.125,.125,.1875),hair,face,0);}
- if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),top,face,0);part(base,vec3f(0,.6875,-.25),vec3f(.5,.5,.125),top,face,0);part(base,vec3f(0,.68,.255),vec3f(.375,.125,.02),vec3f(.035,.045,.04),face,0);}
+ if(player){part(base,vec3f(0,.9375,0),vec3f(.5,.125,.5),hair,face,0);part(base,vec3f(0,.6875,-.25),vec3f(.5,.5,.125),hair,face,0);part(base,vec3f(0,.68,.255),vec3f(.375,.125,.02),select(vec3f(.035,.045,.04),vec3f(.95,.95,.92),zeke),face,0);}
+ if(zeke){part(base,vec3f(-.09,.68,.268),vec3f(.12,.08,.012),vec3f(.85,.10,.10),face,.2);part(base,vec3f(.09,.68,.268),vec3f(.12,.08,.012),vec3f(.15,.35,.95),face,.2);
+  for(var sp=0u;sp<5u;sp++){let q=vec2f(f32(sp%3u)-1.0,f32(sp/3u)-.5)*vec2f(.16,.18);part(base,vec3f(q.x,1.04+f32(sp%2u)*.04,q.y),vec3f(.09,.12,.09),vec3f(.98,.82,.22),face,0);}}
  else{let eye=select(vec3f(.95,.095,.065),vec3f(1,.63,.065),typ==1.0);part(base,vec3f(-.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(.15625,.71,.254),vec3f(.125,.125,.018),eye,face,.24);part(base,vec3f(0,.53,.252),vec3f(.1875,.0625,.016),skin*.38,face,0);}
  if(typ==2.0){part(base,vec3f(0,.375,.23),vec3f(.5,.1875,.0625),vec3f(.42,.30,.18),face,0);}if(typ==3.0){part(base,vec3f(0,.38,.23),vec3f(.3125,.25,.125),vec3f(.63,.17,.15),face,.2);}
  if(typ==5.0){part(base,vec3f(0,1.02,0),vec3f(.23,.19,.23),vec3f(.98,.47,.14),face,.5);part(base,vec3f(0,.54,.27),vec3f(.24,.15,.05),vec3f(.075,.024,.037),face,0);}
@@ -3089,7 +3102,7 @@ const faceBuildShader=COMMON+`
 @group(0) @binding(6) var<storage,read> WP:array<u32>;
 @group(0) @binding(7) var<storage,read_write> Faces:array<Box>;
 @compute @workgroup_size(64) fn build(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=wg.x;if(chunk>=CHUNKS){return;}let centre=vec3f(f32(chunk%48u)*4.0-94.0,1.0,f32(chunk/48u)*4.0-94.0);let clip=u.vp*vec4f(centre-vec3f(S.pos.x,0,S.pos.z),1);if(abs(clip.x)>1.0+8.0/u.screen.z||abs(clip.y)>1.0+8.0/u.screen.w){return;}
- let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}if(mat==6u){color=vec3f(.09,.27,.11)*(.8+rnd(item.x*29u)*.45);}if(mat==7u){color=select(vec3f(.84,.84,.80),vec3f(.52,.54,.50),(u32(floor((b.p.x+b.p.z)*4.0+.5))&1u)==1u&&b.p.y>.3);}if(mat==8u){color=vec3f(.80,.50,.54);}if(mat==9u){color=vec3f(.50,.72,.60);}if(mat==10u){color=vec3f(.52,.63,.80);}color*=.94+rnd(item.x*17u)*.12;
+ let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}if(mat==6u){color=vec3f(.09,.27,.11)*(.8+rnd(item.x*29u)*.45);}if(mat==7u){color=vec3f(.86,.86,.82);}if(mat==8u){color=vec3f(.80,.50,.54);}if(mat==9u){color=vec3f(.50,.72,.60);}if(mat==10u){color=vec3f(.52,.63,.80);}color*=.94+rnd(item.x*17u)*.12;
  let char6=WP[${MAX_WORLD}u+item.x];let charAmount=f32(char6&255u)/255.0;color=mix(color,vec3f(.065,.051,.044),smoothstep(.05,.70,charAmount));
  let packed=WP[item.x];let amount=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);color=mix(color,mix(vec3f(.25,.022,.025),vec3f(.56,.015,.035),exp(-age*.05)),amount*.9*select(1.0,.24,char6>packed));color=mix(color,vec3f(.034,.029,.025),charAmount*.60);
  let damage=1.0-clamp(b.p.w/max(1.0,b.extraData.z),0.0,1.0);let dst=atomicAdd(&C[19],1u);if(dst<${MAX_FACES}u){Faces[dst]=Box(vec4f(b.p.xyz+n*.125,damage),vec4f(n,4),vec4f(color,1));}}
@@ -3748,6 +3761,8 @@ function calloutsHUD30(k){
  if(callout30.chainBurst>=2&&time-callout30.chainAt<1.6){const s='CHAIN x'+callout30.chainBurst,px=24*k;text(s,width/2-textWidth9(s,px)/2,height*.24+40*k,px,COL9.red);}
 }
 function waitingNeighbors30(){let n=0;for(let c=0;c<CIV_MAX30;c++)if(Math.round(playerValues[CIV_STATE30+c*4+2])===1)n++;return n;}
+// The maps are GPU quads under the 2D overlay; their panels are drawn on the overlay, so cut a hole over the map or the panel hides it.
+function hudHole30(x,y,w,h){if(hud2d30){const s=hudScale30;hud2d30.clearRect(x*s,y*s,w*s,h*s);}}
 function pill30(label,cx,cy,px,col){const tw=textWidth9(label,px),w=tw+px*1.8,h=px*1.9,x=cx-w/2,y=cy-h/2,b=Math.max(2,px*.09);
  rect(x,y,w,h,[.03,.08,.10,.92]);rect(x,y,w,b,col);rect(x,y+h-b,w,b,col);rect(x,y,b,h,col);rect(x+w-b,y,b,h,col);text(label,cx-tw/2,cy-px*.75,px,col);}
 function titleCard30(k){
@@ -3908,7 +3923,7 @@ function hud(){
  if(settings.map&&active&&!settings.tactical&&!settings.hideUI&&!settings.help&&!settings.paused){
   const sz=clamp9(height*.23,136,180),x=width-sz-18*k,y=18*k;
   panel9(x-6*k,y-6*k,sz+12*k,sz+29*k,.88);
-  uiQuad9(x,y,sz,sz,[1,1,1,1],130);
+  uiQuad9(x,y,sz,sz,[1,1,1,1],130);hudHole30(x,y,sz,sz);
   text('Tab  Field map',x,y+sz+7*k,11*k,COL9.soft);
  }
  // Tab toggles the expanded field map and squad status.
@@ -3916,8 +3931,8 @@ function hud(){
   const sz=clamp9(height*.48,220,440),x=(width-sz)/2,y=(height-sz)/2-32*k;
   panel9(x-28*k,y-64*k,sz+56*k,sz+155*k,.92);
   text('Field map',x-2*k,y-53*k,25*k,COL9.white);
-  text(world.chapter8.name.replaceAll('_',' ').toLowerCase()+'  /  Chapter '+stage,x-2*k,y-21*k,14*k,COL9.soft);
-  uiQuad9(x,y,sz,sz,[1,1,1,1],130);
+  text(SANDBOX25?'Maple Street  /  Pleasant Acres':world.chapter8.name.replaceAll('_',' ').toLowerCase()+'  /  Chapter '+stage,x-2*k,y-21*k,14*k,COL9.soft);
+  uiQuad9(x,y,sz,sz,[1,1,1,1],130);hudHole30(x,y,sz,sz);
   const mission=shortObjective9(),distance=Math.round(Math.hypot(playerValues[488]-playerValues[0],playerValues[489]-playerValues[2]));
   text(mission+'  '+distance+'m',x,y+sz+12*k,17*k,COL9.gold);
   const nick=SQUAD25(),tones=[COL9.violet,COL9.cyan,COL9.gold];

@@ -29,6 +29,8 @@ The yards look the part as well:
 
 Hedges and fences are ordinary breakable voxels, so they shatter like everything else. The street layout, neighbors and supplies are exactly where they were.
 
+Houses have a plain 2 m front doorway instead of the old roll-up garage shutters. Fences are real pickets, one slat up and one slat gap. Pools are water: infected wade through at under half speed and you at about half. On Maple Street you have spiky blonde hair, 3D glasses, a black skull tee and jeans, so you stand out on the lawn. The minimap and the Tab field map show again. Since the HUD overhaul, their dark backing panels had been drawn on top of the maps and hid them.
+
 Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
 
 - It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).

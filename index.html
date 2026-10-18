@@ -2191,6 +2191,15 @@ fn artColor6(index:u32,kind:f32,variant:f32)->vec3f {
  let maple=u.run.x>5.0&&u.run.y<.5&&kind==0.0;
  if(maple&&index==3u){return array<vec3f,4>(vec3f(.46,.29,.15),vec3f(.66,.16,.13),vec3f(.40,.21,.52),vec3f(.20,.34,.62))[min(3u,u32(variant*4.0))];}
  if(maple&&index==4u){return vec3f(.17,.24,.44);}
+ // Maple Street specials are dressed as B-movie monsters: runner werewolf (fur, yellow eyes), brute hockey-mask maniac (plaid, jeans),
+ // leaper mummy (wraps, red eyes), screamer pink Martian, bloater swamp blob. Colors only; the boxes are unchanged.
+ if(u.run.x>5.0&&u.run.y<.5&&kind>0.0){
+  if(kind==1.0){switch index {case 0u:{return vec3f(.44,.30,.17)*(0.9+variant*.2);}case 1u:{return vec3f(.26,.17,.10);}case 2u:{return vec3f(.58,.43,.27);}case 3u:{return vec3f(.52,.54,.60);}case 4u:{return vec3f(.18,.20,.30);}case 5u:{return vec3f(1,.86,.10);}default:{}}}
+  if(kind==2.0){switch index {case 0u:{return vec3f(.93,.91,.84);}case 1u:{return vec3f(.12,.10,.10);}case 2u:{return vec3f(.98,.97,.92);}case 3u:{return vec3f(.66,.10,.08);}case 4u:{return vec3f(.16,.22,.40);}default:{}}}
+  if(kind==4.0){let wrap=vec3f(.84,.78,.60)*(0.92+variant*.12);switch index {case 0u,2u,3u,4u:{return wrap;}case 1u:{return wrap*.72;}case 5u:{return vec3f(1,.12,.05);}default:{}}}
+  if(kind==5.0){switch index {case 0u:{return vec3f(.96,.46,.72);}case 1u:{return vec3f(.62,.22,.48);}case 2u:{return vec3f(1,.68,.86);}case 3u:{return vec3f(.20,.85,.80);}case 5u:{return vec3f(.15,1,.35);}default:{}}}
+  if(kind==6.0){switch index {case 0u:{return vec3f(.30,.42,.16);}case 1u:{return vec3f(.18,.26,.10);}case 2u:{return vec3f(.46,.58,.22);}default:{}}}
+ }
  var skin=select(vec3f(.24,.52,.33)*(0.85+variant*.27),vec3f(.40,.57,.40)*(0.9+variant*.18),maple);
  if(kind==1.0){skin=vec3f(.48,.63,.23);}if(kind==2.0){skin=vec3f(.30,.40,.31);}
  if(kind==3.0){skin=vec3f(.49,.51,.19);}if(kind==5.0){skin=vec3f(.57,.21,.43);}if(kind==6.0){skin=vec3f(.24,.35,.28);}

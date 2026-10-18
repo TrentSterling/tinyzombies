@@ -13,7 +13,7 @@ check('crush30 marks cells under falling heavy wreckage with a bit no mask can s
  // blocked() masks cover layers 0-11 and the door copy 16-27; bit 28 is invisible to collision, sight and nav.
  const maxMask=((1<<12)-1)|(((1<<12)-1)<<16);assert.equal(maxMask&0x10000000,0);
  assert(h.script.includes("pass(enc,'dynamic',bindings.dynamic,Math.ceil(world.propCount/64));pass(enc,'crush30',bindings.crush30,4);"),'runs after the per-frame dynamic rebuild, before zombies');
- assert(h.script.includes('offset:F8.pieces*4,size:WRECK_MAX8*F8.stride*4'),'binds exactly the wreck array');
+ assert(h.script.includes('offset:F8.pieces*4,size:WRECK_MAX8*F8.stride*4')||h.script.includes('offset:F8.pieces*4-CRUSH_LEAD30,size:CRUSH_LEAD30+WRECK_MAX8*F8.stride*4'),'binds exactly the wreck array (from a 256-aligned offset since align38)');
 });
 check('infected in a marked cell take the slab crush (200) and count as crushed',()=>{
  assert(src.zombies.includes('if((atomicLoad(&O[DYNAMIC_OFFSET+dynCell(z.p.xz)])&0x10000000u)!=0u){damage+=200.0;atomicAdd(&C[34],1u);}'));

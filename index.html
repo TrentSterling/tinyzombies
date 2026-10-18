@@ -3845,7 +3845,8 @@ function neighborsHUD30(k){
 const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};
 // Every kick of a cheese wheel (C[48]) flashes a banner and a line.
 let cheeseSeen48=0,cheeseUntil48=0,cheeseLine48='';const CHEESE_LINES48=['Aged twelve months. Rolled for thirty metres.','Wisconsin sends its regards.','It is a cheese wheel. It does not stop.','Grate work.','That is gouda.'];
-function cheeseHUD48(k){const n=counters[48]|0;if(n<cheeseSeen48)cheeseSeen48=n;if(n>cheeseSeen48){cheeseSeen48=n;cheeseUntil48=time+1.8;cheeseLine48=CHEESE_LINES48[n%CHEESE_LINES48.length];}
+function cheeseHUD48(k){const n=counters[48]|0;
+ if(n===0)for(const c of world.cheese48||[]){if(Math.hypot(c.x-playerValues[0],c.z-playerValues[2])>7)continue;const [sx,sy]=screenPoint(c.x,c.z,1.35+.12*Math.abs(Math.sin(time*5)));if(sx<30||sx>width-30||sy<30||sy>height-30)continue;const s='KICK ME!';text(s,sx-textWidth9(s,15*k)/2,sy,15*k,COL9.gold);}if(n<cheeseSeen48)cheeseSeen48=n;if(n>cheeseSeen48){cheeseSeen48=n;cheeseUntil48=time+1.8;cheeseLine48=CHEESE_LINES48[n%CHEESE_LINES48.length];}
  if(time<cheeseUntil48){const px=(42+5*Math.sin((cheeseUntil48-time)*10))*k,s='SAY CHEESE!';text(s,width/2-textWidth9(s,px)/2,height*.20,px,COL9.gold);text(cheeseLine48,width/2-textWidth9(cheeseLine48,15*k)/2,height*.20+52*k,15*k,COL9.white);}}
 // Overkill bursts (C[51]) within 1.2 s of each other stack into a SPLAT xN callout.
 let splatSeen51=0,splatBurst51=0,splatAt51=-9;

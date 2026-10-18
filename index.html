@@ -3123,6 +3123,8 @@ fn sourceProps15(){
  for(var ck=0u;ck<12u;ck++){var cv=P[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y!=4.0){continue;}cv.data.y=4.25;P[CIV_BASE30+ck]=cv;let at=vec3f(cv.p.x,.55,cv.p.z);let seed=ck*977u+u32(S.aux.x*60.0);
   let shirt=array<vec3f,4>(vec3f(.95,.55,.70),vec3f(.35,.65,.95),vec3f(.98,.85,.30),vec3f(.55,.85,.45))[ck%4u];
   event(at,vec3f(0,5.5,0),shirt,0u,40u,seed);event(at,vec3f(0,7.0,0),vec3f(.72,.015,.03),7u,120u,seed*331u);event(at+vec3f(0,.5,0),vec3f(0,9.0,0),vec3f(.93,.72,.55),0u,16u,seed*743u);atomicAdd(&C[57],1u);}
+ // A landed bite or swipe on the player (this frame's hit, kept in S.pace7.w by begin()) spurts blood off them, more for harder hits.
+ {let bite=u32(S.pace7.w)%256u;if(bite>0u&&S.pos.w>0.0){event(vec3f(S.pos.x,.7,S.pos.z),vec3f(0,3.0,0),vec3f(.72,.015,.03),7u,12u+bite*2u,bite*911u+u32(S.aux.x*60.0));}}
  atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];
   if(pr.p.w==5.0){pr.p.y=3.0-S.escape.x*2.0;P[i]=pr;continue;}
   if(pr.p.w==32.0){P[i]=cheese48(pr);continue;}

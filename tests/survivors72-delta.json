@@ -1,0 +1,13 @@
+{
+ "parentSha256": "e1844940fbb0c754e3013318794247cea2b5d0311dcbe887bab543a23fb24d42",
+ "changes": [
+  {
+   "before": "  for(const b of homes.slice(0,8)){const slot=CIV_BASE30+civilians30.length,outfit=civilians30.length;let x=b.x+b.w/2,z=b.z+b.d*.6,type=[0,2,1,3,4,5,2,4][outfit];",
+   "after": "  // Twelve neighbors (every slot): the first eight keep their original order and homes; four more follow.\n  for(const b of homes.slice(0,12)){const slot=CIV_BASE30+civilians30.length,outfit=civilians30.length;let x=b.x+b.w/2,z=b.z+b.d*.6,type=[0,2,1,3,4,5,2,4,0,1,3,0][outfit];"
+  },
+  {
+   "before": "['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly'][outfit]",
+   "after": "['Brenda','Marv','Linda','Coach Dale','Mrs. Henderson','Todd','Pastor Ray','Kimberly','Gary','Dolores','Chad','Aunt Pat'][outfit]"
+  }
+ ]
+}

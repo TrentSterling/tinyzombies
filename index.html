@@ -3608,12 +3608,30 @@ function pipeBeep(remaining){if(playAudio9(remaining<1.5?'beepHigh':remaining<3?
 const mapleAudio62={kick:0,splat:0,eaten:0,joined:0,saved:0};
 function updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)return;const m=mapleAudio62;
  const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[64]|0,saved=counters[66]|0;
- if(kick>m.kick){playAudio9('crit','impact',.24,null,kick,0,.7);playAudio9('snap','cue',.12,null,kick,.02);}
- if(splat>m.splat){playAudio9('death','death',.30,null,splat,0,.62);playAudio9('debris','debris',.18,null,splat,.03);}
- if(eaten>m.eaten){playAudio9('death','death',.34,null,eaten,0,1.35);playAudio9('growl','zombie',.24,null,eaten,.12,.8);}
+ if(kick>m.kick){playAudio9('crit','impact',.24,null,kick,0,.7);playAudio9('snap','cue',.12,null,kick,.02);synth65('thud');if(kick===1||kick%4===0)announce65('Say cheese!');}
+ if(splat>m.splat){playAudio9('death','death',.30,null,splat,0,.62);playAudio9('debris','debris',.18,null,splat,.03);synth65('splat');if(splat-m.splat>=3)announce65('Splat-tastic!');}
+ if(eaten>m.eaten){playAudio9('death','death',.34,null,eaten,0,1.35);playAudio9('growl','zombie',.24,null,eaten,.12,.8);synth65('sting');}
  if(joined>m.joined)playAudio9('beepMid','cue',.15,null,joined);
- if(saved>m.saved){playAudio9('latch','cue',.18,null,saved);playAudio9('beepHigh','cue',.16,null,saved,.12);playAudio9('beepHigh','cue',.16,null,saved,.24);}
+ if(saved>m.saved){synth65('jingle');playAudio9('latch','cue',.18,null,saved);playAudio9('beepHigh','cue',.16,null,saved,.12);playAudio9('beepHigh','cue',.16,null,saved,.24);}
  Object.assign(m,{kick,splat,eaten,joined,saved});}
+// B-movie announcer: the browser's own speech voices read the big Maple Street moments in a low, hammy trailer voice. One line at a
+// time; priority lines cut in. Muted with the game (M); silently off where speech synthesis is missing.
+const voice65={last:'',at:-9,ok:typeof speechSynthesis!=='undefined'&&typeof SpeechSynthesisUtterance!=='undefined',lines:0};
+function announce65(line,prio=false){if(!voice65.ok||!SANDBOX25||!audioAllowed9())return false;if(line===voice65.last&&time-voice65.at<4)return false;
+ try{if(speechSynthesis.speaking){if(!prio)return false;speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
+  const v=speechSynthesis.getVoices();const pick=v.find(x=>/^en/i.test(x.lang)&&/male|david|daniel|fred|guy|alex/i.test(x.name))||v.find(x=>/^en/i.test(x.lang));if(pick)u.voice=pick;
+  speechSynthesis.speak(u);voice65.last=line;voice65.at=time;voice65.lines++;return true;}catch(e){voice65.ok=false;return false;}}
+// Synthesised layers on top of the clip bank: a cartoon boing, a cheese thud, a wet splat, a rescue jingle and a B-movie horror sting.
+function synth65(kind){if(!audioAllowed9()||!audioMix9)return false;const t=audio.currentTime,g=audio.createGain();g.connect(audioMix9);g.gain.setValueAtTime(.0001,t);
+ const tone=(type,f0,f1,f2,d,peak,at=0)=>{const o=audio.createOscillator(),e=audio.createGain();o.type=type;o.frequency.setValueAtTime(f0,t+at);o.frequency.exponentialRampToValueAtTime(f1,t+at+d*.35);o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
+  e.gain.setValueAtTime(.0001,t+at);e.gain.exponentialRampToValueAtTime(peak,t+at+.015);e.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(e);e.connect(audioMix9);o.start(t+at);o.stop(t+at+d+.02);};
+ if(kind==='boing'){tone('sine',140,620,300,.5,.22);tone('triangle',280,1240,600,.35,.06);}
+ if(kind==='thud'){tone('sine',95,60,38,.3,.35);tone('square',190,120,80,.08,.05);}
+ if(kind==='splat'){const n=audio.createBuffer(1,Math.floor(audio.sampleRate*.32),audio.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.2);
+  const s=audio.createBufferSource(),f=audio.createBiquadFilter();s.buffer=n;f.type='lowpass';f.frequency.setValueAtTime(1400,t);f.frequency.exponentialRampToValueAtTime(220,t+.3);s.connect(f);f.connect(g);g.gain.exponentialRampToValueAtTime(.34,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+.32);s.start(t);tone('sine',70,45,30,.2,.18);}
+ if(kind==='jingle'){[523,659,784,1047].forEach((f,i)=>tone('square',f,f,f*1.001,.14,.07,i*.1));}
+ if(kind==='sting'){tone('sawtooth',110,104,98,1.1,.10);tone('sawtooth',116.5,110,103,1.1,.08);tone('sine',55,52,49,1.2,.22);}
+ return true;}
 function updateBombAudio(){
  const clock=playerValues[24]||0,fuse=playerValues[110]||0,total=playerValues[499]||0;
  if(settings.paused||!settings.started){nextPipeBeep=clock;return;}
@@ -3946,6 +3964,7 @@ function neighborsHUD30(k){
   const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
   if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4,civBannerCol47=COL9.gold;
   if(st===4)civBanner47=(n.name||'A NEIGHBOR').toUpperCase()+' GOT EATEN!',civBannerUntil47=time+2.6,civBannerCol47=COL9.red;
+  if(st===4)announce65((n.name||'A neighbor')+' got eaten!',true);if(st===3)announce65((n.name||'A neighbor')+' is safe!');if(st===2&&c%2===0)announce65((n.name||'A neighbor')+' joined the squad!');
   if(st===2)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});
  for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
@@ -4000,7 +4019,8 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit   /   ? controls',height*.71,14*k,[1,.97,.86,1]);
 }
 // ZAMN-style level card for the first 3.6 s of a run: LEVEL 1, a drippy ZOMBIE PANIC!, and the victim count. It slams in and fades out.
-function levelCard59(k){const t=playerValues[24]||0;if(!hud2d30||t>=3.6||!settings.started)return;const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;
+let levelCardSaid65=null;
+function levelCard59(k){const t=playerValues[24]||0;if(t>.2&&t<3&&levelCardSaid65!==world&&announce65('Level one. Zombie panic!',true))levelCardSaid65=world;if(!hud2d30||t>=3.6||!settings.started)return;const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;
  const a=clamp9(Math.min(t/.25,(3.6-t)/.6),0,1),slam=1+Math.max(0,.25-t)*1.6;ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(10,6,20,.55)';ctx.fillRect(0,H*.24,W,H*.34);
  ctx.textBaseline='alphabetic';ctx.lineJoin='round';const big='ZOMBIE PANIC!',px=Math.round(96*k*s*slam);ctx.font=px+'px Bangers,Impact,"Arial Black",sans-serif';const bw=ctx.measureText(big).width,bx=(W-bw)/2,by=H*.47;
  ctx.fillStyle='#3d9a1c';for(let d=0;d<9;d++){const x=bx+bw*((d*.1093+.05)%1),len=(14+((d*29)%5)*8)*k*s*Math.min(1,t*1.4),w=(8+(d%3)*3)*k*s;ctx.beginPath();ctx.roundRect(x,by-12*k*s,w,len+12*k*s,w/2);ctx.fill();}
@@ -4012,15 +4032,15 @@ function levelCard59(k){const t=playerValues[24]||0;if(!hud2d30||t>=3.6||!settin
 // defeat banner worth 5000 points.
 const boss65={state:0,banner:'',until:0};
 function bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st;
- if(st===1&&boss65.state===0){boss65.banner='BOSS: THE HOA PRESIDENT';boss65.until=time+3.2;playAudio9('explosion','explosion',.5,null,1,0,.6);}
- if(st===2&&boss65.state===1){boss65.banner='HOA PRESIDENT DEFEATED!  +5000';boss65.until=time+3.6;}boss65.state=st;
+ if(st===1&&boss65.state===0){boss65.banner='BOSS: THE HOA PRESIDENT';boss65.until=time+3.2;playAudio9('explosion','explosion',.5,null,1,0,.6);synth65('sting');announce65('Warning! The H. O. A. President has arrived!',true);}
+ if(st===2&&boss65.state===1){boss65.banner='HOA PRESIDENT DEFEATED!  +5000';boss65.until=time+3.6;announce65('The H. O. A. President has been... foreclosed!',true);}boss65.state=st;
  if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/3500,0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
   const n='THE HOA PRESIDENT';text(n,width/2-textWidth9(n,14*k)/2,y+22*k,14*k,COL9.gold);}
  if(boss65.banner&&time<boss65.until){const px=(46+6*Math.sin((boss65.until-time)*8))*k;text(boss65.banner,width/2-textWidth9(boss65.banner,px)/2,height*.36,px,st===2?COL9.gold:COL9.red);}}
 // BOING! over the player on every trampoline launch (C[83]); zombie launches (C[88]) stack into a BOING xN callout.
 const boing65={me:0,them:0,meAt:-9,themAt:-9,burst:0};
 function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65.me||them<boing65.them){boing65.me=me;boing65.them=them;}
- if(me>boing65.me){boing65.meAt=time;playAudio9('snap','cue',.16,null,me,0,.55);playAudio9('latch','cue',.10,null,me,.05,1.8);}
+ if(me>boing65.me){boing65.meAt=time;synth65('boing');playAudio9('snap','cue',.10,null,me,0,.55);if(me===1)announce65('Boing!');}
  if(them>boing65.them){boing65.burst=time-boing65.themAt<1.5?boing65.burst+(them-boing65.them):them-boing65.them;boing65.themAt=time;playAudio9('snap','cue',.12,null,them,0,.6);}boing65.me=me;boing65.them=them;
  if(time-boing65.meAt<.7){const [sx,sy]=screenPoint(playerValues[0],playerValues[2],2.2+(playerValues[1]||0));const px=(26+(time-boing65.meAt)*20)*k;text('BOING!',sx-textWidth9('BOING!',px)/2,sy-(time-boing65.meAt)*60*k,px,[.40,.85,1,1]);}
  if(time-boing65.themAt<1.2){const s='BOING x'+boing65.burst;text(s,width/2-textWidth9(s,24*k)/2,height*.19,24*k,[.40,.85,1,1]);}}

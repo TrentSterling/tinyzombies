@@ -16,7 +16,7 @@ function make({chapter=1,patient=0,dt=1/60}={}){
  for(const k of ['heal12','gear12','reload12','equipAck12','cell','objectivePoint','mission5','motion','look','anim8'])c.S[k]=v(0);
  c.S.pos=v(0,.35,0,40);c.S.player7=v(0);c.S.heal12=v(0,-1,40,0);c.S.items12=v(0,0,1,100);c.S.gear12=v(5,0,0,0);c.S.rules7=v(0);c.S.squad7.y=-1;
  for(let id=0;id<3;id++){const a=c.S.team7[id];a.p=v(id===patient?.5:8+id,.35,0,id===patient?0:100);a.memory=v(-1,0,0,a.p.w);a.ai=v(0,0,-1,1e9);a.plan=v(0,1,0,0);a.vital=v(0,0,1,0);c.S.botLife13[id]=v(id===patient?40:0,0,id===patient?1:0,0);}
- c.S.buddy=clone(c.S.team7[0].p);c.S.rescue.z=1;c.S.journey7.x=1;c.u.run=v(chapter,0);c.u.config=v(0,0,1);c.u.controls=v(1);c.u.inputMove=v(0,0,1,0);c.u.input12=v(0);c.u.controlEdges12=v(0);c.u.aim=vn(2,1,0);c.u.goals=v(100);c.S.goal=v(0);
+ c.S.buddy=clone(c.S.team7[0].p);c.S.rescue.z=1;c.S.journey7.x=1;c.u.run=v(chapter,0);c.u.v3=v(0,0,0,0)/* coop74 reads u.v3 on Maple */;c.u.config=v(0,0,1);c.u.controls=v(1);c.u.inputMove=v(0,0,1,0);c.u.input12=v(0);c.u.controlEdges12=v(0);c.u.aim=vn(2,1,0);c.u.goals=v(100);c.S.goal=v(0);
  c.P=[{p:v(100,1,100,9),data:v(1000000,0),aux:v(.3,2,2)}];c.gate=0;c.finalDoor=0;c.gateDone=true;c.alarmActive18=false;c.inside=false;c.doorEdge=100;c.clear=true;c.threat=0;
  c.sub=(a,b)=>vn(a.dim||2,...a.map((n,i)=>n-b[i]));c.safe2=a=>{const n=Math.hypot(a.x,a.y);return vn(2,n?a.x/n:0,n?a.y/n:0);};
  c.wallRay=(p,d,n)=>c.clear?n:0;c.clearSegment7=()=>c.clear;c.threatNear7=p=>typeof c.threat==='function'?c.threat(p):c.threat;c.safeHouse13=()=>c.inside;c.interactAt=()=>false;

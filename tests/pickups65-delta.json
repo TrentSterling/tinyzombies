@@ -1,0 +1,37 @@
+{
+ "parentSha256": "325ae6358c5c0d2b9b4b6232e0ab19f04e4706e07071447c7742bacd40671ff6",
+ "changes": [
+  {
+   "before": "\n\n // Extra barrels sit on the sides of yards and the escape route, away from safe prep/objective pockets.\n",
+   "after": "\n // Maple Street: the start shelter's armory is real. The rifle and can on the table (ammo), the table medkit, and the first rack gun\n // (auto shotgun) are E pickups, made after the doors (doors must stay contiguous from doorFirst7); more.x=44 marks them so the item pass draws the item itself, not a supply table.\n if(SANDBOX25)for(const [x,z,kind] of [[-65.0,49.05,0],[-64.4,49.4,3],[-67.22,50.05,5]]){const idx=propCount++;props.set([x,0,z,7,1,0,0,0,kind,0,0,0,44,0,0,0],idx*16);}\n\n // Extra barrels sit on the sides of yards and the escape route, away from safe prep/objective pockets.\n"
+  },
+  {
+   "before": "gunFlat44(vec3f(o.x-1.5,y+.04,o.y-2.95),0u);gunFlat44(vec3f(o.x-1.45,y+.04,o.y-2.62),1u);ammoCan44(vec3f(o.x-.45,y+.10,o.y-2.95));medkit44(vec3f(o.x-.40,y+.07,o.y-2.6));",
+   "after": "gunFlat44(vec3f(o.x-1.45,y+.04,o.y-2.62),1u);"
+  },
+  {
+   "before": " for(var k=0u;k<4u;k++){gunStand44(vec3f(o.x-3.22,.95,o.y-1.95+f32(k)*.62));}",
+   "after": " for(var k=1u;k<4u;k++){gunStand44(vec3f(o.x-3.22,.95,o.y-1.95+f32(k)*.62));}"
+  },
+  {
+   "before": "// The start shelter (V9 start is fixed at -64,52;",
+   "after": "// A grabbable shelter item (more.x=44): kind 0 rifle and ammo can on the table, 3 medkit, 5 the first gun on the rack. Gone once taken;\n// a small gold pip floats over it until then.\nfn shelterItem44(p:vec3f,kind:u32,there:bool){if(!there){return;}let y=.79;\n if(kind==0u){gunFlat44(vec3f(p.x-.5,y+.04,p.z),0u);ammoCan44(vec3f(p.x+.55,y+.10,p.z));}if(kind==3u){medkit44(vec3f(p.x,y+.07,p.z));}if(kind==5u){gunStand44(vec3f(p.x,.95,p.z));}\n box(vec3f(p.x,select(1.25,1.75,kind==5u)+sin(S.aux.x*3.0+f32(kind))*.05,p.z),vec3f(.08,.08,.08),vec3f(1,.82,.38),1,1.6);}\n// The start shelter (V9 start is fixed at -64,52;"
+  },
+  {
+   "before": "  if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){supplyTable44(p,pr.data.x>0.0);}",
+   "after": "  if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){if(pr.more.x==44.0){shelterItem44(p,u32(pr.aux.x),pr.data.x>0.0);}else{supplyTable44(p,pr.data.x>0.0);}}"
+  },
+  {
+   "before": "   if(SANDBOX25&&interaction===7&&waitingNeighbors30()>0)",
+   "after": "   if(SANDBOX25&&interaction===5){const o=Math.round(playerValues[450])*16;if(world.props[o+12]===44)label=['E  Grab ammo','','','E  Grab medkit','','E  Grab AUTO SHOTGUN'][world.props[o+8]]||label;else label='E  Raid supply table';}\n   if(SANDBOX25&&interaction===7&&waitingNeighbors30()>0)"
+  },
+  {
+   "before": "  let kind=S.mission5.y;\n  if(kind==4.0&&S.cell.w!=1.0){S.mission5.w=0.0;}\n  else{S.mission5.w+=dt;let duration=select(select(.8,1.4,kind==5.0),.18,kind==6.0);",
+   "after": "  let kind=S.mission5.y;\n  // Shelter items (more.x=44) are a quick grab and give exactly what they show: 0 ammo, 3 a medkit, 5 the auto shotgun.\n  let item44=kind==5.0&&P[u32(max(0.0,S.mission5.z))].more.x==44.0;\n  if(kind==4.0&&S.cell.w!=1.0){S.mission5.w=0.0;}\n  else{S.mission5.w+=dt;let duration=select(select(select(.8,1.4,kind==5.0),.18,kind==6.0),.5,item44);"
+  },
+  {
+   "before": "    if(kind==5.0){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;S.runStats.x+=1.0;",
+   "after": "    if(item44){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;let what=u32(pr.aux.x);\n     if(what==0u){let clip=gunStats14(0u,S.upgrades14.x).x;S.reserve12.x=max(S.reserve12.x,select(240.0,140.0,(u32(S.upgrades14.x)&1u)!=0u));S.reserve12.y=56.0;S.mag12.x=clip;S.mag12.y=max(S.mag12.y,8.0);}\n     if(what==3u){S.items12.y=min(4.0,S.items12.y+1.0);}\n     if(what==5u){S.upgrades14.x=f32(u32(S.upgrades14.x)|2u);let stats=gunStats14(1u,S.upgrades14.x);S.mag12[1]=stats.x;S.reserve12[1]=max(S.reserve12[1],stats.w);S.gear12=vec4f(1,1,S.gear12.x,1);S.reload12.x=0.0;}\n     S.feedback.z=max(S.feedback.z,.5);}\n    else if(kind==5.0){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;S.runStats.x+=1.0;"
+  }
+ ]
+}

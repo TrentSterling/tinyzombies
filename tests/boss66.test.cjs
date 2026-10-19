@@ -17,7 +17,7 @@ check('walks straight, hits for 45, bulldozes within 1.6 m',()=>{assert(html.inc
  const pack=(x,z)=>((Math.floor((x+96)*16))|(Math.floor((z+96)*16)<<12))+1,un=a=>{const v=a-1;return [(v&4095)/16-96,(v>>>12)/16-96]};assert.deepEqual(un(pack(-69,57.5)),[-69,57.5]);assert.deepEqual(un(pack(95.9375,-96)),[95.9375,-96]);});
 check('boss HUD: bar, arrival and defeat banners, 5000 points',()=>{const h=loadHost(file,{plain:true});h.run('reset();settings.started=true;time=10;counters[70]=1;counters[69]=1750;glyphBuffer={name:"glyphBuffer"};bossHUD65(1)');
  assert.equal(h.json('boss65.banner'),'BOSS: THE HOA PRESIDENT');h.run('time=11;counters[70]=2;bossHUD65(1)');assert.equal(h.json('boss65.banner'),'HOA PRESIDENT DEFEATED!  +5000');
- assert(html.includes('+((counters[70]|0)===2?5000:0);'));});
+ assert(html.includes('+((counters[70]|0)===2?5000:0)'));});
 check('exact inverse restores the immutable pre-boss runtime',()=>{assert.equal(sha(withoutBoss66(html)),delta.parentSha256);});
 const report={method:'Source fragments, pack round trip, CPU-host HUD; spawn, chase and bulldozing measured in the real game on SwiftShader with the spawn time compressed (PR notes).',runtimeSha256:sha(fs.readFileSync(file)),passed:checks.every(c=>c.passed),checks};
 console.log(JSON.stringify(report,null,2));process.exitCode=report.passed?0:1;

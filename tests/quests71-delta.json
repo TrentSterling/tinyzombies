@@ -1,0 +1,33 @@
+{
+ "parentSha256": "f1a76ec7ceb028aa686c49430e79bf6f5676f233ce87ab59a23f7f6411e0eac7",
+ "changes": [
+  {
+   "before": "// A trampoline (prop 33, fixed slot):",
+   "after": "// Yellow paint: a painted ring on the ground marks anything you can use (trampolines, supply tables, cheese wheels).\nfn paint65(c:vec2f,r:f32){for(var k=0u;k<16u;k++){let a=f32(k)*.3927;let q=c+vec2f(cos(a),sin(a))*r;box(vec3f(q.x,.012,q.y),vec3f(.34,.02,.34),vec3f(1,.84,.12),1,.35);}}\n// A trampoline (prop 33, fixed slot):"
+  },
+  {
+   "before": " let m=home+vec3f(0,.42,0);box(m-vec3f(0,dip,0)",
+   "after": " paint65(home.xz,1.45);let m=home+vec3f(0,.42,0);box(m-vec3f(0,dip,0)"
+  },
+  {
+   "before": "  box(vec3f(p.x,1.55+sin(S.aux.x*2.5)*.05,p.z),vec3f(.10,.25,.10),vec3f(.15,1,.85),1,1.4);}",
+   "after": "  box(vec3f(p.x,1.55+sin(S.aux.x*2.5)*.05,p.z),vec3f(.10,.25,.10),vec3f(.15,1,.85),1,1.4);paint65(p.xz,1.35);}"
+  },
+  {
+   "before": "  if(pr.p.w==32.0){let alongX=abs(pr.aux.z)>=abs(pr.aux.w);let r=.45;let w=.40;",
+   "after": "  if(pr.p.w==32.0){if(length(pr.aux.xy)<.3){paint65(pr.p.xz,.85);}let alongX=abs(pr.aux.z)>=abs(pr.aux.w);let r=.45;let w=.40;"
+  },
+  {
+   "before": "// ZAMN-style status block, top left:",
+   "after": "// Story and quests: Radio Pleasant Acres walks the player through every Maple Street system, one mission at a time. Each completed\n// mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).\nconst QUESTS65=[\n {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},\n {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (walk up to someone yelling HELP)',done:()=>(counters[66]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},\n {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},\n {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},\n {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[66]|0)+'/4)',done:()=>(counters[66]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},\n {title:'FORECLOSURE',goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up (3:00)',done:()=>(counters[70]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},\n {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>(playerValues[L7.goal+3]||0)>0,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];\nconst quest65={i:0,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};\nfunction questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;\n if(!q.radio){q.radio=QUESTS65[0].radio;q.radioUntil=time+7;announce65(q.radio);}\n while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');\n  if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}\n const x=width-308*k,y=18*k+clamp9(height*.23,136,180)+26*k;// just under the minimapif(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(8,10,18,.72)';c.fillRect(x*s,y*s,296*k*s,58*k*s);c.fillStyle='#f6d43a';c.fillRect(x*s,y*s,4*k*s,58*k*s);c.restore();}\n if(q.i<QUESTS65.length){const m=QUESTS65[q.i];text('MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,x+12*k,y+8*k,15*k,COL9.gold);text(m.goal(),x+12*k,y+32*k,12*k,COL9.white);}\n else text('ALL MISSIONS COMPLETE',x+12*k,y+20*k,16*k,COL9.gold);\n if(q.banner&&time<q.until){const px=(30+4*Math.sin((q.until-time)*9))*k;text(q.banner,width/2-textWidth9(q.banner,px)/2,height*.42,px,COL9.gold);}\n if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=14*k;text(r,width/2-textWidth9(r,px)/2,height-96*k,px,[.55,1,.70,1]);}}\n// ZAMN-style status block, top left:"
+  },
+  {
+   "before": "  if(SANDBOX25)boingHUD65(k);\n",
+   "after": "  if(SANDBOX25)boingHUD65(k);\n  if(SANDBOX25)questHUD65(k);\n"
+  },
+  {
+   "before": "+((counters[70]|0)===2?5000:0);",
+   "after": "+((counters[70]|0)===2?5000:0)+quest65.bonus;"
+  }
+ ]
+}

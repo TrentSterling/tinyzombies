@@ -8,7 +8,7 @@ const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn(
 const html=fs.readFileSync(file,'utf8'),parent=path.join(__dirname,'.polish46-parent.html');fs.writeFileSync(parent,withoutPolish46(html));
 const W=(f,seed)=>loadHost(f,{seed}).json('(()=>{const w=makeWorld();const doors=w.doors7.map(d=>[d.x,d.z,d.sx]);return {doors,b:w.buildings,civ:(w.civilians30||[]).map(c=>[c.slot,c.outfit]),caches:w.caches}})()');
 check('Maple Street houses lose their roll-up shutters; the start shelter keeps its door; chapters unchanged',()=>{
- const a=W(file,'4242&sandbox'),b=W(parent,'4242&sandbox');assert.deepEqual(a.b,b.b);assert.deepEqual(a.civ,b.civ);assert.deepEqual(a.caches,b.caches);
+ const a=W(file,'4242&sandbox'),b=W(parent,'4242&sandbox');assert.deepEqual(a.b,b.b);assert.deepEqual(a.civ.slice(0,8),b.civ);/* survivors72 adds four more after the first eight */assert.deepEqual(a.caches,b.caches);
  assert(b.doors.length>a.doors.length,'house shutters removed');assert.equal(a.doors.length,1,'only the start shelter door');assert.deepEqual(a.doors[0],b.doors[0]);
  const c=W(file,73129),d=W(parent,73129);assert.deepEqual(c.doors,d.doors);return {before:b.doors.length,after:a.doors.length};
 });

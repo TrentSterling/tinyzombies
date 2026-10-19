@@ -1,0 +1,17 @@
+{
+ "parentSha256": "a0a33aec5215275b2785f31b3d2aa7c233cffbe60afe7c66514c2e063ea570cf",
+ "changes": [
+  {
+   "before": " if(q.i<QUESTS65.length){const m=QUESTS65[q.i];text('MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,x+12*k,y+8*k,15*k,COL9.gold);text(m.goal(),x+12*k,y+32*k,12*k,COL9.white);}",
+   "after": " // Every line shrinks to fit the 296 px panel (or the screen), so long missions never run off the right edge.\n const fit=(s,px,w)=>Math.min(px,px*w/Math.max(1,textWidth9(s,px)));\n if(q.i<QUESTS65.length){const m=QUESTS65[q.i],t='MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,g=m.goal();text(t,x+12*k,y+8*k,fit(t,15*k,276*k),COL9.gold);text(g,x+12*k,y+32*k,fit(g,12*k,276*k),COL9.white);}"
+  },
+  {
+   "before": " if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=14*k;",
+   "after": " if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=fit(r,14*k,width-40*k);"
+  },
+  {
+   "before": "goal:()=>'Rescue a neighbor (walk up to someone yelling HELP)'",
+   "after": "goal:()=>'Rescue a neighbor (find someone yelling HELP!)'"
+  }
+ ]
+}

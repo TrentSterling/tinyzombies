@@ -4057,7 +4057,7 @@ function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
 const QUESTS65=[
  {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},
- {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (walk up to someone yelling HELP)',done:()=>(counters[66]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
+ {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[66]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
  {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[66]|0)+'/4)',done:()=>(counters[66]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
@@ -4069,10 +4069,12 @@ function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,
  while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');
   if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
  const x=width-308*k,y=18*k+clamp9(height*.23,136,180)+26*k;// just under the minimapif(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(8,10,18,.72)';c.fillRect(x*s,y*s,296*k*s,58*k*s);c.fillStyle='#f6d43a';c.fillRect(x*s,y*s,4*k*s,58*k*s);c.restore();}
- if(q.i<QUESTS65.length){const m=QUESTS65[q.i];text('MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,x+12*k,y+8*k,15*k,COL9.gold);text(m.goal(),x+12*k,y+32*k,12*k,COL9.white);}
+ // Every line shrinks to fit the 296 px panel (or the screen), so long missions never run off the right edge.
+ const fit=(s,px,w)=>Math.min(px,px*w/Math.max(1,textWidth9(s,px)));
+ if(q.i<QUESTS65.length){const m=QUESTS65[q.i],t='MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,g=m.goal();text(t,x+12*k,y+8*k,fit(t,15*k,276*k),COL9.gold);text(g,x+12*k,y+32*k,fit(g,12*k,276*k),COL9.white);}
  else text('ALL MISSIONS COMPLETE',x+12*k,y+20*k,16*k,COL9.gold);
  if(q.banner&&time<q.until){const px=(30+4*Math.sin((q.until-time)*9))*k;text(q.banner,width/2-textWidth9(q.banner,px)/2,height*.42,px,COL9.gold);}
- if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=14*k;text(r,width/2-textWidth9(r,px)/2,height-96*k,px,[.55,1,.70,1]);}}
+ if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=fit(r,14*k,width-40*k);text(r,width/2-textWidth9(r,px)/2,height-96*k,px,[.55,1,.70,1]);}}
 // Player two joins the first time IJKL or a gamepad stick moves; a green P2 tag rides over bot 1 and a banner announces it.
 const p2_65={on:false,at:-9};
 function p2Input65(){let x=(keys.has('KeyL')?1:0)-(keys.has('KeyJ')?1:0),y=(keys.has('KeyI')?1:0)-(keys.has('KeyK')?1:0);

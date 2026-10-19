@@ -6,7 +6,7 @@ const {sha,loadHost}=require('./deadends-cpu-host.cjs'),{delta,withoutRamp64}=re
 const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8');
-check('init holds back ~70% on Maple, staggered 25-180 s',()=>{assert(html.includes('if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}'));
+check('init holds back ~70% on Maple, staggered 25-180 s',()=>{assert(html.includes('if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}'));
  const lo=25+0*155,hi=25+(1-.30)/.70*155;assert.equal(lo,25);assert(Math.abs(hi-180)<1e-9);return {measured:'SwiftShader, compressed timers: 605 live at start, 909, 1591, then 2048'};});
 check('only held-back infected respawn on Maple; arrivals after 90 s are awake',()=>{assert(html.includes('if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||'));
  assert(html.includes('select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&S.aux.x>90.0)));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}'),'marker cleared on arrival, so a later kill stays dead');});

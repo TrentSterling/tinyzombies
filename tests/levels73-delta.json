@@ -1,0 +1,65 @@
+{
+ "parentSha256": "d915545309ca5e1e8bed8d205c37c8e0bf9a91b5ec5122da79a5bf49da3c54f4",
+ "changes": [
+  {
+   "before": "function nextSandbox25(){runSeed=(runSeed+7919)>>>0;",
+   "after": "// Maple Street levels: every evacuation rolls a new street as the next level (u.v3.x), with a new B-movie title, night on even\n// levels, a bigger opening crowd, an earlier and tougher HOA President. A new run (N twice) starts again at level 1.\nlet mapleLevel65=1;const LEVEL_NAMES65=['ZOMBIE PANIC!','NIGHT OF THE LIVING HOA','BLOOD MOON BLOCK PARTY','ATTACK OF THE 50 FT PRESIDENT','THE CUL-DE-SAC OF DOOM','LAWN OF THE DEAD'];\nconst levelName65=()=>LEVEL_NAMES65[(mapleLevel65-1)%LEVEL_NAMES65.length],bossHP65=()=>3500+(mapleLevel65-1)*1000,bossAt65=()=>Math.max(120,180-(mapleLevel65-1)*30);\nfunction nextSandbox25(){mapleLevel65++;runSeed=(runSeed+7919)>>>0;"
+  },
+  {
+   "before": "stage=SANDBOX25?SANDBOX_STAGE25:1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12(",
+   "after": "stage=SANDBOX25?SANDBOX_STAGE25:1;mapleLevel65=1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12("
+  },
+  {
+   "before": " uniformData.set([0,0,0,0],76);pendingPipeBomb=0;",
+   "after": " uniformData.set([SANDBOX25?mapleLevel65:0,0,0,0],76);pendingPipeBomb=0;"
+  },
+  {
+   "before": "if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30&&i!=31u){",
+   "after": "if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){"
+  },
+  {
+   "before": "i==1567u&&S.aux.x>=180.0&&",
+   "after": "i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&"
+  },
+  {
+   "before": "z.p=vec4f(p.x,0,p.y,3500.0);z.v=vec4f(0,0,0,99.0);",
+   "after": "z.p=vec4f(p.x,0,p.y,3500.0+max(0.0,u.v3.x-1.0)*1000.0);z.v=vec4f(0,0,0,99.0);"
+  },
+  {
+   "before": "f=clamp9((counters[69]|0)/3500,0,1);",
+   "after": "f=clamp9((counters[69]|0)/bossHP65(),0,1);"
+  },
+  {
+   "before": "goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up (3:00)'",
+   "after": "goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')'"
+  },
+  {
+   "before": "let sunny=u.run.x>5.0&&u.run.y<.5;let ambient=select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny)",
+   "after": "let sunny=u.run.x>5.0&&u.run.y<.5;let night=sunny&&u.v3.x>1.5&&(u32(u.v3.x)%2u)==0u;let ambient=select(select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny),vec3f(.11,.13,.24),night)"
+  },
+  {
+   "before": "let lighting=ambient+select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny)*diff",
+   "after": "let lighting=ambient+select(select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny),vec3f(.30,.38,.66),night)*diff"
+  },
+  {
+   "before": "let fog=smoothstep(28.0,53.0,distance)*select(.42,.18,sunny);linear=mix(linear,select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),fog);",
+   "after": "let fog=smoothstep(28.0,53.0,distance)*select(select(.42,.18,sunny),.36,night);linear=mix(linear,select(select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),vec3f(.03,.05,.11),night),fog);"
+  },
+  {
+   "before": "announce65('Level one. Zombie panic!',true)",
+   "after": "announce65('Level '+mapleLevel65+'. '+levelName65(),true)"
+  },
+  {
+   "before": " const top='LEVEL 1',",
+   "after": " const top='LEVEL '+mapleLevel65,"
+  },
+  {
+   "before": "const big='ZOMBIE PANIC!',px=Math.round(96*k*s*slam);",
+   "after": "const big=levelName65(),px=Math.round(Math.min(96,1500/Math.max(10,levelName65().length))*k*s*slam);"
+  },
+  {
+   "before": "pill30('ENTER   NEXT STREET',width/2,",
+   "after": "pill30('ENTER   LEVEL '+(mapleLevel65+1),width/2,"
+  }
+ ]
+}

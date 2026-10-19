@@ -14,8 +14,10 @@ const canvas=document.getElementById('game'), boot=document.getElementById('boot
 const diagnostics={version:'Tiny Zombies / NO ONE LEFT / V9.1',errors:[],notes:[],audio:{pipeBeeps:0},startedAt:new Date().toISOString()};
 let stopped=false,device,adapter,context,inFlight=0;
 function fail(e){stopped=true;const msg=e?.stack||e?.message||String(e);diagnostics.errors.push(msg);console.error(e);boot.hidden=false;boot.innerHTML='<h1>THE GPU STOPPED.</h1><p>This prototype requires WebGPU. No silent CPU or WebGL fallback.</p><p>Try a WebGPU-enabled desktop browser with hardware acceleration. If local-file WebGPU is unavailable, serve this same file on localhost or HTTPS.</p><textarea aria-label="Diagnostic report" readonly></textarea><p>Copy the report above. Reload to retry.</p>';boot.querySelector('textarea').value=JSON.stringify(diagnostics,null,2);}
-window.addEventListener('error',e=>fail(e.error||e.message));
-window.addEventListener('unhandledrejection',e=>fail(e.reason));
+// Browser extensions run their own scripts in the page; their errors are not the game's and must not stop it.
+const foreignError68=(e,file='')=>/(chrome|moz|safari-web|ms-browser)-extension:\/\//.test(String(file)+' '+String(e?.stack||e?.message||e||''));
+window.addEventListener('error',e=>{if(foreignError68(e.error||e.message,e.filename)){diagnostics.notes?.push?.('ignored extension error: '+String(e.message||'').slice(0,120));return;}fail(e.error||e.message);});
+window.addEventListener('unhandledrejection',e=>{if(foreignError68(e.reason)){diagnostics.notes?.push?.('ignored extension rejection');return;}fail(e.reason);});
 const ZOMBIE_FLOATS13=28,ZOMBIE_BYTES13=112;
 const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 // Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].

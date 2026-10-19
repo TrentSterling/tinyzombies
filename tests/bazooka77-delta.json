@@ -1,0 +1,49 @@
+{
+ "parentSha256": "6b2f266d9904670ad16e2ea7f06c139bf9d3ad661f45bc90e62bed67078d7cb9",
+ "changes": [
+  {
+   "before": "fn gunStats14(w:u32,bits:f32)->vec4f {\n let b=u32(bits);if(w==0u&&(b&1u)!=0u){return vec4f(14,.27,1.55,98);}",
+   "after": "fn gunStats14(w:u32,bits:f32)->vec4f {\n // On Maple Street the R7 slot is the BAZOOKA: 4 rockets a load, .85 s apart, 24 in reserve.\n let b=u32(bits);if(w==0u&&(b&1u)!=0u){if(u.run.x>5.0&&u.run.y<.5){return vec4f(4,.85,2.0,24);}return vec4f(14,.27,1.55,98);}"
+  },
+  {
+   "before": "    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){S.trails6[trail].hit.w=1.0;}",
+   "after": "    if(human&&weapon==2u&&u.run.x>5.0&&u.run.y<.5){S.trails6[trail].hit.w=1.0;}\n    // Maple Street BAZOOKA (gun 0 with upgrade bit 1): the rocket explodes where it lands, through the same one-frame blast as a pipe\n    // bomb, so infected die, walls break and props fly in the passes after this one. hit.w=2 marks a smoke trail.\n    if(human&&pellet==0u&&weapon==0u&&(u32(S.upgrades14.x)&1u)!=0u&&u.run.x>5.0&&u.run.y<.5){S.trails6[trail].hit.w=2.0;let at=o+dir*max(.5,h.t-.15);S.blast=vec4f(at.x,at.z,.45,3.4);S.aux.w=1.0;S.noise=vec4f(at.xz,3.0,30.0);atomicAdd(&C[67],1u);}"
+  },
+  {
+   "before": "   let water=sh.hit.w>.5;\n",
+   "after": "   let water=sh.hit.w>.5&&sh.hit.w<1.5;let rocket=sh.hit.w>1.5;\n   if(rocket){beam6(sh.origin.xyz+sh.dir.xyz*tail,sh.origin.xyz+sh.dir.xyz*tip,vec3f(1,.55,.12),.11,2.4*fade);beam6(sh.origin.xyz+sh.dir.xyz*tail*.6,sh.origin.xyz+sh.dir.xyz*tip*.9,vec3f(.42,.40,.38),.18,.6*fade);}\n"
+  },
+  {
+   "before": "fn equipment12(dt:f32){",
+   "after": "fn equipment12(dt:f32){\n if(u.run.x>5.0&&u.run.y<.5&&(u32(S.upgrades14.x)&1u)!=0u){S.reserve12.x=min(S.reserve12.x,24.0);}// rockets are scarce, whatever the refill"
+  },
+  {
+   "before": "[[-65.0,49.05,0],[-64.4,49.4,3],[-67.22,50.05,5]]",
+   "after": "[[-65.0,49.05,0],[-64.4,49.4,3],[-67.22,50.05,5],[-67.22,50.67,4]]"
+  },
+  {
+   "before": " for(var k=1u;k<4u;k++){gunStand44(vec3f(o.x-3.22,.95,o.y-1.95+f32(k)*.62));}",
+   "after": " for(var k=2u;k<4u;k++){gunStand44(vec3f(o.x-3.22,.95,o.y-1.95+f32(k)*.62));}"
+  },
+  {
+   "before": "if(kind==5u){gunStand44(vec3f(p.x,.95,p.z));}",
+   "after": "if(kind==5u){gunStand44(vec3f(p.x,.95,p.z));}if(kind==4u){box(vec3f(p.x,1.0,p.z),vec3f(.16,1.1,.16),vec3f(.30,.36,.22),1,0);box(vec3f(p.x,1.6,p.z),vec3f(.20,.16,.20),vec3f(.85,.18,.10),1,.3);box(vec3f(p.x+.12,.9,p.z),vec3f(.06,.18,.08),vec3f(.12,.12,.13),1,0);}"
+  },
+  {
+   "before": "     if(what==5u){",
+   "after": "     if(what==4u){S.upgrades14.x=f32(u32(S.upgrades14.x)|1u);let stats=gunStats14(0u,S.upgrades14.x);S.mag12[0]=stats.x;S.reserve12[0]=stats.w;S.gear12=vec4f(0,0,S.gear12.x,0);S.reload12.x=0.0;}\n     if(what==5u){"
+  },
+  {
+   "before": "['E  Grab ammo','','','E  Grab medkit','','E  Grab AUTO SHOTGUN']",
+   "after": "['E  Grab ammo','','','E  Grab medkit','E  Grab BAZOOKA','E  Grab AUTO SHOTGUN']"
+  },
+  {
+   "before": "n===0&&(b&1)?'R7 HEAVY RIFLE'",
+   "after": "n===0&&(b&1)?(SANDBOX25?'BAZOOKA':'R7 HEAVY RIFLE')"
+  },
+  {
+   "before": "up&1?'R7 RIFLE':'CARBINE'",
+   "after": "up&1?(SANDBOX25?'BAZOOKA':'R7 RIFLE'):'CARBINE'"
+  }
+ ]
+}

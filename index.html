@@ -1704,7 +1704,7 @@ const initShader=COMMON+`
  Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0),vec4f(0));
  // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
  // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
- if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}
+ if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}
 }
 `;
 
@@ -1746,9 +1746,9 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));
  // Maple Street boss: at 3 min zombie 1567 (a tank) becomes the HOA President, 30 m from the player wherever it was: 4.5x, 3500 HP,
  // always hunting, walking straight through houses. special13.x=777 marks it; C[70] is 0 not yet, 1 alive, 2 defeated.
- if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=180.0&&S.pos.w>0.0&&atomicLoad(&C[70])==0u){atomicStore(&C[70],1u);var p=S.pos.xz+vec2f(30,0);
+ if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[70])==0u){atomicStore(&C[70],1u);var p=S.pos.xz+vec2f(30,0);
   for(var a=0u;a<8u;a++){let ang=f32(a)*.785+rnd(u32(S.aux.x*10.0))*6.28;let q=S.pos.xz+vec2f(cos(ang),sin(ang))*30.0;if(all(abs(q)<vec2f(88.0))){p=q;break;}}p=clamp(p,vec2f(-88.0),vec2f(88.0));
-  z.p=vec4f(p.x,0,p.y,3500.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}
+  z.p=vec4f(p.x,0,p.y,3500.0+max(0.0,u.v3.x-1.0)*1000.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
  if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||((S.director.x==0.0||S.director.x==3.0)&&S.alarm.z<=0.0))){B[i]=z;return;}
  if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;
@@ -3407,14 +3407,14 @@ fn suburb42(p:vec2f,edge:f32,noise:f32,top:f32,own:vec3f)->vec3f {
   color=mix(color,vec3f(.045,.037,.032)*(0.8+noise*.35),smoothstep(.035,.65,charAmount));
   let coverage=smoothstep(.05,.6,blood)*select(1.0,1.0-charAmount*.90,scorch>0u&&charAge<age);wet=coverage*exp(-age*.075);color=mix(color,mix(vec3f(.23,.024,.024),vec3f(.54,.008,.021),exp(-age*.045))*(.83+noise*.17),coverage);color=mix(color,vec3f(.029,.024,.021),charAmount*.66);wet*=1.0-charAmount*.9;
  }
- let light=normalize(vec3f(-.5,.8,.4));let diff=max(0.0,dot(n,light));let sh=shadowAt(o.shadow,n);let sunny=u.run.x>5.0&&u.run.y<.5;let ambient=select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny)*diff*(.23+.77*sh);
+ let light=normalize(vec3f(-.5,.8,.4));let diff=max(0.0,dot(n,light));let sh=shadowAt(o.shadow,n);let sunny=u.run.x>5.0&&u.run.y<.5;let night=sunny&&u.v3.x>1.5&&(u32(u.v3.x)%2u)==0u;let ambient=select(select(vec3f(.23,.29,.35),vec3f(.40,.40,.43),sunny),vec3f(.11,.13,.24),night)*(0.63+max(n.y,0.0)*.37);let lighting=ambient+select(select(vec3f(.61,.72,.82),vec3f(1.0,.90,.72),sunny),vec3f(.30,.38,.66),night)*diff*(.23+.77*sh);
  var linear=pow(max(color,vec3f(.001)),vec3f(2.2))*lighting*2.2;
  let muzzle=S.gunOrigin.xyz+S.gunAim.xyz*.80;let dv=muzzle-o.world;linear+=pow(color,vec3f(1.6))*vec3f(1.8,.66,.08)*S.look.z/(.45+dot(dv,dv)*1.8)*(.35+max(0.0,dot(n,normalize(dv))));
  let bombD=vec3f(S.blast.x,.8,S.blast.y)-o.world;linear+=color*vec3f(4.0,1.0,.05)*S.blast.z/(.6+dot(bombD,bombD)*.22);
  let tc=clamp(vec2u((o.world.xz+96.0)/12.0),vec2u(0),vec2u(15));let tile=tc.x+16u*tc.y;let lightCount=min(8u,LT[tile*9u]);
  for(var li=0u;li<lightCount;li++){let l=Lights[LT[tile*9u+1u+li]];let delta=l.p.xyz-o.world;let dist=length(delta);let att=pow(max(0.0,1.0-dist/l.p.w),2.0);linear+=pow(color,vec3f(1.6))*l.c.xyz*l.c.w*att*(.16+max(0.0,dot(n,delta/max(dist,.01))));}
  if(wet>0.0){let eye=normalize(u.camera.xyz+vec3f(S.pos.x,0,S.pos.z)-o.world);let spec=pow(max(0.0,dot(normalize(light+eye),n)),52.0);linear+=vec3f(.7,.38,.25)*spec*wet*sh;}
- for(var gi=0u;gi<2u;gi++){let gp=select(u.goals.xy,u.goals.zw,gi==1u);let delta=vec3f(gp.x,.8,gp.y)-o.world;let on=S.goal[gi]>=2.4;linear+=color*select(vec3f(.8,.23,.025),vec3f(.02,.70,.31),on)/(.6+dot(delta,delta)*.7)*.4;}linear+=color*o.color.w;let distance=length(o.world.xz-S.pos.xz);let fog=smoothstep(28.0,53.0,distance)*select(.42,.18,sunny);linear=mix(linear,select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),fog);return vec4f(linear,1);
+ for(var gi=0u;gi<2u;gi++){let gp=select(u.goals.xy,u.goals.zw,gi==1u);let delta=vec3f(gp.x,.8,gp.y)-o.world;let on=S.goal[gi]>=2.4;linear+=color*select(vec3f(.8,.23,.025),vec3f(.02,.70,.31),on)/(.6+dot(delta,delta)*.7)*.4;}linear+=color*o.color.w;let distance=length(o.world.xz-S.pos.xz);let fog=smoothstep(28.0,53.0,distance)*select(select(.42,.18,sunny),.36,night);linear=mix(linear,select(select(vec3f(.075,.14,.18),vec3f(.36,.46,.34),sunny),vec3f(.03,.05,.11),night),fog);return vec4f(linear,1);
 }
 `;
 const postShader=`
@@ -3740,7 +3740,7 @@ function bindInput(){
    case 'KeyX':if(!settings.paused)input12.order++;break;
    case 'Slash':e.preventDefault();if(settings.help){settings.help=false;settings.paused=!helpResume;}else{helpResume=!settings.paused;settings.help=true;settings.paused=true;}cancelInput12();break;
    case 'KeyL':if(!DEV_KEYS25)break;settings.practice=true;settings.lab=!settings.lab;seedRequested=true;break;
-   case 'KeyN':if(!confirmKey25('KeyN','Press N again to erase your checkpoint'))break;clearCheckpoint();seedRequested=true;advanceRequested=0;runSeed=(runSeed+104729)>>>0;stage=SANDBOX25?SANDBOX_STAGE25:1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12();break;
+   case 'KeyN':if(!confirmKey25('KeyN','Press N again to erase your checkpoint'))break;clearCheckpoint();seedRequested=true;advanceRequested=0;runSeed=(runSeed+104729)>>>0;stage=SANDBOX25?SANDBOX_STAGE25:1;mapleLevel65=1;upgrades=[0,0,0];carryMods.fill(0);cancelInput12();break;
    case 'Enter':if(SANDBOX25&&playerValues[67]===1){nextSandbox25();break;}if(!settings.started||playerValues[67]===1){saveBoundary13();continueBoundary13();}break;
    case 'F6':e.preventDefault();if(!DEV_KEYS25)break;settings.practice=true;{let opts=[256,512,1024,2048,4096,8192];settings.zombies=opts[(opts.indexOf(settings.zombies)+1)%opts.length];}break;
    case 'KeyT':if(!DEV_KEYS25)break;settings.practice=true;settings.demo=!settings.demo;settings.started=true;break;
@@ -4023,12 +4023,12 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
 }
 // ZAMN-style level card for the first 3.6 s of a run: LEVEL 1, a drippy ZOMBIE PANIC!, and the victim count. It slams in and fades out.
 let levelCardSaid65=null;
-function levelCard59(k){const t=playerValues[24]||0;if(t>.2&&t<3&&levelCardSaid65!==world&&announce65('Level one. Zombie panic!',true))levelCardSaid65=world;if(!hud2d30||t>=3.6||!settings.started)return;const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;
+function levelCard59(k){const t=playerValues[24]||0;if(t>.2&&t<3&&levelCardSaid65!==world&&announce65('Level '+mapleLevel65+'. '+levelName65(),true))levelCardSaid65=world;if(!hud2d30||t>=3.6||!settings.started)return;const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;
  const a=clamp9(Math.min(t/.25,(3.6-t)/.6),0,1),slam=1+Math.max(0,.25-t)*1.6;ctx.save();ctx.globalAlpha=a;ctx.fillStyle='rgba(10,6,20,.55)';ctx.fillRect(0,H*.24,W,H*.34);
- ctx.textBaseline='alphabetic';ctx.lineJoin='round';const big='ZOMBIE PANIC!',px=Math.round(96*k*s*slam);ctx.font=px+'px Bangers,Impact,"Arial Black",sans-serif';const bw=ctx.measureText(big).width,bx=(W-bw)/2,by=H*.47;
+ ctx.textBaseline='alphabetic';ctx.lineJoin='round';const big=levelName65(),px=Math.round(Math.min(96,1500/Math.max(10,levelName65().length))*k*s*slam);ctx.font=px+'px Bangers,Impact,"Arial Black",sans-serif';const bw=ctx.measureText(big).width,bx=(W-bw)/2,by=H*.47;
  ctx.fillStyle='#3d9a1c';for(let d=0;d<9;d++){const x=bx+bw*((d*.1093+.05)%1),len=(14+((d*29)%5)*8)*k*s*Math.min(1,t*1.4),w=(8+(d%3)*3)*k*s;ctx.beginPath();ctx.roundRect(x,by-12*k*s,w,len+12*k*s,w/2);ctx.fill();}
  ctx.lineWidth=14*k*s;ctx.strokeStyle='#0b0b08';ctx.strokeText(big,bx,by);const g=ctx.createLinearGradient(0,by-px,0,by);g.addColorStop(0,'#c8ff4a');g.addColorStop(1,'#2f8a1c');ctx.fillStyle=g;ctx.fillText(big,bx,by);
- const top='LEVEL 1',tp=Math.round(34*k*s);ctx.font=tp+'px Bangers,Impact,sans-serif';const tw=ctx.measureText(top).width;ctx.lineWidth=8*k*s;ctx.strokeText(top,(W-tw)/2,H*.31);ctx.fillStyle='#f6d43a';ctx.fillText(top,(W-tw)/2,H*.31);
+ const top='LEVEL '+mapleLevel65,tp=Math.round(34*k*s);ctx.font=tp+'px Bangers,Impact,sans-serif';const tw=ctx.measureText(top).width;ctx.lineWidth=8*k*s;ctx.strokeText(top,(W-tw)/2,H*.31);ctx.fillStyle='#f6d43a';ctx.fillText(top,(W-tw)/2,H*.31);
  const vic='VICTIMS: '+(world.civilians30?.length||0),vp=Math.round(30*k*s);ctx.font=vp+'px Bangers,Impact,sans-serif';const vw=ctx.measureText(vic).width;ctx.strokeText(vic,(W-vw)/2,H*.55);ctx.fillStyle='#ff4fa3';ctx.fillText(vic,(W-vw)/2,H*.55);
  ctx.restore();}
 // The HOA President (C[70]: 1 alive, 2 defeated; C[69] its HP): an arrival banner, a boss bar across the top while it lives, and a
@@ -4037,7 +4037,7 @@ const boss65={state:0,banner:'',until:0};
 function bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st;
  if(st===1&&boss65.state===0){boss65.banner='BOSS: THE HOA PRESIDENT';boss65.until=time+3.2;playAudio9('explosion','explosion',.5,null,1,0,.6);synth65('sting');announce65('Warning! The H. O. A. President has arrived!',true);}
  if(st===2&&boss65.state===1){boss65.banner='HOA PRESIDENT DEFEATED!  +5000';boss65.until=time+3.6;announce65('The H. O. A. President has been... foreclosed!',true);}boss65.state=st;
- if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/3500,0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
+ if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/bossHP65(),0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
   const n='THE HOA PRESIDENT';text(n,width/2-textWidth9(n,14*k)/2,y+22*k,14*k,COL9.gold);}
  if(boss65.banner&&time<boss65.until){const px=(46+6*Math.sin((boss65.until-time)*8))*k;text(boss65.banner,width/2-textWidth9(boss65.banner,px)/2,height*.36,px,st===2?COL9.gold:COL9.red);}}
 // BOING! over the player on every trampoline launch (C[83]); zombie launches (C[88]) stack into a BOING xN callout.
@@ -4055,7 +4055,7 @@ const QUESTS65=[
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
  {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[66]|0)+'/4)',done:()=>(counters[66]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
- {title:'FORECLOSURE',goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up (3:00)',done:()=>(counters[70]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
+ {title:'FORECLOSURE',goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[70]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
  {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>(playerValues[L7.goal+3]||0)>0,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
 const quest65={i:0,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
 function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
@@ -4089,7 +4089,7 @@ function evacCard30(k){
  centre('MAPLE STREET EVACUATED',height*.235,44*k,COL9.green);centre(saved+' / '+total+' NEIGHBORS SAVED',height*.35,34*k,COL9.gold);
  centre(fmt(counters[0])+' put down   /   '+(counters[34]|0)+' crushed   /   '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0'),height*.455,16*k,COL9.white);
  centre(evacQuip30(saved,lost,total),height*.52,15*k,COL9.soft);
- pill30('ENTER   NEXT STREET',width/2,height*.635,20*k,COL9.gold);centre('N twice   New run',height*.715,12*k,COL9.soft);
+ pill30('ENTER   LEVEL '+(mapleLevel65+1),width/2,height*.635,20*k,COL9.gold);centre('N twice   New run',height*.715,12*k,COL9.soft);
 }
 // Controls as key caps in two columns; the sandbox adds its three house rules underneath.
 const HELP_KEYS30=[[[['W','A','S','D'],'Move'],[['Mouse'],'Aim'],[['LMB'],'Fire / use gear'],[['RMB','Space'],'Shove'],[['1','2','3'],'Guns'],[['R'],'Reload'],[['Q'],'Last gun'],[['4','G'],'Throwables'],[['5','F'],'Medkit: LMB self, RMB ally']],
@@ -4108,7 +4108,11 @@ function helpCard30(k){
 // House floors for the daylight ground shader (S.floors42 at float 3980): two rectangles per vec4, (corner+96)*32+size, whole metres.
 // Pools share the list with +16 on both size fields, so house and pool sizes must stay under 16 m.
 function packFloors42(st,buildings,pools=[]){let k=0;for(const [b,flag] of [...buildings.map(b=>[b,0]),...pools.map(p=>[p,16])]){if(k>=58)break;const x0=Math.round(b.x),z0=Math.round(b.z),w=Math.round(b.w),d=Math.round(b.d);if(w<1||d<1||w>15||d>15||x0<-96||z0<-96)continue;const o=3980+(k>>1)*4+(k&1)*2;st[o]=(x0+96)*32+w+flag;st[o+1]=(z0+96)*32+d+flag;k++;}return k;}
-function nextSandbox25(){runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
+// Maple Street levels: every evacuation rolls a new street as the next level (u.v3.x), with a new B-movie title, night on even
+// levels, a bigger opening crowd, an earlier and tougher HOA President. A new run (N twice) starts again at level 1.
+let mapleLevel65=1;const LEVEL_NAMES65=['ZOMBIE PANIC!','NIGHT OF THE LIVING HOA','BLOOD MOON BLOCK PARTY','ATTACK OF THE 50 FT PRESIDENT','THE CUL-DE-SAC OF DOOM','LAWN OF THE DEAD'];
+const levelName65=()=>LEVEL_NAMES65[(mapleLevel65-1)%LEVEL_NAMES65.length],bossHP65=()=>3500+(mapleLevel65-1)*1000,bossAt65=()=>Math.max(120,180-(mapleLevel65-1)*30);
+function nextSandbox25(){mapleLevel65++;runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
 function timeLabel(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');}
@@ -4328,7 +4332,7 @@ function updateUniforms(dt){
  uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
  uniformData.set([world.count,world.propCount,runSeed,upgrades[2]],64);uniformData.set(world.generators,68);uniformData.set([...world.start,...world.exit],72);
- uniformData.set([0,0,0,0],76);pendingPipeBomb=0;
+ uniformData.set([SANDBOX25?mapleLevel65:0,0,0,0],76);pendingPipeBomb=0;
  uniformData.set([0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
  uniformData.set([input12.selected,input12.seq,input12.attack,input12.reload],84);
  uniformData.set([input12.release,input12.blocked?1:0,(keys.has('ShiftLeft')||keys.has('ShiftRight'))?1:0,keys.has('Space')?1:0],88);

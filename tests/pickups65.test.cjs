@@ -14,7 +14,7 @@ check('quick grab gives exactly the item',()=>{assert(html.includes('let item44=
  return {measured:'SwiftShader real game: medkits 1 -> 2, reserve 180 -> 240, upgrades 0 -> 2 with the auto shotgun in hand'};});
 check('items are drawn by the item pass and vanish when taken; static copies removed',()=>{assert(html.includes('if(pr.more.x==44.0){shelterItem44(p,u32(pr.aux.x),pr.data.x>0.0);}else{supplyTable44(p,pr.data.x>0.0);}'));
  assert(html.includes('for(var k=2u;k<4u;k++){gunStand44(vec3f(o.x-3.22,.95,o.y-1.95+f32(k)*.62));}'),'slots 0 and 1 are pickups since bazooka77');assert(!html.includes('medkit44(vec3f(o.x-.40,y+.07,o.y-2.6))'));});
-check('prompt names the item',()=>{assert(html.includes("label=['E  Grab ammo','','','E  Grab medkit','','E  Grab AUTO SHOTGUN'][world.props[o+8]]||label;else label='E  Raid supply table';"));});
+check('prompt names the item',()=>{assert(html.includes("label=['E  Grab ammo','','','E  Grab medkit','E  Grab BAZOOKA','E  Grab AUTO SHOTGUN'][world.props[o+8]]||label;else label='E  Raid supply table';"));});
 check('exact inverse restores the immutable pre-pickup runtime',()=>{assert.equal(sha(withoutPickups65(html)),delta.parentSha256);});
 const report={method:'CPU host world, source fragments, and a real-game E test on SwiftShader (PR notes).',runtimeSha256:sha(fs.readFileSync(file)),passed:checks.every(c=>c.passed),checks};
 console.log(JSON.stringify(report,null,2));process.exitCode=report.passed?0:1;

@@ -1,0 +1,29 @@
+{
+ "parentSha256": "791ce65d7b59c4a8065e1e5744ae0a118e809650b1c76b3dd8e822b4c49874fd",
+ "changes": [
+  {
+   "before": "  var a=S.team7[id];if(S.journey7.x<.5&&a.vital.z<.5){continue;}",
+   "after": "  var a=S.team7[id];let start65=a.p.xz;if(S.journey7.x<.5&&a.vital.z<.5){continue;}"
+  },
+  {
+   "before": "  if(a.p.w>0.0){life.x=0.0;}mag[weapon]=a.pack.x;S.botMag13[id]=mag;S.botReserve13[id]=reserve;S.botLife13[id]=life;S.botItems13[id].z=a.pack.w;a.memory.w=a.p.w;S.team7[id]=a;",
+   "after": "  // Same-screen co-op (Maple Street): player two drives bot 1 with IJKL or a gamepad (u.v3.y on, u.v3.zw the stick in world space).\n  // The bot's own combat AI still aims, fires, heals and revives; only where it walks changes, kept within 13 m of player one.\n  if(u.run.x>5.0&&u.run.y<.5&&id==0u&&u.v3.y>.5&&a.p.w>0.0){var q=start65;let mv=u.v3.zw;let step=mv/max(1.0,length(mv))*(230.0/64.0)*dt;let hb=vec3f(.24,.30,.24);\n   if(!blocked(vec3f(q.x+step.x,.35,q.y),hb)){q.x+=step.x;}if(!blocked(vec3f(q.x,.35,q.y+step.y),hb)){q.y+=step.y;}\n   let off=q-S.pos.xz;if(length(off)>13.0){let pull=S.pos.xz+safe2(off)*13.0;if(!blocked(vec3f(pull.x,.35,pull.y),hb)){q=pull;}}\n   a.p.x=q.x;a.p.z=q.y;a.movement=vec4f(step/max(dt,.0001),length(step)/max(dt,.0001),0);}\n  if(a.p.w>0.0){life.x=0.0;}mag[weapon]=a.pack.x;S.botMag13[id]=mag;S.botReserve13[id]=reserve;S.botLife13[id]=life;S.botItems13[id].z=a.pack.w;a.memory.w=a.p.w;S.team7[id]=a;"
+  },
+  {
+   "before": " uniformData.set([moveX,moveZ,mouse.left?1:0,mouse.right?1:0],36);",
+   "after": " uniformData.set([moveX,moveZ,mouse.left?1:0,mouse.right?1:0],36);\n const [p2x,p2y]=SANDBOX25?p2Input65():[0,0];const p2X=right[0]*p2x+forward[0]*p2y,p2Z=right[2]*p2x+forward[2]*p2y;"
+  },
+  {
+   "before": " uniformData.set([SANDBOX25?mapleLevel65:0,0,0,0],76);",
+   "after": " uniformData.set([SANDBOX25?mapleLevel65:0,p2_65.on?1:0,p2X,p2Z],76);"
+  },
+  {
+   "before": "// ZAMN-style status block, top left:",
+   "after": "// Player two joins the first time IJKL or a gamepad stick moves; a green P2 tag rides over bot 1 and a banner announces it.\nconst p2_65={on:false,at:-9};\nfunction p2Input65(){let x=(keys.has('KeyL')?1:0)-(keys.has('KeyJ')?1:0),y=(keys.has('KeyI')?1:0)-(keys.has('KeyK')?1:0);\n try{const pads=navigator.getGamepads?[...navigator.getGamepads()]:[];const g=pads.find(p=>p&&p.connected);if(g){const ax=g.axes[0]||0,ay=g.axes[1]||0;if(Math.hypot(ax,ay)>.25){x=ax;y=-ay;}}}catch(e){}\n if((x||y)&&!p2_65.on){p2_65.on=true;p2_65.at=time;announce65('Player two has entered the neighborhood!',true);}return [x,y];}\nfunction p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx,sy]=screenPoint(playerValues[o],playerValues[o+2],2.1);text('P2',sx-textWidth9('P2',16*k)/2,sy,16*k,[.35,1,.55,1]);}\n if(time-p2_65.at<2.8){const s='PLAYER 2 JOINED!';text(s,width/2-textWidth9(s,34*k)/2,height*.28,34*k,[.35,1,.55,1]);}\n else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}\n// ZAMN-style status block, top left:"
+  },
+  {
+   "before": "  if(SANDBOX25)questHUD65(k);\n",
+   "after": "  if(SANDBOX25)questHUD65(k);\n  if(SANDBOX25)p2HUD65(k);\n"
+  }
+ ]
+}

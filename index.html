@@ -2770,7 +2770,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
  if(S.squad7.y>=0.0){manual=i32(S.squad7.y);}
  var healthy=0u;
  for(var id=0u;id<3u;id++){
-  var a=S.team7[id];if(S.journey7.x<.5&&a.vital.z<.5){continue;}a.aim.w=0.0;a.look.z=max(0.0,a.look.z-dt);a.look.w=max(0.0,a.look.w-dt*9.0);a.memory.z=max(0.0,a.memory.z-dt);a.vital.y=max(0.0,a.vital.y-dt);a.ai.w-=dt;a.pathInfo.z-=dt;a.movement.z=0.0;
+  var a=S.team7[id];let start65=a.p.xz;if(S.journey7.x<.5&&a.vital.z<.5){continue;}a.aim.w=0.0;a.look.z=max(0.0,a.look.z-dt);a.look.w=max(0.0,a.look.w-dt*9.0);a.memory.z=max(0.0,a.memory.z-dt);a.vital.y=max(0.0,a.vital.y-dt);a.ai.w-=dt;a.pathInfo.z-=dt;a.movement.z=0.0;
   var mag=S.botMag13[id];var reserve=S.botReserve13[id];var life=S.botLife13[id];var weapon=u32(mag.w);
   a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;
   let sprint=S.botFuel15[id]<.5&&distance(a.p.xz,S.pos.xz)>290.0/64.0&&a.memory.x<0.0&&a.pack.z<=0.0&&S.botStamina13[id]>4.0;
@@ -2912,6 +2912,12 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    }}
    if(contacts>0u){push/=max(1.0,f32(contacts)*.5);push=clamp(push,vec2f(-.18),vec2f(.18));if(!blocked(a.p.xyz+vec3f(push.x,.36,0),vec3f(.24,.29,.24))){a.p.x+=push.x;}if(!blocked(a.p.xyz+vec3f(0,.36,push.y),vec3f(.24,.29,.24))){a.p.z+=push.y;}}
   }
+  // Same-screen co-op (Maple Street): player two drives bot 1 with IJKL or a gamepad (u.v3.y on, u.v3.zw the stick in world space).
+  // The bot's own combat AI still aims, fires, heals and revives; only where it walks changes, kept within 13 m of player one.
+  if(u.run.x>5.0&&u.run.y<.5&&id==0u&&u.v3.y>.5&&a.p.w>0.0){var q=start65;let mv=u.v3.zw;let step=mv/max(1.0,length(mv))*(230.0/64.0)*dt;let hb=vec3f(.24,.30,.24);
+   if(!blocked(vec3f(q.x+step.x,.35,q.y),hb)){q.x+=step.x;}if(!blocked(vec3f(q.x,.35,q.y+step.y),hb)){q.y+=step.y;}
+   let off=q-S.pos.xz;if(length(off)>13.0){let pull=S.pos.xz+safe2(off)*13.0;if(!blocked(vec3f(pull.x,.35,pull.y),hb)){q=pull;}}
+   a.p.x=q.x;a.p.z=q.y;a.movement=vec4f(step/max(dt,.0001),length(step)/max(dt,.0001),0);}
   if(a.p.w>0.0){life.x=0.0;}mag[weapon]=a.pack.x;S.botMag13[id]=mag;S.botReserve13[id]=reserve;S.botLife13[id]=life;S.botItems13[id].z=a.pack.w;a.memory.w=a.p.w;S.team7[id]=a;
  }
  S.buddy=S.team7[0].p;S.buddyLook=S.team7[0].look;S.allyAim=S.team7[0].aim;S.buddyShot.w=S.team7[0].aim.w;S.rescue.x=S.team7[0].flags.y;S.rescue.y=S.team7[0].vital.x;S.rescue.z=S.team7[0].vital.z;
@@ -4067,6 +4073,14 @@ function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,
  else text('ALL MISSIONS COMPLETE',x+12*k,y+20*k,16*k,COL9.gold);
  if(q.banner&&time<q.until){const px=(30+4*Math.sin((q.until-time)*9))*k;text(q.banner,width/2-textWidth9(q.banner,px)/2,height*.42,px,COL9.gold);}
  if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=14*k;text(r,width/2-textWidth9(r,px)/2,height-96*k,px,[.55,1,.70,1]);}}
+// Player two joins the first time IJKL or a gamepad stick moves; a green P2 tag rides over bot 1 and a banner announces it.
+const p2_65={on:false,at:-9};
+function p2Input65(){let x=(keys.has('KeyL')?1:0)-(keys.has('KeyJ')?1:0),y=(keys.has('KeyI')?1:0)-(keys.has('KeyK')?1:0);
+ try{const pads=navigator.getGamepads?[...navigator.getGamepads()]:[];const g=pads.find(p=>p&&p.connected);if(g){const ax=g.axes[0]||0,ay=g.axes[1]||0;if(Math.hypot(ax,ay)>.25){x=ax;y=-ay;}}}catch(e){}
+ if((x||y)&&!p2_65.on){p2_65.on=true;p2_65.at=time;announce65('Player two has entered the neighborhood!',true);}return [x,y];}
+function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx,sy]=screenPoint(playerValues[o],playerValues[o+2],2.1);text('P2',sx-textWidth9('P2',16*k)/2,sy,16*k,[.35,1,.55,1]);}
+ if(time-p2_65.at<2.8){const s='PLAYER 2 JOINED!';text(s,width/2-textWidth9(s,34*k)/2,height*.28,34*k,[.35,1,.55,1]);}
+ else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
@@ -4168,6 +4182,7 @@ function hud(){
   if(SANDBOX25)bossHUD65(k);
   if(SANDBOX25)boingHUD65(k);
   if(SANDBOX25)questHUD65(k);
+  if(SANDBOX25)p2HUD65(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
@@ -4324,6 +4339,7 @@ function updateUniforms(dt){
  // Screen-relative movement on the floor, not camera-relative vertical movement.
  let forward=norm([up[0],0,up[2]]);let moveX=right[0]*mx+forward[0]*my,moveZ=right[2]*mx+forward[2]*my;
  uniformData.set([moveX,moveZ,mouse.left?1:0,mouse.right?1:0],36);
+ const [p2x,p2y]=SANDBOX25?p2Input65():[0,0];const p2X=right[0]*p2x+forward[0]*p2y,p2Z=right[2]*p2x+forward[2]*p2y;
  const rx=(mouse.x*2-1)*hw,uy=(1-mouse.y*2)*hh-up[1]*.45;
  const det=right[0]*up[2]-right[2]*up[0];const aimX=(rx*up[2]-uy*right[2])/det,aimZ=(right[0]*uy-up[0]*rx)/det;
  uniformData.set([aimX,aimZ,0,0],40);pendingGrenade=pendingDash=0;
@@ -4332,7 +4348,7 @@ function updateUniforms(dt){
  uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
  uniformData.set([world.count,world.propCount,runSeed,upgrades[2]],64);uniformData.set(world.generators,68);uniformData.set([...world.start,...world.exit],72);
- uniformData.set([SANDBOX25?mapleLevel65:0,0,0,0],76);pendingPipeBomb=0;
+ uniformData.set([SANDBOX25?mapleLevel65:0,p2_65.on?1:0,p2X,p2Z],76);pendingPipeBomb=0;
  uniformData.set([0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
  uniformData.set([input12.selected,input12.seq,input12.attack,input12.reload],84);
  uniformData.set([input12.release,input12.blocked?1:0,(keys.has('ShiftLeft')||keys.has('ShiftRight'))?1:0,keys.has('Space')?1:0],88);

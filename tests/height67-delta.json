@@ -1,0 +1,93 @@
+{
+ "parentSha256": "744a459ac93d345979625844f42a3429beffe47f91c30d9d0d113e1d7e621aaa",
+ "changes": [
+  {
+   "before": "struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f }",
+   "after": "struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f, body:vec4f }"
+  },
+  {
+   "before": "const ZOMBIE_FLOATS13=28,ZOMBIE_BYTES13=112;",
+   "after": "const ZOMBIE_FLOATS13=32,ZOMBIE_BYTES13=128;"
+  },
+  {
+   "before": "vec4f(0,0,0,-1),vec4f(S.pos.xz,24,1));return true;",
+   "after": "vec4f(0,0,0,-1),vec4f(S.pos.xz,24,1),vec4f(0));return true;"
+  },
+  {
+   "before": "vec4f(0,0,0,-1),vec4f(p,0,0));\n",
+   "after": "vec4f(0,0,0,-1),vec4f(p,0,0),vec4f(0));\n"
+  },
+  {
+   "before": "fn solid(p:vec3f)->u32 {return occAt(vec3i(floor((p+vec3f(HALF,0,HALF))*4.0)));}\n",
+   "after": "fn solid(p:vec3f)->u32 {return occAt(vec3i(floor((p+vec3f(HALF,0,HALF))*4.0)));}\n// Maple Street height: the top of the highest solid voxel at or below top, under the centre and four corners of a footprint of\n// half-size r (r=0 samples the centre only).\nfn ground3d(xz:vec2f,top:f32,r:f32)->f32 {var g=0.0;let hi=i32(clamp(floor(top*4.0),0.0,11.0));\n for(var c=0u;c<select(5u,1u,r==0.0);c++){let o=select(vec2f(0),vec2f(select(-r,r,(c&1u)==1u),select(-r,r,(c&2u)!=0u)),c>0u);\n  for(var k=hi;k>=0;k--){if(f32(k+1)*.25<=g){break;}if(solid(vec3f(xz.x+o.x,f32(k)*.25+.125,xz.y+o.y))>0u){g=max(g,f32(k+1)*.25);break;}}}return g;}\n"
+  },
+  {
+   "before": " var p=S.pos.xyz;let h=vec3f(.24,.30,.24);let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}",
+   "after": " var p=S.pos.xyz;let h=vec3f(.24,.30,.24);if(u.run.x>5.0&&u.run.y<.5){p=body3d65(p,h,movement,dt);}else{let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}}"
+  },
+  {
+   "before": "var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,.36,p.z);let tz=vec3f(p.x,.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);\n if(!blocked(tx,h)){p.x=tx.x;}let tz2=vec3f(p.x,.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}",
+   "after": "var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,p.y+.36,p.z);let tz=vec3f(p.x,p.y+.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);\n let maple3d=u.run.x>5.0&&u.run.y<.5;\n if(!blocked(tx,h)){p.x=tx.x;}else if(maple3d){let up=ground3d(tx.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tx.x,up+.37,tx.z),h)){p.x=tx.x;p.y=up;}}\n let tz2=vec3f(p.x,p.y+.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}else if(maple3d){let up=ground3d(tz2.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tz2.x,up+.37,tz2.z),h)){p.z=tz2.z;p.y=up;}}\n // Maple Street zombies have height too: gravity on body.x, trampolines fling them (C[88] counts), and a hard landing (falling\n // faster than 7 m/s) is kept in body.y and taken as damage below.\n if(maple3d){var vy=z.body.x;let g=ground3d(p.xz,p.y+.05,0.0);\n  for(var t=0u;t<6u;t++){let tp=Props[TRAMP_BASE65+t];if(tp.p.w==33.0&&length(p.xz-tp.p.xz)<.95&&p.y<.6&&vy<=0.0&&kind!=6.0){vy=10.5+rnd(i+u32(S.aux.x*7.0))*2.5;atomicAdd(&C[88],1u);}}\n  if(p.y>g+.001||vy>0.0){vy-=22.0*dt;p.y+=vy*dt;if(p.y<=g){if(vy< -7.0){z.body.y=-vy;}p.y=g;vy=0.0;}}else{p.y=g;}z.body.x=vy;}"
+  },
+  {
+   "before": " var impulse=vec3f(-direct.x,1,-direct.y)*3.0;\n var heHurt=false;\n",
+   "after": " var impulse=vec3f(-direct.x,1,-direct.y)*3.0;\n if(z.body.y>0.0){damage+=(z.body.y-6.0)*16.0;impulse=vec3f(0,2.5,0);z.body.y=0.0;}\n var heHurt=false;\n"
+  },
+  {
+   "before": "  if(victim<4u&&awake&&sight&&z.combat13.y<=0.0&&z.combat13.x<=0.0&&targetDistance<radius+29.0/64.0&&S.goal.w==0.0){",
+   "after": "  if(victim<4u&&awake&&sight&&z.combat13.y<=0.0&&z.combat13.x<=0.0&&targetDistance<radius+29.0/64.0&&S.goal.w==0.0&&(victim!=0u||abs(S.pos.y-p.y)<1.1)){"
+  },
+  {
+   "before": "if(!blocked(vec3f(p.x+correction.x,.36,p.z),h)){p.x+=correction.x;}if(!blocked(vec3f(p.x,.36,p.z+correction.y),h)){p.z+=correction.y;}",
+   "after": "if(!blocked(vec3f(p.x+correction.x,p.y+.36,p.z),h)){p.x+=correction.x;}if(!blocked(vec3f(p.x,p.y+.36,p.z+correction.y),h)){p.z+=correction.y;}"
+  },
+  {
+   "before": "const CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904;",
+   "after": "const CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904,TRAMP_BASE65=MAX_PROPS-18;"
+  },
+  {
+   "before": "const CIV_BASE30:u32=${MAX_PROPS-12}u;",
+   "after": "const CIV_BASE30:u32=${MAX_PROPS-12}u;const TRAMP_BASE65:u32=${MAX_PROPS-18}u;"
+  },
+  {
+   "before": "  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=CIV_BASE30)break;",
+   "after": "  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=TRAMP_BASE65)break;"
+  },
+  {
+   "before": "cheese48.push({x,z,index});}}\n",
+   "after": "cheese48.push({x,z,index});}\n  // Trampolines (prop 33) live in 6 fixed slots before the neighbors: one under each Trampoline Timmy, then free yard spots.\n  // data.y is the last bounce time (the mat dips).\n  const tramp=[...civilians30.filter(c=>c.type===4).map(c=>[c.x,c.z]),...gates45.filter((_,i)=>i%3===2).map(g=>[g.x+3.0,g.z+2.6]),...gates45.filter((_,i)=>i%3===0).map(g=>[g.x-2.6,g.z+2.6])];let tn=0;\n  for(const [x,z] of tramp){if(tn>=6)break;const timmy=civilians30.some(c=>c.type===4&&c.x===x&&c.z===z);if(!timmy&&(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2.5)))continue;props.set([x,0,z,33,1,-9,0,0,0,0,0,0,0,0,0,0],(TRAMP_BASE65+tn)*16);trampolines65.push({x,z});tn++;}}\n"
+  },
+  {
+   "before": " const cheese48=[];\n",
+   "after": " const cheese48=[],trampolines65=[];\n"
+  },
+  {
+   "before": "return {cheese48,",
+   "after": "return {cheese48,trampolines65,"
+  },
+  {
+   "before": " if(kind30==4u){let m=home+vec3f(0,.42,0);box(m,vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);\n  for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}\n  for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}\n}\n",
+   "after": "}\n// A trampoline (prop 33, fixed slot): black mat on a blue padded frame and four legs; the mat dips for .35 s after a bounce.\nfn trampoline65(t:u32){let tp=Props[TRAMP_BASE65+t];if(tp.p.w!=33.0){return;}let home=vec3f(tp.p.x,0,tp.p.z);let dip=clamp(1.0-(S.aux.x-tp.data.y)/.35,0.0,1.0)*.16;\n let m=home+vec3f(0,.42,0);box(m-vec3f(0,dip,0),vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);\n for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}\n for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}\n"
+  },
+  {
+   "before": "if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}}",
+   "after": "if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}for(var t=0u;t<6u;t++){trampoline65(t);}}"
+  },
+  {
+   "before": "// ZAMN-style status block, top left:",
+   "after": "// BOING! over the player on every trampoline launch (C[83]); zombie launches (C[88]) stack into a BOING xN callout.\nconst boing65={me:0,them:0,meAt:-9,themAt:-9,burst:0};\nfunction boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65.me||them<boing65.them){boing65.me=me;boing65.them=them;}\n if(me>boing65.me){boing65.meAt=time;playAudio9('snap','cue',.16,null,me,0,.55);playAudio9('latch','cue',.10,null,me,.05,1.8);}\n if(them>boing65.them){boing65.burst=time-boing65.themAt<1.5?boing65.burst+(them-boing65.them):them-boing65.them;boing65.themAt=time;playAudio9('snap','cue',.12,null,them,0,.6);}boing65.me=me;boing65.them=them;\n if(time-boing65.meAt<.7){const [sx,sy]=screenPoint(playerValues[0],playerValues[2],2.2+(playerValues[1]||0));const px=(26+(time-boing65.meAt)*20)*k;text('BOING!',sx-textWidth9('BOING!',px)/2,sy-(time-boing65.meAt)*60*k,px,[.40,.85,1,1]);}\n if(time-boing65.themAt<1.2){const s='BOING x'+boing65.burst;text(s,width/2-textWidth9(s,24*k)/2,height*.19,24*k,[.40,.85,1,1]);}}\n// ZAMN-style status block, top left:"
+  },
+  {
+   "before": "  if(SANDBOX25)bossHUD65(k);\n",
+   "after": "  if(SANDBOX25)bossHUD65(k);\n  if(SANDBOX25)boingHUD65(k);\n"
+  },
+  {
+   "before": "let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67);",
+   "after": "let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67+(SANDBOX25?playerValues[1]||0:0));"
+  },
+  {
+   "before": "fn equipment12(dt:f32){",
+   "after": "// Maple Street has real height: the body collides at its own height, steps up ledges of .55 m or less, falls with gravity (22 m/s^2,\n// vertical speed in motion.z), lands on whatever is under it (wall tops too) and gets 1.5x air control. Trampolines (6 fixed prop\n// slots before the neighbors) launch anyone who walks or lands on the mat about 2.9 m up, over walls; C[83] counts the player's.\nfn body3d65(p0:vec3f,h:vec3f,movement:vec2f,dt:f32)->vec3f {var p=p0;var mx=movement;if(p.y>.01){mx*=1.5;}\n let trialX=vec3f(p.x+mx.x,p.y+.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}else{let up=ground3d(trialX.xz,p.y+.55,.2);if(up>p.y&&!blocked(vec3f(trialX.x,up+.36,p.z),h)){p.x=trialX.x;p.y=up;}}\n let trialZ=vec3f(p.x,p.y+.35,p.z+mx.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}else{let up=ground3d(trialZ.xz,p.y+.55,.2);if(up>p.y&&!blocked(vec3f(p.x,up+.36,trialZ.z),h)){p.z=trialZ.z;p.y=up;}}\n var vy=S.motion.z;let g=ground3d(p.xz,p.y+.05,.2);\n for(var t=0u;t<6u;t++){var tp=Props[TRAMP_BASE65+t];if(tp.p.w==33.0&&distance(p.xz,tp.p.xz)<.95&&p.y<.6&&vy<=0.0){vy=11.5;tp.data.y=S.aux.x;Props[TRAMP_BASE65+t]=tp;atomicAdd(&C[83],1u);}}\n if(p.y>g+.001||vy>0.0){vy-=22.0*dt;let ny=p.y+vy*dt;if(vy>0.0&&blocked(vec3f(p.x,ny+.35,p.z),h)){vy=0.0;}else{p.y=ny;}if(p.y<=g){p.y=g;vy=0.0;}}else{p.y=g;vy=0.0;}\n S.motion.z=vy;return p;}\nfn equipment12(dt:f32){"
+  }
+ ]
+}

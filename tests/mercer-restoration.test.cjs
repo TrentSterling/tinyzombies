@@ -13,18 +13,18 @@ check('Mercer authored spine, supplies, mission doors and initial actors stay un
 });
 for(const seed of [73129,1,4294967295])for(const budget of [0,256,2048,8192])check(`seed ${seed} honors ${budget} initial slots and bounded world/fracture budgets`,()=>{
  h.run(`runSeed=${seed};settings.zombies=${budget};stage=1;world=makeWorld();`);const w=h.run('world'),limits=h.json('({MAX_Z,MAX_WORLD,MAX_PAGES,MAX_GROUPS})');
- let alive=0;for(let i=0;i<limits.MAX_Z;i++)if(w.initialZ13[i*28+3]>0)alive++;
+ let alive=0;for(let i=0;i<limits.MAX_Z;i++)if(w.initialZ13[i*h.json('ZOMBIE_FLOATS13')+3]>0)alive++;
  assert.equal(alive,budget);assert.equal(w.mercer24.population,budget);assert(w.count<limits.MAX_WORLD);assert(w.occupiedPages<=limits.MAX_PAGES);assert(w.groupCount<limits.MAX_GROUPS);
  const groups=new Map();for(let i=0;i<w.count;i++){const g=w.blocks[i*8+7];if(g>0)groups.set(g,(groups.get(g)||0)+1);}
  assert(groups.size>400);assert(Math.max(...groups.values())<=128);assert(w.mercer24.buildings.length===9);
  const connected=Array.from(w.navSeed).filter(x=>x<1073741800).length;assert(connected>18000);assert(connected>baseline.worlds[1].counts.reachable*10||connected>18000);
  for(const [x,z,width,depth]of w.mercer24.buildings){const cell=Math.floor(x+width/2+96)+192*Math.floor(z+depth/2+96);assert(w.navSeed[cell]<1073741800,'building interior disconnected');}
- for(let i=w.source13.infected.length;i<budget;i++){const o=i*28,x=w.initialZ13[o],z=w.initialZ13[o+2],cell=Math.floor(x+96)+192*Math.floor(z+96);assert(w.navSeed[cell]<1073741800);assert.equal(w.walk[cell],0);assert(Math.hypot(x-w.start[0],z-w.start[1])>=15);assert(Math.abs(x)>=43||Math.abs(z)>=28);}
+ for(let i=w.source13.infected.length;i<budget;i++){const o=i*h.json('ZOMBIE_FLOATS13'),x=w.initialZ13[o],z=w.initialZ13[o+2],cell=Math.floor(x+96)+192*Math.floor(z+96);assert(w.navSeed[cell]<1073741800);assert.equal(w.walk[cell],0);assert(Math.hypot(x-w.start[0],z-w.start[1])>=15);assert(Math.abs(x)>=43||Math.abs(z)>=28);}
  return{alive,connectedNavCells:connected,voxels:w.count,pages:w.occupiedPages,fractureGroups:groups.size,maxGroupVoxels:Math.max(...groups.values())};
 });
 check('all supplemental maximum-budget actors have physically clear spawn footprints',()=>{
  const m=makeModel(file);m.host.run('settings.zombies=8192;world=makeWorld();');const z=m.host.run('world.initialZ13');let checked=0;
- for(let i=m.world.source13.infected.length;i<8192;i++){assert(!m.blocked(z[i*28],z[i*28+2],.30),`blocked actor ${i}`);checked++;}return{checked};
+ for(let i=m.world.source13.infected.length;i<8192;i++){const F=m.host.run('ZOMBIE_FLOATS13');assert(!m.blocked(z[i*F],z[i*F+2],.30),`blocked actor ${i}`);checked++;}return{checked};
 });
 check('five alternate exterior passages are open in collision and connected on both sides',()=>{
  const m=makeModel(file);for(const [x0,z0,x1,z1]of m.world.mercer24.passages){const center=[(x0+x1)/2,(z0+z1)/2];assert(!m.blocked(...center,.24));const axis=x1-x0<z1-z0?0:1;const a=[...center],b=[...center];a[axis]-=1;b[axis]+=1;assert(m.clear(a,b));for(const p of [a,b])assert(m.world.navSeed[Math.floor(p[0]+96)+192*Math.floor(p[1]+96)]<1073741800);}return{passages:5};

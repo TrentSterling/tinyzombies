@@ -20,7 +20,7 @@ check('a quip names the neighbor who joined, and saving a typed neighbor shows a
  h.run('playerValues[CIV_STATE30+2]=4;hud()');assert(h.json('civNote30').includes(names[0]),'lost note names the right neighbor');
 });
 check('type props and poses are drawn from more.z; quips exist for every type and outcome',()=>{
- const src=Object.values(loadHost(file).sources).find(s=>s.includes('fn civilian30('));assert(src.includes('let kind30=u32(c.more.z);'));for(const t of [1,2,3,4])assert(src.includes(`if(kind30==${t}u){`),'props for '+t);
+ const src=Object.values(loadHost(file).sources).find(s=>s.includes('fn civilian30('));assert(src.includes('let kind30=u32(c.more.z);'));for(const t of [1,2,3])assert(src.includes(`if(kind30==${t}u){`),'props for '+t);assert(src.includes('fn trampoline65(t:u32)'),'Timmy\'s trampoline is a prop since height67');
  const lines=loadHost(file).json('CIV_TYPE_LINES47');for(let t=1;t<=4;t++)for(const k of ['join','saved','lost'])assert(lines[t][k].length>=2);
 });
 check('exact inverse restores the immutable pre-neighbor-types runtime',()=>{assert.equal(sha(withoutVictims47(html)),delta.parentSha256);});

@@ -22,10 +22,12 @@ check('alarm cars match DEAD ENDS startMap at the captured seeds',()=>{
 check('alarm cars become live props exactly like Deadweight; nothing else in any chapter changes',()=>{
  const {auditParentFile25}=require('./audit-fixes25.cjs'),c=loadHost(file),p=loadHost(auditParentFile25(file)),out={};
  const digest=v=>ArrayBuffer.isView(v)?sha(Buffer.from(v.buffer,v.byteOffset,v.byteLength)):sha(JSON.stringify(v));
+ // height67 grew each zombie from 28 to 32 floats (Zombie.body, zero at spawn); compare the 28 shared floats per slot.
+ const s28=v=>{if(!(ArrayBuffer.isView(v)&&v.constructor.name==='Float32Array')||v.length%32||v.length/32!==8192)return v;const o=new Float32Array(8192*28);for(let i=0;i<8192;i++){o.set(v.subarray(i*32,i*32+28),i*28);}return o;};
  for(const stage of [1,2,3,4,5]){
   for(const h of [c,p])h.run(`stage=${stage};world=makeWorld();`);
   const wc=c.run('world'),wp=p.run('world');
-  if(stage>2){for(const f of Object.keys(wp))assert.equal(digest(wc[f]),digest(wp[f]),`Chapter${stage} ${f}`);out[stage]='identical';continue;}
+  if(stage>2){for(const f of Object.keys(wp))assert.equal(digest(s28(wc[f])),digest(s28(wp[f])),`Chapter${stage} ${f}`);out[stage]='identical';continue;}
   const id=stage===1?23:22,rows=w=>Array.from({length:w.propCount},(_,i)=>Array.from(w.props.slice(i*16,i*16+16)));
   const rc=rows(wc),rp=rows(wp),k=rc.findIndex(r=>r[11]===id&&r[6]===1);
   assert.equal(wc.propCount,wp.propCount+1);assert(k>=0,'alarm row present');assert.equal(rc[k][12],7,'car prop kind');

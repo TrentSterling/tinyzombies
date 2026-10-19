@@ -18,7 +18,7 @@ function fail(e){stopped=true;const msg=e?.stack||e?.message||String(e);diagnost
 const foreignError68=(e,file='')=>/(chrome|moz|safari-web|ms-browser)-extension:\/\//.test(String(file)+' '+String(e?.stack||e?.message||e||''));
 window.addEventListener('error',e=>{if(foreignError68(e.error||e.message,e.filename)){diagnostics.notes?.push?.('ignored extension error: '+String(e.message||'').slice(0,120));return;}fail(e.error||e.message);});
 window.addEventListener('unhandledrejection',e=>{if(foreignError68(e.reason)){diagnostics.notes?.push?.('ignored extension rejection');return;}fail(e.reason);});
-const ZOMBIE_FLOATS13=28,ZOMBIE_BYTES13=112;
+const ZOMBIE_FLOATS13=32,ZOMBIE_BYTES13=128;
 const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 // Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
@@ -131,7 +131,7 @@ function storage(label,size,data,extra=0){return buf(label,size,GPUBufferUsage.S
 const GRID=768, CGRID=48, CHUNK_COUNT=CGRID*CGRID, CHUNK_CELLS=3072;
 const MAX_WORLD=131072, MAX_PAGES=1152, MAX_PROPS=192, MAX_GROUPS=1024, MAX_FACES=260000;
 // Neighbors live in the 12 reserved prop slots past every level's props (max 138 of 192); the civilian pass mirrors them into the unused State tail for the HUD.
-const CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904;
+const CIV_BASE30=MAX_PROPS-12,CIV_MAX30=12,CIV_STATE30=3904,TRAMP_BASE65=MAX_PROPS-18;
 const PAGE_TABLE=0, OCC_BASE=CHUNK_COUNT, OCC_SIZE=OCC_BASE+MAX_PAGES*CHUNK_CELLS;
 const NG=192, NAV_SIZE=NG*NG, NAV_OFFSET=OCC_SIZE, WALK_OFFSET=NAV_OFFSET+NAV_SIZE, PRESS_OFFSET=WALK_OFFSET+NAV_SIZE;
 const DYNAMIC_GRID=384, DYNAMIC_SIZE=DYNAMIC_GRID*DYNAMIC_GRID, DYNAMIC_OFFSET=PRESS_OFFSET+NAV_SIZE;
@@ -441,10 +441,14 @@ function makeWorld(){
    props.set([x,0,z,30,60,1,0,outfit,0,0,0,1,x,z,type,0],slot*16);civilians30.push({x,z,slot,outfit,type,name});}}
  // Cheese wheels (prop 32): one outside the start shelter, one beside each BBQ Dad's grill, one past every third yard gate (8 at most).
  // Fixed spots, no rand(); a spot with any voxel nearby is skipped. data.x 1 (live), data.z spin, aux.xy velocity, aux.zw last heading.
- const cheese48=[];
+ const cheese48=[],trampolines65=[];
  if(SANDBOX25&&!settings.lab){const free48=(x,z)=>{for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++)for(let y=0;y<4;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;return Math.abs(x)<88&&Math.abs(z)<88;};
   const spots=[[start[0]+6.5,start[1]+3.5],...civilians30.filter(c=>c.type===2).map(c=>[c.x-1.3,c.z]),...gates45.filter((_,i)=>i%3===1).map(g=>[g.x+3.2,g.z+2.2])];
-  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=CIV_BASE30)break;if(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2))continue;const index=propCount++;props.set([x,.45,z,32,1,0,0,0,0,0,1,0,x,z,0,0],index*16);cheese48.push({x,z,index});}}
+  for(const [x,z] of spots){if(cheese48.length>=8||propCount>=TRAMP_BASE65)break;if(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2))continue;const index=propCount++;props.set([x,.45,z,32,1,0,0,0,0,0,1,0,x,z,0,0],index*16);cheese48.push({x,z,index});}
+  // Trampolines (prop 33) live in 6 fixed slots before the neighbors: one under each Trampoline Timmy, then free yard spots.
+  // data.y is the last bounce time (the mat dips).
+  const tramp=[...civilians30.filter(c=>c.type===4).map(c=>[c.x,c.z]),...gates45.filter((_,i)=>i%3===2).map(g=>[g.x+3.0,g.z+2.6]),...gates45.filter((_,i)=>i%3===0).map(g=>[g.x-2.6,g.z+2.6])];let tn=0;
+  for(const [x,z] of tramp){if(tn>=6)break;const timmy=civilians30.some(c=>c.type===4&&c.x===x&&c.z===z);if(!timmy&&(!free48(x,z)||cheese48.some(c=>Math.hypot(c.x-x,c.z-z)<2.5)))continue;props.set([x,0,z,33,1,-9,0,0,0,0,0,0,0,0,0,0],(TRAMP_BASE65+tn)*16);trampolines65.push({x,z});tn++;}}
 
  if(cells.size>MAX_WORLD||propCount>MAX_PROPS)throw Error('World capacity exceeded');
  const occ=new Uint32Array(OCC_SIZE+NAV_SIZE*3+DYNAMIC_SIZE),blocks=new Float32Array(MAX_WORLD*8),chunks=new Uint32Array(CHUNK_COUNT*4);
@@ -466,7 +470,7 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {cheese48,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {cheese48,trampolines65,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world=makeWorld();
 
@@ -475,7 +479,7 @@ struct Uniforms { vp:mat4x4f, light:mat4x4f, clock:vec4f, inputMove:vec4f, aim:v
 struct Bullet3 { origin:vec4f, dir:vec4f, hit:vec4f, tag:vec4f };
 struct Buddy7 { p:vec4f, look:vec4f, ai:vec4f, destination7:vec4f, pack:vec4f, memory:vec4f, nav:vec4f, movement:vec4f, plan:vec4u, stats:vec4f, vital:vec4f, intent:vec4f, aim:vec4f, pathInfo:vec4f, misc:vec4f, flags:vec4f, route:array<vec4f,16> };
 struct State { pos:vec4f, motion:vec4f, look:vec4f, timers:vec4f, bomb:vec4f, blast:vec4f, aux:vec4f, bombStart:vec4f, shots:array<vec4f,8>, goal:vec4f, skill:vec4f, wave:vec4f, tools:vec4f, mission:vec4f, buddy:vec4f, rescue:vec4f, buddyLook:vec4f, buddyShot:vec4f, weapons:vec4f, escape:vec4f, lure:vec4f, feedback:vec4f, aimPoint:vec4f, aimNormal:vec4f, gunOrigin:vec4f, gunAim:vec4f, ballistic:vec4f, allyAim:vec4f, bullets:array<Bullet3,9>, critFx:array<Bullet3,9>, supplies:vec4f, modsA:vec4f, modsB:vec4f, relay:vec4f, cell:vec4f, mission5:vec4f, director:vec4f, alarm:vec4f, banner:vec4f, chooser:vec4f, runStats:vec4f, record:vec4f, orders:vec4f, lastInput:vec4f, stageRecord:vec4f, objectivePoint:vec4f, cardIDs:vec4f, spare5:vec4f, noise:vec4f, sweepPrev:vec4f, sweepNext:vec4f, fxControl:vec4f, trails6:array<Bullet3,72>, heat6:array<vec4f,16>, team7:array<Buddy7,3>, extraBullets7:array<Bullet3,2>, extraCrit7:array<Bullet3,2>, player7:vec4f, pace7:vec4f, journey7:vec4f, squad7:vec4f, rules7:vec4f, radio7:vec4f, melee8:vec4f, meleeDir8:vec4f, anim8:vec4f, progress8:vec4f, gear12:vec4f, mag12:vec4f, reserve12:vec4f, items12:vec4f, equipAck12:vec4f, flags12:vec4f, reload12:vec4f, heal12:vec4f, events12:vec4f, edges12:vec4f, extraShot12:Bullet3, throw12:vec4f, throwFrom12:vec4f, pipes12:array<vec4f,16>, pipeStarts12:array<vec4f,16>, flights12:array<vec4f,16>, flightStarts12:array<vec4f,16>, shots13:array<Bullet3,72>, botMag13:array<vec4f,3>, botReserve13:array<vec4f,3>, botItems13:array<vec4f,3>, botLife13:array<vec4f,3>, director13:vec4f, chapter13:vec4f, queue13:array<vec4f,4>, acid13:array<vec4f,16>, order13:vec4f, botControl13:vec4f, botStamina13:vec4f, upgrades14:vec4f, botCommit14:array<vec4f,3>, axe14:vec4f, axeHits14:vec4u, axeProps14:array<vec4u,2>, botFuel15:vec4f, botPour15:vec4f, heatLife15:array<f32,16>, pad34:array<vec4f,2>, civ34:array<vec4f,12>, noiseRing34:array<vec4f,6>, noiseSeen34:vec4f, floors42:array<vec4f,29> };
-struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f };
+struct Zombie { p:vec4f, v:vec4f, extraData:vec4f, history:vec4f, combat13:vec4f, special13:vec4f, sense13:vec4f, body:vec4f };
 struct Particle { p:vec4f, v:vec4f, c:vec4f, a:vec4f };
 struct Block { p:vec4f, extraData:vec4f };
 struct Prop { p:vec4f, data:vec4f, aux:vec4f, more:vec4f };
@@ -495,7 +499,7 @@ const HALF:f32=96.0;const WG:i32=768;const CG:i32=48;const CHUNKS:u32=2304u;
 const NG:i32=192;const NAV_CELL:f32=1.0;const NAV_N:u32=36864u;
 const DYNAMIC_GRID:i32=384;const DYNAMIC_OFFSET:u32=${DYNAMIC_OFFSET}u;
 const OCC_BASE:u32=${OCC_BASE}u;const PAGE_CELLS:u32=3072u;
-const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;const CIV_BASE30:u32=${MAX_PROPS-12}u;
+const NAV_OFFSET:u32=${NAV_OFFSET}u;const WALK_OFFSET:u32=${WALK_OFFSET}u;const PRESS_OFFSET:u32=${PRESS_OFFSET}u;const HEARD_OFFSET:u32=${PRESS_OFFSET}u;const CIV_BASE30:u32=${MAX_PROPS-12}u;const TRAMP_BASE65:u32=${MAX_PROPS-18}u;
 const ZHEADS:u32=${ZHEADS}u;const ZCOUNTS:u32=${ZHEADS+MAX_Z}u;
 const PAINT_BASE:u32=${PAINT_BASE}u;const PAINT_PAGES:u32=${PAINT_PAGES}u;const SCORCH_SHIFT6:u32=${PAINT_PAGES*1024}u;
 fn navcell(p:vec2f)->u32 {let c=clamp(vec2i(floor(p+HALF)),vec2i(0),vec2i(NG-1));return u32(c.x+NG*c.y);}
@@ -1094,6 +1098,11 @@ fn axeStep14(){
 
 const SOLID=OCC_HELP+`
 fn solid(p:vec3f)->u32 {return occAt(vec3i(floor((p+vec3f(HALF,0,HALF))*4.0)));}
+// Maple Street height: the top of the highest solid voxel at or below top, under the centre and four corners of a footprint of
+// half-size r (r=0 samples the centre only).
+fn ground3d(xz:vec2f,top:f32,r:f32)->f32 {var g=0.0;let hi=i32(clamp(floor(top*4.0),0.0,11.0));
+ for(var c=0u;c<select(5u,1u,r==0.0);c++){let o=select(vec2f(0),vec2f(select(-r,r,(c&1u)==1u),select(-r,r,(c&2u)!=0u)),c>0u);
+  for(var k=hi;k>=0;k--){if(f32(k+1)*.25<=g){break;}if(solid(vec3f(xz.x+o.x,f32(k)*.25+.125,xz.y+o.y))>0u){g=max(g,f32(k+1)*.25);break;}}}return g;}
 fn blocked(p:vec3f,h:vec3f)->bool {
  if(any(abs(p.xz)+h.xz>vec2f(HALF-.2))){return true;}
  if(p.y-h.y<3.0&&p.y+h.y>=0.0){
@@ -1129,6 +1138,16 @@ fn settleGear12(retain:bool){
  if(!retain){S.gear12.x=S.gear12.y;}
  S.flags12.x=1.0;S.equipAck12.w=u.input12.x;
 }
+// Maple Street has real height: the body collides at its own height, steps up ledges of .55 m or less, falls with gravity (22 m/s^2,
+// vertical speed in motion.z), lands on whatever is under it (wall tops too) and gets 1.5x air control. Trampolines (6 fixed prop
+// slots before the neighbors) launch anyone who walks or lands on the mat about 2.9 m up, over walls; C[83] counts the player's.
+fn body3d65(p0:vec3f,h:vec3f,movement:vec2f,dt:f32)->vec3f {var p=p0;var mx=movement;if(p.y>.01){mx*=1.5;}
+ let trialX=vec3f(p.x+mx.x,p.y+.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}else{let up=ground3d(trialX.xz,p.y+.55,.2);if(up>p.y&&!blocked(vec3f(trialX.x,up+.36,p.z),h)){p.x=trialX.x;p.y=up;}}
+ let trialZ=vec3f(p.x,p.y+.35,p.z+mx.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}else{let up=ground3d(trialZ.xz,p.y+.55,.2);if(up>p.y&&!blocked(vec3f(p.x,up+.36,trialZ.z),h)){p.z=trialZ.z;p.y=up;}}
+ var vy=S.motion.z;let g=ground3d(p.xz,p.y+.05,.2);
+ for(var t=0u;t<6u;t++){var tp=Props[TRAMP_BASE65+t];if(tp.p.w==33.0&&distance(p.xz,tp.p.xz)<.95&&p.y<.6&&vy<=0.0){vy=11.5;tp.data.y=S.aux.x;Props[TRAMP_BASE65+t]=tp;atomicAdd(&C[83],1u);}}
+ if(p.y>g+.001||vy>0.0){vy-=22.0*dt;let ny=p.y+vy*dt;if(vy>0.0&&blocked(vec3f(p.x,ny+.35,p.z),h)){vy=0.0;}else{p.y=ny;}if(p.y<=g){p.y=g;vy=0.0;}}else{p.y=g;vy=0.0;}
+ S.motion.z=vy;return p;}
 fn equipment12(dt:f32){
  let wasPinned=S.flags12.w;S.flags12.w=f32(atomicExchange(&C[22],0u));if(wasPinned>0.0&&S.flags12.w==0.0){S.chapter13.w=S.aux.x+3.0;S.feedback.z=max(S.feedback.z,1.0);}
  var pinCount=select(0u,1u,S.flags12.w>0.0);for(var k=0u;k<3u;k++){let old=S.botLife13[k].w;S.botLife13[k].w=f32(atomicExchange(&C[array<u32,3>(24u,25u,29u)[k]],0u));if(old>0.0&&S.botLife13[k].w==0.0){S.botItems13[k].w=S.aux.x+3.0;S.team7[k].vital.y=max(S.team7[k].vital.y,1.0);}if(S.botLife13[k].w>0.0){pinCount++;}}atomicStore(&C[32],pinCount);
@@ -1263,7 +1282,7 @@ fn equipment12(dt:f32){
  S.motion.w=0.0;
  let speed=select(1.0,.55,u.run.x>5.0&&u.run.y<.5&&inPool45(S.pos.xz))*select(select(1.0,.4,S.flags12.w>0.0)*select(205.0/64.0,205.0/64.0*1.42,S.flags12.z>.5)*select(1.0,.67,S.squad7.y>=0.0)*select(1.0,.9,S.cell.w==1.0)*select(1.0,.15,S.heal12.x>0.0),.60,downed);
  mv=mv/max(1.0,length(mv));let movement=mv*speed*dt;
- var p=S.pos.xyz;let h=vec3f(.24,.30,.24);let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}
+ var p=S.pos.xyz;let h=vec3f(.24,.30,.24);if(u.run.x>5.0&&u.run.y<.5){p=body3d65(p,h,movement,dt);}else{let trialX=vec3f(p.x+movement.x,.35,p.z);if(!blocked(trialX,h)){p.x=trialX.x;}let trialZ=vec3f(p.x,.35,p.z+movement.y);if(!blocked(trialZ,h)){p.z=trialZ.z;}}
  p.x=clamp(p.x,-95.3,95.3);p.z=clamp(p.z,-95.3,95.3);S.pos=vec4f(p,S.pos.w);S.motion.x=mv.x;S.motion.y=mv.y;S.anim8.x+=length(movement)*5.0;
  for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var pr=Props[pi];
   if(pr.p.w==4.0&&pr.data.x>0.0&&pr.data.y==2.0&&pr.more.y<-.7&&pr.p.y-pr.aux.y*.5<1.1&&all(abs(p.xz-pr.p.xz)<pr.aux.xz*.5+vec2f(.2))){S.pos.w=max(0.0,S.pos.w-dt*160.0);S.look.w=1.0;}
@@ -1344,7 +1363,7 @@ fn spawnInfected13(kind:f32,behind:bool)->bool {
   let progress=routeProgress13(p);if((behind&&progress>S.journey7.z+.025)||(!behind&&progress<S.journey7.z-.1)){continue;}
   var seen=d<500.0/64.0;for(var k=0u;k<3u;k++){if(S.botLife13[k].y<.5&&distance(p,S.team7[k].p.xz)<500.0/64.0){seen=true;}}
   let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);if(abs(clip.x)<1.25&&abs(clip.y)<1.35){seen=true;}if(seen){continue;}
-  Z13[id]=Zombie(vec4f(p.x,0,p.y,infectedHP13(kind,seed)),vec4f(0,0,rnd(seed)*6.28,24),vec4f(rnd(seed+1u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(seed+2u)*.8,0,2.0+rnd(seed+3u)*3.0,0),vec4f(0,0,0,-1),vec4f(S.pos.xz,24,1));return true;
+  Z13[id]=Zombie(vec4f(p.x,0,p.y,infectedHP13(kind,seed)),vec4f(0,0,rnd(seed)*6.28,24),vec4f(rnd(seed+1u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(seed+2u)*.8,0,2.0+rnd(seed+3u)*3.0,0),vec4f(0,0,0,-1),vec4f(S.pos.xz,24,1),vec4f(0));return true;
  }return false;
 }
 fn directorStep13(dt:f32){
@@ -1681,7 +1700,7 @@ const initShader=COMMON+`
   if(length(p-u.route.xy)>13.0&&!blocked(vec3f(p.x,.36,p.y),vec3f(footprint(kind),.29,footprint(kind)))&&O[NAV_OFFSET+navcell(p)]<1073741800u){ok=true;break;}
  }if(!ok){p=vec2f(-94.0+f32(i%2u)*188.0,f32(i%183u)-91.0);}
  if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));
- Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0));
+ Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0),vec4f(0));
  // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
  // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
  if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}
@@ -1842,17 +1861,25 @@ if(S.tools.y>.20){let delta=S.tools.zw-z.p.xz;let d=length(delta);if(d<6.0){velo
 for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==4.0&&pr.data.x>0.0&&pr.data.y==2.0&&pr.more.y<-.7&&pr.p.y-pr.aux.y*.5<1.1&&all(abs(pr.p.xz-z.p.xz)<pr.aux.xz*.5+vec2f(.2))){damage+=200.0;atomicAdd(&C[34],1u);}}
   // Collapses crush the horde: crush30 marks the 0.5 m cells under falling heavy wreckage with bit 28.
   if((atomicLoad(&O[DYNAMIC_OFFSET+dynCell(z.p.xz)])&0x10000000u)!=0u){damage+=200.0;atomicAdd(&C[34],1u);}
- var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,.36,p.z);let tz=vec3f(p.x,.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
- if(!blocked(tx,h)){p.x=tx.x;}let tz2=vec3f(p.x,.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}
+ var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,p.y+.36,p.z);let tz=vec3f(p.x,p.y+.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
+ let maple3d=u.run.x>5.0&&u.run.y<.5;
+ if(!blocked(tx,h)){p.x=tx.x;}else if(maple3d){let up=ground3d(tx.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tx.x,up+.37,tx.z),h)){p.x=tx.x;p.y=up;}}
+ let tz2=vec3f(p.x,p.y+.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}else if(maple3d){let up=ground3d(tz2.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tz2.x,up+.37,tz2.z),h)){p.z=tz2.z;p.y=up;}}
+ // Maple Street zombies have height too: gravity on body.x, trampolines fling them (C[88] counts), and a hard landing (falling
+ // faster than 7 m/s) is kept in body.y and taken as damage below.
+ if(maple3d){var vy=z.body.x;let g=ground3d(p.xz,p.y+.05,0.0);
+  for(var t=0u;t<6u;t++){let tp=Props[TRAMP_BASE65+t];if(tp.p.w==33.0&&length(p.xz-tp.p.xz)<.95&&p.y<.6&&vy<=0.0&&kind!=6.0){vy=10.5+rnd(i+u32(S.aux.x*7.0))*2.5;atomicAdd(&C[88],1u);}}
+  if(p.y>g+.001||vy>0.0){vy-=22.0*dt;p.y+=vy*dt;if(p.y<=g){if(vy< -7.0){z.body.y=-vy;}p.y=g;vy=0.0;}}else{p.y=g;}z.body.x=vy;}
    if(kind==4.0&&z.special13.z>0.0&&stuck){z.special13.z=0.0;z.combat13.y=.4;z.combat13.z=4.0;}if(kind==2.0&&z.special13.z>0.0&&stuck){z.special13.z=0.0;z.combat13.y=.9;}
   p.x=clamp(p.x,-95.5,95.5);p.z=clamp(p.z,-95.5,95.5);
-  if(victim<4u&&awake&&sight&&z.combat13.y<=0.0&&z.combat13.x<=0.0&&targetDistance<radius+29.0/64.0&&S.goal.w==0.0){
+  if(victim<4u&&awake&&sight&&z.combat13.y<=0.0&&z.combat13.x<=0.0&&targetDistance<radius+29.0/64.0&&S.goal.w==0.0&&(victim!=0u||abs(S.pos.y-p.y)<1.1)){
    let charged=kind==2.0&&z.special13.z>0.0;let hurt=select(select(infectedDamage13(kind),30u,charged),45u,z.special13.x==777.0);
    if(victim==0u){atomicMax(&C[10],hurt);}else{atomicMax(&C[63u+victim],hurt);}
    z.combat13.x=select(.9,1.25,kind==2.0);if(charged){z.special13.z=0.0;z.combat13.y=.45;}
   }
 z.v.x=(p.x-z.p.x)/max(dt,.0001);z.v.y=(p.z-z.p.z)/max(dt,.0001);z.p=vec4f(p,z.p.w);z.v.z+=length(p.xz-z.history.xy)*select(5.5,7.0,kind==1.0);z.extraData.y=max(0.0,z.extraData.y-dt*5.0);
  var impulse=vec3f(-direct.x,1,-direct.y)*3.0;
+ if(z.body.y>0.0){damage+=(z.body.y-6.0)*16.0;impulse=vec3f(0,2.5,0);z.body.y=0.0;}
  var heHurt=false;
    for(var j=0u;j<72u;j++){let shot=S.shots13[j];if(shot.origin.w<=0.0||shot.tag.x!=3.0||u32(shot.tag.y)!=i){continue;}
    damage+=shot.origin.w;let actor=j/18u;var weapon=u32(S.edges12.y);if(actor>0u){weapon=u32(S.botMag13[actor-1u].w);if(S.team7[actor-1u].p.w<=0.0){weapon=2u;}}
@@ -2358,10 +2385,12 @@ fn civilian30(k:u32){let c=Props[CIV_BASE30+k];if(c.p.w!=30.0||c.data.y<.5||c.da
   for(var e=0u;e<4u;e++){box(home+vec3f(select(-.48,.48,(e&1u)==1u),.40,select(-.31,.31,(e&2u)>0u)),vec3f(.06,.80,.06),wood,1,0);}
   for(var sl=0u;sl<7u;sl++){let x=-.36+f32(sl)*.12;box(home+vec3f(x,.55,.31),vec3f(.03,.42,.03),wood,1,0);box(home+vec3f(x,.55,-.31),vec3f(.03,.42,.03),wood,1,0);}
   box(home+vec3f(0,.77,.31),vec3f(1.0,.04,.05),wood,1,0);box(home+vec3f(0,.77,-.31),vec3f(1.0,.04,.05),wood,1,0);}
- if(kind30==4u){let m=home+vec3f(0,.42,0);box(m,vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);
-  for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}
-  for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}
 }
+// A trampoline (prop 33, fixed slot): black mat on a blue padded frame and four legs; the mat dips for .35 s after a bounce.
+fn trampoline65(t:u32){let tp=Props[TRAMP_BASE65+t];if(tp.p.w!=33.0){return;}let home=vec3f(tp.p.x,0,tp.p.z);let dip=clamp(1.0-(S.aux.x-tp.data.y)/.35,0.0,1.0)*.16;
+ let m=home+vec3f(0,.42,0);box(m-vec3f(0,dip,0),vec3f(1.9,.05,1.9),vec3f(.06,.06,.07),1,0);
+ for(var e=0u;e<4u;e++){let ax=select(vec3f(0,0,.98),vec3f(.98,0,0),e>1u)*select(-1.0,1.0,(e&1u)==1u);box(m+ax,select(vec3f(2.06,.08,.10),vec3f(.10,.08,2.06),e>1u),vec3f(.15,.40,.92),1,0);}
+ for(var q=0u;q<4u;q++){box(home+vec3f(select(-.9,.9,(q&1u)==1u),.2,select(-.9,.9,(q&2u)>0u)),vec3f(.06,.42,.06),vec3f(.12,.13,.14),1,0);}}
 // Long guns lie along +x on tables (boxes are axis-aligned). kind 0 rifle, 1 pump shotgun. c is the receiver centre.
 fn gunFlat44(c:vec3f,kind:u32){let wood=vec3f(.45,.27,.13);let steel=vec3f(.11,.12,.13);
  box(c+vec3f(-.34,0,0),vec3f(.30,.06,.09),select(vec3f(.16,.17,.16),wood,kind==1u),1,0);box(c,vec3f(.28,.07,.08),steel,1,0);box(c+vec3f(.36,.005,0),vec3f(.46,.035,.035),steel*.9,1,0);
@@ -2406,7 +2435,7 @@ fn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04
   for(var k=0u;k<16u;k++){let acid=S.acid13[k];if(acid.w>S.aux.x){for(var j=0u;j<12u;j++){let a=f32(j)*.5236;box(vec3f(acid.x+cos(a)*acid.z*.55,.025,acid.y+sin(a)*acid.z*.55),vec3f(.55,.035,.55),vec3f(.37,.57,.08),1,.4);}}}
   box(vec3f(0,-.22,0),vec3f(192,.44,192),vec3f(.37,.40,.38),0,0);
   model(S.pos.xyz,S.look.xy,S.anim8.x,0,true,S.look.w*.25,select(-1.0,-3.0,S.player7.x>0.0));
-  if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}}
+  if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}for(var t=0u;t<6u;t++){trampoline65(t);}}
   if(S.weapons.w>.02){for(var k=0u;k<11u;k++){let a=(f32(k)-5.0)*.13;let d=vec2f(S.look.x*cos(a)-S.look.y*sin(a),S.look.x*sin(a)+S.look.y*cos(a));let p=S.pos.xz+d*(1.7-S.weapons.w*.35);box(vec3f(p.x,.10,p.y),vec3f(.07,.07,.07),vec3f(.65,.95,.94),1,S.weapons.w*2.0);}}
   for(var bi=0u;bi<16u;bi++){let pipe=S.pipes12[bi];if(pipe.z<=0.0){continue;}
     let t=clamp((3.15-pipe.z)/.45,0.0,1.0);let xz=mix(S.pipeStarts12[bi].xy,pipe.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*1.4,xz.y);
@@ -3015,7 +3044,7 @@ const crowdShader=COMMON+`
   }if(it>0u){capped=true;}if(checked>=96u){capped=true;break;}
  }
  let alpha=1.0-exp(-110.0*dt);correction*=alpha/max(1.0,f32(count)*.48);correction=clamp(correction,vec2f(-.20),vec2f(.20));let h=vec3f(radius,.29,radius);var p=z.p.xyz;
- if(!blocked(vec3f(p.x+correction.x,.36,p.z),h)){p.x+=correction.x;}if(!blocked(vec3f(p.x,.36,p.z+correction.y),h)){p.z+=correction.y;}
+ if(!blocked(vec3f(p.x+correction.x,p.y+.36,p.z),h)){p.x+=correction.x;}if(!blocked(vec3f(p.x,p.y+.36,p.z+correction.y),h)){p.z+=correction.y;}
  z.p=vec4f(p,z.p.w);let actual=(p.xz-z.history.xy)/max(dt,.0001);z.v.x=clamp(actual.x,-12.0,12.0);z.v.y=clamp(actual.y,-12.0,12.0);B[i]=z;atomicAdd(&C[38],count);if(capped){atomicAdd(&C[39],1u);}
 }
 `;
@@ -3972,6 +4001,13 @@ function bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st
  if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/3500,0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
   const n='THE HOA PRESIDENT';text(n,width/2-textWidth9(n,14*k)/2,y+22*k,14*k,COL9.gold);}
  if(boss65.banner&&time<boss65.until){const px=(46+6*Math.sin((boss65.until-time)*8))*k;text(boss65.banner,width/2-textWidth9(boss65.banner,px)/2,height*.36,px,st===2?COL9.gold:COL9.red);}}
+// BOING! over the player on every trampoline launch (C[83]); zombie launches (C[88]) stack into a BOING xN callout.
+const boing65={me:0,them:0,meAt:-9,themAt:-9,burst:0};
+function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65.me||them<boing65.them){boing65.me=me;boing65.them=them;}
+ if(me>boing65.me){boing65.meAt=time;playAudio9('snap','cue',.16,null,me,0,.55);playAudio9('latch','cue',.10,null,me,.05,1.8);}
+ if(them>boing65.them){boing65.burst=time-boing65.themAt<1.5?boing65.burst+(them-boing65.them):them-boing65.them;boing65.themAt=time;playAudio9('snap','cue',.12,null,them,0,.6);}boing65.me=me;boing65.them=them;
+ if(time-boing65.meAt<.7){const [sx,sy]=screenPoint(playerValues[0],playerValues[2],2.2+(playerValues[1]||0));const px=(26+(time-boing65.meAt)*20)*k;text('BOING!',sx-textWidth9('BOING!',px)/2,sy-(time-boing65.meAt)*60*k,px,[.40,.85,1,1]);}
+ if(time-boing65.themAt<1.2){const s='BOING x'+boing65.burst;text(s,width/2-textWidth9(s,24*k)/2,height*.19,24*k,[.40,.85,1,1]);}}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
@@ -4047,7 +4083,7 @@ function hud(){
  const k=clamp9(height/900,.72,1.15),clock=playerValues[24]||0,active=settings.started&&!choosing&&!won&&!dead;
  const eq=Math.round(playerValues[L12.gear]||0),gun=Math.round(playerValues[L12.gear+3]||0),gs=gun===0&&(playerValues[L13.upgrades]&1)?{clip:14,reload:1.55}:gun===1&&(playerValues[L13.upgrades]&2)?{clip:8,reload:.34}:GUN12[gun],hp=clamp9((playerValues[3]||0)/100,0,1),ammo=Math.round(playerValues[L12.mag+gun]||0),cap=gs.clip,reload=playerValues[L12.reload]||0,rd=gs.reload;
  const ord=Math.round(playerValues[L12.items]||0),kits=Math.round(playerValues[L12.items+2]||0),stock=eq<3?ammo:Math.round(playerValues[L12.items+eq-3]||0),reserve=gun===2?'INF':Math.round(playerValues[L12.reserve+gun]||0);
- let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67);cx=clamp9(cx,85*k,width-85*k);cy=clamp9(cy,105*k,height-120*k);
+ let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67+(SANDBOX25?playerValues[1]||0:0));cx=clamp9(cx,85*k,width-85*k);cy=clamp9(cy,105*k,height-120*k);
  // The game itself remains full-screen. During normal play no corners are reserved for UI.
  if(active&&!settings.hideUI){
   const r=clamp9(57*k*34/settings.zoom,44*k,82*k),amp=eq>=3?1:reload>0?clamp9(1-reload/rd,0,1):clamp9(ammo/Math.max(1,cap),0,1);
@@ -4067,6 +4103,7 @@ function hud(){
   if(SANDBOX25)zamnHUD52(k);
   if(SANDBOX25)levelCard59(k);
   if(SANDBOX25)bossHUD65(k);
+  if(SANDBOX25)boingHUD65(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}

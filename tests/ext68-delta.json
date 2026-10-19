@@ -1,0 +1,9 @@
+{
+ "parentSha256": "f232854620bb544858faa899f08465ad0aa33dfbe6ad0668b59b25bc8a7e3292",
+ "changes": [
+  {
+   "before": "window.addEventListener('error',e=>fail(e.error||e.message));\nwindow.addEventListener('unhandledrejection',e=>fail(e.reason));",
+   "after": "// Browser extensions run their own scripts in the page; their errors are not the game's and must not stop it.\nconst foreignError68=(e,file='')=>/(chrome|moz|safari-web|ms-browser)-extension:\\/\\//.test(String(file)+' '+String(e?.stack||e?.message||e||''));\nwindow.addEventListener('error',e=>{if(foreignError68(e.error||e.message,e.filename)){diagnostics.notes?.push?.('ignored extension error: '+String(e.message||'').slice(0,120));return;}fail(e.error||e.message);});\nwindow.addEventListener('unhandledrejection',e=>{if(foreignError68(e.reason)){diagnostics.notes?.push?.('ignored extension rejection');return;}fail(e.reason);});"
+  }
+ ]
+}

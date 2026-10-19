@@ -4077,9 +4077,11 @@ function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,
 const p2_65={on:false,at:-9};
 function p2Input65(){let x=(keys.has('KeyL')?1:0)-(keys.has('KeyJ')?1:0),y=(keys.has('KeyI')?1:0)-(keys.has('KeyK')?1:0);
  try{const pads=navigator.getGamepads?[...navigator.getGamepads()]:[];const g=pads.find(p=>p&&p.connected);if(g){const ax=g.axes[0]||0,ay=g.axes[1]||0;if(Math.hypot(ax,ay)>.25){x=ax;y=-ay;}}}catch(e){}
+ if(time-net65.remote.at<.5&&(net65.remote.x||net65.remote.y)){x=net65.remote.x;y=net65.remote.y;}
  if((x||y)&&!p2_65.on){p2_65.on=true;p2_65.at=time;announce65('Player two has entered the neighborhood!',true);}return [x,y];}
 function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx,sy]=screenPoint(playerValues[o],playerValues[o+2],2.1);text('P2',sx-textWidth9('P2',16*k)/2,sy,16*k,[.35,1,.55,1]);}
  if(time-p2_65.at<2.8){const s='PLAYER 2 JOINED!';text(s,width/2-textWidth9(s,34*k)/2,height*.28,34*k,[.35,1,.55,1]);}
+ if(NET_HOST65){const s='ONLINE ROOM '+(net65.code||'....')+'  ('+net65.status+')   friend opens tront.xyz/tinyzombies/?join='+(net65.code||'....');text(s,width/2-textWidth9(s,13*k)/2,height-120*k,13*k,[.35,1,.55,1]);}
  else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
@@ -4437,6 +4439,7 @@ async function snapshot(particleCount=0){
 }
 function exportDiagnostics(){diagnostics.settings={...settings};diagnostics.counters=Array.from(counters);diagnostics.frame=frame;diagnostics.timings={fps,cpuMs,gpuMs,gpuStages};diagnostics.run={seed:runSeed,stage,upgrades,rooms:world.roomCount,worldVoxels:world.count};;diagnostics.bufferBytes=allocatedBytes;diagnostics.v9={presentation:'world anchored',font:'embedded raster SDF glyphs - Inter-inspired atlas',defaultMap:true,tactical:'toggle Tab',debug:'F3'};diagnostics.structures8={releasedGroups:counters[92],chunksCreated:counters[93],shotWreckVoxels:counters[94],meleeVoxels:counters[95],paintTileCapacity:PAINT_PAGES};diagnostics.weapons={selected:gearLabel14(Math.round(playerValues[L12.gear])),guns:GUN12,magazines:Array.from(playerValues.slice(L12.mag,L12.mag+3)),reserves:Array.from(playerValues.slice(L12.reserve,L12.reserve+3)),pumpPellets:9,roundsFired:playerValues[L12.events],impacts:counters[42],aimHeight:playerValues[117]};diagnostics.pipeBomb={thrown:counters[63],detonated:counters[67],attracted:counters[71],fuse:playerValues[110],cooldown:playerValues[111],beeps:diagnostics.audio.pipeBeeps};diagnostics.renderResolution=[width,height];const blob=new Blob([JSON.stringify(diagnostics,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tiny-zombies-v8-diagnostics.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 async function main(){
+ if(NET_JOIN65)return;// a joining friend only watches the host's stream
  if(!navigator.gpu)throw new Error('navigator.gpu is unavailable. Secure context: '+window.isSecureContext+'. WebGPU is mandatory.');
  adapter=await navigator.gpu.requestAdapter({powerPreference:'high-performance'});if(!adapter)throw new Error('No WebGPU adapter was returned by this browser.');
  const info=adapter.info;diagnostics.adapter={vendor:info?.vendor,architecture:info?.architecture,device:info?.device,description:info?.description};
@@ -4494,6 +4497,31 @@ async function main(){
 }
 window.__TINY_SOURCES__={melee8:melee8Shader,fracture8:fracture8Shader,wreckBoxes8:wreckBoxes8Shader,squadNav7:squadNav7Shader,doors7:doors7Shader,fx6:fx6Shader,mission5:mission5Shader,aim3:aim3Shader,bullet3:bullet3Shader,buddy:buddyShader,crowd:crowdShader,dynamic:dynamicShader,lights:lightsShader,lightTiles:lightTilesShader,begin:beginShader,init:initShader,gridZ:gridZShader,zombies:zombieShader,world:worldShader,prepare:prepareSpawnShader,spawn:spawnShader,integrate:integrateShader,gridP:gridPShader,solve:solveShader,boxes:boxesShader,finalize:finalizeShader,navInit:navInitShader,navRelax:navRelaxShader,navPublish:navPublishShader,civilians30:civilians30Shader,crush30:crush30Shader,groupClear:groupClearShader,support:supportShader,collapse:collapseShader,props:propsShader,drip:dripShader,meshReset:meshResetShader,mesh:meshShader,faces:faceBuildShader,faceFinalize:faceFinalizeShader,render:renderShader,post:postShader,ui:uiShader};
  window.__TINY_READY__=false;
+// Online co-op (experimental): ?host opens a room and streams this screen (game plus HUD) to one friend over WebRTC with Trystero
+// (Nostr relays for signalling, no server of ours); ?join=CODE plays that stream full-screen and sends the friend's keys or gamepad
+// back as player two, who drives squad bot 1 exactly like local player two.
+const NET_JOIN65=(params.get('join')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,6),NET_HOST65=params.has('host')&&!NET_JOIN65;
+const net65={room:null,code:'',peers:0,remote:{x:0,y:0,at:-9},status:''};
+async function netRoom65(code){const {joinRoom}=await import('https://cdn.jsdelivr.net/npm/trystero@0.25.4/+esm');return joinRoom({appId:'tront-tinyzombies-v1'},'tz-'+code);}
+async function hostOnline65(){try{const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.floor(Math.random()*24)]).join('');net65.code=code;net65.status='connecting';
+  const room=await netRoom65(code);net65.room=room;net65.status='waiting for player 2';
+  const comp=document.createElement('canvas');comp.width=960;comp.height=540;const cx=comp.getContext('2d');
+  const blit=()=>{try{cx.drawImage(canvas,0,0,comp.width,comp.height);const h=document.getElementById('hud2d');if(h)cx.drawImage(h,0,0,comp.width,comp.height);}catch(e){}requestAnimationFrame(blit);};blit();
+  const stream=comp.captureStream(30);const input=room.makeAction('p2in');// Trystero 0.25: action objects and property callbacks
+  input.onMessage=d=>{net65.remote={x:clamp9(+d.x||0,-1,1),y:clamp9(+d.y||0,-1,1),at:time};};
+  room.onPeerJoin=id=>{net65.peers++;net65.status='player 2 connected';room.addStream(stream,{target:id});announce65('Player two is online!',true);};
+  room.onPeerLeave=()=>{net65.peers=Math.max(0,net65.peers-1);if(!net65.peers)net65.status='waiting for player 2';};
+ }catch(e){net65.status='offline: '+String(e.message||e).slice(0,60);}}
+function joinOnline65(code){boot.hidden=true;canvas.style.display='none';
+ const v=document.createElement('video');v.autoplay=true;v.playsInline=true;v.muted=true;Object.assign(v.style,{position:'fixed',inset:'0',width:'100vw',height:'100vh',objectFit:'contain',background:'#000'});document.body.appendChild(v);
+ const label=document.createElement('div');Object.assign(label.style,{position:'fixed',left:'16px',bottom:'14px',color:'#f6d43a',font:'600 15px Rubik,system-ui,sans-serif',textShadow:'0 2px 3px #000'});label.textContent='Joining room '+code+'...';document.body.appendChild(label);
+ netRoom65(code).then(room=>{label.textContent='Room '+code+': waiting for the host...';
+  room.onPeerStream=s=>{v.srcObject=s;v.play().catch(()=>{});label.textContent='You are PLAYER 2 (room '+code+'): WASD, arrows or a gamepad';};
+  const input=room.makeAction('p2in');const held=new Set();addEventListener('keydown',e=>held.add(e.code));addEventListener('keyup',e=>held.delete(e.code));addEventListener('blur',()=>held.clear());
+  const k=c=>held.has(c)?1:0;setInterval(()=>{let x=Math.max(k('KeyD'),k('ArrowRight'),k('KeyL'))-Math.max(k('KeyA'),k('ArrowLeft'),k('KeyJ')),y=Math.max(k('KeyW'),k('ArrowUp'),k('KeyI'))-Math.max(k('KeyS'),k('ArrowDown'),k('KeyK'));
+   try{const g=[...(navigator.getGamepads?.()||[])].find(p=>p&&p.connected);if(g&&Math.hypot(g.axes[0]||0,g.axes[1]||0)>.25){x=g.axes[0];y=-g.axes[1];}}catch(e){}input.send({x,y});},50);
+ }).catch(e=>{label.textContent='Could not join room '+code+': '+(e.message||e);});}
+if(NET_JOIN65)joinOnline65(NET_JOIN65);else if(NET_HOST65&&SANDBOX25)hostOnline65();
 loadAudioBank9();
 main().catch(fail);
 

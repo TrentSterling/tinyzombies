@@ -1,0 +1,53 @@
+{
+ "parentSha256": "3702d6641646b41fcb982146265a3ca5c9509fdcaa242546db428303e30b410f",
+ "changes": [
+  {
+   "before": "var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));\n",
+   "after": "var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));\n // Maple Street boss: at 3 min zombie 1567 (a tank) becomes the HOA President, 30 m from the player wherever it was: 4.5x, 3500 HP,\n // always hunting, walking straight through houses. special13.x=777 marks it; C[70] is 0 not yet, 1 alive, 2 defeated.\n if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=180.0&&S.pos.w>0.0&&atomicLoad(&C[70])==0u){atomicStore(&C[70],1u);var p=S.pos.xz+vec2f(30,0);\n  for(var a=0u;a<8u;a++){let ang=f32(a)*.785+rnd(u32(S.aux.x*10.0))*6.28;let q=S.pos.xz+vec2f(cos(ang),sin(ang))*30.0;if(all(abs(q)<vec2f(88.0))){p=q;break;}}p=clamp(p,vec2f(-88.0),vec2f(88.0));\n  z.p=vec4f(p.x,0,p.y,3500.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}\n"
+  },
+  {
+   "before": "var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));",
+   "after": "var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));if(z.special13.x==777.0){dir=direct;}"
+  },
+  {
+   "before": "let charged=kind==2.0&&z.special13.z>0.0;let hurt=select(infectedDamage13(kind),30u,charged);",
+   "after": "let charged=kind==2.0&&z.special13.z>0.0;let hurt=select(select(infectedDamage13(kind),30u,charged),45u,z.special13.x==777.0);"
+  },
+  {
+   "before": " if(z.p.w>0.0){atomicAdd(&C[7],1u);let e=z.p.xz-u.route.zw;",
+   "after": " if(z.special13.x==777.0){if(z.p.w>0.0){z.v.w=max(z.v.w,10.0);atomicStore(&C[68],(u32((z.p.x+96.0)*16.0)|(u32((z.p.z+96.0)*16.0)<<12u))+1u);atomicStore(&C[69],u32(z.p.w));}\n  else{atomicStore(&C[70],2u);atomicStore(&C[69],0u);z.special13.x=0.0;event(z.p.xyz+vec3f(0,2.0,0),vec3f(0,9,0),vec3f(.72,.015,.03),7u,160u,i*977u+atomicLoad(&C[18]));event(z.p.xyz+vec3f(0,2.5,0),vec3f(0,8,0),vec3f(.25,.27,.33),0u,80u,i*331u+atomicLoad(&C[18]));}}\n if(z.p.w>0.0){atomicAdd(&C[7],1u);let e=z.p.xz-u.route.zw;"
+  },
+  {
+   "before": " let kind=z.extraData.z;let scale=zScale(kind);let bounds=1.3*select(scale.y,1.0,kind==4.0);",
+   "after": " let kind=z.extraData.z;let scale=select(zScale(kind),vec3f(4.5),z.special13.x==777.0);let bounds=1.3*select(scale.y,1.0,kind==4.0);"
+  },
+  {
+   "before": "let crawler=z.extraData.z==4.0;let scale=select(zScale(z.extraData.z),vec3f(1),crawler);",
+   "after": "let crawler=z.extraData.z==4.0;let scale=select(select(zScale(z.extraData.z),vec3f(4.5),z.special13.x==777.0),vec3f(1),crawler);"
+  },
+  {
+   "before": " let g=u32(b.extraData.w);let melee=meleeInside8(b.p.xyz,vec3f(.125),S.melee8,S.meleeDir8);if(melee){damage+=3.2;impulse=vec3f(S.meleeDir8.x,0,S.meleeDir8.y)*4.0+vec3f(0,1.5,0);}",
+   "after": " let g=u32(b.extraData.w);let melee=meleeInside8(b.p.xyz,vec3f(.125),S.melee8,S.meleeDir8);if(melee){damage+=3.2;impulse=vec3f(S.meleeDir8.x,0,S.meleeDir8.y)*4.0+vec3f(0,1.5,0);}\n // The HOA President bulldozes: C[68] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.\n {let bossAt=atomicLoad(&C[68]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}"
+  },
+  {
+   "before": " atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];",
+   "after": " atomicStore(&C[68],0u);\n atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];"
+  },
+  {
+   "before": "const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[66]|0)*500;",
+   "after": "const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[66]|0)*500+((counters[70]|0)===2?5000:0);"
+  },
+  {
+   "before": "  if(SANDBOX25)levelCard59(k);\n",
+   "after": "  if(SANDBOX25)levelCard59(k);\n  if(SANDBOX25)bossHUD65(k);\n"
+  },
+  {
+   "before": "// ZAMN-style status block, top left:",
+   "after": "// The HOA President (C[70]: 1 alive, 2 defeated; C[69] its HP): an arrival banner, a boss bar across the top while it lives, and a\n// defeat banner worth 5000 points.\nconst boss65={state:0,banner:'',until:0};\nfunction bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st;\n if(st===1&&boss65.state===0){boss65.banner='BOSS: THE HOA PRESIDENT';boss65.until=time+3.2;playAudio9('explosion','explosion',.5,null,1,0,.6);}\n if(st===2&&boss65.state===1){boss65.banner='HOA PRESIDENT DEFEATED!  +5000';boss65.until=time+3.6;}boss65.state=st;\n if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/3500,0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}\n  const n='THE HOA PRESIDENT';text(n,width/2-textWidth9(n,14*k)/2,y+22*k,14*k,COL9.gold);}\n if(boss65.banner&&time<boss65.until){const px=(46+6*Math.sin((boss65.until-time)*8))*k;text(boss65.banner,width/2-textWidth9(boss65.banner,px)/2,height*.36,px,st===2?COL9.gold:COL9.red);}}\n// ZAMN-style status block, top left:"
+  },
+  {
+   "before": " let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);",
+   "after": " if(z.special13.x==777.0){goalPoint=S.pos.xz;victim=0u;}// The HOA President only wants the player.\n let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);"
+  }
+ ]
+}

@@ -7,7 +7,7 @@ const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn(
 const html=fs.readFileSync(file,'utf8');
 check('labels say soda on Maple Street and pipe bomb in the chapters',()=>{
  assert.equal(loadHost(file,{plain:true}).json('gearLabel14(3)'),'SODA CAN');assert.equal(loadHost(file).json('gearLabel14(3)'),'PIPE BOMB');
- assert(html.includes("SANDBOX25?'SODA':'PIPE'"));assert(html.includes("9:'Soda cans earned. Shake well before throwing.'"));assert(html.includes("'+2 SODA CANS'"));
+ assert(html.includes("SANDBOX25?'SODA':'PIPE'"));assert(html.includes("9:'Soda cans earned. Shake well before throwing.'"));assert(html.includes("'+2 SODA CANS +1 MEDKIT'"));
 });
 check('the can model and foam are Maple-only; the pipe model is kept for the chapters; behaviour untouched',()=>{
  const src=Object.values(loadHost(file).sources).find(s=>s.includes('for(var bi=0u;bi<16u;bi++){let pipe=S.pipes12[bi];'));const i=src.indexOf('if(u.run.x>5.0&&u.run.y<.5){let fuse=1.0-pipe.z/3.15;');

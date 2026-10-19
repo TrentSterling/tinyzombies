@@ -1236,8 +1236,8 @@ fn equipment12(dt:f32){
  for(var ci=38u;ci<41u;ci++){atomicStore(&C[ci],0u);}atomicStore(&C[53],0u);atomicStore(&C[54],0u);atomicStore(&C[71],0u);
  S.feedback.z=max(0.0,S.feedback.z-dt);
  let slammed=atomicLoad(&C[62]);atomicStore(&C[62],0u);atomicStore(&C[59],0u);
- if(slammed>0u&&S.pos.w>0.0&&S.goal.w==0.0&&S.feedback.z<=0.0&&u.config.z>.5){S.pos.w=max(0.0,S.pos.w-24.0);S.feedback.z=.7;S.look.w=1.0;}
- if(u.config.z>0.0&&S.pos.w>0.0&&S.goal.w==0.0&&hit>0u&&S.feedback.z<=0.0){S.pos.w=max(0.0,S.pos.w-f32(hit));S.feedback.z=.37;S.look.w=.7;}
+ if(slammed>0u&&S.pos.w>0.0&&S.goal.w==0.0&&S.feedback.z<=0.0&&u.config.z>.5){S.pos.w=max(0.0,S.pos.w-24.0*select(1.0,.6,u.run.x>5.0&&u.run.y<.5));S.feedback.z=.7;S.look.w=1.0;}
+ if(u.config.z>0.0&&S.pos.w>0.0&&S.goal.w==0.0&&hit>0u&&S.feedback.z<=0.0){S.pos.w=max(0.0,S.pos.w-f32(hit)*select(1.0,.6,u.run.x>5.0&&u.run.y<.5));S.feedback.z=.37;S.look.w=.7;}
  for(var i=2u;i<=8u;i++){atomicStore(&C[i],0u);}atomicStore(&C[10],0u);atomicStore(&C[11],atomicLoad(&C[1]));atomicStore(&C[16],0u);atomicStore(&C[17],0u);atomicStore(&C[19],0u);atomicStore(&C[26],0u);atomicStore(&C[28],atomicLoad(&C[27]));atomicStore(&C[30],0u);atomicAdd(&C[18],1u);
  S.aux.x+=dt;S.aux.y=0.0;S.aux.z=u.config.z;S.aux.w=0.0;S.tools.x=0.0;
  S.timers=max(S.timers-vec4f(dt),vec4f(-dt,-dt,0,0));S.skill.x=max(0.0,S.skill.x-dt);S.skill.y=max(0.0,S.skill.y-dt);
@@ -1670,6 +1670,9 @@ const initShader=COMMON+`
  }if(!ok){p=vec2f(-94.0+f32(i%2u)*188.0,f32(i%183u)-91.0);}
  if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));
  Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0));
+ // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
+ // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
+ if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}
 }
 `;
 
@@ -1710,12 +1713,12 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
 @compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){
  let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
- if(z.p.w<=0.0&&u.run.y<.5&&(S.journey7.x<.5||((S.director.x==0.0||S.director.x==3.0)&&S.alarm.z<=0.0))){B[i]=z;return;}
+ if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||((S.director.x==0.0||S.director.x==3.0)&&S.alarm.z<=0.0))){B[i]=z;return;}
  if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;
   for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=34.0+rnd(sd+7u)*18.0;p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
    if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
-  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5));z.extraData.z=kind;z.extraData.w=0.0;}else{z.v.w=1.0;}
+  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&S.aux.x>90.0)));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=max(0.0,1.0-dt*6.0);z.history.w*=max(0.0,1.0-dt*6.0);
@@ -2514,7 +2517,7 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
   // (L12.items/4: x pipe bombs, y medkits, z molotovs). Pool Guy: ammo from his cooler. BBQ Dad: lighter fluid. Tiffany, Baby: a medkit. Timmy: two pipes.
   let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];
   if(t30==1u){rs.x=min(240.0,rs.x+60.0);rs.y=min(56.0,rs.y+12.0);}if(t30==2u){it.z=min(2.0,it.z+1.0);}if(t30==3u||t30==5u){it.y=min(3.0,it.y+1.0);}if(t30==4u){it.x=min(4.0,it.x+2.0);}
-  if(t30>0u){SR[558u]=it;SR[557u]=rs;}}
+  it.y=min(3.0,it.y+1.0);SR[558u]=it;SR[557u]=rs;}
  // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.
  var bites=0u;var away=vec2f(0);var flee=vec2f(0);let cell=vec2i(floor(me+HALF));
  for(var dz=-4;dz<=4;dz++){for(var dx=-4;dx<=4;dx++){let n=cell+vec2i(dx,dz);if(any(n<vec2i(0))||any(n>=vec2i(192))){continue;}var it=H[u32(n.x+192*n.y)];
@@ -2731,7 +2734,8 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     }
     // One medical claimant per patient; downed rescue always outranks elective care.
     if(goalScore<600.0){for(var ti=0u;ti<4u;ti++){
-     let q=teamTarget7(i32(ti)-1);if(q.w<=0.0||q.w>=48.0||distance(q.xz,S.pos.xz)>20.0){continue;}var medic=-1;var score=1e9;
+     // Maple Street medics step in at 70 HP (48 elsewhere), and bots patch themselves up below 65.
+     let q=teamTarget7(i32(ti)-1);if(q.w<=0.0||q.w>=select(48.0,70.0,u.run.x>5.0&&u.run.y<.5)||distance(q.xz,S.pos.xz)>20.0){continue;}var medic=-1;var score=1e9;
      for(var j=0u;j<3u;j++){let b=S.team7[j];if(b.p.w<=0.0||b.pack.w<=0.0){continue;}let s=distance(b.p.xz,q.xz)+select(0.0,-2.0,j==0u);if(s<score){score=s;medic=i32(j);}}
      if(medic==i32(id)){goal=select(3u,4u,i32(ti)-1==i32(id));destination7=vec4f(q.xyz,f32(i32(ti)-1));goalScore=600.0;break;}
     }}
@@ -2744,7 +2748,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     a.misc.x=f32(cache);
     if(a.pack.w<=0.0&&cache>=0&&distance(a.p.xz,S.pos.xz)<370.0/64.0&&a.memory.x<0.0&&goalScore<240.0){goal=5u;destination7=vec4f(P[u32(cache)].p.xyz,f32(cache));goalScore=240.0;}
     if(reserve.x+reserve.y<50.0&&ammoCache>=0&&distance(a.p.xz,S.pos.xz)<500.0/64.0&&goalScore<420.0){goal=10u;destination7=vec4f(P[u32(ammoCache)].p.xyz,f32(ammoCache));goalScore=420.0;}
-    let healScore=select(470.0,830.0,a.p.w<25.0);if(a.p.w<48.0&&(a.pack.w>0.0||cache>=0)&&goalScore<healScore){goal=4u;destination7=vec4f(a.p.xyz,f32(id));goalScore=healScore;}
+    let healScore=select(470.0,830.0,a.p.w<25.0);if(a.p.w<select(48.0,65.0,u.run.x>5.0&&u.run.y<.5)&&(a.pack.w>0.0||cache>=0)&&goalScore<healScore){goal=4u;destination7=vec4f(a.p.xyz,f32(id));goalScore=healScore;}
     if((S.weapons.y>0.0||S.supplies.w>0.0||S.mission5.w>.1||S.escape.x>0.0)&&goalScore<650.0){goal=1u;goalScore=650.0;destination7=vec4f(formation.x,0,formation.y,-1);}
     if(hazard.w>0.0){goal=6u;let away=safe2(a.p.xz-hazard.xz+vec2f(.02*f32(id+1u),.03));destination7=vec4f(hazard.xz+away*hazard.w,0,0);destination7=vec4f(destination7.x,0,destination7.y,-1);goalScore=1500.0;}
     // Visible special windups and danger to the current patient outweigh mere proximity.
@@ -3856,7 +3860,7 @@ const CIV_TYPE_LINES47=[null,
  {join:['{n} is cheering you on. Gimme a Z!','{n} joined the squad. Literally a squad now.'],saved:['{n} made it! Two bits, four bits, survival!','{n} is safe and doing a cartwheel about it.'],lost:['{n} is down. No more pyramids.','We lost {n}. Somebody tell the boosters.']},
  {join:['{n} bounced off the trampoline and onto your team.','{n} is following you. Bouncing, mostly.'],saved:['{n} is safe and wants to go back for the trampoline.','{n} made it. Highest score: forty bounces.'],lost:['We lost {n} mid-bounce.','{n} is gone. The trampoline is very quiet.']},
  {join:['{n} is following you. Crawling, mostly.','{n} has joined. He bit a zombie back.'],saved:['{n} is safe. Nobody knows whose he is.','{n} made it. Diaper status: unknown.'],lost:['{n} crawled off somewhere. We will not discuss it.','We lost track of {n}. Someone check under the porch.']}];
-const CIV_REWARD47=['','+60 AMMO','+1 MOLOTOV','+1 MEDKIT','+2 SODA CANS','+1 MEDKIT'];
+const CIV_REWARD47=['+1 MEDKIT','+60 AMMO +1 MEDKIT','+1 MOLOTOV +1 MEDKIT','+2 MEDKITS','+2 SODA CANS +1 MEDKIT','+2 MEDKITS'];
 const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is following you. Loudly.','{n} wants to speak to the manager of this apocalypse.','{n} is here. {n} has opinions.'],
  saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
@@ -3869,7 +3873,7 @@ function neighborsHUD30(k){
   const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
   if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4,civBannerCol47=COL9.gold;
   if(st===4)civBanner47=(n.name||'A NEIGHBOR').toUpperCase()+' GOT EATEN!',civBannerUntil47=time+2.6,civBannerCol47=COL9.red;
-  if(st===2&&n.type)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});
+  if(st===2)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});
  for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
  if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);

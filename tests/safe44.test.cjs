@@ -6,7 +6,7 @@ const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8'),h=loadHost(file,{plain:true}),src=Object.values(h.sources).find(s=>s.includes('fn shelterDecor44('));
 check('caches draw as supply tables on Maple Street only; the chapter crate path is unchanged',()=>{
- assert(src.includes('if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){supplyTable44(p,pr.data.x>0.0);}\n  else if(pr.p.w==7.0&&pr.aux.x!=7.0){\n   let unopened=pr.data.x>0.0;'));
+ assert(src.includes('if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){if(pr.more.x==44.0){shelterItem44(p,u32(pr.aux.x),pr.data.x>0.0);}else{supplyTable44(p,pr.data.x>0.0);}}\n  else if(pr.p.w==7.0&&pr.aux.x!=7.0){\n   let unopened=pr.data.x>0.0;'));
  assert(src.includes('if(unopened){gunFlat44(')&&src.includes('vec3f(.15,1,.85),1,1.4);}'),'loaded table keeps the floating cache marker');
 });
 check('the shelter decor is drawn once per frame, Maple Street only, at the fixed V9 start',()=>{

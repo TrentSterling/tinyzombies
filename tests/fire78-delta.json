@@ -1,0 +1,41 @@
+{
+ "parentSha256": "2e3cde2b3c6c63bcb9797f8b4c22407fa0da6888eabf187f52d456cb5d3c794b",
+ "changes": [
+  {
+   "before": " var sep=vec2f(0);var forwardSpace=1.0;",
+   "after": " var catchFire=false;var sep=vec2f(0);var forwardSpace=1.0;"
+  },
+  {
+   "before": "checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;",
+   "after": "checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;if(other.body.z>.5&&other.p.w>0.0&&dist<rr+.18){catchFire=true;}"
+  },
+  {
+   "before": " if(burning&&(u32(u.clock.z)+i)%12u==0u){damage+=19.0;}",
+   "after": " // Maple Street fire sticks: touching flames or brushing a burning infected sets one alight for 4 s (body.z). It keeps burning,\n // staggers 35% faster and passes the fire on, so one molotov can chain through a crowd. Tanks and the boss do not catch.\n if(u.run.x>5.0&&u.run.y<.5&&kind!=6.0){if(burning||catchFire){z.body.z=max(z.body.z,4.0);}z.body.z=max(0.0,z.body.z-dt);if(z.body.z>0.0){burning=true;}}\n if(burning&&(u32(u.clock.z)+i)%12u==0u){damage+=19.0;}"
+  },
+  {
+   "before": "var movement=velocity*dt;var p=z.p.xyz;",
+   "after": "var movement=velocity*dt*select(1.0,1.35,z.body.z>0.0);var p=z.p.xyz;"
+  },
+  {
+   "before": " for(var h=0u;h<16u;h++){let f=S.heat6[h];if(f.w>S.aux.x&&length(f.xy-z.p.xz)<f.z){charred=.48;}}",
+   "after": " for(var h=0u;h<16u;h++){let f=S.heat6[h];if(f.w>S.aux.x&&length(f.xy-z.p.xz)<f.z){charred=.48;}}\n // A burning infected (body.z) is charred and wears flickering flames.\n if(z.body.z>0.0){charred=.48;let hgt=1.3*scale.y;for(var fl=0u;fl<6u;fl++){let a=f32(fl)*1.047+S.aux.x*3.0;let ph=S.aux.x*11.0+f32(fl)*1.9;let s=.10+.07*abs(sin(ph));\n  box(z.p.xyz+vec3f(cos(a)*.16*scale.x,hgt*(.35+.13*f32(fl%3u))+.12*abs(sin(ph)),sin(a)*.16*scale.x),vec3f(s,s*2.2,s),select(vec3f(1,.25,.03),vec3f(1,.78,.2),fl%2u==0u),3,1.7);}}"
+  },
+  {
+   "before": "   let f=S.heat6[fi];if(f.w>S.aux.x){for(var k=0u;k<8u;k++){let a=f32(k)*.7854+f32(fi);let rr=f.z*(.2+.55*rnd(fi*31u+k));let lift=.15+.3*abs(sin(S.aux.x*9.0+f32(k)*2.1));box(vec3f(f.x+cos(a)*rr,lift*.5,f.y+sin(a)*rr),vec3f(.14,lift,.14),vec3f(1,.24,.025),3,1.4);}}",
+   "after": "   let f=S.heat6[fi];if(f.w>S.aux.x&&u.run.x>5.0&&u.run.y<.5){\n    // Maple Street fire: layered flames (red body, yellow core) that rise and fall, a smoke column and drifting embers.\n    let r=max(.3,fireRadius13(f,S.aux.x,S.heatLife15[fi]));let fade=clamp((f.w-S.aux.x)/1.5,0.0,1.0);\n    for(var k=0u;k<18u;k++){let a=f32(k)*2.399+f32(fi);let rr=r*sqrt(rnd(fi*31u+k))*.9;let ph=S.aux.x*(7.0+f32(k%5u))+f32(k)*1.7;let hgt=(.3+.6*abs(sin(ph)))*(1.0-rr/r*.5)*fade;let p=vec3f(f.x+cos(a)*rr,0,f.y+sin(a)*rr);\n     box(p+vec3f(0,hgt*.5,0),vec3f(.17,hgt,.17),vec3f(1,.22,.02),3,1.3);box(p+vec3f(0,hgt*.35,0),vec3f(.09,hgt*.6,.09),vec3f(1,.78,.2),3,1.9);}\n    for(var k=0u;k<6u;k++){let t=fract(S.aux.x*.35+f32(k)/6.0+f32(fi)*.13);let a=f32(k)*1.3+f32(fi);let s=(.14+t*.34)*fade;box(vec3f(f.x+cos(a)*r*.3+sin(t*6.0)*.3,.7+t*3.4,f.y+sin(a)*r*.3),vec3f(s),vec3f(.17,.16,.16)*(1.0-t*.45),1,0);}\n    for(var k=0u;k<6u;k++){let t=fract(S.aux.x*.8+f32(k)*.37+f32(fi)*.21);let a=f32(k)*2.1+f32(fi)*.7;box(vec3f(f.x+cos(a)*(r*.4+t*.8),.3+t*2.6,f.y+sin(a)*(r*.4+t*.8)),vec3f(.05),vec3f(1,.5,.1),3,2.2);}\n   }else if(f.w>S.aux.x){for(var k=0u;k<8u;k++){let a=f32(k)*.7854+f32(fi);let rr=f.z*(.2+.55*rnd(fi*31u+k));let lift=.15+.3*abs(sin(S.aux.x*9.0+f32(k)*2.1));box(vec3f(f.x+cos(a)*rr,lift*.5,f.y+sin(a)*rr),vec3f(.14,lift,.14),vec3f(1,.24,.025),3,1.4);}}"
+  },
+  {
+   "before": " // The HOA President bulldozes:",
+   "after": " // Maple Street fire burns hedges (6) and picket fences (7) down; other materials do not catch.\n if(u.run.x>5.0&&u.run.y<.5&&(b.extraData.x==6.0||b.extraData.x==7.0)){for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];if(fire.w>S.aux.x&&length(b.p.xz-fire.xy)<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+.3){damage+=u.clock.x*1.6;impulse=vec3f(0,2.2,0);}}}\n // The HOA President bulldozes:"
+  },
+  {
+   "before": "function zamnHUD52(k)",
+   "after": "// TOASTED xN: fire kills (C[61], set when an infected dies burning) within 1.5 s stack into one callout.\nconst toast67={n:0,burst:0,at:-9};\nfunction toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;if(toast67.burst>=3)announce65('Extra crispy!');}\n if(time-toast67.at<1.3){const s='TOASTED x'+toast67.burst;text(s,width/2-textWidth9(s,30*k)/2,height*.335,30*k,[1,.55,.12,1]);}}\nfunction zamnHUD52(k)"
+  },
+  {
+   "before": "  if(SANDBOX25)p2HUD65(k);\n",
+   "after": "  if(SANDBOX25)p2HUD65(k);\n  if(SANDBOX25)toastHUD67(k);\n"
+  }
+ ]
+}

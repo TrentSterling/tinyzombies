@@ -1809,10 +1809,10 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   if(z.combat13.y>0.0){speed*=.06;}if(searching){speed*=.55;}if(u.run.x>5.0&&u.run.y<.5&&inPool45(z.p.xz)){speed*=.45;}
 
  var velocity=mix(z.v.xy,dir*speed,1.0-exp(-dt*12.0))+z.history.zw;
- var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
+ var catchFire=false;var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
  for(var k=0u;k<25u;k++){let rot=hash(i+u32(u.clock.z/4.0))%16u;let off=neighbor6(k,rot);
   let c=cell+off;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
-  for(var n=0u;n<20u&&it>0u&&checks<72u;n++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;
+  for(var n=0u;n<20u&&it>0u&&checks<72u;n++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;if(other.body.z>.5&&other.p.w>0.0&&dist<rr+.18){catchFire=true;}
    if(dist<comfort){var away=safe2(delta);if(dist<.0001){let angle=rnd(min(i,j)*8191u+max(i,j))*6.2831853;away=vec2f(cos(angle),sin(angle))*select(-1.0,1.0,i>j);}sep+=away*(1.0-dist/comfort)*select(1.0,.5,kind==2.0);steerCount++;}
    let ahead=dot(-delta,dir);let crossLane=abs(dot(delta,vec2f(-dir.y,dir.x)));if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){let space=clamp((ahead-rr+.05)/.7,0.0,1.0);if(space<forwardSpace){forwardSpace=space;leaderSpeed=clamp(dot(other.v.xy,dir),0.0,speed);}}
    if(other.extraData.z==3.0&&other.extraData.w>=.90&&dist<1.7){damage+=30.0;}
@@ -1868,7 +1868,7 @@ if(S.tools.y>.20){let delta=S.tools.zw-z.p.xz;let d=length(delta);if(d<6.0){velo
 for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==4.0&&pr.data.x>0.0&&pr.data.y==2.0&&pr.more.y<-.7&&pr.p.y-pr.aux.y*.5<1.1&&all(abs(pr.p.xz-z.p.xz)<pr.aux.xz*.5+vec2f(.2))){damage+=200.0;atomicAdd(&C[34],1u);}}
   // Collapses crush the horde: crush30 marks the 0.5 m cells under falling heavy wreckage with bit 28.
   if((atomicLoad(&O[DYNAMIC_OFFSET+dynCell(z.p.xz)])&0x10000000u)!=0u){damage+=200.0;atomicAdd(&C[34],1u);}
- var movement=velocity*dt;var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,p.y+.36,p.z);let tz=vec3f(p.x,p.y+.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
+ var movement=velocity*dt*select(1.0,1.35,z.body.z>0.0);var p=z.p.xyz;let h=vec3f(radius,.29,radius);let tx=vec3f(p.x+movement.x,p.y+.36,p.z);let tz=vec3f(p.x,p.y+.36,p.z+movement.y);let stuck=blocked(tx,h)||blocked(tz,h);
  let maple3d=u.run.x>5.0&&u.run.y<.5;
  if(!blocked(tx,h)){p.x=tx.x;}else if(maple3d){let up=ground3d(tx.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tx.x,up+.37,tx.z),h)){p.x=tx.x;p.y=up;}}
  let tz2=vec3f(p.x,p.y+.36,p.z+movement.y);if(!blocked(tz2,h)){p.z=tz2.z;}else if(maple3d){let up=ground3d(tz2.xz,p.y+.55,0.0);if(up>p.y&&!blocked(vec3f(tz2.x,up+.37,tz2.z),h)){p.z=tz2.z;p.y=up;}}
@@ -1897,6 +1897,9 @@ if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let a
  if(S.aux.w>0.0){let d=length(z.p.xz-S.blast.xy);if(d<S.blast.w){if(kind==4.0&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}damage+=500.0*(1.0-.7*d/S.blast.w);let away=safe2(z.p.xz-S.blast.xy);z.history.z+=away.x*(500.0/64.0)*select(1.0,.2,kind==2.0);z.history.w+=away.y*(500.0/64.0)*select(1.0,.2,kind==2.0);impulse=vec3f(away.x,1.1,away.y)*(5.0+(1.0-d/S.blast.w)*8.0);}}
  var burning=false;
  for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];let d=length(z.p.xz-fire.xy);if(fire.w>S.aux.x&&d<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+radius*.5){var clear=true;for(var n=1u;n<32u;n++){let t=f32(n)*.125;if(t>=d){break;}let p=fire.xy+safe2(z.p.xz-fire.xy)*t;if(solid(vec3f(p.x,.5,p.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(p)])&4u)!=0u){clear=false;break;}}burning=burning||clear;}}
+ // Maple Street fire sticks: touching flames or brushing a burning infected sets one alight for 4 s (body.z). It keeps burning,
+ // staggers 35% faster and passes the fire on, so one molotov can chain through a crowd. Tanks and the boss do not catch.
+ if(u.run.x>5.0&&u.run.y<.5&&kind!=6.0){if(burning||catchFire){z.body.z=max(z.body.z,4.0);}z.body.z=max(0.0,z.body.z-dt);if(z.body.z>0.0){burning=true;}}
  if(burning&&(u32(u.clock.z)+i)%12u==0u){damage+=19.0;}
  if(damage>0.0){z.p.w-=damage;z.extraData.y=1.0;z.v.w=max(z.v.w,8.0);
   if(z.p.w<=0.0){atomicAdd(&C[0],1u);if(heHurt){atomicAdd(&C[44],1u);}z.v.w=select(18.0,5.0,S.wave.x>1.5)+rnd(i+u32(S.aux.x*100.0))*4.0;event(z.p.xyz,impulse,vec3f(.29,.55,.35),select(0u,9u,kind==6.0),128u,i+atomicLoad(&C[18])*153u);
@@ -1940,6 +1943,8 @@ fn dirtyAt(p:vec3f){let c=vec2i(floor((p.xz+HALF)/4.0));for(var k=0u;k<5u;k++){l
  if(S.aux.w>0.0){let delta=b.p.xyz-vec3f(S.blast.x,.35,S.blast.y);if(length(delta)<S.blast.w*.88){damage+=60.0;impulse=normalize(delta+vec3f(.001,.2,0))*8.0+vec3f(0,3,0);}}
  if(S.tools.x>0.0){let delta=b.p.xz-S.pos.xz;let t=dot(delta,S.look.xy);let across=abs(dot(delta,vec2f(-S.look.y,S.look.x)));if(t>0.0&&t<min(14.0,S.mission.w+2.8)&&across<1.10){damage+=100.0;impulse=vec3f(S.look.x,.3,S.look.y)*12.0;}}
  let g=u32(b.extraData.w);let melee=meleeInside8(b.p.xyz,vec3f(.125),S.melee8,S.meleeDir8);if(melee){damage+=3.2;impulse=vec3f(S.meleeDir8.x,0,S.meleeDir8.y)*4.0+vec3f(0,1.5,0);}
+ // Maple Street fire burns hedges (6) and picket fences (7) down; other materials do not catch.
+ if(u.run.x>5.0&&u.run.y<.5&&(b.extraData.x==6.0||b.extraData.x==7.0)){for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];if(fire.w>S.aux.x&&length(b.p.xz-fire.xy)<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+.3){damage+=u.clock.x*1.6;impulse=vec3f(0,2.2,0);}}}
  // The HOA President bulldozes: C[68] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.
  {let bossAt=atomicLoad(&C[68]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}
  let nc=vec2i(floor(b.p.xz+HALF));let pressure=0u;
@@ -2282,6 +2287,9 @@ fn enemyModel6(z:Zombie){
  modelSize=scale;modelProne=select(0.0,1.0,kind==4.0);if(kind==4.0){modelSize=vec3f(1);}
  let range=ART_RANGE6[u32(kind)];var charred=0.0;
  for(var h=0u;h<16u;h++){let f=S.heat6[h];if(f.w>S.aux.x&&length(f.xy-z.p.xz)<f.z){charred=.48;}}
+ // A burning infected (body.z) is charred and wears flickering flames.
+ if(z.body.z>0.0){charred=.48;let hgt=1.3*scale.y;for(var fl=0u;fl<6u;fl++){let a=f32(fl)*1.047+S.aux.x*3.0;let ph=S.aux.x*11.0+f32(fl)*1.9;let s=.10+.07*abs(sin(ph));
+  box(z.p.xyz+vec3f(cos(a)*.16*scale.x,hgt*(.35+.13*f32(fl%3u))+.12*abs(sin(ph)),sin(a)*.16*scale.x),vec3f(s,s*2.2,s),select(vec3f(1,.25,.03),vec3f(1,.78,.2),fl%2u==0u),3,1.7);}}
  let wind=select(0.0,clamp(z.extraData.w/.95,0.0,1.0),kind==6.0);
  for(var k=0u;k<range.y;k++){let art=ART_BOX6[range.x+k];let palette=u32(art.p.w);var col=artColor6(palette,kind,z.extraData.x);
   col=mix(col,vec3f(.055,.035,.03),charred);col=mix(col,vec3f(.95,.38,.19),z.extraData.y*.30);
@@ -2489,7 +2497,14 @@ fn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04
   else{box(visualGrip,vec3f(.32,.22,.28),vec3f(.86,.86,.73),1,0);box(visualGrip+vec3f(0,.12,0),vec3f(.20,.025,.065),vec3f(.82,.12,.08),1,0);box(visualGrip+vec3f(0,.12,0),vec3f(.065,.025,.20),vec3f(.82,.12,.08),1,0);}
   for(var fi=0u;fi<16u;fi++){
    let flight=S.flights12[fi];if(flight.z>0.0){let t=1.0-flight.z/flight.w;let pos=mix(S.flightStarts12[fi].xy,flight.xy,t);box(vec3f(pos.x,.3+sin(t*3.14159)*1.4,pos.y),vec3f(.13,.26,.13),vec3f(.3,.44,.13),1,.1);}
-   let f=S.heat6[fi];if(f.w>S.aux.x){for(var k=0u;k<8u;k++){let a=f32(k)*.7854+f32(fi);let rr=f.z*(.2+.55*rnd(fi*31u+k));let lift=.15+.3*abs(sin(S.aux.x*9.0+f32(k)*2.1));box(vec3f(f.x+cos(a)*rr,lift*.5,f.y+sin(a)*rr),vec3f(.14,lift,.14),vec3f(1,.24,.025),3,1.4);}}
+   let f=S.heat6[fi];if(f.w>S.aux.x&&u.run.x>5.0&&u.run.y<.5){
+    // Maple Street fire: layered flames (red body, yellow core) that rise and fall, a smoke column and drifting embers.
+    let r=max(.3,fireRadius13(f,S.aux.x,S.heatLife15[fi]));let fade=clamp((f.w-S.aux.x)/1.5,0.0,1.0);
+    for(var k=0u;k<18u;k++){let a=f32(k)*2.399+f32(fi);let rr=r*sqrt(rnd(fi*31u+k))*.9;let ph=S.aux.x*(7.0+f32(k%5u))+f32(k)*1.7;let hgt=(.3+.6*abs(sin(ph)))*(1.0-rr/r*.5)*fade;let p=vec3f(f.x+cos(a)*rr,0,f.y+sin(a)*rr);
+     box(p+vec3f(0,hgt*.5,0),vec3f(.17,hgt,.17),vec3f(1,.22,.02),3,1.3);box(p+vec3f(0,hgt*.35,0),vec3f(.09,hgt*.6,.09),vec3f(1,.78,.2),3,1.9);}
+    for(var k=0u;k<6u;k++){let t=fract(S.aux.x*.35+f32(k)/6.0+f32(fi)*.13);let a=f32(k)*1.3+f32(fi);let s=(.14+t*.34)*fade;box(vec3f(f.x+cos(a)*r*.3+sin(t*6.0)*.3,.7+t*3.4,f.y+sin(a)*r*.3),vec3f(s),vec3f(.17,.16,.16)*(1.0-t*.45),1,0);}
+    for(var k=0u;k<6u;k++){let t=fract(S.aux.x*.8+f32(k)*.37+f32(fi)*.21);let a=f32(k)*2.1+f32(fi)*.7;box(vec3f(f.x+cos(a)*(r*.4+t*.8),.3+t*2.6,f.y+sin(a)*(r*.4+t*.8)),vec3f(.05),vec3f(1,.5,.1),3,2.2);}
+   }else if(f.w>S.aux.x){for(var k=0u;k<8u;k++){let a=f32(k)*.7854+f32(fi);let rr=f.z*(.2+.55*rnd(fi*31u+k));let lift=.15+.3*abs(sin(S.aux.x*9.0+f32(k)*2.1));box(vec3f(f.x+cos(a)*rr,lift*.5,f.y+sin(a)*rr),vec3f(.14,lift,.14),vec3f(1,.24,.025),3,1.4);}}
   }
   for(var j=0u;j<23u;j++){var sh:Bullet3; if(j<12u){sh=S.bullets[min(j,8u)];if(j==11u){sh=S.extraShot12;}else if(j>=9u){sh=S.extraBullets7[j-9u];}if(sh.tag.w>=2.0){continue;}}else{let k=j-12u;sh=S.critFx[min(k,8u)];if(k>=9u){sh=S.extraCrit7[k-9u];}}let life=sh.tag.z;let crit=sh.tag.w>=2.0;
    if(sh.dir.w<=0.0||life>=select(.085,.28,crit)){continue;}let fade=max(0.0,1.0-life/select(.085,.28,crit));
@@ -4093,6 +4108,10 @@ function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx
  if(NET_HOST65){const s='ONLINE ROOM '+(net65.code||'....')+'  ('+net65.status+')   friend opens tront.xyz/tinyzombies/?join='+(net65.code||'....');text(s,width/2-textWidth9(s,13*k)/2,height-120*k,13*k,[.35,1,.55,1]);}
  else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
+// TOASTED xN: fire kills (C[61], set when an infected dies burning) within 1.5 s stack into one callout.
+const toast67={n:0,burst:0,at:-9};
+function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;if(toast67.burst>=3)announce65('Extra crispy!');}
+ if(time-toast67.at<1.3){const s='TOASTED x'+toast67.burst;text(s,width/2-textWidth9(s,30*k)/2,height*.335,30*k,[1,.55,.12,1]);}}
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
  for(let i=0;i<10;i++){const on=hp*10>i+.05;rect(x+i*(cw+3*k),y,cw,ch,on?(hp<.3?[1,.32,.30,1]:[.36,.66,1,1]):[.10,.16,.22,.9]);if(on)rect(x+i*(cw+3*k),y,cw,4*k,[.75,.88,1,.9]);}
@@ -4194,6 +4213,7 @@ function hud(){
   if(SANDBOX25)boingHUD65(k);
   if(SANDBOX25)questHUD65(k);
   if(SANDBOX25)p2HUD65(k);
+  if(SANDBOX25)toastHUD67(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}

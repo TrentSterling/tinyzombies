@@ -15,7 +15,7 @@ check('search memory is sandbox-only, set while hearing, cleared when awareness 
  assert(z.includes('else if(z.sense13.w>2048.0&&distance>18.0&&victim==0u){let spot=vec2f(z.sense13.z,z.sense13.w-4096.0);if(length(spot-z.p.xz)<10.0){'));
 });
 check('spawn and placement values never read as a search spot (|z| <= 96 m, so only the +4096 offset is above 2048)',()=>{
- assert(html.includes('vec4f(S.pos.xz,24,1))'),'horde spawn writes w=1');assert(html.includes('vec4f(0,0,0,-1),vec4f(p,0,0));'),'placed infected write w=0');
+ assert(html.includes('vec4f(S.pos.xz,24,1)'),'horde spawn writes w=1');assert(html.includes('vec4f(0,0,0,-1),vec4f(p,0,0)'),'placed infected write w=0');
  for(const w of [1,0,24])assert(!(w>2048));for(const zc of [-96,0,96])assert(zc+4096>2048&&zc+4096-4096===zc);
 });
 check('a searcher is slow, steers straight at its circling point, and its own goal never refreshes awareness',()=>{

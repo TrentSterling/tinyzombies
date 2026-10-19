@@ -6,7 +6,7 @@ const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8');
 check('the decor is drawn once per frame at u.route.zw, Maple Street only; route.zw carries the exit',()=>{
- assert(html.includes(' if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();exitDecor54();}'));assert(html.includes('uniformData.set([...world.start,...world.exit],72)'));
+ assert(html.includes(' if(i==0u){\n  if(u.run.x>5.0&&u.run.y<.5){shelterDecor44();exitDecor54();'));assert(html.includes('uniformData.set([...world.start,...world.exit],72)'));
  assert(html.includes('route:vec4f'),'route is a uniform field');
 });
 check('the label shows within 32 m and fades in',()=>{

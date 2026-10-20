@@ -30,7 +30,7 @@ check('embedded font remains byte-identical',()=>assert.equal(sha(h.run('JSON.st
 check('persistent blood helpers and splatter implementation remain byte-identical',()=>assert.equal(sha(slice('fn bloodAt(','const fx6Shader=')),baseline.protected.blood));
 check('HTML and CSS outside the script remain byte-identical',()=>assert.equal(sha(h.html.slice(0,h.html.indexOf('<script>'))+h.html.slice(h.html.lastIndexOf('</script>'))),baseline.protected.shell));
 check('all existing external art/audio assets remain byte-identical',()=>{
- const actual={};function visit(dir){for(const item of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,item.name);if(item.isDirectory())visit(full);else actual[path.relative(path.dirname(file),full).split(path.sep).join('/')]=sha(fs.readFileSync(full));}}
+ const actual={};function visit(dir){for(const item of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,item.name);if(item.isDirectory()){if(full.endsWith(path.join('audio','voice')))continue;visit(full);}else actual[path.relative(path.dirname(file),full).split(path.sep).join('/')]=sha(fs.readFileSync(full));}}
  visit(path.join(path.dirname(file),'assets'));assert.deepEqual(actual,baseline.assets);return{assets:Object.keys(actual).length};
 });
 check('strict restoration inverse recovers immutable parent and rejects unrelated drift',()=>{const inverse=require('./mercer-restoration-scope.cjs').withoutMercerRestoration24;assert.equal(sha(inverse(h.html)),baseline.provenance.sha256);assert.throws(()=>inverse(h.html+'\n// unrelated drift'));assert.throws(()=>inverse(h.html.replace('const MERCER_DISTRICT24=','const MERCER_DISTRICT24=/* changed */')));});

@@ -21,6 +21,8 @@ window.addEventListener('unhandledrejection',e=>{if(foreignError68(e.reason)){di
 const ZOMBIE_FLOATS13=32,ZOMBIE_BYTES13=128;
 const MAX_Z=8192,MAX_P=65536,MAX_EVENTS=1024,MAX_BOXES=190000;
 // Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].
+// Maple Street: neighbors C[96] joined, C[97] lost, C[98] saved; the HOA President C[99] position, C[100] HP, C[101] state.
+// (They sat in the squad-contact slots until robot playtests showed squad bites counting as saves.)
 const WORLD=192,VOX=.25,WGRID=768,WY=12,PGX=384,PGY=16,PHEADS=131072,ZHEADS=192*192;
 const params=new URLSearchParams(location.search);
 // Maple Street sandbox: the open V9 town mission with the full horde, campy and rerollable.
@@ -31,7 +33,7 @@ if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')|
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
 let keys=new Set(),mouse={x:.62,y:.38,left:false,right:false,middle:false},pendingGrenade=0,pendingPipeBomb=0,pendingDash=0,frame=0,time=0,last=0,fps=60,cpuMs=0,gpuMs=null;
-let counters=new Uint32Array(96),playerValues=new Float32Array(4096),readBusy=false,readCountdown=0,runEpoch16=0,resetRequested=false,clearBloodRequested=false;
+let counters=new Uint32Array(128),playerValues=new Float32Array(4096),readBusy=false,readCountdown=0,runEpoch16=0,resetRequested=false,clearBloodRequested=false;
 let frameCallback,resources={},allocatedBytes=0;
 let helpResume=false,toolHint='',toolHintUntil=0;
 let pendingChoice=0,carryMods=new Array(8).fill(0),lastBannerSound=0;
@@ -1755,8 +1757,8 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
 @compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){
  let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));
  // Maple Street boss: at 3 min zombie 1567 (a tank) becomes the HOA President, 30 m from the player wherever it was: 4.5x, 3500 HP,
- // always hunting, walking straight through houses. special13.x=777 marks it; C[70] is 0 not yet, 1 alive, 2 defeated.
- if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[70])==0u){atomicStore(&C[70],1u);var p=S.pos.xz+vec2f(30,0);
+ // always hunting, walking straight through houses. special13.x=777 marks it; C[101] is 0 not yet, 1 alive, 2 defeated.
+ if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[101])==0u){atomicStore(&C[101],1u);var p=S.pos.xz+vec2f(30,0);
   for(var a=0u;a<8u;a++){let ang=f32(a)*.785+rnd(u32(S.aux.x*10.0))*6.28;let q=S.pos.xz+vec2f(cos(ang),sin(ang))*30.0;if(all(abs(q)<vec2f(88.0))){p=q;break;}}p=clamp(p,vec2f(-88.0),vec2f(88.0));
   z.p=vec4f(p.x,0,p.y,3500.0+max(0.0,u.v3.x-1.0)*1000.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
@@ -1928,8 +1930,8 @@ if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let a
     if(kind==6.0){atomicAdd(&C[58],1u);event(z.p.xyz+vec3f(0,1,0),vec3f(0,5,0),vec3f(.3),9u,128u,i+atomicLoad(&C[18])*317u);}
     if(burning){atomicAdd(&C[61],1u);}if(kind==3.0){atomicAdd(&C[21],1u);event(z.p.xyz,vec3f(0,4,0),vec3f(.9,.25,.03),2u,64u,i+5u);}}
  }
- if(z.special13.x==777.0){if(z.p.w>0.0){z.v.w=max(z.v.w,10.0);atomicStore(&C[68],(u32((z.p.x+96.0)*16.0)|(u32((z.p.z+96.0)*16.0)<<12u))+1u);atomicStore(&C[69],u32(z.p.w));}
-  else{atomicStore(&C[70],2u);atomicStore(&C[69],0u);z.special13.x=0.0;event(z.p.xyz+vec3f(0,2.0,0),vec3f(0,9,0),vec3f(.72,.015,.03),7u,160u,i*977u+atomicLoad(&C[18]));event(z.p.xyz+vec3f(0,2.5,0),vec3f(0,8,0),vec3f(.25,.27,.33),0u,80u,i*331u+atomicLoad(&C[18]));}}
+ if(z.special13.x==777.0){if(z.p.w>0.0){z.v.w=max(z.v.w,10.0);atomicStore(&C[99],(u32((z.p.x+96.0)*16.0)|(u32((z.p.z+96.0)*16.0)<<12u))+1u);atomicStore(&C[100],u32(z.p.w));}
+  else{atomicStore(&C[101],2u);atomicStore(&C[100],0u);z.special13.x=0.0;event(z.p.xyz+vec3f(0,2.0,0),vec3f(0,9,0),vec3f(.72,.015,.03),7u,160u,i*977u+atomicLoad(&C[18]));event(z.p.xyz+vec3f(0,2.5,0),vec3f(0,8,0),vec3f(.25,.27,.33),0u,80u,i*331u+atomicLoad(&C[18]));}}
  if(z.p.w>0.0){atomicAdd(&C[7],1u);let e=z.p.xz-u.route.zw;if(e.x> -1.75&&e.x<2.3&&abs(e.y)<2.25){atomicAdd(&C[56],1u);}}B[i]=z;
 }
 `;
@@ -1958,8 +1960,8 @@ fn dirtyAt(p:vec3f){let c=vec2i(floor((p.xz+HALF)/4.0));for(var k=0u;k<5u;k++){l
  let g=u32(b.extraData.w);let melee=meleeInside8(b.p.xyz,vec3f(.125),S.melee8,S.meleeDir8);if(melee){damage+=3.2;impulse=vec3f(S.meleeDir8.x,0,S.meleeDir8.y)*4.0+vec3f(0,1.5,0);}
  // Maple Street fire burns hedges (6) and picket fences (7) down; other materials do not catch.
  if(u.run.x>5.0&&u.run.y<.5&&(b.extraData.x==6.0||b.extraData.x==7.0)){for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];if(fire.w>S.aux.x&&length(b.p.xz-fire.xy)<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+.3){damage+=u.clock.x*1.6;impulse=vec3f(0,2.2,0);}}}
- // The HOA President bulldozes: C[68] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.
- {let bossAt=atomicLoad(&C[68]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}
+ // The HOA President bulldozes: C[99] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.
+ {let bossAt=atomicLoad(&C[99]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}
  let nc=vec2i(floor(b.p.xz+HALF));let pressure=0u;
  if(pressure>=65536u){damage+=100.0;impulse=vec3f(0,7,0);}else if(pressure>=8192u){damage+=35.0;impulse=vec3f(0,6,0);}else if(pressure>=1024u){damage+=5.0;impulse=vec3f(0,4,0);}else if(pressure>=5u){damage+=u.clock.x*1.5;}
  if(atomicLoad(&C[52])>0u){for(var pi=0u;pi<u32(u.worldInfo.y);pi++){let pr=Props[pi];if(pr.p.w==0.0&&pr.data.y>.44){let delta=b.p.xyz-vec3f(pr.p.x,.4,pr.p.z);if(length(delta)<2.9){damage+=60.0;impulse=normalize(delta+vec3f(.001,.4,0))*9.0;}}}}
@@ -2620,8 +2622,8 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  let live=c.p.w==30.0;SR[976u+k]=vec4f(c.p.x,c.p.z,select(0.0,c.data.y,live),c.data.x);
  if(!live||c.data.y<.5||c.data.y>2.5){return;}let dt=u.clock.x;if(dt<=0.0){return;}
  let player=SR[0];let me=c.p.xz;let d=distance(player.xz,me);
- // Tallies live in C[64] joined, C[65] lost, C[66] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.
- if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);
+ // Tallies live in C[96] joined, C[97] lost, C[98] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.
+ if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[96],1u);
   // Characters hand something over as they join (caps match the pickups). SR[557] is reserve12 (L12.reserve/4), SR[558] items12
   // (L12.items/4: x pipe bombs, y medkits, z molotovs). Pool Guy: ammo from his cooler. BBQ Dad: lighter fluid. Tiffany, Baby: a medkit. Timmy: two pipes.
   let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];
@@ -2649,11 +2651,11 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.
  let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}
  c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
- if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[65],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
+ if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[97],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
  if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}
  c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));
- let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[66],1u);}
+ let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[98],1u);}
  Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);
 }
 `;
@@ -3257,7 +3259,7 @@ fn sourceProps15(){
   event(at,vec3f(0,5.5,0),shirt,0u,40u,seed);event(at,vec3f(0,7.0,0),vec3f(.72,.015,.03),7u,120u,seed*331u);event(at+vec3f(0,.5,0),vec3f(0,9.0,0),vec3f(.93,.72,.55),0u,16u,seed*743u);atomicAdd(&C[57],1u);}
  // A landed bite or swipe on the player (this frame's hit, kept in S.pace7.w by begin()) spurts blood off them, more for harder hits.
  {let bite=u32(S.pace7.w)%256u;if(bite>0u&&S.pos.w>0.0){event(vec3f(S.pos.x,.7,S.pos.z),vec3f(0,3.0,0),vec3f(.72,.015,.03),7u,12u+bite*2u,bite*911u+u32(S.aux.x*60.0));}}
- atomicStore(&C[68],0u);
+ atomicStore(&C[99],0u);
  atomicStore(&C[52],0u);for(var i=0u;i<u32(u.worldInfo.y);i++){var pr=P[i];
   if(pr.p.w==5.0){pr.p.y=3.0-S.escape.x*2.0;P[i]=pr;continue;}
   if(pr.p.w==32.0){P[i]=cheese48(pr);continue;}
@@ -3557,7 +3559,7 @@ fn sdfGlyph(code:u32,uv:vec2f)->f32{
 let audio=null,audioGain=null,nextSound=0,nextBoom=0,lastCritSound=0;
 let nextPipeBeep=0,lastPipeExplosion=0,lastGrenadeExplosion=0,lastMasonry7=0,lastDoor7=0;
 let audioMix9=null,audioBed9=null,audioInactive9=true,audioEpoch9=0,audioReadAt9=0,audioSerial9=0,audioNextVocal9=0,audioNextMass9=0,audioNextFoot9=0,audioMute9=.4;
-const AUDIO_VOICES9=32,AUDIO_LOW_VOICES9=22,AUDIO_OFFSET9=16768,AUDIO_PROPS_OFFSET9=AUDIO_OFFSET9+MAX_Z*ZOMBIE_BYTES13;
+const AUDIO_VOICES9=32,AUDIO_LOW_VOICES9=22,AUDIO_OFFSET9=16896,AUDIO_PROPS_OFFSET9=AUDIO_OFFSET9+MAX_Z*ZOMBIE_BYTES13;
 const audioVoices9=new Set(),audioClips9=new Map(),audioCooldown9=new Map();
 const audioZData9=new Float32Array(MAX_Z*ZOMBIE_FLOATS13),audioPropData9=new Float32Array(MAX_PROPS*16);
 const audioHP9=new Float32Array(MAX_Z).fill(-1),audioGait9=new Float32Array(MAX_Z),audioNextVoice9=new Float32Array(MAX_Z),audioNextStep9=new Float32Array(MAX_Z),audioPropHP9=new Float32Array(MAX_PROPS).fill(-1);
@@ -3651,7 +3653,7 @@ function pipeBeep(remaining){if(playAudio9(remaining<1.5?'beepHigh':remaining<3?
 // (a scream) under a growl, a join beeps and a rescue plays latch-beep-beep. Counters only ever trigger on an increase.
 const mapleAudio62={kick:0,splat:0,eaten:0,joined:0,saved:0};
 function updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)return;const m=mapleAudio62;
- const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[64]|0,saved=counters[66]|0;
+ const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[96]|0,saved=counters[98]|0;
  if(kick>m.kick){playAudio9('crit','impact',.24,null,kick,0,.7);playAudio9('snap','cue',.12,null,kick,.02);synth65('thud');if(kick===1||kick%4===0)announce65('Say cheese!');}
  if(splat>m.splat){playAudio9('death','death',.30,null,splat,0,.62);playAudio9('debris','debris',.18,null,splat,.03);synth65('splat');if(splat-m.splat>=3)announce65('Splat-tastic!');}
  if(eaten>m.eaten){playAudio9('death','death',.34,null,eaten,0,1.35);playAudio9('growl','zombie',.24,null,eaten,.12,.8);synth65('sting');}
@@ -3686,7 +3688,7 @@ function music67Noise(t,d,g,hp){const n=audio.createBuffer(1,Math.max(1,Math.flo
 function updateMusic67(){if(!SANDBOX25||!audio||!audioMix9)return;const want=audioAllowed9();
  if(!music67.bus){music67.bus=audio.createGain();music67.bus.gain.value=0;music67.bus.connect(audioMix9);}
  const g=music67.bus.gain,now=audio.currentTime;if(want!==music67.on){g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(want?.5:0,now+.6);music67.on=want;if(want)music67.next=now+.05;}
- if(!want)return;const boss=(counters[70]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;
+ if(!want)return;const boss=(counters[101]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;
  const bass=[0,0,3,0,5,3,0,-2,0,0,3,0,7,5,3,2],lead=[12,12,15,14,10,10,12,7],E2=82.41;
  while(music67.next<now+.25){const t=music67.next,s=music67.step%16;
   music67Note(t,'sawtooth',E2*Math.pow(2,bass[s]/12),eighth*.9,.16);music67Note(t,'square',E2*2*Math.pow(2,bass[s]/12),eighth*.5,.025);
@@ -4019,7 +4021,7 @@ const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is 
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
 let civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;
 function neighborsHUD30(k){
- const total=world.civilians30.length,joined=counters[64]|0,saved=counters[66]|0,lost=counters[65]|0;
+ const total=world.civilians30.length,joined=counters[96]|0,saved=counters[98]|0,lost=counters[97]|0;
  // Quips name the neighbor whose state actually changed (mirror states: 1 waiting, 2 following, 3 saved, 4 lost); typed rescues get a banner.
  if(civPrevWorld47!==world){civPrevWorld47=world;civPrev47=world.civilians30.map(()=>1);civBanner47='';}
  world.civilians30.forEach((n,c)=>{const st=Math.round(playerValues[CIV_STATE30+c*4+2]);if(st<2||st>4||st===civPrev47[c])return;const kind=st===2?'join':st===3?'saved':'lost';
@@ -4090,13 +4092,13 @@ function levelCard59(k){const t=playerValues[24]||0;if(t>.2&&t<3&&levelCardSaid6
  const top='LEVEL '+mapleLevel65,tp=Math.round(34*k*s);ctx.font=tp+'px Bangers,Impact,sans-serif';const tw=ctx.measureText(top).width;ctx.lineWidth=8*k*s;ctx.strokeText(top,(W-tw)/2,H*.31);ctx.fillStyle='#f6d43a';ctx.fillText(top,(W-tw)/2,H*.31);
  const vic='VICTIMS: '+(world.civilians30?.length||0),vp=Math.round(30*k*s);ctx.font=vp+'px Bangers,Impact,sans-serif';const vw=ctx.measureText(vic).width;ctx.strokeText(vic,(W-vw)/2,H*.55);ctx.fillStyle='#ff4fa3';ctx.fillText(vic,(W-vw)/2,H*.55);
  ctx.restore();}
-// The HOA President (C[70]: 1 alive, 2 defeated; C[69] its HP): an arrival banner, a boss bar across the top while it lives, and a
+// The HOA President (C[101]: 1 alive, 2 defeated; C[100] its HP): an arrival banner, a boss bar across the top while it lives, and a
 // defeat banner worth 5000 points.
 const boss65={state:0,banner:'',until:0};
-function bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st;
+function bossHUD65(k){const st=counters[101]|0;if(st<boss65.state)boss65.state=st;
  if(st===1&&boss65.state===0){boss65.banner='BOSS: THE HOA PRESIDENT';boss65.until=time+3.2;playAudio9('explosion','explosion',.5,null,1,0,.6);synth65('sting');announce65('Warning! The H. O. A. President has arrived!',true);}
  if(st===2&&boss65.state===1){boss65.banner='HOA PRESIDENT DEFEATED!  +5000';boss65.until=time+3.6;announce65('The H. O. A. President has been... foreclosed!',true);}boss65.state=st;
- if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/bossHP65(),0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
+ if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[100]|0)/bossHP65(),0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}
   const n='THE HOA PRESIDENT';text(n,width/2-textWidth9(n,14*k)/2,y+22*k,14*k,COL9.gold);}
  if(boss65.banner&&time<boss65.until){const px=(46+6*Math.sin((boss65.until-time)*8))*k;text(boss65.banner,width/2-textWidth9(boss65.banner,px)/2,height*.36,px,st===2?COL9.gold:COL9.red);}}
 // BOING! over the player on every trampoline launch (C[83]); zombie launches (C[88]) stack into a BOING xN callout.
@@ -4110,11 +4112,11 @@ function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
 const QUESTS65=[
  {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},
- {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[66]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
+ {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[98]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
- {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[66]|0)+'/4)',done:()=>(counters[66]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
- {title:'FORECLOSURE',goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[70]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
+ {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
+ {title:'FORECLOSURE',goal:()=>(counters[101]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[101]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
  {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>(playerValues[L7.goal+3]||0)>0,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
 const quest65={i:0,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
 function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
@@ -4165,7 +4167,7 @@ function comboHUD69(k){comboTick69();if(combo69.chain<3)return;const x=18*k,y=10
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
  for(let i=0;i<10;i++){const on=hp*10>i+.05;rect(x+i*(cw+3*k),y,cw,ch,on?(hp<.3?[1,.32,.30,1]:[.36,.66,1,1]):[.10,.16,.22,.9]);if(on)rect(x+i*(cw+3*k),y,cw,4*k,[.75,.88,1,.9]);}
- const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[66]|0)*500+((counters[70]|0)===2?5000:0)+quest65.bonus+combo69.bonus;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}
+ const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[98]|0)*500+((counters[101]|0)===2?5000:0)+quest65.bonus+combo69.bonus;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}
 function titleCard30(k){
  if(hud2d30){poster52(k);return;}
  panel9(width*.2,height*.18,width*.6,height*.62,.84);rect(width*.2,height*.18,width*.6,5*k,COL9.gold);
@@ -4178,7 +4180,7 @@ function titleCard30(k){
 }
 function evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}
 function evacCard30(k){
- const total=world.civilians30?.length||0,saved=counters[66]|0,lost=counters[65]|0,t=Math.round(playerValues[24]||0);
+ const total=world.civilians30?.length||0,saved=counters[98]|0,lost=counters[97]|0,t=Math.round(playerValues[24]||0);
  panel9(width*.24,height*.2,width*.52,height*.6,.92);rect(width*.24,height*.2,width*.52,5*k,COL9.green);
  centre('MAPLE STREET EVACUATED',height*.235,44*k,COL9.green);centre(saved+' / '+total+' NEIGHBORS SAVED',height*.35,34*k,COL9.gold);
  centre(fmt(counters[0])+' put down   /   '+(counters[34]|0)+' crushed   /   '+Math.floor(t/60)+':'+String(t%60).padStart(2,'0'),height*.455,16*k,COL9.white);
@@ -4399,7 +4401,7 @@ function hud(){
   if(won&&SANDBOX25){evacCard30(k);}
   else if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
-   centre(SANDBOX25?(counters[66]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
+   centre(SANDBOX25?(counters[98]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);
    if(finalResult19){const r=finalResult19;centre(r.saved+'/4 survivors  /  '+Math.round(r.time)+'s  /  '+r.kills+' kills',height*.46,17*k,COL9.white);centre(r.downs===null?'Older save: campaign downs unavailable':r.downs+' downs',height*.51,14*k,COL9.soft);centre(r.best?(r.best.better?'Personal best':'Best run')+': '+r.best.record.saved+'/4, '+r.best.record.incaps+' downs, '+Math.round(r.best.record.time)+'s':'Run complete',height*.57,16*k,COL9.gold);}
    else centre(SANDBOX25?'Enter  Next street':'Enter  Continue to '+['','Burnout','Last Train','Code Red','Deadweight'][stage],height*.54,18*k,COL9.gold);
    if(stage>1&&!SANDBOX25)centre('Backspace  Retry '+['','Mercer','Burnout','Last Train','Code Red','Deadweight'][stage]+'    N twice  New run',height*.66,16*k,COL9.white);
@@ -4501,11 +4503,11 @@ function drawFrame(now){
   p.setPipeline(uiPipeline);p.setBindGroup(0,uiBG);p.draw(6,glyphCount);p.end();
  }
  let sample=false,audioSample=false,audioCount9=0,audioProps9=0,readEpoch9=audioEpoch9;
- if(!readBusy&&now>readCountdown){sample=true;readBusy=true;readCountdown=now+70;enc.copyBufferToBuffer(C,0,sampleBuffer,0,384);enc.copyBufferToBuffer(S,0,sampleBuffer,384,16384);if(audioAllowed9()&&now>=audioReadAt9){audioSample=true;audioReadAt9=now+120;audioCount9=Math.min(MAX_Z,settings.zombies);audioProps9=world.propCount;enc.copyBufferToBuffer(zParity?zB:zA,0,sampleBuffer,AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13);enc.copyBufferToBuffer(Props,0,sampleBuffer,AUDIO_PROPS_OFFSET9,audioProps9*64);}}
+ if(!readBusy&&now>readCountdown){sample=true;readBusy=true;readCountdown=now+70;enc.copyBufferToBuffer(C,0,sampleBuffer,0,512);enc.copyBufferToBuffer(S,0,sampleBuffer,512,16384);if(audioAllowed9()&&now>=audioReadAt9){audioSample=true;audioReadAt9=now+120;audioCount9=Math.min(MAX_Z,settings.zombies);audioProps9=world.propCount;enc.copyBufferToBuffer(zParity?zB:zA,0,sampleBuffer,AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13);enc.copyBufferToBuffer(Props,0,sampleBuffer,AUDIO_PROPS_OFFSET9,audioProps9*64);}}
  if(stampThisFrame){tsBusy=true;enc.resolveQuerySet(tsQuery,0,12,tsResolve,0);enc.copyBufferToBuffer(tsResolve,0,tsRead,0,96);}
  device.queue.submit([enc.finish()]);inFlight++;device.queue.onSubmittedWorkDone().then(()=>{inFlight--;}).catch(fail);
  cpuMs=cpuMs*.9+(performance.now()-start)*.1;
- if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,384)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(384,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
+ if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,512)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(512,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  updateEquipmentAudio12();
  updateBombAudio();updateMapleAudio62();try{updateMusic67();}catch(e){diagnostics.notes.push('music off: '+String(e.message||e).slice(0,80));music67.on=false;}
@@ -4530,7 +4532,7 @@ async function main(){
  device.addEventListener('uncapturederror',e=>fail(e.error));device.lost.then(info=>{if(!stopped)fail(new Error('WebGPU device lost: '+info.reason+' / '+info.message));});
  context=canvas.getContext('webgpu');initHud2d30();if(!context)throw new Error('Could not create GPUCanvasContext.');const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque'});
  U=buf('uniforms',400,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST);
- C=storage('counters',384);S=storage('GPU player and weapons',16384);
+ C=storage('counters',512);S=storage('GPU player and weapons',16384);
  zA=storage('zombies A',MAX_Z*ZOMBIE_BYTES13);zB=storage('zombies B',MAX_Z*ZOMBIE_BYTES13);
  pA=storage('particles A',MAX_P*64);pB=storage('particles B',MAX_P*64);
  O=storage('voxel occupancy',world.occ.byteLength,world.occ);W=storage('destructible blocks',world.blocks.byteLength,world.blocks);WP=storage('wall blood and scorch',MAX_WORLD*8);Paint=storage('sparse persistent floor blood',PAINT_SIZE*4);

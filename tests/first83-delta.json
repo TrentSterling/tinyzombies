@@ -1,0 +1,9 @@
+{
+ "parentSha256": "e0295160f943101982d763dced3e8360824a5fdc54118a491861ab8c6759e004",
+ "changes": [
+  {
+   "before": "  for(let n=homes.length-1;n>0;n--){const k=Math.floor(rand()*(n+1));[homes[n],homes[k]]=[homes[k],homes[n]];}\n",
+   "after": "  for(let n=homes.length-1;n>0;n--){const k=Math.floor(rand()*(n+1));[homes[n],homes[k]]=[homes[k],homes[n]];}\n  // First rescue next door: robot playtests never reached a neighbor in the first 30 s (nearest was 37 m+), so the closest home always\n  // takes slot 0 (indoors). The swap uses no rand, so the rest of the street is unchanged.\n  {let bi=0,bd=1e9;homes.forEach((b,i)=>{const d=Math.hypot(b.x+b.w/2-start[0],b.z+b.d/2-start[1]);if(d<bd){bd=d;bi=i;}});[homes[0],homes[bi]]=[homes[bi],homes[0]];}\n"
+  }
+ ]
+}

@@ -1763,10 +1763,11 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   z.p=vec4f(p.x,0,p.y,3500.0+max(0.0,u.v3.x-1.0)*1000.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
  if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||((S.director.x==0.0||S.director.x==3.0)&&S.alarm.z<=0.0))){B[i]=z;return;}
- if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;
-  for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=34.0+rnd(sd+7u)*18.0;p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
+ // Closer scare: robot runs showed the 15 s pack (34-52 m out) rarely arrived by 30 s, so it now walks in from 22-30 m, still off screen.
+ if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;let early=z.special13.w==-2.0&&S.aux.x<20.0;
+  for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=select(34.0+rnd(sd+7u)*18.0,22.0+rnd(sd+7u)*8.0,early);p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
-   if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
+   if(squadClear&&length(p-S.pos.xz)>select(25.0,20.0,early)&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
   }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}

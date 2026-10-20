@@ -1,0 +1,17 @@
+{
+ "parentSha256": "2b65181f0c756647508941e914aa59eac6a069fcf4b4ecccebecba5d2913dbfc",
+ "changes": [
+  {
+   "before": " if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;\n",
+   "after": " // Closer scare: robot runs showed the 15 s pack (34-52 m out) rarely arrived by 30 s, so it now walks in from 22-30 m, still off screen.\n if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;let early=z.special13.w==-2.0&&S.aux.x<20.0;\n"
+  },
+  {
+   "before": "let range=34.0+rnd(sd+7u)*18.0;",
+   "after": "let range=select(34.0+rnd(sd+7u)*18.0,22.0+rnd(sd+7u)*8.0,early);"
+  },
+  {
+   "before": "if(squadClear&&length(p-S.pos.xz)>25.0&&",
+   "after": "if(squadClear&&length(p-S.pos.xz)>select(25.0,20.0,early)&&"
+  }
+ ]
+}

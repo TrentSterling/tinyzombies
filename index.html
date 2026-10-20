@@ -1764,11 +1764,11 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
  if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||((S.director.x==0.0||S.director.x==3.0)&&S.alarm.z<=0.0))){B[i]=z;return;}
  // Closer scare: robot runs showed the 15 s pack (34-52 m out) rarely arrived by 30 s, so it now walks in from 22-30 m, still off screen.
- if(z.p.w<=0.0){z.v.w-=dt;if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;let early=z.special13.w==-2.0&&S.aux.x<20.0;
+ if(z.p.w<=0.0){z.v.w-=dt*select(1.0,max(0.0,1.0+u.v5.x),u.run.x>5.0&&u.run.y<.5&&z.special13.w==-2.0);if(z.v.w<=0.0&&S.goal.w==0.0&&dt>0.0){var p=vec2f(0);var found=false;let early=z.special13.w==-2.0&&S.aux.x<20.0;
   for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=select(34.0+rnd(sd+7u)*18.0,22.0+rnd(sd+7u)*8.0,early);p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
    if(squadClear&&length(p-S.pos.xz)>select(25.0,20.0,early)&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
-  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
+  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0||u.v5.x>.25))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=max(0.0,1.0-dt*6.0);z.history.w*=max(0.0,1.0-dt*6.0);
@@ -4185,26 +4185,32 @@ function comboHUD69(k){comboTick69();if(combo69.chain<3)return;const x=18*k,y=10
 // peaks (>= .85), PEAK holds 4 s, FADE until it drops under .25, RELAX for 20 s, then BUILD-UP again. Backquote or ?director shows
 // the panel; window.__director() returns the same numbers for the robot playtester. Zombie counts come from the zombie readback,
 // which runs while the panel is open (or __director has been asked) even with audio off.
-const director70={on:params.has('director'),read:false,world:null,t:0,intensity:0,state:'BUILD-UP',since:0,hp:100,kills:0,hist:[],log:[],histAt:0,last:{t:0,state:'BUILD-UP',stateAge:0,intensity:0,awake:0,alive:0,held:0,near:0,close:0,hp:100,dpm:0,kpm:0,combo:0,mult:1,waiting:0,following:0,saved:0,lost:0,boss:'-',music:'CALM'}};
+// Stage 2: the director steers reinforcements through u.v5.x (rate - 1; 0 keeps the old timers). After a 20 s opening, BUILD-UP pushes
+// held infected in faster, and awake, while intensity is low (x2.5 under .3, x1.5 under .6); PEAK and FADE trickle (x0.3); RELAX holds
+// every release for a real breather. With 150+ awake it never pushes. State changes are logged with their reason for the panel.
+const director70={on:params.has('director'),read:false,world:null,t:0,intensity:0,state:'BUILD-UP',since:0,hp:100,kills:0,hist:[],log:[],histAt:0,rate:1,action:'OPENING (timers)',events:[],peaks:0,timeIn:{'BUILD-UP':0,'PEAK':0,'FADE':0,'RELAX':0},last:{t:0,state:'BUILD-UP',stateAge:0,intensity:0,awake:0,alive:0,held:0,near:0,close:0,hp:100,dpm:0,kpm:0,combo:0,mult:1,waiting:0,following:0,saved:0,lost:0,boss:'-',music:'CALM'}};
 function directorTick70(){const d=director70,t=playerValues[24]||0;
- if(d.world!==world||t<d.t-1){Object.assign(d,{world,t,intensity:0,state:'BUILD-UP',since:t,hp:playerValues[3]||100,kills:counters[0]|0,hist:[],log:[],histAt:0});}
+ if(d.world!==world||t<d.t-1){Object.assign(d,{world,t,intensity:0,state:'BUILD-UP',since:t,hp:playerValues[3]||100,kills:counters[0]|0,hist:[],log:[],histAt:0,rate:1,action:'OPENING (timers)',events:[],peaks:0,timeIn:{'BUILD-UP':0,'PEAK':0,'FADE':0,'RELAX':0}});}
  const dt=Math.max(0,Math.min(.25,t-d.t));d.t=t;if(dt<=0||!settings.started)return d.last;
  const hp=playerValues[3]||0,kills=counters[0]|0,px=playerValues[0],pz=playerValues[2],hurt=Math.max(0,d.hp-hp),got=Math.max(0,kills-d.kills);d.hp=hp;d.kills=kills;
  let alive=0,held=0,near=0,close=0;if(d.on||d.read)for(let i=0,n=Math.min(MAX_Z,settings.zombies);i<n;i++){const o=i*ZOMBIE_FLOATS13;
   if(audioZData9[o+3]>0){alive++;const dd=Math.hypot(audioZData9[o]-px,audioZData9[o+2]-pz);if(dd<8)near++;if(dd<20&&audioZData9[o+7]>0)close++;}else if(audioZData9[o+23]===-2)held++;}
  d.intensity=clamp9(d.intensity+hurt/100*2.5+got*(near>0?.04:.015)-dt*(near>0?.02:.08),0,1);
- const age=t-d.since,go=s=>{d.state=s;d.since=t;};
- if(d.state==='BUILD-UP'&&d.intensity>=.85)go('PEAK');else if(d.state==='PEAK'&&age>=4)go('FADE');else if(d.state==='FADE'&&d.intensity<.25)go('RELAX');else if(d.state==='RELAX'&&age>=20)go('BUILD-UP');
+ d.timeIn[d.state]+=dt;const age=t-d.since,go=(s,why)=>{d.state=s;d.since=t;d.events.push([+t.toFixed(1),s,why]);if(d.events.length>6)d.events.shift();if(s==='PEAK')d.peaks++;};
+ if(d.state==='BUILD-UP'&&d.intensity>=.85)go('PEAK','intensity '+d.intensity.toFixed(2));else if(d.state==='PEAK'&&age>=4)go('FADE','peak held 4 s');else if(d.state==='FADE'&&d.intensity<.25)go('RELAX','intensity under .25');else if(d.state==='RELAX'&&age>=20)go('BUILD-UP','20 s breather over');
+ {const aw=counters[53]|0;let r=1,a='OPENING (timers)';if(t>=20){if(d.state==='BUILD-UP'){if(aw>150)a='LET IT BUILD (crowded)';else if(d.intensity<.3){r=2.5;a='PUSH WAVES x2.5';}else if(d.intensity<.6){r=1.5;a='PUSH x1.5';}else a='LET IT BUILD';}
+  else if(d.state==='RELAX'){r=0;a='HOLD (breather)';}else{r=.3;a='TRICKLE x0.3';}}d.rate=SANDBOX25?r:1;d.action=a;}
  d.log.push([t,hurt,got]);while(d.log.length&&d.log[0][0]<t-60)d.log.shift();const span=Math.max(5,Math.min(60,t)),dpm=d.log.reduce((s,e)=>s+e[1],0)*60/span,kpm=d.log.reduce((s,e)=>s+e[2],0)*60/span;
  if(t-d.histAt>=.25){d.histAt=t;d.hist.push([d.intensity,Math.min(1,(counters[53]|0)/200)]);if(d.hist.length>240)d.hist.shift();}
  const nb=[0,0,0,0,0];for(let c=0;c<CIV_MAX30;c++){const s=Math.round(playerValues[CIV_STATE30+c*4+2]);if(s>=1&&s<=4)nb[s]++;}
  const boss=counters[101]|0,awake=counters[53]|0;
  d.last={t:+t.toFixed(2),state:d.state,stateAge:+age.toFixed(1),intensity:+d.intensity.toFixed(3),awake,alive,held,near,close,hp:+hp.toFixed(1),dpm:+dpm.toFixed(1),kpm:+kpm.toFixed(1),
   combo:combo69.chain,mult:combo69.mult,waiting:nb[1],following:nb[2],saved:counters[98]|0,lost:counters[97]|0,boss:boss===1?'ALIVE':boss===2?'DOWN':'-',
-  music:boss===1?'THEREMIN':(t>60||awake>40)?'DRUMS':'CALM'};return d.last;}
+  music:boss===1?'THEREMIN':(t>60||awake>40)?'DRUMS':'CALM',rate:d.rate,action:d.action,peaks:d.peaks,events:d.events.slice(-4),
+  share:Object.fromEntries(Object.entries(d.timeIn).map(([s,v])=>[s,+(v/Math.max(.001,t)).toFixed(3)]))};return d.last;}
 window.__director=()=>{director70.read=true;return director70.last;};
 function directorHUD70(k){const d=directorTick70();if(!director70.on||!hud2d30)return;
- const w=300*k,x=width-w-12*k,y=Math.max(height*.40,330*k),h=Math.min(height-y-12*k,372*k),cy=[.10,.86,1,1],dim=[.62,.70,.78,1];if(h<160*k)return;
+ const w=300*k,x=12*k,y=150*k,h=Math.min(height-y-12*k,512*k),cy=[.10,.86,1,1],dim=[.62,.70,.78,1];if(h<160*k)return;
  rect(x,y,w,h,[.03,.03,.10,.82]);rect(x,y,w,2*k,cy);let yy=y+10*k;
  const head=s=>{text(s,x+12*k,yy,15*k,cy);yy+=24*k;};
  const row=(label,v,frac,col,val)=>{text(label,x+16*k,yy,12*k,dim);if(frac!=null){rect(x+104*k,yy+3*k,110*k,8*k,[.12,.12,.22,1]);rect(x+104*k,yy+3*k,110*k*clamp9(frac,0,1),8*k,col);}text(val??String(v),x+222*k,yy,12*k,[.92,.95,1,1]);yy+=19*k;};
@@ -4216,7 +4222,11 @@ function directorHUD70(k){const d=directorTick70();if(!director70.on||!hud2d30)r
  head('HORDE');row('awake',d.awake,d.awake/200,cy);row('alive',d.alive,d.alive/Math.max(1,settings.zombies),[.55,.45,1,1]);row('held back',d.held,d.held/Math.max(1,settings.zombies),[.45,.5,.65,1]);row('within 8 m',d.near,d.near/12,[1,.55,.2,1]);
  head('PLAYER');row('HP',0,d.hp/100,[.36,.66,1,1],Math.round(d.hp));row('dmg / min',0,d.dpm/100,[1,.36,.42,1],d.dpm.toFixed(0));row('kills / min',0,d.kpm/80,[.4,1,.6,1],d.kpm.toFixed(0));
  text('combo '+d.combo+' x'+d.mult+'   neighbors '+d.waiting+' wait / '+d.following+' follow / '+d.saved+' saved / '+d.lost+' lost',x+16*k,yy,11*k,dim);yy+=17*k;
- text('music '+d.music+'   boss '+d.boss+'   t '+Math.round(d.t)+'s',x+16*k,yy,11*k,dim);}
+ text('music '+d.music+'   boss '+d.boss+'   t '+Math.round(d.t)+'s',x+16*k,yy,11*k,dim);yy+=22*k;
+ head('DECISIONS');text(d.action||'',x+16*k,yy,14*k,d.rate>1?[1,.45,.3,1]:d.rate===0?[.4,1,.6,1]:[1,.83,.24,1]);yy+=22*k;row('reinforce',0,(d.rate??1)/2.5,[1,.62,.2,1],'x'+(d.rate??1));
+ {const sc=[['BUILD-UP',[1,.83,.24,1]],['PEAK',[1,.3,.35,1]],['FADE',[.7,.5,1,1]],['RELAX',[.4,1,.6,1]]];let sx=x+16*k;const sw=w-32*k;for(const [s,col] of sc){const f=(d.share||{})[s]||0;if(f>0)rect(sx,yy,sw*f,8*k,col);sx+=sw*f;}
+  text('time per state   peaks '+(d.peaks||0),x+16*k,yy+11*k,10*k,dim);yy+=28*k;}
+ for(const e of (d.events||[]).slice().reverse()){if(yy>y+h-14*k)break;text(e[0]+'s  '+e[1]+'  ('+e[2]+')',x+16*k,yy,11*k,[.85,.9,1,1]);yy+=16*k;}}
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
  for(let i=0;i<10;i++){const on=hp*10>i+.05;rect(x+i*(cw+3*k),y,cw,ch,on?(hp<.3?[1,.32,.30,1]:[.36,.66,1,1]):[.10,.16,.22,.9]);if(on)rect(x+i*(cw+3*k),y,cw,4*k,[.75,.88,1,.9]);}
@@ -4489,7 +4499,7 @@ function updateUniforms(dt){
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
  uniformData.set([world.count,world.propCount,runSeed,upgrades[2]],64);uniformData.set(world.generators,68);uniformData.set([...world.start,...world.exit],72);
  uniformData.set([SANDBOX25?mapleLevel65:0,p2_65.on?1:0,p2X,p2Z],76);pendingPipeBomb=0;
- uniformData.set([0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
+ uniformData.set([SANDBOX25?director70.rate-1:0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
  uniformData.set([input12.selected,input12.seq,input12.attack,input12.reload],84);
  uniformData.set([input12.release,input12.blocked?1:0,(keys.has('ShiftLeft')||keys.has('ShiftRight'))?1:0,keys.has('Space')?1:0],88);
  uniformData.set([input12.drag,input12.order,input12.cancel,(settings.tactical||settings.help||settings.paused)?1:0],92);

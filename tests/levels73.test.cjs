@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),fs=require(
 const {sha,loadHost}=require('./deadends-cpu-host.cjs'),{delta,withoutLevels73}=require('./levels73.cjs');
 const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
-const html=fs.readFileSync(file,'utf8');
+const html=require('./scare84.cjs').withoutScare84(fs.readFileSync(file,'utf8'));// text checks read the pre-scare init; scare84 owns the 15 s band
 check('Enter after an evacuation advances the level; names, boss time and HP scale',()=>{const h=loadHost(file,{plain:true});h.run('reset()');assert.equal(h.json('mapleLevel65'),1);assert.equal(h.json('levelName65()'),'ZOMBIE PANIC!');
  h.run('nextSandbox25()');assert.equal(h.json('mapleLevel65'),2);assert.equal(h.json('levelName65()'),'NIGHT OF THE LIVING HOA');assert.equal(h.json('bossAt65()'),150);assert.equal(h.json('bossHP65()'),4500);
  h.run('mapleLevel65=9');assert.equal(h.json('bossAt65()'),120,'never before 2:00');h.run('updateUniforms&&updateUniforms(1/60)');});

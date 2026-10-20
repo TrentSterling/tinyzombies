@@ -2650,7 +2650,9 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  // which buys the player a few seconds. The mirror flags it (+.25) for the HUD.
  // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.
  let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}
- c.data.x-=f32(min(bites,6u))*7.0*dt;c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
+ // Barricaded: robot playtests (with honest tallies) lost two waiting neighbors at ~11 s and ~13.5 s, before anyone could reach them,
+ // as gunfire woke the yards. Waiting neighbors take no bites for the first 30 s (SR[6].x is game time); followers always can.
+ c.data.x-=f32(min(bites,6u))*7.0*dt*select(1.0,0.0,c.data.y<1.5&&SR[6u].x<30.0);c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
  if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[97],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
  if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}

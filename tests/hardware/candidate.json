@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "1d1e1f2b15a759cc2fd4a42ca8378164e3f92542876c58553a0351614bd372b6",
+  "runtimeSha256": "2b65181f0c756647508941e914aa59eac6a069fcf4b4ecccebecba5d2913dbfc",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",

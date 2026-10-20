@@ -1,0 +1,9 @@
+{
+ "parentSha256": "1d1e1f2b15a759cc2fd4a42ca8378164e3f92542876c58553a0351614bd372b6",
+ "changes": [
+  {
+   "before": " c.data.x-=f32(min(bites,6u))*7.0*dt;",
+   "after": " // Barricaded: robot playtests (with honest tallies) lost two waiting neighbors at ~11 s and ~13.5 s, before anyone could reach them,\n // as gunfire woke the yards. Waiting neighbors take no bites for the first 30 s (SR[6].x is game time); followers always can.\n c.data.x-=f32(min(bites,6u))*7.0*dt*select(1.0,0.0,c.data.y<1.5&&SR[6u].x<30.0);"
+  }
+ ]
+}

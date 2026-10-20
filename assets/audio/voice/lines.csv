@@ -21,30 +21,30 @@ block_party,Block party!,am_michael,pa,1.0
 lawn_massacre,Lawn massacre!,am_michael,pa,1.0
 cul_de_sac_carnage,Cul-de-sac carnage!,am_michael,pa,1.0
 h_o_a_violation,H.O.A. VIOLATION!,am_michael,pa,1.0
-level_1_zombie_panic,Level 1. Zombie Panic!,am_fenrir,broadcast,0.95
-level_2_night_of_the_living_hoa,Level 2. Night Of The Living H.O.A.,am_fenrir,broadcast,0.95
-level_3_blood_moon_block_party,Level 3. Blood Moon Block Party,am_fenrir,broadcast,0.95
-level_4_attack_of_the_50_ft_president,Level 4. Attack Of The Fifty Foot President,am_fenrir,broadcast,0.95
-level_5_the_cul_de_sac_of_doom,Level 5. The Cul-De-Sac Of Doom,am_fenrir,broadcast,0.95
-level_6_lawn_of_the_dead,Level 6. Lawn Of The Dead,am_fenrir,broadcast,0.95
-level_7_zombie_panic,Level 7. Zombie Panic!,am_fenrir,broadcast,0.95
-level_8_night_of_the_living_hoa,Level 8. Night Of The Living H.O.A.,am_fenrir,broadcast,0.95
-level_9_blood_moon_block_party,Level 9. Blood Moon Block Party,am_fenrir,broadcast,0.95
-level_10_attack_of_the_50_ft_president,Level 10. Attack Of The Fifty Foot President,am_fenrir,broadcast,0.95
-level_11_the_cul_de_sac_of_doom,Level 11. The Cul-De-Sac Of Doom,am_fenrir,broadcast,0.95
-level_12_lawn_of_the_dead,Level 12. Lawn Of The Dead,am_fenrir,broadcast,0.95
+level_1_zombie_panic,Level one... Zombie Panic!,am_michael,pa,0.95
+level_2_night_of_the_living_hoa,Level two... Night Of The Living H.O.A.,am_michael,pa,0.95
+level_3_blood_moon_block_party,Level three... Blood Moon Block Party,am_michael,pa,0.95
+level_4_attack_of_the_50_ft_president,Level four... Attack Of The Fifty Foot President,am_michael,pa,0.95
+level_5_the_cul_de_sac_of_doom,Level five... The Cul-De-Sac Of Doom,am_michael,pa,0.95
+level_6_lawn_of_the_dead,Level six... Lawn Of The Dead,am_michael,pa,0.95
+level_7_zombie_panic,Level seven... Zombie Panic!,am_michael,pa,0.95
+level_8_night_of_the_living_hoa,Level eight... Night Of The Living H.O.A.,am_michael,pa,0.95
+level_9_blood_moon_block_party,Level nine... Blood Moon Block Party,am_michael,pa,0.95
+level_10_attack_of_the_50_ft_president,Level ten... Attack Of The Fifty Foot President,am_michael,pa,0.95
+level_11_the_cul_de_sac_of_doom,Level eleven... The Cul-De-Sac Of Doom,am_michael,pa,0.95
+level_12_lawn_of_the_dead,Level twelve... Lawn Of The Dead,am_michael,pa,0.95
 a_neighbor_joined_the_squad,A neighbor joined the squad!,am_liam,walkie,1.05
 a_neighbor_is_safe,A neighbor is safe!,am_liam,walkie,1.05
 a_neighbor_got_eaten,A neighbor got eaten!,am_liam,walkie,1.05
 brenda_joined_the_squad,Brenda joined the squad!,am_liam,walkie,1.05
 brenda_is_safe,Brenda is safe!,am_liam,walkie,1.05
 brenda_got_eaten,Brenda got eaten!,am_liam,walkie,1.05
-marv_joined_the_squad,Marv joined the squad!,am_liam,walkie,1.05
-marv_is_safe,Marv is safe!,am_liam,walkie,1.05
-marv_got_eaten,Marv got eaten!,am_liam,walkie,1.05
-linda_joined_the_squad,Linda joined the squad!,am_liam,walkie,1.05
-linda_is_safe,Linda is safe!,am_liam,walkie,1.05
-linda_got_eaten,Linda got eaten!,am_liam,walkie,1.05
+marv_joined_the_squad,[Marv](/mˈɑɹv/) joined the squad!,am_liam,walkie,1.05
+marv_is_safe,[Marv](/mˈɑɹv/) is safe!,am_liam,walkie,1.05
+marv_got_eaten,[Marv](/mˈɑɹv/) got eaten!,am_liam,walkie,1.05
+linda_joined_the_squad,[Linda](/lˈɪndə/) joined the squad!,am_liam,walkie,1.05
+linda_is_safe,[Linda](/lˈɪndə/) is safe!,am_liam,walkie,1.05
+linda_got_eaten,[Linda](/lˈɪndə/) got eaten!,am_liam,walkie,1.05
 coach_dale_joined_the_squad,Coach Dale joined the squad!,am_liam,walkie,1.05
 coach_dale_is_safe,Coach Dale is safe!,am_liam,walkie,1.05
 coach_dale_got_eaten,Coach Dale got eaten!,am_liam,walkie,1.05
@@ -57,9 +57,9 @@ todd_got_eaten,Todd got eaten!,am_liam,walkie,1.05
 pastor_ray_joined_the_squad,Pastor Ray joined the squad!,am_liam,walkie,1.05
 pastor_ray_is_safe,Pastor Ray is safe!,am_liam,walkie,1.05
 pastor_ray_got_eaten,Pastor Ray got eaten!,am_liam,walkie,1.05
-kimberly_joined_the_squad,Kimberly joined the squad!,am_liam,walkie,1.05
-kimberly_is_safe,Kimberly is safe!,am_liam,walkie,1.05
-kimberly_got_eaten,Kimberly got eaten!,am_liam,walkie,1.05
+kimberly_joined_the_squad,[Kimberly](/kˈɪmbəɹli/) joined the squad!,am_liam,walkie,1.05
+kimberly_is_safe,[Kimberly](/kˈɪmbəɹli/) is safe!,am_liam,walkie,1.05
+kimberly_got_eaten,[Kimberly](/kˈɪmbəɹli/) got eaten!,am_liam,walkie,1.05
 gary_joined_the_squad,Gary joined the squad!,am_liam,walkie,1.05
 gary_is_safe,Gary is safe!,am_liam,walkie,1.05
 gary_got_eaten,Gary got eaten!,am_liam,walkie,1.05
@@ -90,9 +90,9 @@ tiffany_got_eaten,Tiffany got eaten!,am_liam,walkie,1.05
 brittany_joined_the_squad,Brittany joined the squad!,am_liam,walkie,1.05
 brittany_is_safe,Brittany is safe!,am_liam,walkie,1.05
 brittany_got_eaten,Brittany got eaten!,am_liam,walkie,1.05
-trampoline_timmy_joined_the_squad,Trampoline Timmy joined the squad!,am_liam,walkie,1.05
-trampoline_timmy_is_safe,Trampoline Timmy is safe!,am_liam,walkie,1.05
-trampoline_timmy_got_eaten,Trampoline Timmy got eaten!,am_liam,walkie,1.05
+trampoline_timmy_joined_the_squad,Trampoline [Timmy](/tˈɪmi/) joined the squad!,am_liam,walkie,1.05
+trampoline_timmy_is_safe,Trampoline [Timmy](/tˈɪmi/) is safe!,am_liam,walkie,1.05
+trampoline_timmy_got_eaten,Trampoline [Timmy](/tˈɪmi/) got eaten!,am_liam,walkie,1.05
 bouncy_becky_joined_the_squad,Bouncy Becky joined the squad!,am_liam,walkie,1.05
 bouncy_becky_is_safe,Bouncy Becky is safe!,am_liam,walkie,1.05
 bouncy_becky_got_eaten,Bouncy Becky got eaten!,am_liam,walkie,1.05

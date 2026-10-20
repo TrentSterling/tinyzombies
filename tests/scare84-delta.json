@@ -1,0 +1,21 @@
+{
+ "parentSha256": "526ab20f6f72713b2943a2a4f13857548384ed01461c7f596a22ba7a0f7567a3",
+ "changes": [
+  {
+   "before": " // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.\n if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}\n",
+   "after": " // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.\n // Early scare: robot playtests ended the first 30 s at ~95 HP, so a small pack (1.2%) of the held infected comes in at 15-17 s, awake.\n if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);let held=.30+min(.30,max(0.0,u.v3.x-1.0)*.10);if(f>held&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=select(25.0+(f-.30)/.70*155.0,15.0+(f-held)/.012*2.0,f<held+.012);Z[i].special13.w=-2.0;}}\n"
+  },
+  {
+   "before": "z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&S.aux.x>90.0)));",
+   "after": "z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0))));"
+  },
+  {
+   "before": "function comboHUD69(k){",
+   "after": "// Early scare (pairs with the 15 s pack in the zombie init): a radio warning, a sting and a red banner, once per world.\nconst scare69={world:null,done:false,until:-9};\nfunction scareHUD69(k){if(scare69.world!==world){scare69.world=world;scare69.done=false;scare69.until=-9;}const t=playerValues[24]||0;\n if(!scare69.done&&settings.started&&t>=15){scare69.done=true;scare69.until=time+2.5;quest65.radio='They broke through the hedges! Here they come!';quest65.radioUntil=time+5;announce65(quest65.radio);synth65('sting');}\n if(time<scare69.until){const s='HERE THEY COME!',px=(34+3*Math.sin(time*14))*k;text(s,width/2-textWidth9(s,px)/2,height*.3,px,[1,.3,.3,1]);}}\nfunction comboHUD69(k){"
+  },
+  {
+   "before": "  if(SANDBOX25)comboHUD69(k);\n",
+   "after": "  if(SANDBOX25)comboHUD69(k);\n  if(SANDBOX25)scareHUD69(k);\n"
+  }
+ ]
+}

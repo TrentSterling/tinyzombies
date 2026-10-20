@@ -5,7 +5,7 @@ const assert=require('node:assert/strict'),path=require('node:path'),fs=require(
 const {sha,loadHost}=require('./deadends-cpu-host.cjs'),{delta,withoutRamp64}=require('./ramp64.cjs');
 const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
-const html=fs.readFileSync(file,'utf8');
+const html=require('./scare84.cjs').withoutScare84(fs.readFileSync(file,'utf8'));// text checks read the pre-scare init; scare84 owns the 15 s band
 check('init holds back ~70% on Maple, staggered 25-180 s',()=>{assert(html.includes('if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}'));
  const lo=25+0*155,hi=25+(1-.30)/.70*155;assert.equal(lo,25);assert(Math.abs(hi-180)<1e-9);return {measured:'SwiftShader, compressed timers: 605 live at start, 909, 1591, then 2048'};});
 check('only held-back infected respawn on Maple; arrivals after 90 s are awake',()=>{assert(html.includes('if(z.p.w<=0.0&&u.run.y<.5&&!(u.run.x>5.0&&z.special13.w==-2.0)&&(S.journey7.x<.5||'));

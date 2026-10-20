@@ -1,0 +1,13 @@
+{
+ "parentSha256": "f80eda0efcb83d844582b6fc416b21b1af50d7a6b53bc0f7f24de54170e4b6e1",
+ "changes": [
+  {
+   "before": "function zamnHUD52(k)",
+   "after": "// Off-screen HELP arrow: when the nearest waiting neighbor is off screen, a pulsing gold arrow on the screen edge points at them,\n// with the distance, so the next rescue is never a guess.\nfunction helpArrow68(k){if(!hud2d30)return;let bx=0,bz=0,bd=1e9;for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const d=Math.hypot(playerValues[o]-playerValues[0],playerValues[o+1]-playerValues[2]);if(d<bd){bd=d;bx=playerValues[o];bz=playerValues[o+1];}}\n if(bd>=1e9)return;const [sx,sy]=screenPoint(bx,bz,1.2),m=56*k;if(sx>m&&sx<width-m&&sy>m&&sy<height-m)return;const cx=width/2,cy=height/2,dx=sx-cx,dy=sy-cy;\n const sc=Math.min((width/2-m)/Math.max(1e-6,Math.abs(dx)),(height/2-m)/Math.max(1e-6,Math.abs(dy))),ax=cx+dx*sc,ay=cy+dy*sc,ang=Math.atan2(dy,dx),s=hudScale30,pulse=.75+.25*Math.sin(time*6);\n const c=hud2d30;c.save();c.translate(ax*s,ay*s);c.rotate(ang);c.globalAlpha=pulse;c.fillStyle='#f6d43a';c.strokeStyle='#0b0b08';c.lineWidth=3*k*s;c.beginPath();c.moveTo(18*k*s,0);c.lineTo(-10*k*s,-12*k*s);c.lineTo(-4*k*s,0);c.lineTo(-10*k*s,12*k*s);c.closePath();c.stroke();c.fill();c.restore();\n const t='HELP! '+Math.round(bd)+'m',tx=ax-Math.cos(ang)*34*k,ty=ay-Math.sin(ang)*26*k;text(t,tx-textWidth9(t,13*k)/2,ty-6*k,13*k,[1,.83,.24,1]);}\nfunction zamnHUD52(k)"
+  },
+  {
+   "before": "  if(SANDBOX25)toastHUD67(k);\n",
+   "after": "  if(SANDBOX25)toastHUD67(k);\n  if(SANDBOX25)helpArrow68(k);\n"
+  }
+ ]
+}

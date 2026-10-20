@@ -1,0 +1,9 @@
+{
+ "parentSha256": "fb401a88a2f32357bd61786468027d2e3c968eef904bd0d423439200339e4076",
+ "changes": [
+  {
+   "before": " // Maple Street fire sticks:",
+   "after": " // Rescued neighbors fight back (Maple Street): every half second or so a following neighbor hits each infected within 2.4 m, by\n // type: BBQ Dad lights it up (it then burns and spreads like any fire), Pool Guy blasts it back with a hose, the cheerleaders\n // pop pom-pom bombs, the trampoline kids stomp. Indoor neighbors and the baby just run. Tanks and the boss shrug it off.\n if(u.run.x>5.0&&u.run.y<.5&&z.p.w>0.0&&kind!=6.0){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<1.5||cv.data.y>2.5){continue;}let t30=u32(cv.more.z);\n  if(t30==0u||t30==5u||length(cv.p.xz-z.p.xz)>2.4||((u32(u.clock.z)+i*7u+ck*13u)%30u)!=0u){continue;}let away=safe2(z.p.xz-cv.p.xz);let seed=i*131u+ck*977u+u32(u.clock.z);\n  if(t30==2u){burning=true;event(z.p.xyz+vec3f(0,.9,0),vec3f(away.x*2.0,2.5,away.y*2.0),vec3f(1,.45,.08),11u,8u,seed);}\n  if(t30==1u){damage+=14.0;z.history.z+=away.x*6.0;z.history.w+=away.y*6.0;event(z.p.xyz+vec3f(0,.8,0),vec3f(away.x*3.0,2.0,away.y*3.0),vec3f(.38,.70,1.0),11u,12u,seed);}\n  if(t30==3u){damage+=26.0;event(z.p.xyz+vec3f(0,1.0,0),vec3f(0,3.5,0),select(vec3f(1,.40,.70),vec3f(1,.85,.20),(ck&1u)==1u),0u,10u,seed);}\n  if(t30==4u){damage+=32.0;z.history.z+=away.x*2.0;z.history.w+=away.y*2.0;event(z.p.xyz,vec3f(0,2.0,0),vec3f(.55,.50,.42),11u,8u,seed);}}}\n // Maple Street fire sticks:"
+  }
+ ]
+}

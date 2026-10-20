@@ -1897,6 +1897,15 @@ if(S.tools.x>0.0){let delta=z.p.xz-S.pos.xz;let along=dot(delta,S.look.xy);let a
  if(S.aux.w>0.0){let d=length(z.p.xz-S.blast.xy);if(d<S.blast.w){if(kind==4.0&&z.special13.w>=0.0){z.special13.w=-1.0;z.special13.z=0.0;z.combat13.y=1.2;z.combat13.z=5.0;}damage+=500.0*(1.0-.7*d/S.blast.w);let away=safe2(z.p.xz-S.blast.xy);z.history.z+=away.x*(500.0/64.0)*select(1.0,.2,kind==2.0);z.history.w+=away.y*(500.0/64.0)*select(1.0,.2,kind==2.0);impulse=vec3f(away.x,1.1,away.y)*(5.0+(1.0-d/S.blast.w)*8.0);}}
  var burning=false;
  for(var h6=0u;h6<16u;h6++){let fire=S.heat6[h6];let d=length(z.p.xz-fire.xy);if(fire.w>S.aux.x&&d<fireRadius13(fire,S.aux.x,S.heatLife15[h6])+radius*.5){var clear=true;for(var n=1u;n<32u;n++){let t=f32(n)*.125;if(t>=d){break;}let p=fire.xy+safe2(z.p.xz-fire.xy)*t;if(solid(vec3f(p.x,.5,p.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(p)])&4u)!=0u){clear=false;break;}}burning=burning||clear;}}
+ // Rescued neighbors fight back (Maple Street): every half second or so a following neighbor hits each infected within 2.4 m, by
+ // type: BBQ Dad lights it up (it then burns and spreads like any fire), Pool Guy blasts it back with a hose, the cheerleaders
+ // pop pom-pom bombs, the trampoline kids stomp. Indoor neighbors and the baby just run. Tanks and the boss shrug it off.
+ if(u.run.x>5.0&&u.run.y<.5&&z.p.w>0.0&&kind!=6.0){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<1.5||cv.data.y>2.5){continue;}let t30=u32(cv.more.z);
+  if(t30==0u||t30==5u||length(cv.p.xz-z.p.xz)>2.4||((u32(u.clock.z)+i*7u+ck*13u)%30u)!=0u){continue;}let away=safe2(z.p.xz-cv.p.xz);let seed=i*131u+ck*977u+u32(u.clock.z);
+  if(t30==2u){burning=true;event(z.p.xyz+vec3f(0,.9,0),vec3f(away.x*2.0,2.5,away.y*2.0),vec3f(1,.45,.08),11u,8u,seed);}
+  if(t30==1u){damage+=14.0;z.history.z+=away.x*6.0;z.history.w+=away.y*6.0;event(z.p.xyz+vec3f(0,.8,0),vec3f(away.x*3.0,2.0,away.y*3.0),vec3f(.38,.70,1.0),11u,12u,seed);}
+  if(t30==3u){damage+=26.0;event(z.p.xyz+vec3f(0,1.0,0),vec3f(0,3.5,0),select(vec3f(1,.40,.70),vec3f(1,.85,.20),(ck&1u)==1u),0u,10u,seed);}
+  if(t30==4u){damage+=32.0;z.history.z+=away.x*2.0;z.history.w+=away.y*2.0;event(z.p.xyz,vec3f(0,2.0,0),vec3f(.55,.50,.42),11u,8u,seed);}}}
  // Maple Street fire sticks: touching flames or brushing a burning infected sets one alight for 4 s (body.z). It keeps burning,
  // staggers 35% faster and passes the fire on, so one molotov can chain through a crowd. Tanks and the boss do not catch.
  if(u.run.x>5.0&&u.run.y<.5&&kind!=6.0){if(burning||catchFire){z.body.z=max(z.body.z,4.0);}z.body.z=max(0.0,z.body.z-dt);if(z.body.z>0.0){burning=true;}}

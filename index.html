@@ -4173,7 +4173,7 @@ function comboHUD69(k){comboTick69();if(combo69.chain<3)return;const x=18*k,y=10
 // peaks (>= .85), PEAK holds 4 s, FADE until it drops under .25, RELAX for 20 s, then BUILD-UP again. Backquote or ?director shows
 // the panel; window.__director() returns the same numbers for the robot playtester. Zombie counts come from the zombie readback,
 // which runs while the panel is open (or __director has been asked) even with audio off.
-const director70={on:params.has('director'),read:false,world:null,t:0,intensity:0,state:'BUILD-UP',since:0,hp:100,kills:0,hist:[],log:[],histAt:0,last:{state:'BUILD-UP',intensity:0}};
+const director70={on:params.has('director'),read:false,world:null,t:0,intensity:0,state:'BUILD-UP',since:0,hp:100,kills:0,hist:[],log:[],histAt:0,last:{t:0,state:'BUILD-UP',stateAge:0,intensity:0,awake:0,alive:0,held:0,near:0,close:0,hp:100,dpm:0,kpm:0,combo:0,mult:1,waiting:0,following:0,saved:0,lost:0,boss:'-',music:'CALM'}};
 function directorTick70(){const d=director70,t=playerValues[24]||0;
  if(d.world!==world||t<d.t-1){Object.assign(d,{world,t,intensity:0,state:'BUILD-UP',since:t,hp:playerValues[3]||100,kills:counters[0]|0,hist:[],log:[],histAt:0});}
  const dt=Math.max(0,Math.min(.25,t-d.t));d.t=t;if(dt<=0||!settings.started)return d.last;

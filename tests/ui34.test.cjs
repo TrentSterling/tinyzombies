@@ -44,7 +44,7 @@ check('sandbox title card: name, street, click-to-play and the pitch',()=>{
  assert(html.includes('if(!settings.started&&!completedBoundary15&&SANDBOX25){titleCard30(k);}'));
 });
 check('evacuation card reports saved neighbors, kills, crushes and time, with a quip for every outcome',()=>{
- const h=host('73129&sandbox');h.run('world.civilians30=new Array(8);counters[66]=5;counters[65]=3;counters[0]=1234;counters[34]=88;playerValues[24]=412;hud2d30.log.length=0;evacCard30(1)');
+ const h=host('73129&sandbox');h.run('world.civilians30=new Array(8);counters[98]=5;counters[97]=3;counters[0]=1234;counters[34]=88;playerValues[24]=412;hud2d30.log.length=0;evacCard30(1)');
  const f=fills(h);for(const s of ['MAPLE STREET EVACUATED','5 / 8 NEIGHBORS SAVED','1,234 put down   /   88 crushed   /   6:52','ENTER   LEVEL 2'])assert(f.includes(s),s);
  const q=h.json('[evacQuip30(8,0,8),evacQuip30(0,8,8),evacQuip30(2,6,8),evacQuip30(5,3,8)]');assert.equal(new Set(q).size,4);
  assert(html.includes('if(won&&SANDBOX25){evacCard30(k);}'));return {quips:q};

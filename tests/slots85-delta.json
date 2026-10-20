@@ -1,0 +1,101 @@
+{
+ "parentSha256": "1fbae3bcdb505f025916e1cb6ac49d8b45993ed3b80d3fff88eb554b86b93b53",
+ "changes": [
+  {
+   "before": "// Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].\n",
+   "after": "// Bomb telemetry owns C[63], C[67], C[71], C[81]. Squad contacts own C[64..66] and C[68..70].\n// Maple Street: neighbors C[96] joined, C[97] lost, C[98] saved; the HOA President C[99] position, C[100] HP, C[101] state.\n// (They sat in the squad-contact slots until robot playtests showed squad bites counting as saves.)\n"
+  },
+  {
+   "before": "let counters=new Uint32Array(96),playerValues=new Float32Array(4096),readBusy=false,readCountdown=0,runEpoch16=0,resetRequested=false,clearBloodRequested=false;\n",
+   "after": "let counters=new Uint32Array(128),playerValues=new Float32Array(4096),readBusy=false,readCountdown=0,runEpoch16=0,resetRequested=false,clearBloodRequested=false;\n"
+  },
+  {
+   "before": " // always hunting, walking straight through houses. special13.x=777 marks it; C[70] is 0 not yet, 1 alive, 2 defeated.\n if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[70])==0u){atomicStore(&C[70],1u);var p=S.pos.xz+vec2f(30,0);\n",
+   "after": " // always hunting, walking straight through houses. special13.x=777 marks it; C[101] is 0 not yet, 1 alive, 2 defeated.\n if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[101])==0u){atomicStore(&C[101],1u);var p=S.pos.xz+vec2f(30,0);\n"
+  },
+  {
+   "before": " if(z.special13.x==777.0){if(z.p.w>0.0){z.v.w=max(z.v.w,10.0);atomicStore(&C[68],(u32((z.p.x+96.0)*16.0)|(u32((z.p.z+96.0)*16.0)<<12u))+1u);atomicStore(&C[69],u32(z.p.w));}\n  else{atomicStore(&C[70],2u);atomicStore(&C[69],0u);z.special13.x=0.0;event(z.p.xyz+vec3f(0,2.0,0),vec3f(0,9,0),vec3f(.72,.015,.03),7u,160u,i*977u+atomicLoad(&C[18]));event(z.p.xyz+vec3f(0,2.5,0),vec3f(0,8,0),vec3f(.25,.27,.33),0u,80u,i*331u+atomicLoad(&C[18]));}}\n",
+   "after": " if(z.special13.x==777.0){if(z.p.w>0.0){z.v.w=max(z.v.w,10.0);atomicStore(&C[99],(u32((z.p.x+96.0)*16.0)|(u32((z.p.z+96.0)*16.0)<<12u))+1u);atomicStore(&C[100],u32(z.p.w));}\n  else{atomicStore(&C[101],2u);atomicStore(&C[100],0u);z.special13.x=0.0;event(z.p.xyz+vec3f(0,2.0,0),vec3f(0,9,0),vec3f(.72,.015,.03),7u,160u,i*977u+atomicLoad(&C[18]));event(z.p.xyz+vec3f(0,2.5,0),vec3f(0,8,0),vec3f(.25,.27,.33),0u,80u,i*331u+atomicLoad(&C[18]));}}\n"
+  },
+  {
+   "before": " // The HOA President bulldozes: C[68] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.\n {let bossAt=atomicLoad(&C[68]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}\n",
+   "after": " // The HOA President bulldozes: C[99] holds its packed position this frame; everything within 1.6 m and under 3.4 m tall breaks outward.\n {let bossAt=atomicLoad(&C[99]);if(bossAt>0u&&u.run.x>5.0&&u.run.y<.5){let bp=vec2f(f32((bossAt-1u)&4095u),f32((bossAt-1u)>>12u))/16.0-96.0;let dd=b.p.xz-bp;if(length(dd)<1.6&&b.p.y<3.4){damage+=40.0;impulse=vec3f(dd.x,.3,dd.y)*4.0+vec3f(0,3.0,0);}}}\n"
+  },
+  {
+   "before": " // Tallies live in C[64] joined, C[65] lost, C[66] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.\n if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);\n",
+   "after": " // Tallies live in C[96] joined, C[97] lost, C[98] saved: C[24]/C[25]/C[29] are the bot-pin slots begin() clears every frame.\n if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[96],1u);\n"
+  },
+  {
+   "before": " if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[65],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}\n",
+   "after": " if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[97],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}\n"
+  },
+  {
+   "before": " let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[66],1u);}\n",
+   "after": " let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[98],1u);}\n"
+  },
+  {
+   "before": " atomicStore(&C[68],0u);\n",
+   "after": " atomicStore(&C[99],0u);\n"
+  },
+  {
+   "before": "const AUDIO_VOICES9=32,AUDIO_LOW_VOICES9=22,AUDIO_OFFSET9=16768,AUDIO_PROPS_OFFSET9=AUDIO_OFFSET9+MAX_Z*ZOMBIE_BYTES13;\n",
+   "after": "const AUDIO_VOICES9=32,AUDIO_LOW_VOICES9=22,AUDIO_OFFSET9=16896,AUDIO_PROPS_OFFSET9=AUDIO_OFFSET9+MAX_Z*ZOMBIE_BYTES13;\n"
+  },
+  {
+   "before": " const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[64]|0,saved=counters[66]|0;\n",
+   "after": " const kick=counters[48]|0,splat=counters[51]|0,eaten=counters[57]|0,joined=counters[96]|0,saved=counters[98]|0;\n"
+  },
+  {
+   "before": " if(!want)return;const boss=(counters[70]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;\n",
+   "after": " if(!want)return;const boss=(counters[101]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;\n"
+  },
+  {
+   "before": " const total=world.civilians30.length,joined=counters[64]|0,saved=counters[66]|0,lost=counters[65]|0;\n",
+   "after": " const total=world.civilians30.length,joined=counters[96]|0,saved=counters[98]|0,lost=counters[97]|0;\n"
+  },
+  {
+   "before": "// The HOA President (C[70]: 1 alive, 2 defeated; C[69] its HP): an arrival banner, a boss bar across the top while it lives, and a\n",
+   "after": "// The HOA President (C[101]: 1 alive, 2 defeated; C[100] its HP): an arrival banner, a boss bar across the top while it lives, and a\n"
+  },
+  {
+   "before": "function bossHUD65(k){const st=counters[70]|0;if(st<boss65.state)boss65.state=st;\n",
+   "after": "function bossHUD65(k){const st=counters[101]|0;if(st<boss65.state)boss65.state=st;\n"
+  },
+  {
+   "before": " if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[69]|0)/bossHP65(),0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}\n",
+   "after": " if(st===1){const w=Math.min(520*k,width*.6),x=(width-w)/2,y=104*k,f=clamp9((counters[100]|0)/bossHP65(),0,1);if(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(5,5,8,.85)';c.fillRect((x-3*k)*s,(y-3*k)*s,(w+6*k)*s,20*k*s);c.fillStyle='#d91f19';c.fillRect(x*s,y*s,w*f*s,14*k*s);c.restore();}\n"
+  },
+  {
+   "before": " {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[66]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},\n",
+   "after": " {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[98]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},\n"
+  },
+  {
+   "before": " {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[66]|0)+'/4)',done:()=>(counters[66]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},\n {title:'FORECLOSURE',goal:()=>(counters[70]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[70]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},\n",
+   "after": " {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},\n {title:'FORECLOSURE',goal:()=>(counters[101]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[101]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},\n"
+  },
+  {
+   "before": " const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[66]|0)*500+((counters[70]|0)===2?5000:0)+quest65.bonus+combo69.bonus;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}\n",
+   "after": " const score=(counters[0]|0)*10+(counters[34]|0)*25+(counters[98]|0)*500+((counters[101]|0)===2?5000:0)+quest65.bonus+combo69.bonus;text(String(score).padStart(6,'0'),x,y+ch+6*k,30*k,[1,.62,.20,1]);}\n"
+  },
+  {
+   "before": " const total=world.civilians30?.length||0,saved=counters[66]|0,lost=counters[65]|0,t=Math.round(playerValues[24]||0);\n",
+   "after": " const total=world.civilians30?.length||0,saved=counters[98]|0,lost=counters[97]|0,t=Math.round(playerValues[24]||0);\n"
+  },
+  {
+   "before": "   centre(SANDBOX25?(counters[66]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);\n",
+   "after": "   centre(SANDBOX25?(counters[98]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);\n"
+  },
+  {
+   "before": " if(!readBusy&&now>readCountdown){sample=true;readBusy=true;readCountdown=now+70;enc.copyBufferToBuffer(C,0,sampleBuffer,0,384);enc.copyBufferToBuffer(S,0,sampleBuffer,384,16384);if(audioAllowed9()&&now>=audioReadAt9){audioSample=true;audioReadAt9=now+120;audioCount9=Math.min(MAX_Z,settings.zombies);audioProps9=world.propCount;enc.copyBufferToBuffer(zParity?zB:zA,0,sampleBuffer,AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13);enc.copyBufferToBuffer(Props,0,sampleBuffer,AUDIO_PROPS_OFFSET9,audioProps9*64);}}\n",
+   "after": " if(!readBusy&&now>readCountdown){sample=true;readBusy=true;readCountdown=now+70;enc.copyBufferToBuffer(C,0,sampleBuffer,0,512);enc.copyBufferToBuffer(S,0,sampleBuffer,512,16384);if(audioAllowed9()&&now>=audioReadAt9){audioSample=true;audioReadAt9=now+120;audioCount9=Math.min(MAX_Z,settings.zombies);audioProps9=world.propCount;enc.copyBufferToBuffer(zParity?zB:zA,0,sampleBuffer,AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13);enc.copyBufferToBuffer(Props,0,sampleBuffer,AUDIO_PROPS_OFFSET9,audioProps9*64);}}\n"
+  },
+  {
+   "before": " if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,384)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(384,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push(\"Audio mix stopped: \"+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}\n",
+   "after": " if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,512)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(512,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push(\"Audio mix stopped: \"+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}\n"
+  },
+  {
+   "before": " C=storage('counters',384);S=storage('GPU player and weapons',16384);\n",
+   "after": " C=storage('counters',512);S=storage('GPU player and weapons',16384);\n"
+  }
+ ]
+}

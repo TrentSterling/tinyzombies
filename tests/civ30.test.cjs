@@ -20,7 +20,7 @@ check('chapters and plain URLs get no neighbors and no civilian dispatch',()=>{
 });
 check('civilian pass: join at 2.2 m, follow on the squad field, bites from awake infected, saved in the shelter, HUD mirror',()=>{
  const s=loadHost(file).sources.civilians30;
- for(const k of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);',...(s.includes('Followers take their own place')?['stride2=civStep30(me,goal)','if(ed<footprint(e.extraData.z)+.42){bites++;}']:['stride2=civStep30(me,player.xz)','e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42']),'c.data.y=4.0;atomicAdd(&C[65],1u);','c.data.y=3.0;atomicAdd(&C[66],1u);',(s.includes('let panic=c.data.y<1.5')?'SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);':'SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);'),'stepOpen30(wc,wn,d,','portal30('])assert(s.includes(k),k);
+ for(const k of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[96],1u);',...(s.includes('Followers take their own place')?['stride2=civStep30(me,goal)','if(ed<footprint(e.extraData.z)+.42){bites++;}']:['stride2=civStep30(me,player.xz)','e.p.w>0.0&&e.v.w>0.0&&distance(e.p.xz,me)<footprint(e.extraData.z)+.42']),'c.data.y=4.0;atomicAdd(&C[97],1u);','c.data.y=3.0;atomicAdd(&C[98],1u);',(s.includes('let panic=c.data.y<1.5')?'SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);':'SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y,c.data.x);'),'stepOpen30(wc,wn,d,','portal30('])assert(s.includes(k),k);
  assert.equal(h0().json('CIV_STATE30')/4,976,'mirror sits in the unused State tail');assert(h0().json('L13.stateFloats')<=3904);
  function h0(){return loadHost(file);}
 });
@@ -31,9 +31,9 @@ check('infected target neighbors in the sandbox only, sit on them, and skip the 
 check('HUD tally, campy notes and HELP markers draw; end card counts the saved',()=>{
  const h=loadHost(file,{seed:'99&sandbox'});h.run('reset();glyphBuffer={name:"glyphBuffer"};settings.started=true;playerValues[3]=100;');
  h.run('glyphCount=0;hud()');const base=h.json('glyphCount');
- h.run(`counters[64]=1;for(let c=0;c<world.civilians30.length;c++){playerValues[CIV_STATE30+c*4]=playerValues[0]+1;playerValues[CIV_STATE30+c*4+1]=playerValues[2];playerValues[CIV_STATE30+c*4+2]=1;}glyphCount=0;hud();playerValues[CIV_STATE30+2]=2;glyphCount=0;hud()`);
+ h.run(`counters[96]=1;for(let c=0;c<world.civilians30.length;c++){playerValues[CIV_STATE30+c*4]=playerValues[0]+1;playerValues[CIV_STATE30+c*4+1]=playerValues[2];playerValues[CIV_STATE30+c*4+2]=1;}glyphCount=0;hud();playerValues[CIV_STATE30+2]=2;glyphCount=0;hud()`);
  assert(h.json('glyphCount')>base,'note and HELP markers add glyphs');assert(/joined|following|manager|opinions|with you|team|squad|tube|grill/.test(h.json('civNote30')),h.json('civNote30'));
- h.run('counters[66]=2;counters[65]=1;playerValues[67]=1;glyphCount=0;hud()');assert(h.json('glyphCount')>30);
+ h.run('counters[98]=2;counters[97]=1;playerValues[67]=1;glyphCount=0;hud()');assert(h.json('glyphCount')>30);
  for(const lines of Object.values(h.json('CIV_LINES30')))for(const l of lines)assert(!/—/.test(l),'no em dashes');
 });
 check('exact inverse restores the immutable pre-neighbors runtime',()=>{assert.equal(sha(withoutCiv30(fs.readFileSync(file,'utf8'))),delta.parentSha256);});

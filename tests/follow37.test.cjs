@@ -27,7 +27,7 @@ check('standing: the goal sits on the line from the player to the follower, so n
  for(const me of [[3,0],[-2,2],[0,-4]])for(let r=0;r<4;r++){const g=goal([0,0],me,[0,0],r);assert(Math.abs(g[0]*me[1]-g[1]*me[0])<1e-9,'collinear');assert(g[0]*me[0]+g[1]*me[1]>0,'same side');}
 });
 check('joining, bites, loss and saving are unchanged',()=>{
- for(const f of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[64],1u);','c.data.x-=f32(min(bites,6u))*7.0*dt;','if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[65],1u);','if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[66],1u);}'])assert(civ.includes(f),f);
+ for(const f of ['if(c.data.y<1.5&&d<2.2&&player.w>0.0){c.data.y=2.0;atomicAdd(&C[96],1u);','c.data.x-=f32(min(bites,6u))*7.0*dt;','if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[97],1u);','if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[98],1u);}'])assert(civ.includes(f),f);
 });
 check('exact inverse restores the immutable pre-follow runtime',()=>{assert.equal(sha(withoutFollow37(html)),delta.parentSha256);});
 const report={method:'Source fragments and a JS mirror of the follow goal; no WGSL execution here.',runtimeSha256:sha(fs.readFileSync(file)),passed:checks.every(c=>c.passed),checks};

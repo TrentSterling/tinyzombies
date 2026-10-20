@@ -3666,7 +3666,19 @@ function updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)
 // B-movie announcer: the browser's own speech voices read the big Maple Street moments in a low, hammy trailer voice. One line at a
 // time; priority lines cut in. Muted with the game (M); silently off where speech synthesis is missing.
 const voice65={last:'',at:-9,ok:typeof speechSynthesis!=='undefined'&&typeof SpeechSynthesisUtterance!=='undefined',lines:0};
-function announce65(line,prio=false){if(!voice65.ok||!SANDBOX25||!audioAllowed9())return false;if(line===voice65.last&&time-voice65.at<4)return false;
+// Recorded voices: lines rendered offline (Kokoro + DSP from assets/audio/voice/lines.csv) play from assets/audio/voice/<id>.ogg when
+// index.json lists the id (the line's slug); anything missing, or undecodable, falls back to speech synthesis. All listed files preload
+// once audio is unlocked, so the first play of a line is never late.
+const voiceFiles70={ids:null,buf:new Map(),started:false,src:null,until:-9};
+const voiceSlug70=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,64);
+function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.started=true;
+ fetch('assets/audio/voice/index.json',{credentials:'same-origin'}).then(r=>r.ok?r.json():[]).then(a=>{v.ids=new Set(Array.isArray(a)?a:[]);
+  for(const id of v.ids)fetch('assets/audio/voice/'+id+'.ogg',{credentials:'same-origin'}).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();}).then(x=>audio.decodeAudioData(x)).then(b=>v.buf.set(id,b)).catch(()=>{});}).catch(()=>{v.ids=new Set();});}
+function playVoice70(line,prio){const v=voiceFiles70,b=v.buf.get(voiceSlug70(line));if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
+ try{if(voice65.ok&&speechSynthesis.speaking)speechSynthesis.cancel();}catch(e){}
+ const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;return true;}
+function announce65(line,prio=false){if(!SANDBOX25||!audioAllowed9())return false;if(line===voice65.last&&time-voice65.at<4)return false;
+ preloadVoices70();if(playVoice70(line,prio)){voice65.last=line;voice65.at=time;voice65.lines++;return true;}if(!voice65.ok||time<voiceFiles70.until&&!prio)return false;
  try{if(speechSynthesis.speaking){if(!prio)return false;speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
   const v=speechSynthesis.getVoices();const pick=v.find(x=>/^en/i.test(x.lang)&&/male|david|daniel|fred|guy|alex/i.test(x.name))||v.find(x=>/^en/i.test(x.lang));if(pick)u.voice=pick;
   speechSynthesis.speak(u);voice65.last=line;voice65.at=time;voice65.lines++;return true;}catch(e){voice65.ok=false;return false;}}
@@ -3688,7 +3700,7 @@ const music67={step:0,next:0,bus:null,on:false};
 function music67Note(t,type,f,d,g,glide=0){const o=audio.createOscillator(),e=audio.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(glide)o.frequency.exponentialRampToValueAtTime(glide,t+d*.8);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+.012);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);e.connect(music67.bus);o.start(t);o.stop(t+d+.02);return o;}
 function music67Noise(t,d,g,hp){const n=audio.createBuffer(1,Math.max(1,Math.floor(audio.sampleRate*d)),audio.sampleRate),x=n.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=(Math.random()*2-1)*(1-i/x.length);
  const s=audio.createBufferSource(),f=audio.createBiquadFilter(),e=audio.createGain();s.buffer=n;f.type=hp?'highpass':'bandpass';f.frequency.value=hp?7000:1800;e.gain.value=g;s.connect(f);f.connect(e);e.connect(music67.bus);s.start(t);}
-function updateMusic67(){if(!SANDBOX25||!audio||!audioMix9)return;const want=audioAllowed9();
+function updateMusic67(){if(!SANDBOX25||!audio||!audioMix9)return;preloadVoices70();const want=audioAllowed9();
  if(!music67.bus){music67.bus=audio.createGain();music67.bus.gain.value=0;music67.bus.connect(audioMix9);}
  const g=music67.bus.gain,now=audio.currentTime;if(want!==music67.on){g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(want?.5:0,now+.6);music67.on=want;if(want)music67.next=now+.05;}
  if(!want)return;const boss=(counters[101]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;

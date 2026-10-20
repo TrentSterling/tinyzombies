@@ -4139,6 +4139,13 @@ function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx
 const toast67={n:0,burst:0,at:-9};
 function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;if(toast67.burst>=3)announce65('Extra crispy!');}
  if(time-toast67.at<1.3){const s='TOASTED x'+toast67.burst;text(s,width/2-textWidth9(s,30*k)/2,height*.335,30*k,[1,.55,.12,1]);}}
+// Off-screen HELP arrow: when the nearest waiting neighbor is off screen, a pulsing gold arrow on the screen edge points at them,
+// with the distance, so the next rescue is never a guess.
+function helpArrow68(k){if(!hud2d30)return;let bx=0,bz=0,bd=1e9;for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const d=Math.hypot(playerValues[o]-playerValues[0],playerValues[o+1]-playerValues[2]);if(d<bd){bd=d;bx=playerValues[o];bz=playerValues[o+1];}}
+ if(bd>=1e9)return;const [sx,sy]=screenPoint(bx,bz,1.2),m=56*k;if(sx>m&&sx<width-m&&sy>m&&sy<height-m)return;const cx=width/2,cy=height/2,dx=sx-cx,dy=sy-cy;
+ const sc=Math.min((width/2-m)/Math.max(1e-6,Math.abs(dx)),(height/2-m)/Math.max(1e-6,Math.abs(dy))),ax=cx+dx*sc,ay=cy+dy*sc,ang=Math.atan2(dy,dx),s=hudScale30,pulse=.75+.25*Math.sin(time*6);
+ const c=hud2d30;c.save();c.translate(ax*s,ay*s);c.rotate(ang);c.globalAlpha=pulse;c.fillStyle='#f6d43a';c.strokeStyle='#0b0b08';c.lineWidth=3*k*s;c.beginPath();c.moveTo(18*k*s,0);c.lineTo(-10*k*s,-12*k*s);c.lineTo(-4*k*s,0);c.lineTo(-10*k*s,12*k*s);c.closePath();c.stroke();c.fill();c.restore();
+ const t='HELP! '+Math.round(bd)+'m',tx=ax-Math.cos(ang)*34*k,ty=ay-Math.sin(ang)*26*k;text(t,tx-textWidth9(t,13*k)/2,ty-6*k,13*k,[1,.83,.24,1]);}
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
  rect(x-6*k,y-6*k,10*(cw+3*k)+9*k,ch+60*k,[.02,.05,.06,.55]);
  for(let i=0;i<10;i++){const on=hp*10>i+.05;rect(x+i*(cw+3*k),y,cw,ch,on?(hp<.3?[1,.32,.30,1]:[.36,.66,1,1]):[.10,.16,.22,.9]);if(on)rect(x+i*(cw+3*k),y,cw,4*k,[.75,.88,1,.9]);}
@@ -4241,6 +4248,7 @@ function hud(){
   if(SANDBOX25)questHUD65(k);
   if(SANDBOX25)p2HUD65(k);
   if(SANDBOX25)toastHUD67(k);
+  if(SANDBOX25)helpArrow68(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}

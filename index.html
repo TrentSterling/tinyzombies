@@ -1713,7 +1713,8 @@ const initShader=COMMON+`
  Z[i]=Zombie(vec4f(p.x,0,p.y,hp),vec4f(0,0,rnd(i)*6.28,0),vec4f(rnd(i+991u),0,kind,0),vec4f(p,0,0),vec4f(.1+rnd(i+31u)*.8,0,2.0+rnd(i+71u)*3.0,0),vec4f(0,0,0,-1),vec4f(p,0,0),vec4f(0));
  // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
  // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
- if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);if(f>.30+min(.30,max(0.0,u.v3.x-1.0)*.10)&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=25.0+(f-.30)/.70*155.0;Z[i].special13.w=-2.0;}}
+ // Early scare: robot playtests ended the first 30 s at ~95 HP, so a small pack (1.2%) of the held infected comes in at 15-17 s, awake.
+ if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);let held=.30+min(.30,max(0.0,u.v3.x-1.0)*.10);if(f>held&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=select(25.0+(f-.30)/.70*155.0,15.0+(f-held)/.012*2.0,f<held+.012);Z[i].special13.w=-2.0;}}
 }
 `;
 
@@ -1764,7 +1765,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=34.0+rnd(sd+7u)*18.0;p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
    if(squadClear&&length(p-S.pos.xz)>25.0&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
-  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&S.aux.x>90.0)));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
+  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=max(0.0,1.0-dt*6.0);z.history.w*=max(0.0,1.0-dt*6.0);
@@ -4154,6 +4155,11 @@ function helpArrow68(k){if(!hud2d30)return;let bx=0,bz=0,bd=1e9;for(let c=0;c<CI
 const combo69={n:0,chain:0,at:-9,mult:1,bonus:0,best:0},COMBO_LINES69=['','','Neighborly!','Block party!','Lawn massacre!','Cul-de-sac carnage!','H O A VIOLATION!'];
 function comboTick69(){const n=counters[0]|0;if(n<combo69.n){combo69.n=n;combo69.chain=0;combo69.mult=1;combo69.bonus=0;combo69.best=0;}if(time-combo69.at>2.5){combo69.chain=0;combo69.mult=1;}
  if(n>combo69.n){for(let i=combo69.n;i<n;i++){combo69.chain++;const m=Math.min(6,1+Math.floor(combo69.chain/5));if(m>combo69.mult&&typeof announce65==='function')announce65(COMBO_LINES69[m]);combo69.mult=m;combo69.bonus+=10*(m-1);}combo69.n=n;combo69.at=time;combo69.best=Math.max(combo69.best,combo69.chain);}}
+// Early scare (pairs with the 15 s pack in the zombie init): a radio warning, a sting and a red banner, once per world.
+const scare69={world:null,done:false,until:-9};
+function scareHUD69(k){if(scare69.world!==world){scare69.world=world;scare69.done=false;scare69.until=-9;}const t=playerValues[24]||0;
+ if(!scare69.done&&settings.started&&t>=15){scare69.done=true;scare69.until=time+2.5;quest65.radio='They broke through the hedges! Here they come!';quest65.radioUntil=time+5;announce65(quest65.radio);synth65('sting');}
+ if(time<scare69.until){const s='HERE THEY COME!',px=(34+3*Math.sin(time*14))*k;text(s,width/2-textWidth9(s,px)/2,height*.3,px,[1,.3,.3,1]);}}
 function comboHUD69(k){comboTick69();if(combo69.chain<3)return;const x=18*k,y=104*k,left=clamp9(1-(time-combo69.at)/2.5,0,1),s=combo69.chain+' HITS',m='x'+combo69.mult;
  text(s,x,y,20*k,[1,.95,.75,1]);if(combo69.mult>1)text(m,x+textWidth9(s,20*k)+10*k,y-4*k,28*k,combo69.mult>=4?[1,.3,.6,1]:[1,.62,.20,1]);rect(x,y+24*k,120*k,4*k,[.1,.1,.1,.6]);rect(x,y+24*k,120*k*left,4*k,[1,.62,.20,1]);}
 function zamnHUD52(k){if(!hud2d30)return;const hp=clamp9(playerValues[3]/100,0,1),x=18*k,y=16*k,cw=15*k,ch=26*k;
@@ -4260,6 +4266,7 @@ function hud(){
   if(SANDBOX25)toastHUD67(k);
   if(SANDBOX25)helpArrow68(k);
   if(SANDBOX25)comboHUD69(k);
+  if(SANDBOX25)scareHUD69(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
   if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}

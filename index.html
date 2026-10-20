@@ -3663,6 +3663,24 @@ function synth65(kind){if(!audioAllowed9()||!audioMix9)return false;const t=audi
  if(kind==='jingle'){[523,659,784,1047].forEach((f,i)=>tone('square',f,f,f*1.001,.14,.07,i*.1));}
  if(kind==='sting'){tone('sawtooth',110,104,98,1.1,.10);tone('sawtooth',116.5,110,103,1.1,.08);tone('sine',55,52,49,1.2,.22);}
  return true;}
+// Soundtrack: a synthesised B-movie surf-horror loop on Maple Street, scheduled .25 s ahead on the audio clock. E-minor surf bass and
+// hats from the start; the full kit joins once the horde builds (60 s in, or 40+ awake infected); the boss brings a wobbling
+// theremin lead and a faster tempo. It fades with the mute and pause state like every other sound.
+const music67={step:0,next:0,bus:null,on:false};
+function music67Note(t,type,f,d,g,glide=0){const o=audio.createOscillator(),e=audio.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(glide)o.frequency.exponentialRampToValueAtTime(glide,t+d*.8);e.gain.setValueAtTime(.0001,t);e.gain.exponentialRampToValueAtTime(g,t+.012);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);e.connect(music67.bus);o.start(t);o.stop(t+d+.02);return o;}
+function music67Noise(t,d,g,hp){const n=audio.createBuffer(1,Math.max(1,Math.floor(audio.sampleRate*d)),audio.sampleRate),x=n.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=(Math.random()*2-1)*(1-i/x.length);
+ const s=audio.createBufferSource(),f=audio.createBiquadFilter(),e=audio.createGain();s.buffer=n;f.type=hp?'highpass':'bandpass';f.frequency.value=hp?7000:1800;e.gain.value=g;s.connect(f);f.connect(e);e.connect(music67.bus);s.start(t);}
+function updateMusic67(){if(!SANDBOX25||!audio||!audioMix9)return;const want=audioAllowed9();
+ if(!music67.bus){music67.bus=audio.createGain();music67.bus.gain.value=0;music67.bus.connect(audioMix9);}
+ const g=music67.bus.gain,now=audio.currentTime;if(want!==music67.on){g.cancelScheduledValues(now);g.setValueAtTime(g.value,now);g.linearRampToValueAtTime(want?.5:0,now+.6);music67.on=want;if(want)music67.next=now+.05;}
+ if(!want)return;const boss=(counters[70]|0)===1,level=boss?2:((playerValues[24]||0)>60||(counters[53]|0)>40?1:0),bpm=boss?150:132,eighth=30/bpm;
+ const bass=[0,0,3,0,5,3,0,-2,0,0,3,0,7,5,3,2],lead=[12,12,15,14,10,10,12,7],E2=82.41;
+ while(music67.next<now+.25){const t=music67.next,s=music67.step%16;
+  music67Note(t,'sawtooth',E2*Math.pow(2,bass[s]/12),eighth*.9,.16);music67Note(t,'square',E2*2*Math.pow(2,bass[s]/12),eighth*.5,.025);
+  music67Noise(t,.04,s%2?.05:.03,true);
+  if(level>=1){if(s%4===0)music67Note(t,'sine',120,.22,.5,42);if(s%8===4)music67Noise(t,.16,.22,false);}
+  if(level>=2&&s%2===0){const f=E2*4*Math.pow(2,lead[(s/2)%8]/12);const o=music67Note(t,'sine',f,eighth*1.9,.07,f*1.02);const v=audio.createOscillator(),vg=audio.createGain();v.frequency.value=6;vg.gain.value=f*.025;v.connect(vg);vg.connect(o.frequency);v.start(t);v.stop(t+eighth*2);}
+  music67.next+=eighth;music67.step++;}}
 function updateBombAudio(){
  const clock=playerValues[24]||0,fuse=playerValues[110]||0,total=playerValues[499]||0;
  if(settings.paused||!settings.started){nextPipeBeep=clock;return;}
@@ -4455,7 +4473,7 @@ function drawFrame(now){
  if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,384)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(384,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  updateEquipmentAudio12();
- updateBombAudio();updateMapleAudio62();
+ updateBombAudio();updateMapleAudio62();try{updateMusic67();}catch(e){diagnostics.notes.push('music off: '+String(e.message||e).slice(0,80));music67.on=false;}
  frameCallback=requestAnimationFrame(drawFrame);
  }catch(e){fail(e);}
 }

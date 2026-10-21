@@ -6,7 +6,7 @@ const file=process.argv[2]||path.join(__dirname,'../index.html');
 const checks=[];function check(name,fn){try{checks.push({name,passed:true,...fn()});}catch(e){checks.push({name,passed:false,error:e.stack});}}
 const html=fs.readFileSync(file,'utf8');
 check('init: a thin early band at 15-17 s, the rest keep 25-180 s; early ones spawn awake',()=>{
- assert(html.includes('Z[i].v.w=select(25.0+(f-.30)/.70*155.0,15.0+(f-held)/.012*2.0,f<held+.012);'));assert(html.includes('(S.aux.x>90.0||S.aux.x<20.0)'));
+ assert(html.includes('Z[i].v.w=select(25.0+(f-.30)/.70*155.0,15.0+(f-held)/.012*2.0,f<held+.012);'));assert(require('./director90.cjs').withoutDirector90(html).includes('(S.aux.x>90.0||S.aux.x<20.0)'),'early band wakes (director stage 2 adds a push term)');
  const out={};for(const lvl of [1,3]){const held=.30+Math.min(.30,Math.max(0,lvl-1)*.10);let early=0,n=0;for(let i=0;i<4000;i++){const f=i/4000;if(f<=held)continue;n++;const w=f<held+.012?15+(f-held)/.012*2:25+(f-.30)/.70*155;if(w<20){early++;assert(w>=15&&w<=17);}else assert(w>=25);}out['level'+lvl]=early/4000;assert(early/4000>.01&&early/4000<.014);}return out;});
 const host=()=>{const h=loadHost(file,{plain:true});h.run('reset();settings.started=true;window.__said=[];window.__snd=[];announce65=s=>__said.push(s);synth65=s=>__snd.push(s);time=5');return h;};
 check('one warning at 15 s per world',()=>{const h=host();h.run('playerValues[24]=10;scareHUD69(1);playerValues[24]=15.2;scareHUD69(1);time=6;scareHUD69(1);playerValues[24]=40;scareHUD69(1)');const [said,snd,r]=h.json('[__said,__snd,quest65.radio]');assert.equal(said.length,1);assert.deepEqual(snd,['sting']);assert.match(r,/Here they come/);});

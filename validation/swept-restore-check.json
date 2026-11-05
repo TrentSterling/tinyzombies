@@ -1,0 +1,16 @@
+{
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
+  "restoredRuntimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
+  "patchAppliesTo": "b591fae0c79ed8363691b367f7288899e6a11148bcdd6a5e73bcaf3eb5edc41b",
+  "byteExact": true,
+  "files": {
+    "tests/sweep92.cjs": "be86c69938676e84c8d3ee67ac5a66db678f4e9c10591ba80fc864f789ef78ea",
+    "tests/sweep92-delta.json": "3537c5a907e849ee26c547a825a91ad556c16297971c5e2fe45574a755a94f7f",
+    "tests/clearance91.cjs": "76cf07295703534f1aeca72dbb018639daac2249ffefdc75c7c5a0dc92aeb4ce",
+    "tests/neighbor-body-clearance.test.cjs": "a45af0b731c492c4872ac7e08bf25e234bf41c8fed2797eb6dd509e32632452a",
+    "tests/neighbor-clearance-fixtures.test.cjs": "cdfa85fb1ff31413e950e3bbe29cfb32c7b0e24c7f5ee855412fa27391b551e2",
+    "tests/neighbor-clearance-sweep-gap.cjs": "a3eaef36b5c552fa4fe90afaeacbd8245d285d5bb51fa8b939b231205e6728ce",
+    "tests/hardware/candidate.json": "13fb78c3851ad9d7667a36b713f8cb946fd163e1bb84128148fb2ecda72855c4",
+    "swept-runtime.patch": "44da7adea1c6d9ee9c78b6a1dfa0665acb8a7991c85f81d891c09034d046045d"
+  }
+}

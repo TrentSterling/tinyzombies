@@ -6,6 +6,10 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 **Maple Street is the game now.** The plain URL boots the open, breakable suburb with neighbors to rescue, in the spirit of Zombies Ate My Neighbors. The old DEAD ENDS chapters are still there behind [`?deadends`](https://tront.xyz/tinyzombies/?deadends) (or `?campaign`), and a saved chapter checkpoint only loads there.
 
+## Swept escort clearance, November 5
+
+Neighbors now check their whole short movement segment before taking a direct shortcut, closing corner gaps between clearance samples. Published at the owner's request after 95 CPU/source checks and all 43 shader validations passed. Ordinary escorts and GPU cost have not been playtested for this build; conservative diagonal checks can use the existing fallback more often. See [release scope, evidence and rollback](validation/swept-clearance-release-20261105.md).
+
 ## Mercer restoration playtest build
 
 This checkout restores a larger connected Chapter 1 district, destructible wall breaches, the configured infected population, bounded off-route pressure and objective-safe extraction. Chapters 2–5 world buffers, art, controls, recorded audio and persistent blood are preserved. This build is released for the owner's playtest through [PR 18](https://github.com/TrentSterling/tinyzombies/pull/18). CPU/source checks are separate from shader compilation, GPU performance and earned gameplay, which remain unverified. See [scope, preservation and test limits](tests/MERCER-RESTORATION.md) and [fresh CPU results](validation/mercer-support-fix/suite-summary.json).

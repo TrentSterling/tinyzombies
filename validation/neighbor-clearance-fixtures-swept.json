@@ -1,0 +1,43 @@
+{
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
+  "method": "Frozen-source-guarded JavaScript reference of static/dynamic body clearance and swept-bounds/candidate/old shortcut sampling. No WGSL execution, pathfinding fallback, earned rescues, browser, GPU timing or performance claim.",
+  "passed": true,
+  "checks": [
+    {
+      "name": "doorway lip: a clear center line is rejected when the body overlaps the jamb",
+      "passed": true
+    },
+    {
+      "name": "short final segment: a blocked endpoint is checked even below the old 0.5 m interval",
+      "passed": true
+    },
+    {
+      "name": "upper body: a voxel above the center-ray height still blocks the follower",
+      "passed": true
+    },
+    {
+      "name": "dynamic wreckage: ground-level occupancy blocks a shortcut through otherwise empty voxels",
+      "passed": true
+    },
+    {
+      "name": "overhead wreckage: occupancy outside the body height does not close the route",
+      "passed": true
+    },
+    {
+      "name": "removed wall and cleared wreckage: the same route reopens without stale blockage",
+      "passed": true
+    },
+    {
+      "name": "open doorway remains open while a center-clear narrow slit is rejected",
+      "passed": true
+    },
+    {
+      "name": "world border rejects a body extending outside even when its center remains inside",
+      "passed": true
+    },
+    {
+      "name": "zero-distance open goal is safe and the 20 m shortcut cutoff stays intact",
+      "passed": true
+    }
+  ]
+}

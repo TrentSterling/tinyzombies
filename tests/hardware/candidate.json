@@ -1,6 +1,6 @@
 {
   "harnessVersion": "mercer-restoration-v2",
-  "runtimeSha256": "f3baed8bcfd5e2134583dcadad7c57ef3c7cb3c2a6653267d930a14cf6374cfa",
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
   "shippedRollback": "022abe3a384fe06ef9ed4620c3fef36ce7b6a1e9",
   "acceptance": "Deferred: Mercer exterior, all configured infected, bullet/axe/pipe/source-barrel breaches, off-route warning/recovery/retreat and squad navigation, earned gate/extraction plus inherited six-fix stack. CPU tests and static harness checks are not GPU qualification.",
   "hardwareStatus": "not-run",
@@ -20,5 +20,17 @@
   "neighbors30": "Maple Street neighbors (sandbox): up to 8 per street in reserved prop slots 180-191, a civilians30 compute pass (join at 2.2 m, follow on the squad field with edge-aware steps and portal aim, bites from awake infected in contact, saved inside the shelter), infected target neighbors and stay on them, boxes draw campy outfits with a waiting marker, HUD tally/notes/HELP markers, end-card total. Real shaders on SwiftShader WebGPU: a neighbor followed the player 73.6 m across town and was saved; one surrounded by three awake infected was lost in about 3 s. No hardware timing.",
   "crush31": "Collapse crush (crush30 marks dynamic-grid bit 28 under falling heavy wreckage; infected there take the 200-damage slab crush), breakage noise at the broken-voxel centroid (10+ voxels, 10-38 m, open-town only), cumulative barrel-chain counter, CRUSHED/CHAIN callouts and crush total (sandbox). Real shaders on SwiftShader WebGPU: 6/6 infected under a falling piece crushed (C[34]=6, kills=6); a settled piece and bystanders harmless. No hardware timing.",
   "rescue32": "Sandbox rescue is required: the shelter will not seal while neighbors wait at home; objective line and prompt explain it; neighbors on the minimap. Source/host checks and Tint only.",
-  "botScans33": "The bots' five full-horde scans (threat, brute danger, pressure, downed nearest, visibility) query only zombie-grid cells inside each scan's radius; loop bodies unchanged. CPU mirror proves set equality on 2,000 random hordes; Tint-validated; buddy pipeline not executable on SwiftShader. No GPU timing."
+  "botScans33": "The bots' five full-horde scans (threat, brute danger, pressure, downed nearest, visibility) query only zombie-grid cells inside each scan's radius; loop bodies unchanged. CPU mirror proves set equality on 2,000 random hordes; Tint-validated; buddy pipeline not executable on SwiftShader. No GPU timing.",
+  "escortClearance91": {
+    "baselineCommit": "710692f03272292d0694cae4846afb6949979003",
+    "baselineRuntimeSha256": "f3baed8bcfd5e2134583dcadad7c57ef3c7cb3c2a6653267d930a14cf6374cfa",
+    "archiveCommit": "6b6072450b3ed8830bed07d946c30360359f3c8e",
+    "status": "Not qualified. CPU swept-body reference reproduces three oblique corner intersections that the 0.125 m sample loop accepts. Browser launch was previously blocked before page load; GPU execution, earned rescues and performance remain unqualified.",
+    "acceptance": "Resolve the deterministic cases in tests/neighbor-clearance-sweep-gap.cjs without introducing closed-door, narrow-passage or dynamic-wreckage regressions, then compare baseline and candidate on ordinary Maple escorts for seeds 1234, 73129 and 42. Verify repeated rescue/death/restart and inherited campaign saves. Measure default-horde GPU cost and inspect fallback routing. Do not deploy before those checks pass."
+  },
+  "escortSweptClearance92": {
+    "parentRuntimeSha256": "b591fae0c79ed8363691b367f7288899e6a11148bcdd6a5e73bcaf3eb5edc41b",
+    "status": "Unqualified runtime candidate: each <=0.125 m segment tests its enclosing swept body box, closing the CPU oblique-corner counterexamples. Ordinary escort routing and GPU cost still require a permitted browser playtest.",
+    "tradeoff": "Conservative segment bounds can reject some collision-free diagonal corner shortcuts; fallback behavior and narrow passages require playtesting."
+  }
 }

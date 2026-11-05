@@ -1,0 +1,7 @@
+{
+  "reports": 95,
+  "decodedJsonBytes": 272243,
+  "decodedJsonSha256": "6f3161f7a93f53790aee46a79d45849e8357a3d0dc35cef9ba9f55c8a4983ac9",
+  "encoding": "base64 of gzip-compressed JSON mapping report filenames to exact stdout/stderr text",
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4"
+}

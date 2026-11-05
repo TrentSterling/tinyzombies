@@ -1,0 +1,10 @@
+{
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
+  "sampledCandidateSha256": "b591fae0c79ed8363691b367f7288899e6a11148bcdd6a5e73bcaf3eb5edc41b",
+  "publicBaselineSha256": "f3baed8bcfd5e2134583dcadad7c57ef3c7cb3c2a6653267d930a14cf6374cfa",
+  "shaders": 43,
+  "changed": [
+    "civilians30"
+  ],
+  "unchanged": 42
+}

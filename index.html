@@ -2609,8 +2609,9 @@ const civilians30Shader=COMMON+`
 @group(0) @binding(6) var<storage,read_write> Props:array<Prop>;
 `+SOLID+`
 fn civStep30(me:vec2f,goal:vec2f)->vec2f {
- let to=goal-me;let direct=safe2(to);var clear=length(to)<20.0;let steps=u32(ceil(length(to)*2.0));
- for(var s=1u;clear&&s<steps;s++){let q=me+direct*f32(s)*.5;if(solid(vec3f(q.x,.36,q.y))>0u){clear=false;}}
+ // Bound the body's whole short segment, not just its endpoint: a grazing corner can lie between samples.
+ let to=goal-me;let dist=length(to);let direct=safe2(to);var clear=dist<20.0;let steps=max(1u,u32(ceil(dist*8.0)));let sweep=abs(to)*(.5/f32(steps));
+ for(var s=1u;clear&&s<=steps;s++){let q=me+to*((f32(s)-.5)/f32(steps));if(blocked(vec3f(q.x,.36,q.y),vec3f(.2+sweep.x,.29,.2+sweep.y))){clear=false;}}
  if(clear){return direct;}
  let c=clamp(vec2i(floor(me+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let wc=O[WALK_OFFSET+here];var best=O[NAV_OFFSET+here];var result=direct;
  for(var a=0u;a<8u;a++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}

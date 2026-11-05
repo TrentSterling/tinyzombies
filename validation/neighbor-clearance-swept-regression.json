@@ -1,0 +1,68 @@
+{
+  "runtimeSha256": "48fd73e387377bda99370313b8901d90fe6d39c2994a5f9bdfd0054c7260aad4",
+  "method": "CPU reference against exact segment/expanded-voxel intersection, with production-predicate source guards, previous-candidate negative controls and body-overlap witnesses. Not WGSL or earned gameplay.",
+  "passed": true,
+  "issueReproduced": false,
+  "disposition": "CPU counterexamples resolved when passed. Keep release held for actual fallback routing, narrow-passage, rescue and GPU performance qualification.",
+  "cases": [
+    {
+      "from": [
+        0.002240985631942749,
+        -0.8791190991178155
+      ],
+      "to": [
+        1.2258128095418215,
+        1.011074491776526
+      ],
+      "intersection": {
+        "enter": 0.35928547339772304,
+        "exit": 0.3659442017365681,
+        "overlapDistance": 0.014993173123511318
+      },
+      "previousSampledCandidateAccepts": true,
+      "candidateAcceptsShortcut": false
+    },
+    {
+      "from": [
+        1.948655053973198,
+        1.9979866286739707
+      ],
+      "to": [
+        -0.36263456754386425,
+        -1.3592690592631698
+      ],
+      "intersection": {
+        "enter": 0.648406430774143,
+        "exit": 0.6546974174685276,
+        "overlapDistance": 0.025641636911839703
+      },
+      "previousSampledCandidateAccepts": true,
+      "candidateAcceptsShortcut": false
+    },
+    {
+      "from": [
+        1.1634958274662495,
+        0.836485150270164
+      ],
+      "to": [
+        -0.6109746638685465,
+        -1.658103900961578
+      ],
+      "intersection": {
+        "enter": 0.40208942946666987,
+        "exit": 0.4154933453902491,
+        "overlapDistance": 0.041033763282328266
+      },
+      "previousSampledCandidateAccepts": true,
+      "candidateAcceptsShortcut": false
+    }
+  ],
+  "sweep": {
+    "generated": 50000,
+    "clearEndpoints": 47462,
+    "actualIntersections": 10261,
+    "previousCandidateMisses": 525,
+    "sweptCandidateMisses": 0,
+    "conservativeRejections": 557
+  }
+}

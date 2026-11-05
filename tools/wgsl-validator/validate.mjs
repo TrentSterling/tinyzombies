@@ -49,7 +49,7 @@ assert(controls.every(control => control.passed), 'Validator control failed');
 const file = path.resolve(process.argv[2] || path.join(here, '../../index.html'));
 const host = loadHost(file);
 const names = [...host.script.matchAll(/const ([A-Za-z_][A-Za-z_0-9]*Shader)\s*=/g)].map(match => match[1]);
-assert.equal(names.length, 40, 'Update the expected shader inventory if runtime intentionally changes');
+assert.equal(names.length, 43, 'Update the expected shader inventory if runtime intentionally changes');
 assert.equal(new Set(names).size, names.length, 'Duplicate shader names');
 const shaders = names.map(name => ({ name, ...check(host.run(name)) }));
 const report = {
@@ -72,3 +72,4 @@ const json = JSON.stringify(report, null, 2) + '\n';
 if (process.argv[3]) fs.writeFileSync(process.argv[3], json);
 process.stdout.write(json);
 process.exitCode = report.passed ? 0 : 1;
+

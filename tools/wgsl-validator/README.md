@@ -1,6 +1,6 @@
 # CPU-only WGSL validation
 
-This development-only check evaluates the exact shader strings composed by `index.html` using the existing CPU host fixture. It parses all 40 shaders with Naga and runs Naga's semantic validator. It opens no browser, requests no GPU adapter, and does not execute shaders. It changes no runtime files.
+This development-only check evaluates the exact shader strings composed by `index.html` using the existing CPU host fixture. It parses all 43 shaders with Naga and runs Naga's semantic validator. It opens no browser, requests no GPU adapter, and does not execute shaders. It changes no runtime files.
 
 Requires Node.js 24.12 or later. From this directory:
 
@@ -21,3 +21,4 @@ Primary sources:
 - https://github.com/kekkon-nexus/naga-wasm
 - https://raw.githubusercontent.com/kekkon-nexus/naga-wasm/main/src/lib.rs
 - https://registry.npmjs.org/naga-wasm/30.2.0
+

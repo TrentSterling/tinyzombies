@@ -1,0 +1,9 @@
+{
+  "parentSha256": "f3baed8bcfd5e2134583dcadad7c57ef3c7cb3c2a6653267d930a14cf6374cfa",
+  "changes": [
+    {
+      "before": " let to=goal-me;let direct=safe2(to);var clear=length(to)<20.0;let steps=u32(ceil(length(to)*2.0));\n for(var s=1u;clear&&s<steps;s++){let q=me+direct*f32(s)*.5;if(solid(vec3f(q.x,.36,q.y))>0u){clear=false;}}",
+      "after": " // Match the escort motor's body footprint, including dynamic wreckage. A clear centre ray can still clip a doorway lip.\n let to=goal-me;let dist=length(to);let direct=safe2(to);var clear=dist<20.0;let steps=max(1u,u32(ceil(dist*8.0)));\n for(var s=1u;clear&&s<=steps;s++){let q=me+to*(f32(s)/f32(steps));if(blocked(vec3f(q.x,.36,q.y),vec3f(.2,.29,.2))){clear=false;}}"
+    }
+  ]
+}

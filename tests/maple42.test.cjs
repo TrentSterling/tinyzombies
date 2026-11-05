@@ -18,7 +18,7 @@ check('a saved DEAD ENDS checkpoint is ignored on Maple Street and still restore
  assert.equal(loadHost(file,{plain:true,storage:store()}).json('savedCheckpoint'),null);
  assert.notEqual(loadHost(file,{seed:'73129&deadends',storage:store()}).json('savedCheckpoint'),null);
 });
-check('boot line is in the new voice',()=>{assert(html.includes('<p>Waking up the neighborhood...</p>'));assert(html.includes("try{if(!SANDBOX25)savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}"));});
+check('boot line is in the new voice',()=>{assert(require('./loading93.cjs').withoutLoading93(html).includes('<p>Waking up the neighborhood...</p>'));assert(html.includes("try{if(!SANDBOX25)savedCheckpoint=parseCheckpoint13(localStorage.getItem(checkpointKey));}catch{}"));});
 check('exact inverse restores the immutable pre-default-switch runtime',()=>{assert.equal(sha(withoutMaple42(html)),delta.parentSha256);});
 const report={method:'CPU host with explicit URLs and storage.',runtimeSha256:sha(fs.readFileSync(file)),passed:checks.every(c=>c.passed),checks};
 console.log(JSON.stringify(report,null,2));process.exitCode=report.passed?0:1;

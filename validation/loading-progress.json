@@ -1,0 +1,35 @@
+{
+  "method": "Node VM executes real main startup against mocked DOM/WebGPU and a stub first frame. No browser, shader compiler, GPU execution, rendering or gameplay.",
+  "runtimeSha256": "71b8f1b8c1966d842d765f5c7adc58265d391eb4ac5af73a1665b6b7760fb43a",
+  "passed": true,
+  "checks": [
+    {
+      "name": "normal boot counts actual work, with 100% only after GPU first frame",
+      "passed": true,
+      "steps": 60,
+      "computePipelines": 40,
+      "renderPipelines": 6
+    },
+    {
+      "name": "optional 1x paths add one real stage, compile each extra pipeline once",
+      "passed": true
+    },
+    {
+      "name": "shader, render, adapter, device and validation failures remain visible below100",
+      "passed": true
+    },
+    {
+      "name": "loading and failure ignore destructive gameplay keys without trapping Tab",
+      "passed": true
+    },
+    {
+      "name": "repeated step cannot double-count or exceed100",
+      "passed": true
+    },
+    {
+      "name": "no eager world generation; exact inverse and all43 shaders preserve baseline",
+      "passed": true,
+      "unchangedShaders": 43
+    }
+  ]
+}

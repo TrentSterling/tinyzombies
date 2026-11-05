@@ -6,6 +6,12 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 **Maple Street is the game now.** The plain URL boots the open, breakable suburb with neighbors to rescue, in the spirit of Zombies Ate My Neighbors. The old DEAD ENDS chapters are still there behind [`?deadends`](https://tront.xyz/tinyzombies/?deadends) (or `?campaign`), and a saved chapter checkpoint only loads there.
 
+## Counted startup progress, November 5
+
+The loading screen shows the percentage and completed step count for the real startup plan: 60 steps at standard quality, or 61 with the optional low-cost rendering stage. World generation, each of the 40 compute pipelines, renderer shaders/pipelines, GPU setup and the first submitted frame are counted only after their work completes. The bar does not estimate remaining time; shader compilation can take longer on some hardware. Optional audio downloads continue independently and do not block play.
+
+Startup errors keep the failed stage and completed percentage visible with a diagnostic report and Retry loading button. Keyboard gameplay actions stay inactive until the game is ready, including checkpoint deletion. This patch leaves all 43 shaders, gameplay balance, audio/art and save keys unchanged. CPU/source and mocked-startup checks are distinct from browser/GPU playtesting; see [release evidence and rollback](validation/loading-progress-release-20261105.md).
+
 ## Swept escort clearance, November 5
 
 Neighbors now check their whole short movement segment before taking a direct shortcut, closing corner gaps between clearance samples. Published at the owner's request after 95 CPU/source checks and all 43 shader validations passed. Ordinary escorts and GPU cost have not been playtested for this build; conservative diagonal checks can use the existing fallback more often. See [release scope, evidence and rollback](validation/swept-clearance-release-20261105.md).

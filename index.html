@@ -1535,7 +1535,7 @@ fn beginExtraction20(inside:bool,occupied:bool,allInside:bool,edge:f32,finalDoor
 fn hearRing34(dt:f32){
  let n=S.noise;
  if(n.z>0.0&&any(n!=S.noiseSeen34)){var slot=6u;var weakest=0u;
-  for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(slot==6u&&r.z>0.0&&distance(r.xy,n.xy)<4.0){slot=k;}if(r.z<S.noiseRing34[weakest].z){weakest=k;}}
+  for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];if(slot==6u&&r.z>0.0&&distance(r.xy,n.xy)<4.0&&(!mapleEasy94()||abs(r.w-n.w)<=max(1.0,n.w*.2))){slot=k;}if(r.z<S.noiseRing34[weakest].z){weakest=k;}}
   let keep=max(n.z,2.0+n.w*.25);if(slot<6u){let r=S.noiseRing34[slot];S.noiseRing34[slot]=vec4f(n.xy,max(r.z,keep),max(r.w,n.w));}else{S.noiseRing34[weakest]=vec4f(n.xy,keep,n.w);}}
  // Ring memory outlasts the slot by loudness: a 9 m gunshot lingers 4.25 s, a 38 m collapse 11.5 s, so the horde arrives instead of giving up halfway.
  for(var k=0u;k<6u;k++){S.noiseRing34[k].z=max(0.0,S.noiseRing34[k].z-dt);}
@@ -1661,7 +1661,7 @@ fn chapterMission13(dt:f32){
   if(S.alarm.z>0.0){S.wave.x=2.0;S.wave.y=S.alarm.z;}else{S.wave.y=0.0;}
  }
  atomicStore(&C[78],u32(S.pace7.x*1000.0));
- let scream=atomicExchange(&C[55],0u);if(scream>0u){alarmAt(S.pos.xz,10.0);announce(11.0,0.0);}
+ let scream=atomicExchange(&C[55],0u);if(scream>0u){let cell=scream-1u;let source=vec2f(f32(cell%192u),f32(cell/192u))+.5-HALF;alarmAt(select(S.pos.xz,source,mapleEasy94()),10.0);announce(11.0,0.0);}
  if(u.controlEdges12.y>S.lastInput.x){if(S.orders.x>.5){S.orders.x=0.0;S.radio7=vec4f(1,2.5,12,0);}else{let p=S.pos.xz+safe2(u.aim.xy)*min(length(u.aim.xy),10.0);S.orders=vec4f(1,p.x,p.y,0);S.radio7=vec4f(1,2.5,11,0);}}S.lastInput.x=u.controlEdges12.y;
  if(S.orders.x>.5&&distance(S.pos.xz,S.orders.yz)>20.0){S.orders.x=0.0;}
  if(S.cell.w==1.0){S.cell.x=S.pos.x;S.cell.y=.65;S.cell.z=S.pos.z;if(u.v5.w>.5&&S.lastInput.y<.5){S.cell.w=0.0;S.cell.y=0.0;announce(14.0,0.0);}}S.lastInput.y=u.v5.w;
@@ -1753,6 +1753,37 @@ const zombieShader=COMMON+`
 @group(0) @binding(7) var<storage,read_write> O:array<atomic<u32>>;
 @group(0) @binding(8) var<storage,read_write> E:array<Event>;
 `+SOLID.replace(/O\[([^\]]+)\]/g,'atomicLoad(&O[$1])')+EMIT+`
+// Maple perception keeps a finite observation, never a live hidden-survivor destination.
+// body.w is the memory timer; sense13.zw is the last observed point (+4096 on z).
+// sense13.xy remains exclusively available to committed spitter projectiles.
+fn knowledge95(previous:vec4f,seen:bool,actor:vec2f,heard:bool,sound:vec2f,dt:f32)->vec4f {
+ var result=vec4f(previous.xy,max(0.0,previous.z-dt),0.0);
+ if(result.z>0.0){result.w=3.0;}
+ if(heard){result=vec4f(sound,8.0,2.0);}
+ if(seen){result=vec4f(actor,10.0,1.0);}
+ return result;
+}
+fn visible95(eye95:vec3f,target95:vec3f,kind:f32)->bool {
+ let delta=target95-eye95;let travel=length(delta);let steps=min(128u,max(1u,u32(ceil(travel/.125))));
+ let side=vec3f(-safe2(delta.xz).y,0,safe2(delta.xz).x)*min(.22,footprint(kind));
+ for(var k=1u;k<steps;k++){let q=eye95+delta*f32(k)/f32(steps);
+  if(solid(q)>0u||solid(q+side)>0u||solid(q-side)>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(q.xz)])&4u)!=0u){return false;}}
+ return true;
+}
+fn corridor95(p:vec3f,dir:vec2f,kind:f32)->bool {
+ let r=footprint(kind);for(var step=1u;step<=3u;step++){let q=p+vec3f(dir.x,0,dir.y)*f32(step)*.25;
+  if(blocked(q+vec3f(0,.36,0),vec3f(r,.29,r))){return false;}}
+ return true;
+}
+fn investigate95(p:vec3f,goal:vec2f,prior:vec2f,kind:f32,id:u32)->vec2f {
+ let toward=safe2(goal-p.xz);if(corridor95(p,toward,kind)){return toward;}
+ var best= -1e9;var result=vec2f(0);let old=safe2(prior);let hand=select(-1.0,1.0,(hash(id)&1u)==0u);
+ // Allow a temporary retreat around corners. This bounded search does not consult survivor flow fields.
+ for(var k=1u;k<8u;k++){let angle=f32(k)*.78539816*hand;let c=cos(angle);let sn=sin(angle);let d=vec2f(toward.x*c-toward.y*sn,toward.x*sn+toward.y*c);
+  if(!corridor95(p,d,kind)){continue;}let score=dot(d,toward)+dot(d,old)*1.15-f32(k)*.012;
+  if(score>best){best=score;result=d;}}
+ return result;
+}
 // The closest remembered noise this position is inside the radius of, or 6 when it hears none.
 fn ringHeard34(p:vec2f)->u32 {var best=6u;var bd=1e9;for(var k=0u;k<6u;k++){let r=S.noiseRing34[k];let d=distance(p,r.xy);if(r.z>0.0&&d<r.w&&d<bd){bd=d;best=k;}}return best;}
 // Inside a backyard pool (floors42 entries flagged +16)? Wading costs speed on Maple Street.
@@ -1785,22 +1816,59 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   for(var attempt=0u;attempt<16u;attempt++){let sd=i*153u+atomicLoad(&C[18])*37u+attempt*3137u;let angle=rnd(sd)*6.2831853;let range=select(34.0+rnd(sd+7u)*18.0,22.0+rnd(sd+7u)*8.0,early);p=clamp(S.pos.xz+vec2f(cos(angle),sin(angle))*range,vec2f(-94.0),vec2f(94.0));let clip=u.vp*vec4f(p.x-S.pos.x,0,p.y-S.pos.z,1);
    var squadClear=true;for(var k=0u;k<3u;k++){if(S.team7[k].vital.z>.5&&length(p-S.team7[k].p.xz)<12.0){squadClear=false;}}
    if(squadClear&&length(p-S.pos.xz)>select(25.0,20.0,early)&&length(p-S.buddy.xz)>12.0&&(abs(clip.x)>1.2||abs(clip.y)>1.2)&&H[ZCOUNTS+zcell(p)]<2u&&!blocked(vec3f(p.x,.36,p.y),vec3f(select(.40,.95,i%512u==31u),.29,select(.40,.95,i%512u==31u)))&&atomicLoad(&O[NAV_OFFSET+navcell(p)])<1073741800u){found=true;break;}
-  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0||u.v5.x>.25))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;}else{z.v.w=1.0;}
+  }if(found){kind=select(select(select(0.0,1.0,i%12u==1u),2.0,i%96u==0u),3.0,i%53u==2u);if(i%83u==7u){kind=5.0;}if(i%512u==31u){kind=6.0;}let hp0=select(select(select(select(2.0,3.0,kind==1.0),22.0+u.run.x*3.0,kind==2.0),7.0,kind==3.0),7.0,kind==5.0);let hp=infectedHP13(kind,i+u32(u.worldInfo.z));z.p=vec4f(p.x,0,p.y,hp);z.history=vec4f(p,0,0);z.v=vec4f(0,0,z.v.z,select(0.0,9.0,S.wave.x>1.5||(z.special13.w==-2.0&&(S.aux.x>90.0||S.aux.x<20.0||u.v5.x>.25))));z.extraData.z=kind;z.extraData.w=0.0;z.special13.w=-1.0;z.body.w=0.0;z.sense13.z=0.0;z.sense13.w=0.0;if(mapleEasy94()&&z.v.w>0.0){z.body.w=z.v.w;z.sense13.z=S.pos.x;z.sense13.w=S.pos.z+4096.0;}}else{z.v.w=1.0;}
  }B[i]=z;return;}
  if(dt<=0.0||S.chooser.x>.5){atomicAdd(&C[7],1u);B[i]=z;return;}
  z.history.x=z.p.x;z.history.y=z.p.z;z.history.z*=max(0.0,1.0-dt*6.0);z.history.w*=max(0.0,1.0-dt*6.0);
- let toPlayer=S.pos.xz-z.p.xz;let distance=length(toPlayer);var victim=0u;var goalPoint=S.pos.xz;var nearTeam=999.0;var nearestTarget=distance;
+ let toPlayer=S.pos.xz-z.p.xz;let distance=length(toPlayer);
+ var victim=6u;var goalPoint=z.p.xz;var awake=false;var heard=false;var searching=false;
+ var targetDistance=0.0;var direct=vec2f(0);var dir=vec2f(0);var sight=false;
+ if(mapleEasy94()){
+  // Select the nearest actor we can actually see. A hidden nearer bot cannot mask a visible survivor.
+  var seen=false;var visibleVictim=6u;var visual=z.p.xz;var best=1e9;var nearActor=distance;
+  let vision=select(7.5,780.0/64.0,z.v.w>0.0);let eye=z.p.xyz+vec3f(0,.55,0);
+  for(var who=0u;who<16u;who++){
+   var actor=S.pos.xyz;var valid=S.pos.w>0.0||S.player7.x>0.0;var candidate=0u;var reach=vision;
+   if(who>0u&&who<4u){let ally=S.team7[who-1u];actor=ally.p.xyz;valid=ally.vital.z>.5;candidate=who;}
+   else if(who>=4u){let cv=Props[CIV_BASE30+who-4u];actor=cv.p.xyz;valid=cv.p.w==30.0&&cv.data.y>.5&&cv.data.y<2.5;candidate=5u;reach=min(10.0,vision);}
+   let d=length(actor.xz-z.p.xz);if(valid){nearActor=min(nearActor,d);}if(!valid||d>=min(best,reach)){continue;}
+   if(visible95(eye,actor+vec3f(0,.55,0),kind)){seen=true;best=d;visual=actor.xz;visibleVictim=candidate;}
+  }
+  var soundPoint=z.p.xz;let ring=ringHeard34(z.p.xz);
+  if(ring<6u){heard=true;soundPoint=S.noiseRing34[ring].xy;}
+  if(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w){heard=true;soundPoint=S.alarm.xy;}
+  var lure=false;var lureDistance=680.0/64.0;
+  if(kind<2.0){for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];let d=length(pipe.xy-z.p.xz);
+   if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&d<lureDistance){lureDistance=d;soundPoint=pipe.xy;heard=true;lure=true;}}}
+  if(lure){seen=false;atomicAdd(&C[71],1u);}
+  var prior=vec4f(z.sense13.z,z.sense13.w-4096.0,z.body.w,0);
+  if(z.sense13.w<=2048.0){prior=vec4f(z.p.xz,0,0);}
+  // Being hurt warrants a local search, not knowledge of an unseen attacker's current position.
+  if(z.extraData.y>.01&&prior.z<=0.0){prior=vec4f(z.p.xz,4,0);}
+  let known=knowledge95(prior,seen,visual,heard,soundPoint,dt);
+  z.body.w=known.z;z.v.w=known.z;z.sense13.z=known.x;z.sense13.w=select(0.0,known.y+4096.0,known.z>0.0);
+  awake=known.z>0.0;goalPoint=known.xy;sight=seen;victim=select(6u,visibleVictim,seen);if(lure){victim=4u;}
+  searching=awake&&!seen&&!lure&&length(goalPoint-z.p.xz)<1.4;
+  if(searching){let angle=rnd(i*313u)*6.2831853+S.aux.x*.35;goalPoint+=vec2f(cos(angle),sin(angle))*1.25;}
+  // The announced HOA boss is an intentional hunter; ordinary infected never inherit this exception.
+  if(z.special13.x==777.0){goalPoint=S.pos.xz;victim=0u;awake=true;z.v.w=99.0;sight=visible95(eye,S.pos.xyz+vec3f(0,.55,0),kind);searching=false;}
+  if(!awake&&distance>52.0&&nearActor>15.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
+  targetDistance=length(goalPoint-z.p.xz);direct=safe2(goalPoint-z.p.xz);
+  dir=direct;if(awake&&!seen&&z.special13.x!=777.0){dir=investigate95(z.p.xyz,goalPoint,z.v.xy,kind,i);}
+  if(awake){atomicAdd(&C[53],1u);}
+ }else{
+ victim=0u;goalPoint=S.pos.xz;var nearTeam=999.0;var nearestTarget=distance;
  for(var ti=0u;ti<3u;ti++){let ally=S.team7[ti];if(ally.vital.z<.5){continue;}let d=length(ally.p.xz-z.p.xz);nearTeam=min(nearTeam,d);if(d<min(nearestTarget,12.0)){nearestTarget=d;goalPoint=ally.p.xz;victim=ti+1u;}}
  // Maple Street neighbors are on the menu too (sandbox only). Their bites are applied by the civilian pass, so victim 5 skips the squad damage path.
  if(u.run.x>5.0&&u.run.y<.5){for(var ck=0u;ck<12u;ck++){let cv=Props[CIV_BASE30+ck];if(cv.p.w!=30.0||cv.data.y<.5||cv.data.y>2.5){continue;}let d=length(cv.p.xz-z.p.xz);if(d<min(nearestTarget,10.0)){nearestTarget=d;goalPoint=cv.p.xz;victim=5u;}}}
  // Preparation gates the director, not nearby actors. Awareness needs sight, sound or injury.
  let ring34=ringHeard34(z.p.xz);z.v.w=max(0.0,z.v.w-dt);if(z.extraData.y>.01||ring34<6u||(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w)){z.v.w=10.0;}
  if(distance>52.0&&nearTeam>15.0&&z.v.w<=0.0){z.v.x=0.0;z.v.y=0.0;atomicAdd(&C[7],1u);B[i]=z;return;}
- var awake=z.v.w>0.0;
+ awake=z.v.w>0.0;
  if(distance>4.0&&victim!=5u){let angle=rnd(i*29u)*6.2831853;goalPoint+=vec2f(cos(angle),sin(angle))*(.8+rnd(i*71u)*1.0);}
 
  // Heard but not hunting: infected far from the squad walk to the sound along the heard lane, around walls and through breaches.
- var heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}
+ heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;heard=true;}
    // Landed pipe noise attracts only common and runner infected, through walls.
   var lureDistance=680.0/64.0;
@@ -1808,22 +1876,23 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
 
  // Sandbox: remember where a noise was heard (sense13.zw, z offset by 4096 to mark it valid). Once it fades, an awake infected
  // within 10 m of that spot and more than 18 m from the squad circles it slowly until awareness runs out, instead of homing on the player.
- var searching=false;
+ searching=false;
  if(u.run.x>5.0&&u.run.y<.5){
   if(heard){z.sense13=vec4f(z.sense13.xy,goalPoint.x,goalPoint.y+4096.0);}
   else if(z.v.w<=0.0){z.sense13.w=0.0;}
   else if(z.sense13.w>2048.0&&distance>18.0&&victim==0u){let spot=vec2f(z.sense13.z,z.sense13.w-4096.0);if(length(spot-z.p.xz)<10.0){let ang=rnd(i*313u)*6.2831853+S.aux.x*.35;goalPoint=spot+vec2f(cos(ang),sin(ang))*(1.5+rnd(i*577u)*3.5);searching=true;}}
  }
  if(z.special13.x==777.0){goalPoint=S.pos.xz;victim=0u;}// The HOA President only wants the player.
- let toTarget=goalPoint-z.p.xz;let targetDistance=length(toTarget);let direct=safe2(toTarget);var dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));if(z.special13.x==777.0){dir=direct;}
+ let toTarget=goalPoint-z.p.xz;targetDistance=length(toTarget);direct=safe2(toTarget);dir=flowDirection(z.p.xz,direct,z.v.xy,i,select(NAV_OFFSET,HEARD_OFFSET,heard||victim==5u));if(z.special13.x==777.0){dir=direct;}
  // No route to what was heard (or already there): fall back to hunting the squad.
  if((heard||victim==5u)&&all(dir==vec2f(0))&&targetDistance>1.2){dir=flowDirection(z.p.xz,direct,z.v.xy,i,NAV_OFFSET);}
  // Short direct line-of-sight segments preserve natural motion inside a room.
- var sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));let bodySide=vec2f(-direct.y,direct.x)*footprint(kind);for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||solid(vec3f(probe.x+bodySide.x,.36,probe.y+bodySide.y))>0u||solid(vec3f(probe.x-bodySide.x,.36,probe.y-bodySide.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
+ sight=targetDistance<24.0;let steps=min(48u,u32(ceil(targetDistance*2.0)));let bodySide=vec2f(-direct.y,direct.x)*footprint(kind);for(var k=1u;sight&&k<steps;k++){let probe=z.p.xz+direct*f32(k)*.5;if(solid(vec3f(probe.x,.55,probe.y))>0u||solid(vec3f(probe.x+bodySide.x,.36,probe.y+bodySide.y))>0u||solid(vec3f(probe.x-bodySide.x,.36,probe.y-bodySide.y))>0u||(atomicLoad(&O[DYNAMIC_OFFSET+dynCell(probe)])&4u)!=0u){sight=false;break;}}
  if(sight&&!searching&&targetDistance<select(480.0/64.0,780.0/64.0,z.v.w>0.0)){z.v.w=10.0;awake=true;}
  if(searching){dir=direct;}
  if(awake){atomicAdd(&C[53],1u);}
  if(sight||targetDistance<1.2){dir=direct;}
+ }
  // Deterministic, short ambient walks with pauses; reuse existing collision and crowd budgets.
  let wanderClock=S.aux.x+rnd(i*733u)*19.0;let wanderTurn=u32(floor(wanderClock/5.5));
  if(!awake){let angle=rnd(i*919u+wanderTurn*197u)*6.2831853;dir=vec2f(cos(angle),sin(angle));}
@@ -1852,7 +1921,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
    else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13=vec4f(direct,z.special13.zw);}
   }
   if(kind==5.0){
-   if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity=vec2f(0);if(z.combat13.w==0.0){atomicAdd(&C[55],1u);z.combat13.z=19.0;}}
+   if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity=vec2f(0);if(z.combat13.w==0.0){if(mapleEasy94()){atomicMax(&C[55],navcell(z.p.xz)+1u);}else{atomicAdd(&C[55],1u);}z.combat13.z=19.0;}}
    else if(awake&&sight&&victim<4u&&targetDistance<470.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=1.8;z.combat13.z=20.0;}
   }
   // Spitter projectile settles into a separately owned acid pool.
@@ -2885,7 +2954,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     if(hazard.w>0.0){goal=6u;let away=safe2(a.p.xz-hazard.xz+vec2f(.02*f32(id+1u),.03));destination7=vec4f(hazard.xz+away*hazard.w,0,0);destination7=vec4f(destination7.x,0,destination7.y,-1);goalScore=1500.0;}
     // Visible special windups and danger to the current patient outweigh mere proximity.
     var threat=-1;var score=-1e9;var pressure=0.0;
-    let lx2=clamp(i32(floor(a.p.x-4.0+HALF)),0,191);let lz2=clamp(i32(floor(a.p.z-4.0+HALF)),0,191);let hx2=clamp(i32(floor(a.p.x+4.0+HALF)),0,191);let hz2=clamp(i32(floor(a.p.z+4.0+HALF)),0,191);for(var cz2=lz2;cz2<=hz2;cz2++){for(var cx2=lx2;cx2<=hx2;cx2++){var it2=H[u32(cx2+192*cz2)];for(var g2=0u;g2<256u&&it2>0u;g2++){let j=it2-1u;it2=H[ZHEADS+j];let z=Z[j];if(z.p.w<=0.0){continue;}let d=distance(z.p.xz,a.p.xz);if(d<4.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.03)){pressure+=select(1.0,3.0,z.extraData.z==6.0);}if(d>760.0/64.0||(z.v.w<=0.0&&d>220.0/64.0)){continue;}
+    let lx2=clamp(i32(floor(a.p.x-4.0+HALF)),0,191);let lz2=clamp(i32(floor(a.p.z-4.0+HALF)),0,191);let hx2=clamp(i32(floor(a.p.x+4.0+HALF)),0,191);let hz2=clamp(i32(floor(a.p.z+4.0+HALF)),0,191);for(var cz2=lz2;cz2<=hz2;cz2++){for(var cx2=lx2;cx2<=hx2;cx2++){var it2=H[u32(cx2+192*cz2)];for(var g2=0u;g2<256u&&it2>0u;g2++){let j=it2-1u;it2=H[ZHEADS+j];let z=Z[j];if(z.p.w<=0.0){continue;}let d=distance(z.p.xz,a.p.xz);if(d<4.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.03)){pressure+=select(1.0,3.0,z.extraData.z==6.0);}if(d>760.0/64.0||(z.v.w<=0.0&&d>select(220.0/64.0,1.6,mapleEasy94()))){continue;}
      var s=20.0-d;if(S.orders.x>.5&&S.order13.x==3.0&&S.order13.z==f32(id)&&S.order13.y==f32(j)){s+=80.0;}if(z.extraData.z==4.0&&z.special13.w>=0.0){s+=100.0;}if(id==2u&&z.extraData.z>=2.0&&z.extraData.z!=4.0){s+=8.0;}if(z.extraData.z==5.0&&z.extraData.w>.05){s+=30.0;}if(z.extraData.z==6.0&&z.extraData.w>.05){s+=20.0;}if(goal==2u||goal==1u){s+=max(0.0,7.0-distance(z.p.xz,destination7.xz))*3.0;}
      if(s<=score){continue;}if(clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.60,0)*zScale(z.extraData.z),.035)){score=s;threat=i32(j);}
     }}}
@@ -2940,7 +3009,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
    }}
   // Fire is concurrent with moving/covering, but not healing or reviving. Downed pistols remain useful.
   var destination7=i32(a.memory.x);if(destination7<0||destination7>=i32(u.config.x)||Z[u32(max(0,destination7))].p.w<=0.0){destination7=-1;}
-  if(a.p.w<=0.0&&a.look.z<=0.0){var best=10.0;let lx3=clamp(i32(floor(a.p.x-10.0+HALF)),0,191);let lz3=clamp(i32(floor(a.p.z-10.0+HALF)),0,191);let hx3=clamp(i32(floor(a.p.x+10.0+HALF)),0,191);let hz3=clamp(i32(floor(a.p.z+10.0+HALF)),0,191);for(var cz3=lz3;cz3<=hz3;cz3++){for(var cx3=lx3;cx3<=hx3;cx3++){var it3=H[u32(cx3+192*cz3)];for(var g3=0u;g3<256u&&it3>0u;g3++){let j=it3-1u;it3=H[ZHEADS+j];let z=Z[j];let d=distance(z.p.xz,a.p.xz);if(z.p.w>0.0&&d<best&&clearSegment7(a.p.xyz+vec3f(0,.22,0),z.p.xyz+vec3f(0,.6,0),.03)){best=d;destination7=i32(j);}}}}}
+  if(a.p.w<=0.0&&a.look.z<=0.0){var best=10.0;let lx3=clamp(i32(floor(a.p.x-10.0+HALF)),0,191);let lz3=clamp(i32(floor(a.p.z-10.0+HALF)),0,191);let hx3=clamp(i32(floor(a.p.x+10.0+HALF)),0,191);let hz3=clamp(i32(floor(a.p.z+10.0+HALF)),0,191);for(var cz3=lz3;cz3<=hz3;cz3++){for(var cx3=lx3;cx3<=hx3;cx3++){var it3=H[u32(cx3+192*cz3)];for(var g3=0u;g3<256u&&it3>0u;g3++){let j=it3-1u;it3=H[ZHEADS+j];let z=Z[j];let d=distance(z.p.xz,a.p.xz);if(z.p.w>0.0&&d<best&&(!mapleEasy94()||z.v.w>0.0||d<1.6)&&clearSegment7(a.p.xyz+vec3f(0,.22,0),z.p.xyz+vec3f(0,.6,0),.03)){best=d;destination7=i32(j);}}}}}
   if(id==1u&&S.botFuel15[id]<.5&&a.p.w>0.0&&destination7>=0&&a.pack.z==0.0){let d=distance(a.p.xz,Z[u32(destination7)].p.xz);var desired=weapon;if(d<400.0/64.0&&mag.y+reserve.y>0.0){desired=1u;}else if(d>530.0/64.0&&mag.x+reserve.x>0.0){desired=0u;}if(desired!=weapon){mag[weapon]=a.pack.x;weapon=desired;mag.w=f32(desired);a.pack.x=mag[weapon];a.pack.y=gunStats14(weapon,S.upgrades14[id+1u]).x;a.look.z=max(.15,a.look.z);}}
    let busy=(((u.run.x==3.0&&S.botPour15[id]>0.0)||((u.run.x==4.0||u.run.x==5.0)&&a.ai.x==7.0&&distance(a.p.xz,S.orders.yz)<100.0/64.0))&&S.orders.x>.5&&S.order13.z==f32(id)&&S.order13.x==5.0)||a.ai.y==4.0||a.ai.y==5.0||a.ai.y==6.0||a.ai.y==7.0||(S.botFuel15[id]>.5&&a.ai.x==7.0&&distance(a.p.xz,u.goals.xy)<115.0/64.0);
   if(!busy&&destination7>=0&&a.p.w>0.0&&S.botFuel15[id]<.5&&weapon==2u&&mag.x>0.0){mag.z=a.pack.x;weapon=0u;mag.w=0.0;a.pack.x=mag.x;a.pack.y=gunStats14(0u,S.upgrades14[id+1u]).x;a.pack.z=0.0;a.look.z=max(.15,a.look.z);}

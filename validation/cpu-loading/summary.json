@@ -1,0 +1,682 @@
+{
+  "runtimeSha256": "71b8f1b8c1966d842d765f5c7adc58265d391eb4ac5af73a1665b6b7760fb43a",
+  "method": "CPU/source and mocked-startup tests only, no browser or GPU execution.",
+  "tests": 96,
+  "passed": 96,
+  "failed": 0,
+  "results": [
+    {
+      "test": "tests/align38.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.26,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/arrow81.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.95,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/audio62.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.93,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/audit-fixes25.test.cjs",
+      "exitCode": 0,
+      "seconds": 14.82,
+      "checks": 9,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bazooka77.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.06,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bleed59.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.29,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bmovie52.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.23,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/boss66.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.97,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bot-objective-priority.test.cjs",
+      "exitCode": 0,
+      "seconds": 12.33,
+      "checks": 247,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bots33.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.17,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/bots48.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.75,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/burnout-fuel.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.08,
+      "checks": 18,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/campaign-chain.test.cjs",
+      "exitCode": 0,
+      "seconds": 8.71,
+      "checks": 24,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/card60.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.31,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/checkpoint-readback.test.cjs",
+      "exitCode": 0,
+      "seconds": 18.16,
+      "checks": 15,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/cheese49.test.cjs",
+      "exitCode": 0,
+      "seconds": 11.28,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/civ30.test.cjs",
+      "exitCode": 0,
+      "seconds": 22.87,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/closer87.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.1,
+      "checks": 2,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/code-red-navigation.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.32,
+      "checks": 18,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/code-red.test.cjs",
+      "exitCode": 0,
+      "seconds": 13.1,
+      "checks": 53,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/collapse-bindings.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.2,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/combo82.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.8,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/coop74.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.79,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/crush31.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.87,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/deadweight-navigation.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.34,
+      "checks": 23,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/deadweight.test.cjs",
+      "exitCode": 0,
+      "seconds": 27.24,
+      "checks": 59,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/director88.test.cjs",
+      "exitCode": 0,
+      "seconds": 3.06,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/director90.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.51,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/downed-crawl.test.cjs",
+      "exitCode": 0,
+      "seconds": 8.92,
+      "checks": 95,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/eaten58.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.33,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/edge69.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.27,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/ext68.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.26,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/extraction-hardware.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.21,
+      "checks": 43,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/extraction-hold.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.98,
+      "checks": 80,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/fight80.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.15,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/fire78.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.75,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/first83.test.cjs",
+      "exitCode": 0,
+      "seconds": 3.53,
+      "checks": 2,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/follow37.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.08,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/gore51.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.49,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/gorefloor57.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.32,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/grace86.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.13,
+      "checks": 2,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/heal-validity.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.6,
+      "checks": 45,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/height67.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.54,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/hunt41.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.22,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/kick55.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.22,
+      "checks": 2,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/last-train.test.cjs",
+      "exitCode": 0,
+      "seconds": 39.57,
+      "checks": 62,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/leaper-pin.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.36,
+      "checks": 85,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/levels73.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.17,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/loading-progress.test.cjs",
+      "exitCode": 0,
+      "seconds": 9.72,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/mercer-restoration-regression.test.cjs",
+      "exitCode": 0,
+      "seconds": 6.72,
+      "checks": 33,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/mercer-restoration.test.cjs",
+      "exitCode": 0,
+      "seconds": 12.23,
+      "checks": 29,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/mercer-source-blast.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.58,
+      "checks": 11,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/mercer-support-lifecycle.test.cjs",
+      "exitCode": 0,
+      "seconds": 4.8,
+      "checks": 14,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/monsters61.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.31,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/music79.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.33,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/navigation.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.93,
+      "checks": 24,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/neighbor-body-clearance.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.82,
+      "checks": 0,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/neighbor-clearance-fixtures.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.58,
+      "checks": 9,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/online75.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.42,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/overlap56.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.27,
+      "checks": 2,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/panel76.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.4,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/panic40.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.98,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/perf27.test.cjs",
+      "exitCode": 0,
+      "seconds": 4.84,
+      "checks": 8,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/pickups65.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.61,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/polish46.test.cjs",
+      "exitCode": 0,
+      "seconds": 25.49,
+      "checks": 7,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/quests71.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.88,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/ramp64.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.89,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/rescue32.test.cjs",
+      "exitCode": 0,
+      "seconds": 4.64,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/revive-priority.test.cjs",
+      "exitCode": 0,
+      "seconds": 8.54,
+      "checks": 56,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/reward50.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.91,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/ring36.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.12,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/safe44.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.04,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/sandbox26.test.cjs",
+      "exitCode": 0,
+      "seconds": 23.05,
+      "checks": 7,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/scare84.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.79,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/search39.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.1,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/shelter54.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.02,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/slots85.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.17,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/soda53.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.22,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/squirt63.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.51,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/steer28.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.14,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/steer29.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.08,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/sunny43.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.3,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/survivors72.test.cjs",
+      "exitCode": 0,
+      "seconds": 3.71,
+      "checks": 3,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/ui34.test.cjs",
+      "exitCode": 0,
+      "seconds": 5.06,
+      "checks": 9,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/ui35.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.59,
+      "checks": 6,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/victims47.test.cjs",
+      "exitCode": 0,
+      "seconds": 19.7,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/voice70.test.cjs",
+      "exitCode": 0,
+      "seconds": 2.05,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/voicefiles89.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.94,
+      "checks": 4,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/wgsl-logical-grouping.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.44,
+      "checks": 19,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/wgsl-source.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.76,
+      "checks": 0,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/wgsl-swizzle-assignment.test.cjs",
+      "exitCode": 0,
+      "seconds": 1.69,
+      "checks": 9,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/yard45.test.cjs",
+      "exitCode": 0,
+      "seconds": 34.15,
+      "checks": 7,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/downed-crawl-fixture.test.cjs",
+      "exitCode": 0,
+      "seconds": 0.8,
+      "checks": 11,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/hardware-route.test.cjs",
+      "exitCode": 0,
+      "seconds": 3.32,
+      "checks": 0,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/maple42.test.cjs",
+      "exitCode": 0,
+      "seconds": 9.47,
+      "checks": 5,
+      "failedChecks": []
+    },
+    {
+      "test": "tests/neighbor-clearance-sweep-gap.cjs",
+      "exitCode": 0,
+      "seconds": 2.98,
+      "checks": 0,
+      "failedChecks": []
+    }
+  ],
+  "note": "Three stale metadata/source-text assertions were updated after the first run, then affected suites rerun on identical runtime bytes. Includes explicit swept-clearance regression."
+}

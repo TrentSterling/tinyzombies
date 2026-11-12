@@ -1,0 +1,6 @@
+{
+  "source": "Original Tiny Zombies local handoff, tz_voice_batch.py, plus original trontbot4 dsp.py",
+  "original_recipe_sha256": "2714194b61d949adc32f563585a39a3521681e1dd0bb7116813447baebe8ef27",
+  "original_dsp_sha256": "2d0b58cb1ccceb7b3a58790443242c1e2e79a6049412fa3159c3299f402ee2e4",
+  "changes": "Only import path made portable; DSP values unchanged."
+}

@@ -1,0 +1,28 @@
+{
+  "hash": "879b4e28528cb29205f5c23dcd3a436d473974b0f7140bccee73da91929ecdd8",
+  "method": "Readback-assisted ordinary inputs. No source or GPU state writes, Standard default.",
+  "errors": [],
+  "samples": [
+    {
+      "guide": {
+        "phase": "exit",
+        "x": -60.25,
+        "z": 52,
+        "label": "SAFE ROOM EXIT",
+        "instruction": "WASD to the door. Press E to open it."
+      },
+      "position": [
+        -64,
+        0,
+        52,
+        100
+      ],
+      "elapsed": 0.0500333346426487,
+      "saved": 0,
+      "following": 0,
+      "hard": false
+    }
+  ],
+  "visualObservation": "Standard ordinary-key exit triggered mission2 at7.98s. Screenshot confirmed radio text explicitly says starting safe room, matching first-follower destination.",
+  "limits": "Readback-assisted keyboard steering; no game-state writes. Full rescue and listening were not completed at this checkpoint."
+}

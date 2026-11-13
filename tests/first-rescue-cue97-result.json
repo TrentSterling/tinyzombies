@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "kind": "CPU production-host quest/announcement regression, not audio listening or gameplay",
+  "sourceSha256": "879b4e28528cb29205f5c23dcd3a436d473974b0f7140bccee73da91929ecdd8",
+  "checks": [
+    "First-rescue subtitle matches starting safe room",
+    "Wrong recorded line and fallback TTS are not called",
+    "Follower marker uses same starting room",
+    "Later shelter voiced cue preserved",
+    "Retry opening voice preserved"
+  ],
+  "identicalShaders": 43
+}

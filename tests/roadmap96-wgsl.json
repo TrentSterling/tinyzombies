@@ -1,0 +1,362 @@
+{
+  "method": "Naga WebAssembly parseWgsl followed by validate, CPU-only, exact composed runtime strings from deadends-cpu-host. No GPU execution or pipeline/device validation.",
+  "package": "naga-wasm@30.2.0",
+  "nagaVersion": "30.0.1",
+  "registryTarball": "https://registry.npmjs.org/naga-wasm/-/naga-wasm-30.2.0.tgz",
+  "packageIntegrity": "sha512-TNKjybMep7dUtmslyueiXMhZLa8Tr432/v0XUcbRfip0gb9liiiynoX8iLNcOkqK/8LaIoG+8HEy4LE6/y8R1w==",
+  "wasmSha256": "2a12b95c3db39533304d6dc5327c3abec936495acc90f0b81af948e0cb058a1e",
+  "nodeVersion": "v24.22.1",
+  "file": "C:\\Users\\trent\\tinyzombies-roadmap-20261113\\index.html",
+  "candidateSha256": "de4e9d29aa59902a7f79d626b14bc0549b04f478715af64fe4ef6c74e84c7e25",
+  "shadersChecked": 43,
+  "passed": true,
+  "controls": [
+    {
+      "name": "valid-component-write",
+      "expected": "pass",
+      "source": "@compute @workgroup_size(1) fn main() { var x=vec2f(1.,2.); x.x=3.; }",
+      "bytes": 69,
+      "sha256": "6d8ca16e68d8cb09cf842acaa375ea6e059d3e590736de40d1100cfba6de186f",
+      "parsed": true,
+      "validated": true,
+      "actual": "pass",
+      "passed": true
+    },
+    {
+      "name": "invalid-swizzle-write",
+      "expected": "parse",
+      "source": "@compute @workgroup_size(1) fn main() { var x=vec2f(1.,2.); x.xy=vec2f(3.,4.); }",
+      "bytes": 80,
+      "sha256": "0307f7644bde7dd7cb5146c79fa52a6cb5252397957b316ba8ca4c27c9b84bbf",
+      "parsed": false,
+      "validated": false,
+      "error": {
+        "kind": "parse",
+        "message": "invalid left-hand side of assignment",
+        "formatted": "error: invalid left-hand side of assignment\n  ┌─ wgsl:1:61\n  │\n1 │ @compute @workgroup_size(1) fn main() { var x=vec2f(1.,2.); x.xy=vec2f(3.,4.); }\n  │                                                             ^^^^ cannot assign to this expression\n  │\n  = note: WGSL does not support assignments to swizzles\n  = note: consider assigning each component individually\n\n"
+      },
+      "actual": "parse",
+      "passed": true
+    },
+    {
+      "name": "invalid-compute-discard",
+      "expected": "validation",
+      "source": "@compute @workgroup_size(1) fn main() { discard; }",
+      "bytes": 50,
+      "sha256": "a74fc4a13a49a3947522f7545493112976e1df1cc1a2517eaefa5a7052bf6537",
+      "parsed": true,
+      "validated": false,
+      "error": {
+        "kind": "validation",
+        "message": "Entry point main at Compute is invalid",
+        "formatted": "error: Entry point main at Compute is invalid\n = Uses operations forbidden at this stage\n\n"
+      },
+      "actual": "validation",
+      "passed": true
+    }
+  ],
+  "failures": [],
+  "shaders": [
+    {
+      "name": "aim3Shader",
+      "bytes": 53549,
+      "sha256": "1d38731b2d583ba2dbd2c108bb86c2ecd04736472350e32d1ba601b011bdb055",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "bullet3Shader",
+      "bytes": 58326,
+      "sha256": "01f12b47af2b4121e9169ca38c84c97f5d4a552207a1d4e214097be722af02be",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "beginShader",
+      "bytes": 63018,
+      "sha256": "408a74dd8c37b5b8c52088196deef367d4d62a953957523cbabdb2a87e2d185b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "mission5Shader",
+      "bytes": 83425,
+      "sha256": "c47659c53dc39a138ebacf3dfb191e659f1c173c754ac68fec2555df7fbff524",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "initShader",
+      "bytes": 49130,
+      "sha256": "d196d705f471a38e3137748e495a43cd79e887104aac6ad9a3ece1345e05c65a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "gridZShader",
+      "bytes": 45320,
+      "sha256": "11627a9f2a4fb61a4c2a7161973c08f5b148ee40c63a440bbf10960c41f95386",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "zombieShader",
+      "bytes": 78785,
+      "sha256": "4bac81349c544ac5cde143f8d0a0939d65640d40b395b077acbc012a462c5f32",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "worldShader",
+      "bytes": 49945,
+      "sha256": "3b5214eeb259e4a2b43d7451d80d9d3671df3f308ad1001621e29d29bb09f705",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "melee8Shader",
+      "bytes": 48222,
+      "sha256": "5cf01da24d25319025f5b17b56d7fed9385038bd941a857d2f386f07f9f2d267",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "fracture8Shader",
+      "bytes": 53989,
+      "sha256": "b7204fea4b67e136d793c0bbde4871b925d8a3e85743a6cad3ed0fab7966878b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "wreckBoxes8Shader",
+      "bytes": 46083,
+      "sha256": "061eda24387ec09b1123b97b7f4e87152766ef9afde04d2860b07b1078da22e9",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "prepareSpawnShader",
+      "bytes": 45324,
+      "sha256": "167461124d1bfd363eebfa2cbfdc3e32a8249791eef7a46159f8ea249436d344",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "spawnShader",
+      "bytes": 48649,
+      "sha256": "2c265da6eb1162982dcfe677c5fb4950e1a141441dfe1fbece0ffb93b957fb2c",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "fx6Shader",
+      "bytes": 48678,
+      "sha256": "6f2b5d96a2070ae7fe9b59a197f50815ad7693606c504f9ca0999f792054f30b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "integrateShader",
+      "bytes": 49817,
+      "sha256": "e905232e4b803ae1ea65161fd48875765d01b9444cd5f993e35d7f54446f4959",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "gridPShader",
+      "bytes": 45312,
+      "sha256": "b0108cce0281c75bfabbb9116e7b9cb3bf51711ec68810fd6968af225da8a7c5",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "solveShader",
+      "bytes": 49056,
+      "sha256": "269ca0a7d7d10febb2ba2bed348cae82dfc89f9dc92850f15806338639d5017f",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "boxesShader",
+      "bytes": 88314,
+      "sha256": "74c02d40b55350315621911a13af2140b36d0c01780e4e5cc0b0e5cfd7fe90df",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "civilians30Shader",
+      "bytes": 53361,
+      "sha256": "cbde7507d3927e0fb61a2d2bd162d0c01770ec5b128d4a596ac046dd7a94ab26",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "crush30Shader",
+      "bytes": 45651,
+      "sha256": "e7325450eaae0c0f4237406c16327942e31ff671bc6842a06763f782662303d5",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "finalizeShader",
+      "bytes": 45103,
+      "sha256": "c42b62823d4a0da0052882a893421ecc211e47f291610c37ebecbe6c6db069cd",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "buddyShader",
+      "bytes": 82844,
+      "sha256": "bb57be440c03bd5f3bbe71088d9288791aa031de609b699bec2553f91bc981f8",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "squadNav7Shader",
+      "bytes": 54104,
+      "sha256": "a3c2a57132642917f428d3b70eefa582d2a99f415409514df282907b74a0031b",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "doors7Shader",
+      "bytes": 48520,
+      "sha256": "3c3bd355102c6d00aad084869335f6ecd51111e02f91a36a414cfecc8057acff",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "crowdShader",
+      "bytes": 48816,
+      "sha256": "5c2bac569fbf86b4dba23ec43ee8c3f1b23dc29a71b535b5a2c9cb5243589810",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "dynamicShader",
+      "bytes": 46235,
+      "sha256": "bd872707afb55b05bfb5be8e393c202be20f9c566965b555e72e3c3dcc871149",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "lightsShader",
+      "bytes": 46926,
+      "sha256": "b399453b9853643c757073b0ad3d9d902c6e3ecdbbc26193e9c29c8e2d57a4b9",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "lightTilesShader",
+      "bytes": 543,
+      "sha256": "bc5df3a2e498735a76a7248d486b0e9edc2d5af4d636d54ab14d89a74988ed9a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "navInitShader",
+      "bytes": 49131,
+      "sha256": "8bc67848bf44dfa169ae03f338fc7afea027888f2afc02c5c252ae0ec56b2a90",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "navRelaxShader",
+      "bytes": 45897,
+      "sha256": "c5bd602021cae22af3fbbcb38fe70324df96a5954dc23621ccc424ca51a1c347",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "navPublishShader",
+      "bytes": 45264,
+      "sha256": "68991e2a67613eac321ef87064073434d99833395871aa44a0ffa80cd512b425",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "groupClearShader",
+      "bytes": 45071,
+      "sha256": "285a75d0dbc948ff5fd9e4e6ddae5dfca20235c6576fb54824a846c5ad66b846",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "supportShader",
+      "bytes": 45222,
+      "sha256": "40d9fbe2449ab981d565d5ef7e503f99a67fa0cbdf5571042e8834027ccac6d7",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "collapseShader",
+      "bytes": 45394,
+      "sha256": "06d60c69e948ad1f41af8148424e6b5d4614beef37d7fb0c772cf4fa2126b9f6",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "propsShader",
+      "bytes": 55245,
+      "sha256": "68651d347de3dfe8ebef468ab70fd6428d0c4f1bd78aa251e52d5effdac98671",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "dripShader",
+      "bytes": 45500,
+      "sha256": "7e4ada825a71e2ad08cad04705125768953ac4f5fd047f790300c3dbe7ca2867",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "meshResetShader",
+      "bytes": 45279,
+      "sha256": "1d5dd69c3d9c7cc837de32775d12901f5187f26c0ce5cbbcf1c79937ee17f803",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "meshShader",
+      "bytes": 46318,
+      "sha256": "1e3cb6776d73a463b3fd8da9d2a063f108fa969b931914f8128195278aa6eca3",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "faceBuildShader",
+      "bytes": 46979,
+      "sha256": "65a83c8914779deab284bb09f54a869fd1ea8fb582fdec255b7a442c0da34def",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "faceFinalizeShader",
+      "bytes": 45076,
+      "sha256": "ec5c0f21526a64ece5ba0cc945af2e27ad7852e5cf1b6601ca4b9a9ea43b7b36",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "renderShader",
+      "bytes": 58883,
+      "sha256": "f7e5d7a84c8bdb7097e0c75baac1e6b782dcce390edcfe2c605f2e89d0d7b76a",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "postShader",
+      "bytes": 941,
+      "sha256": "5c9823c9249b9f6e6d636c748c6eed105003f00f72cf9c3448356b2bbf7be997",
+      "parsed": true,
+      "validated": true
+    },
+    {
+      "name": "uiShader",
+      "bytes": 7215,
+      "sha256": "8074e5b183151945e45c15849aa008e2035ee5b106e4e8c33c3f80cf6ed0e8f9",
+      "parsed": true,
+      "validated": true
+    }
+  ]
+}

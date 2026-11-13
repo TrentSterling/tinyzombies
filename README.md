@@ -6,6 +6,18 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 **Maple Street is the game now.** The plain URL boots the open, breakable suburb with neighbors to rescue, in the spirit of Zombies Ate My Neighbors. The old DEAD ENDS chapters are still there behind [`?deadends`](https://tront.xyz/tinyzombies/?deadends) (or `?campaign`), and a saved chapter checkpoint only loads there.
 
+## First rescue and opt-in Hard director, November 13
+
+Standard is still the default. The in-world marker now guides you to the safe-room door (E), the nearest waiting neighbor, and back to safety once they follow. The starting safe room accepts rescued neighbors as well as the fallout shelter. A separated follower gets a named return marker instead of the game silently directing you to another rescue.
+
+Standard starts with fewer active infected, protects waiting neighbors for five minutes, gradually increases arrival pressure, and delays the first HOA boss to six minutes. On the title screen, **F4** opts into Hard's stronger waves and shorter recovery breaks; `?hard` also opts in. Low health and crowd caps hold new arrivals in both modes. Hard does not silently reduce your weapon stock or health protections.
+
+Soda cans now distract common infected and runners within 18 metres, with a 5.5-second fuse. Gunfire still leaves a location to investigate, so throwing a can away from your route can open a quieter way past a crowd. Specials ignore that lure. Spitters mark a fixed acid landing area that flushes you from cover; brutes show a locked charge lane aimed slightly ahead of a moving player. Sidestep instead of retreating straight along it.
+
+The escort fix crosses doorway portals instead of aiming forever at the boundary, checks the whole formation body, and never retries an already-blocked straight path. Existing conservative routing can still require going back for a separated neighbor.
+
+See [qualification and rollback](validation/roadmap96-release.md). The 100 matched Chatterbox clips, 100 Kokoro fallback clips, startup instrumentation, legacy campaign modes, and existing save keys are unchanged.
+
 ## Counted startup progress, November 5
 
 The loading screen shows the percentage and completed step count for the real startup plan: 60 steps at standard quality, or 61 with the optional low-cost rendering stage. World generation, each of the 40 compute pipelines, renderer shaders/pipelines, GPU setup and the first submitted frame are counted only after their work completes. The bar does not estimate remaining time; shader compilation can take longer on some hardware. Optional audio downloads continue independently and do not block play.

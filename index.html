@@ -4229,7 +4229,7 @@ function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
 const QUESTS65=[
  {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},
- {title:'GOOD NEIGHBOR',goal:()=>rescueGuide96()?.instruction||'Find a neighbor calling for help',done:()=>(counters[98]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
+ {title:'GOOD NEIGHBOR',goal:()=>rescueGuide96()?.instruction||'Find a neighbor calling for help',done:()=>(counters[98]|0)>=1,radio:'Find a neighbor calling for help. Walk up to them, then bring them back inside your starting safe room.',textOnly:true},
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
  {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
@@ -4239,7 +4239,7 @@ const quest65={i:0,epoch:-1,world:null,bonus:0,banner:'',until:0,radio:'',radioU
 function questHUD65(k){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16){Object.assign(q,{i:0,epoch:runEpoch16,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
  if(!q.radio){q.radio=QUESTS65[0].radio;q.radioUntil=time+7;announce65(q.radio);}
  while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');
-  if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
+  if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;if(!QUESTS65[q.i].textOnly)announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
  const x=width-308*k,y=18*k+clamp9(height*.23,136,180)+26*k;// just under the minimapif(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(8,10,18,.72)';c.fillRect(x*s,y*s,296*k*s,58*k*s);c.fillStyle='#f6d43a';c.fillRect(x*s,y*s,4*k*s,58*k*s);c.restore();}
  // Every line shrinks to fit the 296 px panel (or the screen), so long missions never run off the right edge.
  const fit=(s,px,w)=>Math.min(px,px*w/Math.max(1,textWidth9(s,px)));

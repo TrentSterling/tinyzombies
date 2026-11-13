@@ -1,0 +1,72 @@
+{
+  "sha256": "879b4e28528cb29205f5c23dcd3a436d473974b0f7140bccee73da91929ecdd8",
+  "method": "Ordinary controls only, Standard default, WASD walk and E start door; no player firing, sprint, recruiting intent, state writes, time advance, or altered game source. Offline geometry and read-only state assist navigation. Squad retains its ordinary autonomous behavior.",
+  "success": true,
+  "wallSeconds": 38.507,
+  "errors": [],
+  "end": {
+    "player": [
+      -63.93876266479492,
+      0,
+      51.90864944458008,
+      100
+    ],
+    "director": {
+      "difficulty": "standard",
+      "opening": true,
+      "t": 38.48,
+      "state": "RELAX",
+      "stateAge": 0.3,
+      "intensity": 0,
+      "awake": 12,
+      "alive": 332,
+      "held": 1708,
+      "near": 0,
+      "close": 2,
+      "hp": 100,
+      "dpm": 0,
+      "kpm": 12.5,
+      "combo": 0,
+      "mult": 1,
+      "waiting": 12,
+      "following": 0,
+      "saved": 0,
+      "lost": 0,
+      "boss": "-",
+      "music": "CALM",
+      "rate": 0,
+      "action": "HOLD (breather)",
+      "peaks": 1,
+      "events": [
+        [
+          35.1,
+          "PEAK",
+          "35 s wave limit"
+        ],
+        [
+          38.1,
+          "FADE",
+          "peak held 3 s"
+        ],
+        [
+          38.2,
+          "RELAX",
+          "pressure release"
+        ]
+      ],
+      "share": {
+        "BUILD-UP": 0.911,
+        "PEAK": 0.078,
+        "FADE": 0.002,
+        "RELAX": 0.009
+      }
+    },
+    "joined": 0,
+    "saved": 0,
+    "lost": 0,
+    "playerShots": 0
+  },
+  "minNeighborDistance": 6.305599138584159,
+  "playerFired": 0,
+  "qualification": "Ordinary default Standard seed73129, readback-assisted route, no recruit or player firing. Full evacuation and individual detection-break not tested."
+}

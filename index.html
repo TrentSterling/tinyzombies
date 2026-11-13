@@ -3753,14 +3753,19 @@ function updateMapleAudio62(){if(!SANDBOX25||!settings.started||settings.paused)
 // B-movie announcer: the browser's own speech voices read the big Maple Street moments in a low, hammy trailer voice. One line at a
 // time; priority lines cut in. Muted with the game (M); silently off where speech synthesis is missing.
 const voice65={last:'',at:-9,ok:typeof speechSynthesis!=='undefined'&&typeof SpeechSynthesisUtterance!=='undefined',lines:0};
-// Recorded voices: lines rendered offline (Kokoro + DSP from assets/audio/voice/lines.csv) play from assets/audio/voice/<id>.ogg when
-// index.json lists the id (the line's slug); anything missing, or undecodable, falls back to speech synthesis. All listed files preload
-// once audio is unlocked, so the first play of a line is never late.
+// Recorded voices: role-matched Chatterbox + original Tiny DSP is the default.
+// ?voice=kokoro selects the preserved original bank. Missing/undecodable replacement
+// clips retry Kokoro before the existing speech-synthesis fallback.
+const voiceChoice70=new URLSearchParams(location.search).get('voice');
+const voiceBank70=['voice','kokoro'].includes(voiceChoice70)?'voice':voiceChoice70==='chatterbox-draft'?'chatterbox':'chatterbox-matched';
 const voiceFiles70={ids:null,buf:new Map(),started:false,src:null,until:-9};
 const voiceSlug70=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,64);
 function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.started=true;
- try{fetch('assets/audio/voice/index.json',{credentials:'same-origin'}).then(r=>r.ok?r.json():[]).then(a=>{v.ids=new Set(Array.isArray(a)?a:[]);
-  for(const id of v.ids)fetch('assets/audio/voice/'+id+'.ogg',{credentials:'same-origin'}).then(r=>{if(!r.ok)throw Error(r.status);return r.arrayBuffer();}).then(x=>audio.decodeAudioData(x)).then(b=>v.buf.set(id,b)).catch(()=>{});}).catch(()=>{v.ids=new Set();});}catch(e){v.ids=new Set();}}
+ const list=async bank=>{const r=await fetch('assets/audio/'+bank+'/index.json',{credentials:'same-origin'});if(!r.ok)throw Error(r.status);const a=await r.json();if(!Array.isArray(a)||!a.length)throw Error('Empty voice index');return a;};
+ const clip=async(bank,id)=>{const r=await fetch('assets/audio/'+bank+'/'+id+'.ogg',{credentials:'same-origin'});if(!r.ok)throw Error(r.status);return audio.decodeAudioData(await r.arrayBuffer());};
+ (async()=>{let bank=voiceBank70,ids;try{ids=await list(bank);}catch(e){if(bank==='voice')throw e;bank='voice';ids=await list(bank);}v.ids=new Set(ids);
+  for(const id of v.ids)clip(bank,id).catch(e=>{if(bank==='voice')throw e;return clip('voice',id);}).then(b=>v.buf.set(id,b)).catch(()=>{});
+ })().catch(()=>{v.ids=new Set();});}
 function playVoice70(line,prio){const v=voiceFiles70,b=v.buf.get(voiceSlug70(line));if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
  try{if(voice65.ok&&speechSynthesis.speaking)speechSynthesis.cancel();}catch(e){}
  const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;return true;}

@@ -38,7 +38,7 @@ const BALANCE94={guns:[{clip:45,reserve:360,rate:.065,reload:1.2,damage:42,range
 const statsWGSL94=g=>[g.clip,g.rate,g.reload,g.reserve].join(',');
 const hitsWGSL94=g=>[g.damage,g.range,g.pellets,g.pierce].join(',');
 function gunHUD94(w,bits=0){if(SANDBOX25)return w===0&&(bits&1)?BALANCE94.bazooka:w===1&&(bits&2)?BALANCE94.auto:BALANCE94.guns[w];return w===0&&(bits&1)?{clip:14,reload:1.55}:w===1&&(bits&2)?{clip:8,reload:.34}:GUN12[w];}
-const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false};
+const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false,hard:SANDBOX25&&(params.has('hard')||params.get('difficulty')==='hard')};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
@@ -536,6 +536,8 @@ fn portal30(cp:vec2f,wc:u32,wn:u32,d:vec2i)->vec2f {
 fn dynCell(p:vec2f)->u32 {let c=clamp(vec2i(floor((p+HALF)*2.0)),vec2i(0),vec2i(DYNAMIC_GRID-1));return u32(c.x+DYNAMIC_GRID*c.y);}
 fn chunkAt(p:vec3f)->u32 {let c=clamp(vec2u((p.xz+HALF)/4.0),vec2u(0),vec2u(47));return c.x+48u*c.y;}
 fn mapleEasy94()->bool {return u.run.x>5.0&&u.run.y<.5;}
+fn mapleHard96()->bool {return mapleEasy94()&&u.config.w>.5;}
+fn sodaFuse96()->f32 {return select(3.15,5.5,mapleEasy94());}
 fn incoming94(amount:f32)->f32 {return amount*select(1.0,.35,mapleEasy94());}
 fn contact94(amount:f32)->f32 {return incoming94(select(amount,min(amount,20.0),mapleEasy94()));}
 fn hurtGrace94()->f32 {return select(.37,.70,mapleEasy94());}
@@ -1186,7 +1188,7 @@ fn equipment12(dt:f32){
   if(pipe.z>0.0){pipe.z=max(.00001,pipe.z-dt);
    if(pipe.z<=.00001&&S.aux.w<.5){S.blast=vec4f(pipe.xy,.45,250.0/64.0);S.aux.w=1.0;S.botControl13.w=S.pipeStarts12[k].z;pipe.z=0.0;S.escape.w=.4;S.noise=vec4f(pipe.xy,3.0,30.0);atomicAdd(&C[67],1u);}
    S.pipes12[k]=pipe;
-   if(pipe.z>0.0&&S.lure.z<=0.0){S.lure=pipe;S.spare5.y=S.pipeStarts12[k].x;S.spare5.z=S.pipeStarts12[k].y;S.spare5.w=3.15;}
+   if(pipe.z>0.0&&S.lure.z<=0.0){S.lure=pipe;S.spare5.y=S.pipeStarts12[k].x;S.spare5.z=S.pipeStarts12[k].y;S.spare5.w=pipe.w;}
   }
   var flame=S.flights12[k];
   if(flame.z>0.0){flame.z=max(0.0,flame.z-dt);S.flights12[k]=flame;
@@ -1231,7 +1233,7 @@ fn equipment12(dt:f32){
  if(ready&&!down&&S.pos.w>0.0&&fresh&&S.flags12.x<.5&&eq==3u&&S.items12.x>0.0&&pipeSlot<16u){
   let dir=safe2(u.aim.xy);let reach=clamp(length(u.aim.xy),100.0/64.0,490.0/64.0);
   let d=max(25.0/64.0,min(reach,wallRay(S.pos.xz,dir,reach)-20.0/64.0));
-  let destination=S.pos.xz+dir*d;S.pipes12[pipeSlot]=vec4f(destination,3.15,3.15);S.pipeStarts12[pipeSlot]=vec4f(S.pos.xz,0,0);
+  let destination=S.pos.xz+dir*d;S.pipes12[pipeSlot]=vec4f(destination,sodaFuse96(),sodaFuse96());S.pipeStarts12[pipeSlot]=vec4f(S.pos.xz,0,0);
   S.items12.x-=1.0;S.events12.w+=1.0;S.runStats.y+=1.0;atomicAdd(&C[63],1u);settleGear12(S.items12.x>0.0);
  }
  if(ready&&!down&&S.pos.w>0.0&&fresh&&S.flags12.x<.5&&eq==4u&&S.items12.y>0.0&&fireSlot<16u){
@@ -1541,10 +1543,12 @@ fn hearRing34(dt:f32){
  for(var k=0u;k<6u;k++){S.noiseRing34[k].z=max(0.0,S.noiseRing34[k].z-dt);}
  S.noiseSeen34=vec4f(n.xy,max(0.0,n.z-dt),n.w);
 }
+fn advanceSpit13(dt:f32){
+ for(var i=0u;i<u32(u.config.x);i++){var z=Z13[i];if(z.extraData.z!=3.0||z.special13.w<0.0){continue;}z.special13.z=max(0.0,z.special13.z-dt);if(z.special13.z==0.0){var slot=16u;for(var k=0u;k<16u;k++){if(S.acid13[k].w<=S.aux.x&&slot==16u){slot=k;}}if(slot<16u){S.acid13[slot]=vec4f(z.sense13.xy,71.0/64.0,S.aux.x+5.8);}z.special13.w=-1.0;}Z13[i]=z;}
+}
 fn chapterMission13(dt:f32){
  var alarmPulse18=false;if(u.run.x==4.0){alarmPulse18=alarmTick18(dt);}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);
- for(var i=0u;i<u32(u.config.x);i++){var z=Z13[i];if(z.extraData.z!=3.0||z.special13.w<0.0){continue;}z.special13.z=max(0.0,z.special13.z-dt);if(z.special13.z==0.0){var slot=16u;for(var k=0u;k<16u;k++){if(S.acid13[k].w<=S.aux.x&&slot==16u){slot=k;}}if(slot<16u){S.acid13[slot]=vec4f(z.sense13.xy,71.0/64.0,S.aux.x+5.8);}z.special13.w=-1.0;}Z13[i]=z;}
  if(u.run.x==1.0&&S.orders.x>.5&&S.order13.x==5.0){let a=S.team7[u32(S.order13.z)];let g=u32(S.chapter13.x);if(a.p.w>0.0&&S.botLife13[u32(S.order13.z)].w==0.0&&!botReviveFirst23(u32(S.order13.z))&&distance(a.p.xz,u.goals.xy)<115.0/64.0&&P[g].data.y>.5){if(S.relay.x<.5){S.relay.x=1.0;S.alarm.z=12.0;queueWave13(51.0,true,true);}S.relay.y+=dt;if(S.relay.y>=4.2){P[g].data.y=0.0;P[g].p.y=3.4;S.relay.z=1.0;S.orders.x=0.0;}}}
  if(u.run.x!=4.0){directorStep13(dt);}let scream=atomicExchange(&C[55],0u);if(scream>0u){queueWave13(30.0,true,true);S.alarm.z=12.0;}
   if(u.run.x==2.0){for(var id=0u;id<3u;id++){
@@ -1630,7 +1634,7 @@ fn chapterMission13(dt:f32){
  // Breaking things is loud: 10+ voxels broken in a frame make a noise at their centroid, 10 m for a chip, up to 38 m for a collapse.
  hearRing34(dt);let broke30=atomicExchange(&C[45],0u);let sumX30=atomicExchange(&C[37],0u);let sumZ30=atomicExchange(&C[40],0u);
  if(u.run.x>5.0&&u.run.y<.5&&broke30>=10u){let at=vec2f(f32(sumX30),f32(sumZ30))/f32(broke30)-vec2f(96.0)+.5;let loud=clamp(10.0+f32(broke30)*.12,10.0,38.0);if(S.noise.z<=0.0||loud>=S.noise.w*.8||distance(at,S.noise.xy)>8.0){S.noise=vec4f(at,3.0,loud);}}
- if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}if(u.run.x<=5.0){chapterMission13(dt);return;}
+ if(u.run.y>.5){S.supplies=vec4f(8,3,0,0);return;}advanceSpit13(dt);if(u.run.x<=5.0){chapterMission13(dt);return;}
  S.banner.y=max(0.0,S.banner.y-dt);S.alarm.z=max(0.0,S.alarm.z-dt);S.noise.z=max(0.0,S.noise.z-dt);S.orders.w=max(0.0,S.orders.w-dt);
  if(u.controls.x<.5){S.lastInput.w=0.0;}
  // Kills turn into finite ordnance, not permanent combat-stat inflation. Crushing earns extra.
@@ -1733,7 +1737,7 @@ const initShader=COMMON+`
  // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
  // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
  // Early scare: robot playtests ended the first 30 s at ~95 HP, so a small pack (1.2%) of the held infected comes in at 15-17 s, awake.
- if(u.run.x>5.0&&u.run.y<.5){let f=rnd(i+5003u);let held=.30+min(.30,max(0.0,u.v3.x-1.0)*.10);if(f>held&&i!=31u){Z[i].p.w=0.0;Z[i].v.w=select(25.0+(f-.30)/.70*155.0,15.0+(f-held)/.012*2.0,f<held+.012);Z[i].special13.w=-2.0;}}
+  if(mapleEasy94()){let f=rnd(i+5003u);let initial=select(.18,.30,mapleHard96())+min(.30,max(0.0,u.v3.x-1.0)*.10);let delayedSpecial=!mapleHard96()&&u.v3.x<1.5&&kind>1.0;if(f>initial||delayedSpecial){Z[i].p.w=0.0;let spread=clamp((f-initial)/max(.01,1.0-initial),0.0,1.0);Z[i].v.w=select(40.0+spread*260.0,25.0+spread*155.0,mapleHard96());if(delayedSpecial){Z[i].v.w=max(Z[i].v.w,120.0);}if(mapleHard96()&&f>initial&&f<initial+.012){Z[i].v.w=15.0+(f-initial)/.012*2.0;}Z[i].special13.w=-2.0;}}
 }
 `;
 
@@ -1804,9 +1808,9 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
 }
 @compute @workgroup_size(64) fn update(@builtin(global_invocation_id) gid:vec3u){
  let i=gid.x;if(i>=u32(u.config.x)){return;}var z=A[i];let dt=u.clock.x;var kind=z.extraData.z;z.combat13=max(z.combat13-vec4f(dt,dt,dt,0),vec4f(0,0,-1,0));
- // Maple Street boss: at 3 min zombie 1567 (a tank) becomes the HOA President, 30 m from the player wherever it was: 4.5x, 3500 HP,
+ // Maple Street boss: after the opening (6 min Standard / 3 min Hard), zombie 1567 (a tank) becomes the HOA President, 30 m from the player wherever it was: 4.5x, 3500 HP,
  // always hunting, walking straight through houses. special13.x=777 marks it; C[101] is 0 not yet, 1 alive, 2 defeated.
- if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(120.0,180.0-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[101])==0u){atomicStore(&C[101],1u);var p=S.pos.xz+vec2f(30,0);
+ if(u.run.x>5.0&&u.run.y<.5&&i==1567u&&S.aux.x>=max(select(300.0,120.0,mapleHard96()),select(360.0,180.0,mapleHard96())-max(0.0,u.v3.x-1.0)*30.0)&&S.pos.w>0.0&&atomicLoad(&C[101])==0u){atomicStore(&C[101],1u);var p=S.pos.xz+vec2f(30,0);
   for(var a=0u;a<8u;a++){let ang=f32(a)*.785+rnd(u32(S.aux.x*10.0))*6.28;let q=S.pos.xz+vec2f(cos(ang),sin(ang))*30.0;if(all(abs(q)<vec2f(88.0))){p=q;break;}}p=clamp(p,vec2f(-88.0),vec2f(88.0));
   z.p=vec4f(p.x,0,p.y,3500.0+max(0.0,u.v3.x-1.0)*1000.0);z.v=vec4f(0,0,0,99.0);z.extraData=vec4f(z.extraData.x,0,6.0,0);z.history=vec4f(p,0,0);z.special13=vec4f(777.0,0,0,-1);z.combat13=vec4f(0,0,0,0);kind=6.0;}
  if(z.p.w<=0.0&&u.run.x<=5.0&&u.run.y<.5){B[i]=z;return;}
@@ -1837,7 +1841,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   var soundPoint=z.p.xz;let ring=ringHeard34(z.p.xz);
   if(ring<6u){heard=true;soundPoint=S.noiseRing34[ring].xy;}
   if(S.alarm.z>0.0&&length(z.p.xz-S.alarm.xy)<S.alarm.w){heard=true;soundPoint=S.alarm.xy;}
-  var lure=false;var lureDistance=680.0/64.0;
+  var lure=false;var lureDistance=select(680.0/64.0,18.0,mapleEasy94());
   if(kind<2.0){for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];let d=length(pipe.xy-z.p.xz);
    if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&d<lureDistance){lureDistance=d;soundPoint=pipe.xy;heard=true;lure=true;}}}
   if(lure){seen=false;atomicAdd(&C[71],1u);}
@@ -1871,7 +1875,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  heard=false;if(ring34<6u&&distance>14.0){goalPoint=S.noiseRing34[ring34].xy;heard=true;}
  if(S.alarm.z>0.0&&distance>14.0&&length(z.p.xz-S.alarm.xy)<22.0){goalPoint=S.alarm.xy;heard=true;}
    // Landed pipe noise attracts only common and runner infected, through walls.
-  var lureDistance=680.0/64.0;
+  var lureDistance=select(680.0/64.0,18.0,mapleEasy94());
   if(kind<2.0){for(var k=0u;k<16u;k++){let pipe=S.pipes12[k];let d=length(pipe.xy-z.p.xz);if(pipe.z>0.0&&pipe.w-pipe.z>=.45&&d<lureDistance){lureDistance=d;goalPoint=pipe.xy;heard=true;awake=true;z.v.w=max(z.v.w,3.0);victim=4u;atomicAdd(&C[71],1u);}}}
 
  // Sandbox: remember where a noise was heard (sense13.zw, z offset by 4096 to mark it valid). Once it fades, an awake infected
@@ -1918,7 +1922,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
   if(kind==2.0){
    if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity*=.05;if(z.combat13.w==0.0){z.special13.z=.8;}}
    else if(z.special13.z>0.0){z.special13.z=max(0.0,z.special13.z-dt);velocity=z.special13.xy*(370.0/64.0);if(z.special13.z==0.0){z.combat13.y=.45;}}
-   else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;z.special13=vec4f(direct,z.special13.zw);}
+   else if(awake&&sight&&victim<4u&&targetDistance>135.0/64.0&&targetDistance<460.0/64.0&&z.combat13.z<=0.0&&z.combat13.y<=0.0){z.combat13.w=.75;z.combat13.z=5.0;var lane=direct;if(mapleEasy94()&&victim==0u&&length(S.motion.xy)>.1){lane=safe2(goalPoint+S.motion.xy*1.2-z.p.xz);}z.special13=vec4f(lane,z.special13.zw);}
   }
   if(kind==5.0){
    if(z.combat13.w>0.0){z.combat13.w=max(0.0,z.combat13.w-dt);velocity=vec2f(0);if(z.combat13.w==0.0){if(mapleEasy94()){atomicMax(&C[55],navcell(z.p.xz)+1u);}else{atomicAdd(&C[55],1u);}z.combat13.z=19.0;}}
@@ -2572,9 +2576,9 @@ fn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04
   if(u.run.y<.5){for(var id=0u;id<3u;id++){friend7(id);}}if(u.run.x>5.0&&u.run.y<.5){for(var k=0u;k<12u;k++){civilian30(k);}for(var t=0u;t<6u;t++){trampoline65(t);}}
   if(S.weapons.w>.02){for(var k=0u;k<11u;k++){let a=(f32(k)-5.0)*.13;let d=vec2f(S.look.x*cos(a)-S.look.y*sin(a),S.look.x*sin(a)+S.look.y*cos(a));let p=S.pos.xz+d*(1.7-S.weapons.w*.35);box(vec3f(p.x,.10,p.y),vec3f(.07,.07,.07),vec3f(.65,.95,.94),1,S.weapons.w*2.0);}}
   for(var bi=0u;bi<16u;bi++){let pipe=S.pipes12[bi];if(pipe.z<=0.0){continue;}
-    let t=clamp((3.15-pipe.z)/.45,0.0,1.0);let xz=mix(S.pipeStarts12[bi].xy,pipe.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*1.4,xz.y);
-    let pulse=.45+.55*abs(sin(S.aux.x*(5.0+12.0*(1.0-pipe.z/3.15))));
-    if(u.run.x>5.0&&u.run.y<.5){let fuse=1.0-pipe.z/3.15;let c=p+vec3f(sin(S.aux.x*42.0+f32(bi))*.035*pulse,.04,cos(S.aux.x*37.0+f32(bi))*.02*pulse);
+    let t=clamp((pipe.w-pipe.z)/.45,0.0,1.0);let xz=mix(S.pipeStarts12[bi].xy,pipe.xy,t);let p=vec3f(xz.x,.13+sin(t*3.14159)*1.4,xz.y);
+    let pulse=.45+.55*abs(sin(S.aux.x*(5.0+12.0*(1.0-pipe.z/pipe.w))));
+    if(u.run.x>5.0&&u.run.y<.5){let fuse=1.0-pipe.z/pipe.w;let c=p+vec3f(sin(S.aux.x*42.0+f32(bi))*.035*pulse,.04,cos(S.aux.x*37.0+f32(bi))*.02*pulse);
      box(c,vec3f(.20,.32,.20),vec3f(.86,.10,.12),1,0);box(c+vec3f(0,.17,0),vec3f(.17,.03,.17),vec3f(.80,.82,.84),1,0);box(c+vec3f(0,-.02,.102),vec3f(.13,.11,.012),vec3f(.98,.98,.95),1,0);box(c+vec3f(0,-.02,.109),vec3f(.06,.05,.006),vec3f(.86,.10,.12),1,0);
      for(var f=0u;f<6u;f++){let ph=fract(S.aux.x*(1.4+3.0*fuse)+f32(f)/6.0);box(c+vec3f(sin(f32(f)*2.1)*.14*ph,.22+ph*(.5+fuse*.8),cos(f32(f)*1.7)*.14*ph),vec3f(.08*(1.0-ph*.5)),vec3f(.97,.93,.84),1,.1);}}
     else{box(p,vec3f(.42,.13,.13),vec3f(.38,.43,.41),1,0);box(p+vec3f(-.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);box(p+vec3f(.23,0,0),vec3f(.06,.18,.18),vec3f(.18,.23,.22),1,0);
@@ -2699,10 +2703,10 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  let to=goal-me;let dist=length(to);let direct=safe2(to);var clear=dist<20.0;let steps=max(1u,u32(ceil(dist*8.0)));let sweep=abs(to)*(.5/f32(steps));
  for(var s=1u;clear&&s<=steps;s++){let q=me+to*((f32(s)-.5)/f32(steps));if(blocked(vec3f(q.x,.36,q.y),vec3f(.2+sweep.x,.29,.2+sweep.y))){clear=false;}}
  if(clear){return direct;}
- let c=clamp(vec2i(floor(me+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let wc=O[WALK_OFFSET+here];var best=O[NAV_OFFSET+here];var result=direct;
+ let c=clamp(vec2i(floor(me+HALF)),vec2i(0),vec2i(NG-1));let here=u32(c.x+NG*c.y);let wc=O[WALK_OFFSET+here];var best=O[NAV_OFFSET+here];var result=vec2f(0);
  for(var a=0u;a<8u;a++){let d=array<vec2i,8>(vec2i(-1,0),vec2i(1,0),vec2i(0,-1),vec2i(0,1),vec2i(-1,-1),vec2i(1,-1),vec2i(-1,1),vec2i(1,1))[a];let n=c+d;if(any(n<vec2i(0))||any(n>=vec2i(NG))){continue;}
   let wn=O[WALK_OFFSET+u32(n.x+NG*n.y)];if(!stepOpen30(wc,wn,d,O[WALK_OFFSET+u32(c.x+NG*n.y)],O[WALK_OFFSET+u32(n.x+NG*c.y)])){continue;}
-  let v=O[NAV_OFFSET+u32(n.x+NG*n.y)]+select(0u,4u,a>=4u);if(v<best){best=v;var aim=vec2f(n)+.5-HALF;if(a<4u){aim=portal30(vec2f(c)+.5-HALF,wc,wn,d);}result=safe2(aim-me);}
+  let v=O[NAV_OFFSET+u32(n.x+NG*n.y)]+select(0u,4u,a>=4u);if(v<best){best=v;var aim=vec2f(n)+.5-HALF;if(a<4u){let gate=portal30(vec2f(c)+.5-HALF,wc,wn,d);if(length(gate-me)>.18){aim=gate;}}result=safe2(aim-me);}
  }
  return result;
 }
@@ -2730,7 +2734,7 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
   // Standing still they gather on their own side of the player; a sideways slot there would make them orbit.
   let heading=SR[1].xy;let moving=length(heading)>.3;var back=safe2(me-player.xz);if(moving){back=-safe2(heading);}
   let side=vec2f(-back.y,back.x)*select(-.6,.6,(rank&1u)==1u)*select(0.0,1.0,moving);var goal=player.xz+back*(1.4+f32(rank/2u)*.9)+side;
-  if(solid(vec3f(goal.x,.36,goal.y))>0u){goal=player.xz+back*1.4;}
+  if(blocked(vec3f(goal.x,.36,goal.y),vec3f(.2,.29,.2))){goal=player.xz;}
   let gap=distance(goal,me);if(gap>.35){stride2=civStep30(me,goal)*select(2.6,3.6,d>4.0)*clamp(gap/1.2,.35,1.0);}
   let fwd=safe2(stride2);let dodge=away-fwd*min(0.0,dot(away,fwd));stride2+=sep*3.0+dodge*2.4;let sl=length(stride2);if(sl>3.8){stride2*=3.8/sl;}
  }
@@ -2739,13 +2743,13 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
  // A 3 m tether to their spawn spot (more.xy) keeps them findable: past it, the outward part of the step is dropped and they slide along it.
  let panic=c.data.y<1.5&&length(flee)>.001;if(panic){stride2=safe2(flee)*2.0;let out=me-c.more.xy;if(length(out)>3.0){let o=safe2(out);stride2-=o*max(0.0,dot(stride2,o));}}
  // Barricaded: robot playtests (with honest tallies) lost two waiting neighbors at ~11 s and ~13.5 s, before anyone could reach them,
- // as gunfire woke the yards. Easier default: 60 s waiting grace, at most 6 HP/s under a crowd, then 2 HP/s recovery when clear.
- c.data.x-=f32(min(bites,3u))*2.0*dt*select(1.0,0.0,c.data.y<1.5&&SR[6u].x<60.0);if(!threatened){c.data.x=min(${BALANCE94.neighborHP}.0,c.data.x+2.0*dt);}c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
+ // as gunfire woke the yards. Standard grants five minutes of waiting grace (Hard: 60 s), then at most 6 HP/s, plus recovery when clear.
+ c.data.x-=f32(min(bites,3u))*2.0*dt*select(1.0,0.0,c.data.y<1.5&&SR[6u].x<select(300.0,60.0,mapleHard96()));if(!threatened){c.data.x=min(${BALANCE94.neighborHP}.0,c.data.x+2.0*dt);}c.data.z=select(max(0.0,c.data.z-dt),1.0,bites>0u);
  if(c.data.x<=0.0){c.data.x=0.0;c.data.y=4.0;atomicAdd(&C[97],1u);Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,4.0,0.0);return;}
  let h=vec3f(.2,.29,.2);var p=vec3f(me.x,0,me.y);let delta2=stride2*dt;
  if(!blocked(vec3f(p.x+delta2.x,.36,p.z),h)){p.x+=delta2.x;}if(!blocked(vec3f(p.x,.36,p.z+delta2.y),h)){p.z+=delta2.y;}
- c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(stride2,select(c.aux.zw,safe2(stride2),length(stride2)>.1));
- let dp=p.xz-u.route.zw;if(c.data.y>1.5&&dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25){c.data.y=3.0;atomicAdd(&C[98],1u);}
+ let achieved=(p.xz-me)/max(.0001,dt);c.p=vec4f(p.x,0,p.z,30.0);c.aux=vec4f(achieved,select(c.aux.zw,safe2(achieved),length(achieved)>.1));
+ let dp=p.xz-u.route.zw;let home=p.xz-u.route.xy;let refuge=mapleEasy94()&&all(abs(home)<vec2f(2.5));if(c.data.y>1.5&&(refuge||(dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25))){c.data.y=3.0;atomicAdd(&C[98],1u);}
  Props[slot]=c;SR[976u+k]=vec4f(c.p.x,c.p.z,c.data.y+select(0.0,.25,panic),c.data.x);
 }
 `;
@@ -3026,7 +3030,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
     let lx4=clamp(i32(floor(a.p.x-(760.0/64.0)+HALF)),0,191);let lz4=clamp(i32(floor(a.p.z-(760.0/64.0)+HALF)),0,191);let hx4=clamp(i32(floor(a.p.x+(760.0/64.0)+HALF)),0,191);let hz4=clamp(i32(floor(a.p.z+(760.0/64.0)+HALF)),0,191);for(var cz4=lz4;cz4<=hz4;cz4++){for(var cx4=lx4;cx4<=hx4;cx4++){var it4=H[u32(cx4+192*cz4)];for(var g4=0u;g4<256u&&it4>0u;g4++){let j=it4-1u;it4=H[ZHEADS+j];let z=Z[j];if(z.p.w>0.0&&z.v.w>0.0&&distance(z.p.xz,a.p.xz)<760.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),z.p.xyz+vec3f(0,.5,0),.02)){visible++;if(z.extraData.z<2.0){ordinary++;center+=z.p.xz;}}}}}
     if(visible>=11u&&ordinary>=9u){center/=f32(ordinary);var safe=distance(center,S.pos.xz)>180.0/64.0;for(var k=0u;k<3u;k++){if(S.botLife13[k].y<.5&&distance(center,S.team7[k].p.xz)<=180.0/64.0){safe=false;}}
      if(safe&&distance(center,a.p.xz)<490.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.5,0),vec3f(center.x,.5,center.y),.02)){
-      for(var k=0u;k<16u;k++){if(S.pipes12[k].z<=0.0){S.pipes12[k]=vec4f(center,3.15,3.15);S.pipeStarts12[k]=vec4f(a.p.xz,f32(id+1u),0);S.botItems13[id].x-=1.0;S.botControl13[id]=20.0;atomicAdd(&C[63],1u);break;}}
+      for(var k=0u;k<16u;k++){if(S.pipes12[k].z<=0.0){S.pipes12[k]=vec4f(center,sodaFuse96(),sodaFuse96());S.pipeStarts12[k]=vec4f(a.p.xz,f32(id+1u),0);S.botItems13[id].x-=1.0;S.botControl13[id]=20.0;atomicAdd(&C[63],1u);break;}}
      }
     }
    }
@@ -3905,6 +3909,7 @@ function bindInput(){
    case 'Digit1':case 'Digit2':case 'Digit3':if(seedRequested)break;if(playerValues[464]>.5){pendingChoice=+e.code.slice(-1);cancelInput12();}else if(playerValues[67]===1){saveBoundary13();continueBoundary13();}else selectGear12(+e.code.slice(-1)-1);break;
    case 'Digit4':case 'KeyG':case 'KeyC':throwable12();break;
    case 'Backquote':director70.on=!director70.on;break;
+   case 'F4':if(SANDBOX25&&!settings.started){e.preventDefault();settings.hard=!settings.hard;resetRequested=true;}break;
    case 'Digit5':case 'KeyF':case 'KeyH':selectGear12(5);break;
    case 'KeyQ':selectGear12(input12.selected>=3?input12.lastGun:(input12.previous<3?input12.previous:(input12.selected===0?1:0)));break;
    case 'KeyR':if(!settings.paused)input12.reload++;break;
@@ -4192,6 +4197,7 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
  pill30('CLICK TO PLAY',width/2,height*.56,24*k,COL9.gold);
  centre('Rescue your neighbors. Drop the houses on everyone else. Kick the cheese.',height*.65,17*k,[1,1,.96,1]);
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit   /   ? controls',height*.71,14*k,[1,.97,.86,1]);
+  centre(settings.hard?'HARD director: stronger waves, recovery breaks. F4 for Standard.':'STANDARD: a gentler first five minutes. F4 for Hard director.',height*.77,14*k,COL9.gold);
 }
 // ZAMN-style level card for the first 3.6 s of a run: LEVEL 1, a drippy ZOMBIE PANIC!, and the victim count. It slams in and fades out.
 let levelCardSaid65=null;
@@ -4223,14 +4229,14 @@ function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
 const QUESTS65=[
  {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},
- {title:'GOOD NEIGHBOR',goal:()=>'Rescue a neighbor (find someone yelling HELP!)',done:()=>(counters[98]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
+ {title:'GOOD NEIGHBOR',goal:()=>rescueGuide96()?.instruction||'Find a neighbor calling for help',done:()=>(counters[98]|0)>=1,radio:'Neighbors are trapped in their homes. Walk them to the fallout shelter before the lawn eats them.'},
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
  {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Four saved and the casserole count is rising. Keep going.'},
  {title:'FORECLOSURE',goal:()=>(counters[101]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[101]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
  {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>(playerValues[L7.goal+3]||0)>0,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
-const quest65={i:0,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
-function questHUD65(k){const q=quest65;if(q.world!==world){Object.assign(q,{i:0,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
+const quest65={i:0,epoch:-1,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
+function questHUD65(k){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16){Object.assign(q,{i:0,epoch:runEpoch16,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
  if(!q.radio){q.radio=QUESTS65[0].radio;q.radioUntil=time+7;announce65(q.radio);}
  while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');
   if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
@@ -4258,11 +4264,26 @@ function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>to
  if(time-toast67.at<1.3){const s='TOASTED x'+toast67.burst;text(s,width/2-textWidth9(s,30*k)/2,height*.335,30*k,[1,.55,.12,1]);}}
 // Off-screen HELP arrow: when the nearest waiting neighbor is off screen, a pulsing gold arrow on the screen edge points at them,
 // with the distance, so the next rescue is never a guess.
-function helpArrow68(k){if(!hud2d30)return;let bx=0,bz=0,bd=1e9;for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const d=Math.hypot(playerValues[o]-playerValues[0],playerValues[o+1]-playerValues[2]);if(d<bd){bd=d;bx=playerValues[o];bz=playerValues[o+1];}}
- if(bd>=1e9)return;const [sx,sy]=screenPoint(bx,bz,1.2),m=56*k;if(sx>m&&sx<width-m&&sy>m&&sy<height-m)return;const cx=width/2,cy=height/2,dx=sx-cx,dy=sy-cy;
- const sc=Math.min((width/2-m)/Math.max(1e-6,Math.abs(dx)),(height/2-m)/Math.max(1e-6,Math.abs(dy))),ax=cx+dx*sc,ay=cy+dy*sc,ang=Math.atan2(dy,dx),s=hudScale30,pulse=.75+.25*Math.sin(time*6);
+function rescueGuide96(){
+ if(!SANDBOX25||!world)return null;const px=playerValues[0],pz=playerValues[2];let waiting=null,following=null,separated=null;
+ for(let c=0;c<world.civilians30.length;c++){const o=CIV_STATE30+c*4,st=Math.round(playerValues[o+2]),n=world.civilians30[c],x=playerValues[o],z=playerValues[o+1],d=Math.hypot(x-px,z-pz),v={x,z,d,name:n.name||'Neighbor'};
+  if(st===1&&(!waiting||d<waiting.d))waiting=v;if(st===2){if(!following||d<following.d)following=v;if(d>10&&(!separated||d>separated.d))separated=v;}}
+ if(separated)return {...separated,phase:'separated',label:separated.name+' is separated',instruction:'Go back for '+separated.name};
+ if(!(playerValues[L7.journey7]>.5)){const door=world.doors7.find(d=>d.startDoor);return {phase:'exit',x:door?.x??world.start[0]+3.75,z:door?.z??world.start[1],label:'SAFE ROOM EXIT',instruction:'WASD to the door. Press E to open it.'};}
+ if(following){const home=world.start,exit=world.exit,useHome=Math.hypot(px-home[0],pz-home[1])<=Math.hypot(px-exit[0],pz-exit[1])||!(counters[98]>0),to=useHome?home:exit;return {phase:'return',x:to[0],z:to[1],label:useHome?'SAFE ROOM':'FALLOUT SHELTER',instruction:useHome?'Bring your neighbor inside the safe room.':'Bring your neighbor into the shelter.'};}
+ if(waiting)return {...waiting,phase:'find',label:waiting.name+' needs help',instruction:'Walk up to '+waiting.name+' so they follow you.'};return null;
+}
+function helpArrow68(k){if(!hud2d30||!settings.started)return;const g=rescueGuide96();if(!g)return;const bd=Math.hypot(g.x-playerValues[0],g.z-playerValues[2]),[sx,sy]=screenPoint(g.x,g.z,1.2),m=56*k;
+ const teaching=(counters[98]|0)<1||g.phase==='separated';if(teaching){const px=Math.min(15*k,(width-80*k)/Math.max(1,textWidth9(g.instruction,1)));text(g.instruction,width/2-textWidth9(g.instruction,px)/2,height-151*k,px,COL9.gold);if(g.phase==='find'){const tip='Quiet feet leave fewer clues. G selects a soda can; click to throw it away from your route.';const sz=Math.min(12*k,(width-80*k)/Math.max(1,textWidth9(tip,1)));text(tip,width/2-textWidth9(tip,sz)/2,height-130*k,sz,COL9.soft);}}
+ if(sx>m&&sx<width-m&&sy>m&&sy<height-m){const c=hud2d30,s=hudScale30;c.save();c.strokeStyle=g.phase==='separated'?'#ff8c60':'#f6d43a';c.lineWidth=2*k*s;c.beginPath();c.ellipse(sx*s,(sy+18*k)*s,19*k*s,8*k*s,0,0,Math.PI*2);c.stroke();c.restore();const t=g.label;text(t,sx-textWidth9(t,12*k)/2,sy-19*k,12*k,COL9.gold);return;}
+ const cx=width/2,cy=height/2,dx=sx-cx,dy=sy-cy,sc=Math.min((width/2-m)/Math.max(1e-6,Math.abs(dx)),(height/2-m)/Math.max(1e-6,Math.abs(dy))),ax=cx+dx*sc,ay=cy+dy*sc,ang=Math.atan2(dy,dx),s=hudScale30,pulse=.75+.25*Math.sin(time*6);
  const c=hud2d30;c.save();c.translate(ax*s,ay*s);c.rotate(ang);c.globalAlpha=pulse;c.fillStyle='#f6d43a';c.strokeStyle='#0b0b08';c.lineWidth=3*k*s;c.beginPath();c.moveTo(18*k*s,0);c.lineTo(-10*k*s,-12*k*s);c.lineTo(-4*k*s,0);c.lineTo(-10*k*s,12*k*s);c.closePath();c.stroke();c.fill();c.restore();
- const t='HELP! '+Math.round(bd)+'m',tx=ax-Math.cos(ang)*34*k,ty=ay-Math.sin(ang)*26*k;text(t,tx-textWidth9(t,13*k)/2,ty-6*k,13*k,[1,.83,.24,1]);}
+ const t=g.label+' '+Math.round(bd)+'m',tx=ax-Math.cos(ang)*34*k,ty=ay-Math.sin(ang)*26*k;text(t,Math.max(6*k,Math.min(width-textWidth9(t,13*k)-6*k,tx-textWidth9(t,13*k)/2)),ty-6*k,13*k,COL9.gold);}
+function specialsHUD96(k){if(!hud2d30||!settings.started)return;const c=hud2d30,s=hudScale30;c.save();c.lineWidth=3*k*s;
+ for(let i=0;i<Math.min(MAX_Z,settings.zombies);i++){const o=i*ZOMBIE_FLOATS13;if(audioZData9[o+3]<=0)continue;const kind=audioZData9[o+10],x=audioZData9[o],z=audioZData9[o+2];if(Math.hypot(x-playerValues[0],z-playerValues[2])>24)continue;
+  if(kind===3&&audioZData9[o+23]===1&&audioZData9[o+22]>0){const [tx,ty]=screenPoint(audioZData9[o+24],audioZData9[o+25],.05);c.strokeStyle='#c8ff58';c.beginPath();c.ellipse(tx*s,ty*s,30*k*s,15*k*s,0,0,Math.PI*2);c.stroke();text('SPITTER: move out of the ring',tx-textWidth9('SPITTER: move out of the ring',12*k)/2,ty-30*k,12*k,COL9.gold);}
+  if(kind===2&&audioZData9[o+19]>0){const [ax,ay]=screenPoint(x,z,.1),[bx,by]=screenPoint(x+audioZData9[o+20]*4.6,z+audioZData9[o+21]*4.6,.1);c.strokeStyle='#ff8764';c.beginPath();c.moveTo(ax*s,ay*s);c.lineTo(bx*s,by*s);c.stroke();text('BRUTE: sidestep the charge',ax-textWidth9('BRUTE: sidestep the charge',12*k)/2,ay-24*k,12*k,COL9.gold);}}
+ c.restore();}
 // Kill combo: kills less than 2.5 s apart chain; every 5 in the chain adds a multiplier (max x6) and each kill pays 10 x (mult-1) extra.
 // The chain shows under the score with a draining timer bar; new tiers get a campy announcer line.
 const combo69={n:0,chain:0,at:-9,mult:1,bonus:0,best:0},COMBO_LINES69=['','','Neighborly!','Block party!','Lawn massacre!','Cul-de-sac carnage!','H O A VIOLATION!'];
@@ -4271,7 +4292,7 @@ function comboTick69(){const n=counters[0]|0;if(n<combo69.n){combo69.n=n;combo69
 // Early scare (pairs with the 15 s pack in the zombie init): a radio warning, a sting and a red banner, once per world.
 const scare69={world:null,done:false,until:-9};
 function scareHUD69(k){if(scare69.world!==world){scare69.world=world;scare69.done=false;scare69.until=-9;}const t=playerValues[24]||0;
- if(!scare69.done&&settings.started&&t>=15){scare69.done=true;scare69.until=time+2.5;quest65.radio='They broke through the hedges! Here they come!';quest65.radioUntil=time+5;announce65(quest65.radio);synth65('sting');}
+ if(!scare69.done&&settings.started&&settings.hard&&t>=15){scare69.done=true;scare69.until=time+2.5;quest65.radio='They broke through the hedges! Here they come!';quest65.radioUntil=time+5;announce65(quest65.radio);synth65('sting');}
  if(time<scare69.until){const s='HERE THEY COME!',px=(34+3*Math.sin(time*14))*k;text(s,width/2-textWidth9(s,px)/2,height*.3,px,[1,.3,.3,1]);}}
 function comboHUD69(k){comboTick69();if(combo69.chain<3)return;const x=18*k,y=104*k,left=clamp9(1-(time-combo69.at)/2.5,0,1),s=combo69.chain+' HITS',m='x'+combo69.mult;
  text(s,x,y,20*k,[1,.95,.75,1]);if(combo69.mult>1)text(m,x+textWidth9(s,20*k)+10*k,y-4*k,28*k,combo69.mult>=4?[1,.3,.6,1]:[1,.62,.20,1]);rect(x,y+24*k,120*k,4*k,[.1,.1,.1,.6]);rect(x,y+24*k,120*k*left,4*k,[1,.62,.20,1]);}
@@ -4293,14 +4314,14 @@ function directorTick70(){const d=director70,t=playerValues[24]||0;
   if(audioZData9[o+3]>0){alive++;const dd=Math.hypot(audioZData9[o]-px,audioZData9[o+2]-pz);if(dd<8)near++;if(dd<20&&audioZData9[o+7]>0)close++;}else if(audioZData9[o+23]===-2)held++;}
  d.intensity=clamp9(d.intensity+hurt/100*2.5+got*(near>0?.04:.015)-dt*(near>0?.02:.08),0,1);
  d.timeIn[d.state]+=dt;const age=t-d.since,go=(s,why)=>{d.state=s;d.since=t;d.events.push([+t.toFixed(1),s,why]);if(d.events.length>6)d.events.shift();if(s==='PEAK')d.peaks++;};
- if(d.state==='BUILD-UP'&&(d.intensity>=.65||hp<45||age>=35))go('PEAK',hp<45?'health under 45':age>=35?'35 s wave limit':'intensity '+d.intensity.toFixed(2));else if(d.state==='PEAK'&&age>=3)go('FADE','peak held 3 s');else if(d.state==='FADE'&&(d.intensity<.3||age>=8))go('RELAX','pressure release');else if(d.state==='RELAX'&&age>=30&&hp>=45&&!(playerValues[L7.player7]>0))go('BUILD-UP','30 s breather over');
- {const aw=counters[53]|0;let r=.65,a='EASY OPENING x0.65';if(t>=30){if(hp<45||playerValues[L7.player7]>0){r=0;a='HOLD (recover)';}else if(aw>80){r=0;a='HOLD (crowded)';}else if(d.state==='BUILD-UP'){r=d.intensity<.3?1:.65;a=r===1?'BUILD x1':'BUILD x0.65';}
-  else if(d.state==='RELAX'){r=0;a='HOLD (breather)';}else{r=.15;a='TRICKLE x0.15';}}d.rate=SANDBOX25?r:1;d.action=a;}
+ if(d.state==='BUILD-UP'&&(d.intensity>=.65||hp<45||age>=35))go('PEAK',hp<45?'health under 45':age>=35?'35 s wave limit':'intensity '+d.intensity.toFixed(2));else if(d.state==='PEAK'&&age>=3)go('FADE','peak held 3 s');else if(d.state==='FADE'&&(d.intensity<.3||age>=8))go('RELAX','pressure release');else if(d.state==='RELAX'&&age>=(settings.hard?22:30)&&hp>=45&&!(playerValues[L7.player7]>0))go('BUILD-UP',(settings.hard?'22':'30')+' s breather over');
+  {const aw=counters[53]|0,hard=settings.hard,opening=!hard&&t<300,cap=hard?120:t<60?30:t<180?50:80;let r=0,a='HOLD (safe room)';
+   if(playerValues[L7.journey7]>.5){if(hp<45||playerValues[L7.player7]>0){a='HOLD (recover)';}else if(aw>=cap){a='HOLD (crowded)';}else if(d.state==='RELAX'){a='HOLD (breather)';}else if(d.state==='BUILD-UP'){r=hard?(d.intensity<.3?1.5:1):opening?(t<60?.25:t<180?.4:.65):(d.intensity<.3?1:.65);a=(hard?'HARD BUILD':opening?'GENTLE OPENING':'BUILD')+' x'+r;}else{r=hard?.3:.15;a='TRICKLE x'+r;}}d.rate=SANDBOX25?r:1;d.action=a;}
  d.log.push([t,hurt,got]);while(d.log.length&&d.log[0][0]<t-60)d.log.shift();const span=Math.max(5,Math.min(60,t)),dpm=d.log.reduce((s,e)=>s+e[1],0)*60/span,kpm=d.log.reduce((s,e)=>s+e[2],0)*60/span;
  if(t-d.histAt>=.25){d.histAt=t;d.hist.push([d.intensity,Math.min(1,(counters[53]|0)/200)]);if(d.hist.length>240)d.hist.shift();}
  const nb=[0,0,0,0,0];for(let c=0;c<CIV_MAX30;c++){const s=Math.round(playerValues[CIV_STATE30+c*4+2]);if(s>=1&&s<=4)nb[s]++;}
  const boss=counters[101]|0,awake=counters[53]|0;
- d.last={t:+t.toFixed(2),state:d.state,stateAge:+age.toFixed(1),intensity:+d.intensity.toFixed(3),awake,alive,held,near,close,hp:+hp.toFixed(1),dpm:+dpm.toFixed(1),kpm:+kpm.toFixed(1),
+ d.last={difficulty:settings.hard?'hard':'standard',opening:!settings.hard&&t<300,t:+t.toFixed(2),state:d.state,stateAge:+age.toFixed(1),intensity:+d.intensity.toFixed(3),awake,alive,held,near,close,hp:+hp.toFixed(1),dpm:+dpm.toFixed(1),kpm:+kpm.toFixed(1),
   combo:combo69.chain,mult:combo69.mult,waiting:nb[1],following:nb[2],saved:counters[98]|0,lost:counters[97]|0,boss:boss===1?'ALIVE':boss===2?'DOWN':'-',
   music:boss===1?'THEREMIN':(t>60||awake>40)?'DRUMS':'CALM',rate:d.rate,action:d.action,peaks:d.peaks,events:d.events.slice(-4),
   share:Object.fromEntries(Object.entries(d.timeIn).map(([s,v])=>[s,+(v/Math.max(.001,t)).toFixed(3)]))};return d.last;}
@@ -4336,6 +4357,7 @@ function titleCard30(k){
  centre('Rescue your neighbors. Drop the houses on everyone else.',height*.6,15*k,COL9.white);
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit',height*.655,13*k,COL9.soft);
  centre('Press ? for all controls',height*.7,12*k,COL9.soft);
+  centre(settings.hard?'HARD director / F4 for Standard':'STANDARD / F4 for Hard director',height*.75,12*k,COL9.gold);
 }
 function evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}
 function evacCard30(k){
@@ -4366,7 +4388,7 @@ function packFloors42(st,buildings,pools=[]){let k=0;for(const [b,flag] of [...b
 // Maple Street levels: every evacuation rolls a new street as the next level (u.v3.x), with a new B-movie title, night on even
 // levels, a bigger opening crowd, an earlier and tougher HOA President. A new run (N twice) starts again at level 1.
 let mapleLevel65=1;const LEVEL_NAMES65=['ZOMBIE PANIC!','NIGHT OF THE LIVING HOA','BLOOD MOON BLOCK PARTY','ATTACK OF THE 50 FT PRESIDENT','THE CUL-DE-SAC OF DOOM','LAWN OF THE DEAD'];
-const levelName65=()=>LEVEL_NAMES65[(mapleLevel65-1)%LEVEL_NAMES65.length],bossHP65=()=>3500+(mapleLevel65-1)*1000,bossAt65=()=>Math.max(120,180-(mapleLevel65-1)*30);
+const levelName65=()=>LEVEL_NAMES65[(mapleLevel65-1)%LEVEL_NAMES65.length],bossHP65=()=>3500+(mapleLevel65-1)*1000,bossAt65=()=>Math.max(settings.hard?120:300,(settings.hard?180:360)-(mapleLevel65-1)*30);
 function nextSandbox25(){mapleLevel65++;runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
 function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
@@ -4426,6 +4448,7 @@ function hud(){
   if(SANDBOX25)p2HUD65(k);
   if(SANDBOX25)toastHUD67(k);
   if(SANDBOX25)helpArrow68(k);
+  if(SANDBOX25)specialsHUD96(k);
   if(SANDBOX25)comboHUD69(k);
   if(SANDBOX25)scareHUD69(k);
   if(SANDBOX25)directorHUD70(k);
@@ -4591,7 +4614,7 @@ function updateUniforms(dt){
  const rx=(mouse.x*2-1)*hw,uy=(1-mouse.y*2)*hh-up[1]*.45;
  const det=right[0]*up[2]-right[2]*up[0];const aimX=(rx*up[2]-uy*right[2])/det,aimZ=(right[0]*uy-up[0]*rx)/det;
  uniformData.set([aimX,aimZ,0,0],40);pendingGrenade=pendingDash=0;
- uniformData.set([settings.lab||stage===1||SANDBOX25?campaignPopulation24():Math.min(settings.zombies,245),settings.pool,settings.started?1:0,0],44);
+ uniformData.set([settings.lab||stage===1||SANDBOX25?campaignPopulation24():Math.min(settings.zombies,245),settings.pool,settings.started?1:0,SANDBOX25&&settings.hard?1:0],44);
  uniformData.set([width,height,hw,hh],48);uniformData.set([...cameraEye,0],52);
  uniformData.set([keys.has('KeyE')?1:0,0,0,0],56);
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
@@ -4797,7 +4820,8 @@ async function main(){
   async readFractures(){return Array.from(new Uint32Array(await readBuffer(Fracture)));},
   async readSquad(){const st=new Float32Array(await readBuffer(S));const goals=['REGROUP','COVER','RESCUE','HEAL ALLY','HEAL SELF','FIND KIT','EVADE','ON YOUR MARK','PRIORITY FIRE','RELOAD'];const actions=['IDLE','MOVE','RELOAD','CLEAR','REVIVE','HEAL ALLY','HEAL SELF','TAKE KIT','EVADE','COVER','SEEK KIT','REGROUP'];const ui=new Uint32Array(st.buffer);return {director:Array.from(st.slice(L7.pace7,L7.pace7+4)),playerDown:st[L7.player7],friends:['MARA','ROOK','KIT'].map((name,i)=>{let o=L7.team7+i*128,packed=ui[o+32],n=ui[o+33];return {name,pos:Array.from(st.slice(o,o+4)),goal:goals[Math.round(st[o+8])],action:actions[Math.round(st[o+9])],ammo:st[o+16],kits:st[o+19],plan:Array.from({length:Math.min(7,n)},(_,k)=>actions[(packed>>>(k*4))&15]),step:ui[o+34],expanded:ui[o+35],cost:st[o+63],stats:Array.from(st.slice(o+36,o+40))};})};},
   layout:{WORLD,GRID,CGRID,CHUNK_COUNT,CHUNK_CELLS,MAX_PAGES,OCC_BASE,OCC_SIZE,NAV_SIZE,NAV_OFFSET,WALK_OFFSET,PRESS_OFFSET,DYNAMIC_OFFSET,DYNAMIC_SIZE,PAINT_SIZE,PAINT_BASE,PAINT_PAGES,ZHEADS},
-  getWorld:()=>({seed:runSeed,rooms:world.roomCount,edges:world.edges,blocks:world.count,props:world.propCount,start:world.start,goals:world.generators,exit:world.exit,caches:world.caches,switches:world.switches,cell:world.cellPoint}),
+  rescueGuide:()=>rescueGuide96(),
+   getWorld:()=>({seed:runSeed,rooms:world.roomCount,edges:world.edges,blocks:world.count,props:world.propCount,start:world.start,goals:world.generators,exit:world.exit,caches:world.caches,switches:world.switches,cell:world.cellPoint}),
   async readBallistics(){const s=new Float32Array(await readBuffer(S));return {aim:Array.from(s.slice(116,120)),normal:Array.from(s.slice(120,124)),origin:Array.from(s.slice(124,128)),direction:Array.from(s.slice(128,132)),burst:Array.from(s.slice(132,136)),bullets:Array.from({length:9},(_,i)=>Array.from(s.slice(140+i*16,156+i*16)))};},
   async navProbe(){return Array.from(new Uint32Array(await readBuffer(O,NAV_OFFSET*4,NAV_SIZE*4)));},
   async readState(){return Array.from(new Float32Array(await readBuffer(S)));},

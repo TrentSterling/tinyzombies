@@ -1,0 +1,101 @@
+{
+  "sha256": "879b4e28528cb29205f5c23dcd3a436d473974b0f7140bccee73da91929ecdd8",
+  "method": "Execute exact extracted production WGSL scalar gate expressions and host UI through CPU VM; GPU integration tested separately.",
+  "rows": [
+    {
+      "label": "waiting",
+      "state": 1,
+      "kind": 30,
+      "expected": false,
+      "outstanding": 1,
+      "ready": false,
+      "seal": true,
+      "pass": false
+    },
+    {
+      "label": "panicked-waiting",
+      "state": 1.25,
+      "kind": 30,
+      "expected": false,
+      "outstanding": 1,
+      "ready": false,
+      "seal": true,
+      "pass": false
+    },
+    {
+      "label": "following",
+      "state": 2,
+      "kind": 30,
+      "expected": false,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": false
+    },
+    {
+      "label": "following-flag",
+      "state": 2.25,
+      "kind": 30,
+      "expected": false,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": false
+    },
+    {
+      "label": "saved",
+      "state": 3,
+      "kind": 30,
+      "expected": true,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": true
+    },
+    {
+      "label": "lost",
+      "state": 4,
+      "kind": 30,
+      "expected": true,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": true
+    },
+    {
+      "label": "inactive",
+      "state": 0,
+      "kind": 30,
+      "expected": true,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": true
+    },
+    {
+      "label": "not-civilian",
+      "state": 2,
+      "kind": 0,
+      "expected": true,
+      "outstanding": 0,
+      "ready": true,
+      "seal": true,
+      "pass": true
+    }
+  ],
+  "ui": {
+    "following": "Fallout shelter (HOA approved)",
+    "followingCount": -1,
+    "waiting": "Round up the neighbors: 1 still home",
+    "saved": "Fallout shelter (HOA approved)"
+  },
+  "changedShaders": [],
+  "checks": {
+    "stateMatrix": false,
+    "followerObjective": false,
+    "waitingObjective": true,
+    "savedObjective": true,
+    "onlyMissionShaderChanged": true,
+    "noVoiceBankChange": true
+  }
+}

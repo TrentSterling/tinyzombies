@@ -1,0 +1,571 @@
+{
+  "sourceSha256": "91cc5b7b5a1252a7305e273533a6861f74229f0dc031e36dd521d01071863d0c",
+  "kind": "Controlled actual WebGPU regression. State arranged deliberately. Gate matrix freezes civilian motion; following-crosses-door dispatches real civilian movement and mission passes. Not ordinary playthrough evidence.",
+  "errors": [],
+  "rows": [
+    {
+      "scenario": "waiting",
+      "state": 1,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        1,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "panicked-waiting",
+      "state": 1.25,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        1.25,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "following-outside",
+      "state": 2,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        2,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "following-inside-not-saved",
+      "state": 2,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        48,
+        0,
+        32,
+        30,
+        120,
+        2,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "saved",
+      "state": 3,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        3.016664505004883,
+        1
+      ],
+      "escape": [
+        1,
+        3.016664505004883,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        3,
+        0,
+        0
+      ],
+      "saved": 12,
+      "lost": 0,
+      "crossing": null,
+      "won": true
+    },
+    {
+      "scenario": "lost",
+      "state": 4,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        3.016664505004883,
+        1
+      ],
+      "escape": [
+        1,
+        3.016664505004883,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        0,
+        4,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 1,
+      "crossing": null,
+      "won": true
+    },
+    {
+      "scenario": "mixed-waiting-following",
+      "state": 2,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        2,
+        0,
+        0
+      ],
+      "saved": 10,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "latched-following-outside",
+      "state": 2,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        2,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "latched-waiting",
+      "state": 1,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        0,
+        0
+      ],
+      "escape": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "follower": [
+        28,
+        0,
+        32,
+        30,
+        120,
+        1,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": null,
+      "won": false
+    },
+    {
+      "scenario": "following-crosses-door",
+      "state": 2,
+      "player": [
+        48,
+        0,
+        32,
+        100
+      ],
+      "goal": [
+        2.4000000953674316,
+        2.4000000953674316,
+        3.016664505004883,
+        1
+      ],
+      "escape": [
+        1,
+        3.016664505004883,
+        1,
+        0
+      ],
+      "follower": [
+        46.25808334350586,
+        0,
+        32,
+        30,
+        120,
+        3,
+        0,
+        0
+      ],
+      "saved": 11,
+      "lost": 0,
+      "crossing": {
+        "before": {
+          "goal": 0,
+          "arming": 0,
+          "sealing": 0
+        },
+        "samples": [
+          {
+            "frame": 0,
+            "x": 44.0433349609375,
+            "z": 32,
+            "state": 2,
+            "won": 0,
+            "arming": 0,
+            "sealing": 0
+          },
+          {
+            "frame": 30,
+            "x": 45.3433837890625,
+            "z": 32,
+            "state": 2,
+            "won": 0,
+            "arming": 0,
+            "sealing": 0
+          },
+          {
+            "frame": 60,
+            "x": 46.182247161865234,
+            "z": 32,
+            "state": 2,
+            "won": 0,
+            "arming": 0,
+            "sealing": 0
+          },
+          {
+            "frame": 90,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 0.1969696283340454,
+            "sealing": 0
+          },
+          {
+            "frame": 120,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 0.42424213886260986,
+            "sealing": 0
+          },
+          {
+            "frame": 150,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 0.6515146493911743,
+            "sealing": 0
+          },
+          {
+            "frame": 180,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 0.8787871599197388,
+            "sealing": 0
+          },
+          {
+            "frame": 210,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 0.23333333432674408
+          },
+          {
+            "frame": 240,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 0.7333332896232605
+          },
+          {
+            "frame": 270,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 1.233332872390747
+          },
+          {
+            "frame": 300,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 1.7333323955535889
+          },
+          {
+            "frame": 330,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 2.2333319187164307
+          },
+          {
+            "frame": 360,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 0,
+            "arming": 1,
+            "sealing": 2.7333314418792725
+          },
+          {
+            "frame": 390,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 420,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 450,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 480,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 510,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 540,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          },
+          {
+            "frame": 570,
+            "x": 46.25808334350586,
+            "z": 32,
+            "state": 3,
+            "won": 1,
+            "arming": 1,
+            "sealing": 3.016664505004883
+          }
+        ],
+        "saved": 12
+      },
+      "won": true
+    }
+  ],
+  "adapter": {
+    "vendor": "nvidia",
+    "architecture": "blackwell",
+    "device": "",
+    "description": ""
+  },
+  "mode": {
+    "stage": 6,
+    "SANDBOX25": true,
+    "hard": false
+  },
+  "exit": [
+    48,
+    32
+  ]
+}

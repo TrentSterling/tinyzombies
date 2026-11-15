@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "method": "Production hud() + questHUD65() with terminal host-state fixtures; no GPU, ordinary full route, or audio listening",
+  "sha256": "a69fa4b7517a1ac40455fa7b3cb514f883379bcb89d37f9472cdfe53788e00d4",
+  "clear": {
+    "first": {
+      "i": 7,
+      "bonus": 7000,
+      "radio": "Radio Pleasant Acres, signing off. You saved the street.",
+      "spoken": [
+        {
+          "s": "Radio Pleasant Acres, signing off. You saved the street.",
+          "priority": true
+        }
+      ],
+      "jingles": [
+        "jingle"
+      ],
+      "drawn": [
+        "ALL MISSIONS COMPLETE",
+        "RADIO:  Radio Pleasant Acres, signing off. You saved the street.",
+        "MAPLE STREET EVACUATED",
+        "4 / 12 NEIGHBORS SAVED",
+        "0 put down   /   0 crushed   /   8:20",
+        "Most of the street made it. Brenda says it was her idea.",
+        "ENTER   LEVEL 2",
+        "N twice   New run"
+      ]
+    },
+    "repeat": {
+      "i": 7,
+      "bonus": 7000,
+      "spoken": [
+        {
+          "s": "Radio Pleasant Acres, signing off. You saved the street.",
+          "priority": true
+        }
+      ],
+      "jingles": [
+        "jingle"
+      ]
+    }
+  },
+  "overrun": {
+    "first": {
+      "i": 6,
+      "bonus": 6000,
+      "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+      "spoken": [],
+      "jingles": [],
+      "drawn": [
+        "Overrun",
+        "Backspace  Retry     N twice  New run"
+      ]
+    },
+    "repeat": {
+      "i": 6,
+      "bonus": 6000,
+      "spoken": [],
+      "jingles": []
+    }
+  },
+  "checks": [
+    "Clear +1000/sign-off/jingle exactly once across 121 HUD frames",
+    "Overrun: no terminal credit or sign-off",
+    "Only state 1 qualifies",
+    "Clear with hidden normal HUD",
+    "Legacy campaign unaffected",
+    "Reset opening unchanged",
+    "Simulation/counters/combo unchanged",
+    "All shaders byte-identical"
+  ],
+  "identicalShaders": 43
+}

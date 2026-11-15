@@ -3762,22 +3762,45 @@ const voice65={last:'',at:-9,ok:typeof speechSynthesis!=='undefined'&&typeof Spe
 // clips retry Kokoro before the existing speech-synthesis fallback.
 const voiceChoice70=new URLSearchParams(location.search).get('voice');
 const voiceBank70=['voice','kokoro'].includes(voiceChoice70)?'voice':voiceChoice70==='chatterbox-draft'?'chatterbox':'chatterbox-matched';
-const voiceFiles70={ids:null,buf:new Map(),started:false,src:null,until:-9};
+const voiceFiles70={ids:null,buf:new Map(),started:false,src:null,until:-9,variants:new Map(),lastTake:new Map(),lastWording:new Map(),takeCycle:new Map()};
 const voiceSlug70=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,64);
+// Opt-in assets in the matched voice bank; original bank and synthesis fallback remain canonical.
+function readVoiceVariants101(raw,ids){
+ const out=new Map();if(raw?.version!==1||!raw.cues||typeof raw.cues!=='object')return out;
+ for(const [cue,items] of Object.entries(raw.cues)){
+  if(!ids.has(cue)||!Array.isArray(items))continue;
+  const valid=[],seen=new Set();
+  for(const a of items.slice(0,8)){
+   if(!a||typeof a.id!=='string'||a.id===cue||!a.id.startsWith(cue+'_')||!ids.has(a.id)||!/^([a-z0-9]+_)*[a-z0-9]+$/.test(a.id)||seen.has(a.id)||typeof a.text!=='string'||!a.text.trim()||a.text.length>120)continue;
+   seen.add(a.id);valid.push({id:a.id,text:a.text.trim().toLowerCase()});
+  }
+  if(valid.length)out.set(cue,valid);
+ }
+ return out;
+}
+function pickVoiceTake101(line){
+ const cue=voiceSlug70(line),v=voiceFiles70,canonical={id:cue,text:line.trim().toLowerCase()},entries=[canonical,...(v.variants.get(cue)||[])].filter(e=>v.buf.has(e.id));
+ const fresh=entries.filter(e=>e.id!==v.lastTake.get(cue)),cycle=v.takeCycle.get(cue)||new Set(),unplayed=fresh.filter(e=>!cycle.has(e.id));
+ const choices=unplayed.length?unplayed:fresh;
+ return choices.find(e=>e.text!==v.lastWording.get(cue))||choices[0]||entries[0]||null;
+}
 function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.started=true;
  const list=async bank=>{const r=await fetch('assets/audio/'+bank+'/index.json',{credentials:'same-origin'});if(!r.ok)throw Error(r.status);const a=await r.json();if(!Array.isArray(a)||!a.length)throw Error('Empty voice index');return a;};
  const clip=async(bank,id)=>{const r=await fetch('assets/audio/'+bank+'/'+id+'.ogg',{credentials:'same-origin'});if(!r.ok)throw Error(r.status);return audio.decodeAudioData(await r.arrayBuffer());};
  (async()=>{let bank=voiceBank70,ids;try{ids=await list(bank);}catch(e){if(bank==='voice')throw e;bank='voice';ids=await list(bank);}v.ids=new Set(ids);
+  if(bank==='chatterbox-matched')fetch('assets/audio/'+bank+'/variants101.json',{credentials:'same-origin'}).then(r=>r.ok?r.json():null).then(j=>{v.variants=readVoiceVariants101(j,v.ids);}).catch(()=>{});
   for(const id of v.ids)clip(bank,id).catch(e=>{if(bank==='voice')throw e;return clip('voice',id);}).then(b=>v.buf.set(id,b)).catch(()=>{});
  })().catch(()=>{v.ids=new Set();});}
-function playVoice70(line,prio){const v=voiceFiles70,b=v.buf.get(voiceSlug70(line));if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
+function playVoice70(line,prio){const v=voiceFiles70,pick=pickVoiceTake101(line),b=pick&&v.buf.get(pick.id);if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
  try{if(voice65.ok&&speechSynthesis.speaking)speechSynthesis.cancel();}catch(e){}
- const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;return true;}
-function announce65(line,prio=false){if(!SANDBOX25||!audioAllowed9())return false;if(line===voice65.last&&time-voice65.at<4)return false;
- preloadVoices70();if(playVoice70(line,prio)){voice65.last=line;voice65.at=time;voice65.lines++;return true;}if(!voice65.ok||time<voiceFiles70.until&&!prio)return false;
- try{if(speechSynthesis.speaking){if(!prio)return false;speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
+ const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;const cue=voiceSlug70(line);let cycle=v.takeCycle.get(cue);if(!cycle||cycle.has(pick.id)){cycle=new Set();v.takeCycle.set(cue,cycle);}cycle.add(pick.id);v.lastTake.set(cue,pick.id);v.lastWording.set(cue,pick.text);return pick.id;}
+function voiceDecision101(line,played,reason,take=''){if(debugView101.enabled)recordAudioDebug101({status:played?'played':'skipped',cue:voiceSlug70(line),reason,take});return played;}
+function announce65(line,prio=false){if(!SANDBOX25||!audioAllowed9())return voiceDecision101(line,false,'audio off');if(line===voice65.last&&time-voice65.at<4)return voiceDecision101(line,false,'recent repeat');
+ preloadVoices70();const playedTake=playVoice70(line,prio);if(playedTake){voice65.last=line;voice65.at=time;voice65.lines++;return voiceDecision101(line,true,'recorded',playedTake);}if(time<voiceFiles70.until&&!prio)return voiceDecision101(line,false,'recorded voice busy');if(!voice65.ok)return voiceDecision101(line,false,'clip not ready; no speech fallback');
+ try{if(speechSynthesis.speaking){if(!prio)return voiceDecision101(line,false,'speech busy');speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
   const v=speechSynthesis.getVoices();const pick=v.find(x=>/^en/i.test(x.lang)&&/male|david|daniel|fred|guy|alex/i.test(x.name))||v.find(x=>/^en/i.test(x.lang));if(pick)u.voice=pick;
-  speechSynthesis.speak(u);voice65.last=line;voice65.at=time;voice65.lines++;return true;}catch(e){voice65.ok=false;return false;}}
+  if(debugView101.enabled){u.onstart=()=>voiceDecision101(line,true,'browser speech started');u.onerror=()=>voiceDecision101(line,false,'browser speech error');}
+  speechSynthesis.speak(u);voice65.last=line;voice65.at=time;voice65.lines++;return true;}catch(e){voice65.ok=false;return voiceDecision101(line,false,'speech failed');}}
 // Synthesised layers on top of the clip bank: a cartoon boing, a cheese thud, a wet splat, a rescue jingle and a B-movie horror sting.
 function synth65(kind){if(!audioAllowed9()||!audioMix9)return false;const t=audio.currentTime,g=audio.createGain();g.connect(audioMix9);g.gain.setValueAtTime(.0001,t);
  const tone=(type,f0,f1,f2,d,peak,at=0)=>{const o=audio.createOscillator(),e=audio.createGain();o.type=type;o.frequency.setValueAtTime(f0,t+at);o.frequency.exponentialRampToValueAtTime(f1,t+at+d*.35);o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
@@ -4230,16 +4253,16 @@ function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
 const QUESTS65=[
  {title:'GET OUT THERE',goal:()=>'Leave the safe room',done:()=>playerValues[L7.journey7]>.5,radio:'This is Radio Pleasant Acres. The H O A says stay indoors. The H O A is a zombie. Go outside.'},
- {title:'GOOD NEIGHBOR',goal:()=>rescueGuide96()?.instruction||'Find a neighbor calling for help',done:()=>(counters[98]|0)>=1,radio:'Find a neighbor calling for help. Walk up to them, then bring them back inside your starting safe room.',textOnly:true},
+ {title:'GOOD NEIGHBOR',completionSound:'rescue-owned',goal:()=>rescueGuide96()?.instruction||'Find a neighbor calling for help',done:()=>(counters[98]|0)>=1,radio:'Find a neighbor calling for help. Walk up to them, then bring them back inside your starting safe room.',textOnly:true},
  {title:'SAY CHEESE',goal:()=>'Kick a cheese wheel into the horde',done:()=>(counters[48]|0)>=1,radio:'Somebody left a wheel of cheddar in the cul-de-sac. Walk into it. Hard.'},
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
- {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Bring four neighbors to safety. Everyone already rescued counts.',textOnly:true},
+ {title:'BLOCK PARTY',completionSound:'rescue-owned',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Bring four neighbors to safety. Everyone already rescued counts.',textOnly:true},
  {title:'FORECLOSURE',goal:()=>(counters[101]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[101]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
  {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>playerValues[L7.goal+3]===1,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
 const quest65={i:0,epoch:-1,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
 function questHUD65(k,terminal=false){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16){Object.assign(q,{i:0,epoch:runEpoch16,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
  if(!q.radio){q.radio=QUESTS65[0].radio;q.radioUntil=time+7;announce65(q.radio);}
- while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');
+ while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){const completedQuest=QUESTS65[q.i];q.banner='QUEST COMPLETE: '+completedQuest.title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;if(completedQuest.completionSound!=='rescue-owned')synth65('jingle');
   if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;if(!QUESTS65[q.i].textOnly)announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
  const x=width-308*k,y=18*k+clamp9(height*.23,136,180)+26*k;// just under the minimapif(hud2d30){const c=hud2d30,s=hudScale30;c.save();c.fillStyle='rgba(8,10,18,.72)';c.fillRect(x*s,y*s,296*k*s,58*k*s);c.fillStyle='#f6d43a';c.fillRect(x*s,y*s,4*k*s,58*k*s);c.restore();}
  // Every line shrinks to fit the 296 px panel (or the screen), so long missions never run off the right edge.
@@ -4287,9 +4310,25 @@ function specialsHUD96(k){if(!hud2d30||!settings.started)return;const c=hud2d30,
  c.restore();}
 // Kill combo: kills less than 2.5 s apart chain; every 5 in the chain adds a multiplier (max x6) and each kill pays 10 x (mult-1) extra.
 // The chain shows under the score with a draining timer bar; new tiers get a campy announcer line.
-const combo69={n:0,chain:0,at:-9,mult:1,bonus:0,best:0},COMBO_LINES69=['','','Neighborly!','Block party!','Lawn massacre!','Cul-de-sac carnage!','H O A VIOLATION!'];
-function comboTick69(){const n=counters[0]|0;if(n<combo69.n){combo69.n=n;combo69.chain=0;combo69.mult=1;combo69.bonus=0;combo69.best=0;}if(time-combo69.at>2.5){combo69.chain=0;combo69.mult=1;}
- if(n>combo69.n){for(let i=combo69.n;i<n;i++){combo69.chain++;const m=Math.min(6,1+Math.floor(combo69.chain/5));if(m>combo69.mult&&typeof announce65==='function')announce65(COMBO_LINES69[m]);combo69.mult=m;combo69.bonus+=10*(m-1);}combo69.n=n;combo69.at=time;combo69.best=Math.max(combo69.best,combo69.chain);}}
+const combo69={n:0,chain:0,at:-9,mult:1,bonus:0,best:0,world:null,neighborlyAt:-Infinity},COMBO_LINES69=['','','Neighborly!','Block party!','Lawn massacre!','Cul-de-sac carnage!','H O A VIOLATION!'];
+function comboTick69(){
+ const c=combo69,n=counters[0]|0;
+ const sameWorld=c.world===world;
+ if(!sameWorld||n<c.n||time<c.at){
+  Object.assign(c,{n:0,chain:0,at:-9,mult:1,bonus:0,best:0,world,neighborlyAt:-Infinity});
+  // A fresh simulation ordinarily starts at zero; a counter rollback within one world is a rebase.
+  if(n&&sameWorld){c.n=n;}
+ }
+ if(time-c.at>2.5){c.chain=0;c.mult=1;}
+ if(n<=c.n)return;
+ let reached=0;
+ for(let i=c.n;i<n;i++){c.chain++;const m=Math.min(6,1+Math.floor(c.chain/5));if(m>c.mult)reached=m;c.mult=m;c.bonus+=10*(m-1);}
+ c.n=n;c.at=time;c.best=Math.max(c.best,c.chain);
+ if(reached===2&&time-c.neighborlyAt<20){if(typeof voiceDecision101==='function')voiceDecision101(COMBO_LINES69[2],false,'combo cooldown');return;}
+ if(reached&&typeof announce65==='function'){
+  if(announce65(COMBO_LINES69[reached])&&reached===2)c.neighborlyAt=time;
+ }
+}
 // Early scare (pairs with the 15 s pack in the zombie init): a radio warning, a sting and a red banner, once per world.
 const scare69={world:null,done:false,until:-9};
 function scareHUD69(k){if(scare69.world!==world){scare69.world=world;scare69.done=false;scare69.until=-9;}const t=playerValues[24]||0;
@@ -4418,6 +4457,63 @@ function drawLoadout25(k,eq){
   if(count)text(count,x+sw/2-textWidth9(count,13*k)/2,sy+21*k,13*k,a(sel?COL9.cyan:COL9.white,dim));
  }
 }
+// HUD-only ammo facts; simulation, audio, input, and weapon balance are unchanged.
+function ammoFeedback102(eq,axe,ammo,reserve,reload){
+ if(eq>=3||axe)return {state:'other',label:''};
+ if(reload>0)return {state:'reloading',label:'RELOADING '+reload.toFixed(1)+'s'};
+ if(ammo>0)return {state:'ready',label:''};
+ if(reserve>0)return {state:'empty',label:'EMPTY - RELOAD OR FIRE'};
+ return {state:'out',label:'OUT OF AMMO - SWITCH WEAPON'};
+}
+function drawAmmoFeedback102(feedback,cx,y,k){
+ const label=feedback.label;if(!label)return;
+ let size=14*k,tw=textWidth9(label,size);const available=Math.max(1,width-48*k);
+ for(let i=0;i<8&&tw>available;i++){size*=.9;tw=textWidth9(label,size);}
+ const pad=8*k,x=clamp9(cx-tw/2,16*k,width-tw-16*k),yy=clamp9(y,16*k,height-34*k);
+ rect(x-pad,yy-5*k,tw+pad*2,25*k,[.015,.025,.035,.94]);
+ rect(x-pad,yy-5*k,3*k,25*k,feedback.state==='out'?COL9.red:COL9.gold);
+ text(label,x,yy,size,COL9.white);
+}
+// Opt-in observational diagnostics; no GPU reads or gameplay writes.
+const debugView101=(()=>{
+ const enabled=params.get('diagnostics')==='1'||params.has('audioDebug');
+ const events=[],counts={played:0,skipped:0};let hooked=false;
+ const clean=v=>String(v??'').replace(/[^a-zA-Z0-9 _.:+/-]/g,'').slice(0,64);
+ function record(e){if(!enabled||!e||!['played','skipped'].includes(e.status))return;
+  hooked=true;counts[e.status]++;events.push({t:+(playerValues[24]||0).toFixed(2),status:e.status,cue:clean(e.cue),reason:clean(e.reason),take:clean(e.take)});
+  if(events.length>16)events.shift();
+ }
+ function snapshot(){if(!enabled)return null;
+  const d=director70.last,age=(playerValues[24]||0)-(d.t||0);
+  const director=settings.started&&d.t>0&&age>=0&&age<2?{state:clean(d.state),near:d.near,awake:d.awake,held:d.held}:null;
+  let ammo=null;
+  if(settings.started){
+   const eq=Math.round(playerValues[L12.gear]||0),gun=Math.max(0,Math.min(2,Math.round(playerValues[L12.gear+3]||0))),axe=eq===2&&gearLabel14(2)==='FIRE AXE';
+   const mag=Math.round(playerValues[L12.mag+gun]||0),reserve=Math.round(playerValues[L12.reserve+gun]||0),reload=Math.max(0,playerValues[L12.reload]||0);
+   ammo={kind:eq>=3?'item':axe?'melee':'gun',selected:eq,mag,reserve,reloadSeconds:reload,...ammoFeedback102(eq,axe,mag,reserve,reload)};
+  }
+  return {audioAvailable:hooked,counts:{...counts},events:events.map(e=>({...e})),director,ammo};
+ }
+ return {enabled,record,snapshot};
+})();
+// Internal hook: actual playback or skip decisions, never queue requests.
+function recordAudioDebug101(event){debugView101.record(event);}
+if(debugView101.enabled)window.__tinyDebugView=Object.freeze({getSnapshot:debugView101.snapshot});
+function debugHUD101(k){
+ if(!debugView101.enabled||settings.hideUI)return;
+ const d=debugView101.snapshot(),unit=width/Math.max(1,window.innerWidth),pad=8*unit,line=17*unit,px=12*unit;
+ const w=Math.max(1,Math.min(width-2*pad,390*unit)),compact=settings.stats||director70.on;
+ const maxRows=compact?3:Math.max(3,Math.min(7,Math.floor(height*.28/line)));
+ const b=d.director,a=d.ammo,rows=['DEBUG | VOICE '+(d.audioAvailable?d.counts.played+' PLAY / '+d.counts.skipped+' SKIP':'NO CUES YET')];
+ rows.push(b?b.state+' | NEAR '+b.near+' AWAKE '+b.awake+' HELD '+b.held:'DIRECTOR UNAVAILABLE');
+ rows.push(a?'AMMO '+(a.kind==='gun'?a.mag+' / '+a.reserve+' '+a.state:a.kind).toUpperCase():'AMMO UNAVAILABLE');
+ const n=maxRows-3;
+ if(n>0)for(const e of d.events.slice(-n).reverse())rows.push(e.t.toFixed(1)+' '+(e.status==='played'?'PLAY ':'SKIP ')+(e.take||e.cue)+(e.reason?' : '+e.reason:''));
+ const h=rows.length*line+2*pad,x=width-w-pad,y=Math.max(0,height-h-Math.max(pad,74*k));
+ rect(x,y,w,h,[.012,.035,.047,.94]);
+ rows.forEach((v,i)=>{let t=v;while(t.length&&textWidth9(t,px)>w-2*pad)t=t.slice(0,-1);if(t)text(t,x+pad,y+pad+i*line,px,i===0?[.72,.92,.46,1]:[.93,.97,1,1]);});
+}
+
 function hud(){
  glyphCount=0;if(hud2d30)sizeHud2d30();
  const choosing=playerValues[464]>.5,won=playerValues[67]===1||completedBoundary15,dead=playerValues[67]===2;
@@ -4427,18 +4523,18 @@ function hud(){
  let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67+(SANDBOX25?playerValues[1]||0:0));cx=clamp9(cx,85*k,width-85*k);cy=clamp9(cy,105*k,height-120*k);
  // The game itself remains full-screen. During normal play no corners are reserved for UI.
  if(active&&!settings.hideUI){
+  const axe=eq===2&&gearLabel14(2)==='FIRE AXE',feedback102=ammoFeedback102(eq,axe,ammo,Math.round(playerValues[L12.reserve+gun]||0),reload),empty=feedback102.state==='empty'||feedback102.state==='out';
   const r=clamp9(57*k*34/settings.zoom,44*k,82*k),amp=eq>=3?1:reload>0?clamp9(1-reload/rd,0,1):clamp9(ammo/Math.max(1,cap),0,1);
   disk9(cx,cy,r,1,COL9.dim,132,0);disk9(cx,cy,r,hp,hp<.35?COL9.red:COL9.green,132,0);
-  disk9(cx,cy,r,1,COL9.dim,132,1);disk9(cx,cy,r,amp,eq>=3?COL9.dim:reload>0?COL9.gold:COL9.cyan,132,1);
+  disk9(cx,cy,r,1,COL9.dim,132,1);disk9(cx,cy,r,amp,eq>=3?COL9.dim:reload>0?COL9.gold:empty?COL9.red:COL9.cyan,132,1);
   const hstr=String(Math.ceil(Math.max(0,playerValues[3]||0))),astr=eq<3?(reload>0?'...':String(ammo)):String(stock);
   let small=15*k,xx=cx-r-23*k,yy=cy+13*k;
   text(hstr,xx-textWidth9(hstr,small)/2,yy,small,hp<.35?COL9.red:COL9.white);
-  xx=cx+r+23*k;text(astr,xx-textWidth9(astr,small)/2,yy,small,reload>0?COL9.gold:COL9.white);
-  const axe=eq===2&&gearLabel14(2)==='FIRE AXE',empty=eq<3&&!axe&&reload<=0&&ammo<=0,dry=empty&&reserve!=='INF'&&reserve<=0;
-  const itemLabel=gearLabel14(eq)+(axe?'':eq<3?(reload>0?'  RELOADING':dry?'  NO AMMO':empty?'  EMPTY  R':'  '+ammo+' / '+reserve):'  '+stock+' LEFT');
+  xx=cx+r+23*k;text(astr,xx-textWidth9(astr,small)/2,yy,small,reload>0?COL9.gold:empty?COL9.red:COL9.white);
+  const itemLabel=gearLabel14(eq)+(axe?'':eq<3?('  '+ammo+' / '+reserve):'  '+stock+' LEFT');
   text(itemLabel,cx-textWidth9(itemLabel,14*k)/2,cy+r+18*k,14*k,empty?COL9.red:reload>0?COL9.gold:COL9.white);
   rect(cx-38*k,cy+r+39*k,76*k,3*k,COL9.dim);rect(cx-38*k,cy+r+39*k,76*k*clamp9(playerValues[L12.items+3]/100,0,1),3*k,COL9.green);
-  if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,12*k)/2,cy+r+67*k,12*k,COL9.gold);
+  if(toolHint&&time<toolHintUntil)text(toolHint,cx-textWidth9(toolHint,12*k)/2,cy+r+(feedback102.label&&playerValues[L7.player7]<=0?83:67)*k,12*k,COL9.gold);
   drawLoadout25(k,eq);
   if(SANDBOX25)calloutsHUD30(k);
   if(SANDBOX25)zamnHUD52(k);
@@ -4461,7 +4557,8 @@ function hud(){
    const [sx,sy]=screenPoint(bx,bz,.55+Math.sin(t*Math.PI)*2.8);const label=(SANDBOX25?'Soda can ':'Pipe bomb ')+fuse.toFixed(1)+'s';
    if(sx>40&&sx<width-40&&sy>24&&sy<height-30){disk9(sx,sy-10*k,10*k,clamp9(fuse/total,0,1),COL9.gold);text(label,sx-textWidth9(label,12*k)/2,sy-40*k,12*k,COL9.gold);}
   }
-  {let lbl=eq<3?(reload>0?'RELOADING '+reload.toFixed(1)+'s':ammo===0?'EMPTY - R RELOAD / 1 2 3 SWITCH':''):eq===5?(playerValues[L12.heal]>0?(playerValues[L12.heal+1]>=0?'HEALING TEAMMATE':'HEALING'):'HOLD LMB: SELF / RMB: ALLY'):'LMB THROW / Q LAST GUN';
+  if(playerValues[L7.player7]<=0)drawAmmoFeedback102(feedback102,cx,cy+r+47*k,k);
+  {let lbl=eq<3?'':eq===5?(playerValues[L12.heal]>0?(playerValues[L12.heal+1]>=0?'HEALING TEAMMATE':'HEALING'):'HOLD LMB: SELF / RMB: ALLY'):'LMB THROW / Q LAST GUN';
   if(playerValues[L7.player7]>0)lbl='DOWNED - KEEP FIRING';if(lbl)text(lbl,cx-textWidth9(lbl,12*k)/2,cy+r+47*k,12*k,COL9.gold);}
   if(playerValues[L7.player7]>0){
    // Downed is a local, quiet critical state; never a full-width error console.
@@ -4597,6 +4694,7 @@ function hud(){
   lines.forEach((line,i)=>centre(line,y+(72+i*31)*k,14*k,i===2?COL9.gold:COL9.soft));}
  }
  if(active&&!settings.tactical&&!settings.help&&!settings.paused)aimHUD();
+ debugHUD101(k);
  device.queue.writeBuffer(glyphBuffer,0,glyphMemory,0,glyphCount*48);
 }
 

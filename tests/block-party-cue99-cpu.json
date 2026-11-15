@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "rows": [
+    {
+      "test": "block-party-cue99.test.cjs",
+      "exit": 0,
+      "stdout": "{\n  \"passed\": true,\n  \"method\": \"CPU execution of production quest HUD/announcement path, not GPU rendering or audio listening\",\n  \"sha256\": \"174363198212eea4f8d6bfd426a7af29a9313b1acadab0744320f863ed3c5141\",\n  \"checks\": [\n    \"One saved: truthful text-only entry\",\n    \"Three saved: no early completion or voice\",\n    \"Four saved: unchanged next quest/voice once\",\n    \"Already four saved: skip retains next quest\",\n    \"Later shelter voice retained\",\n    \"Reset opening voice retained\",\n    \"Only the BLOCK PARTY entry changes\"\n  ],\n  \"identicalShaders\": 43\n}\n",
+      "stderr": ""
+    },
+    {
+      "test": "first-rescue-cue97.test.cjs",
+      "exit": 0,
+      "stdout": "{\n  \"passed\": true,\n  \"kind\": \"CPU production-host quest/announcement regression, not audio listening or gameplay\",\n  \"sourceSha256\": \"174363198212eea4f8d6bfd426a7af29a9313b1acadab0744320f863ed3c5141\",\n  \"checks\": [\n    \"First-rescue subtitle matches starting safe room\",\n    \"Wrong recorded line and fallback TTS are not called\",\n    \"Follower marker uses same starting room\",\n    \"Later shelter voiced cue preserved\",\n    \"Retry opening voice preserved\"\n  ],\n  \"identicalShaders\": 0\n}\n",
+      "stderr": ""
+    },
+    {
+      "test": "shelter98.test.cjs",
+      "exit": 0,
+      "stdout": "{\"passed\":true,\"kind\":\"Production scalar WGSL gate expressions and host UI, not a GPU or ordinary-input test\",\"sha256\":\"174363198212eea4f8d6bfd426a7af29a9313b1acadab0744320f863ed3c5141\",\"rows\":[{\"label\":\"waiting\",\"outstanding\":1,\"ready\":false,\"seal\":false},{\"label\":\"panicked-waiting\",\"outstanding\":1,\"ready\":false,\"seal\":false},{\"label\":\"following\",\"outstanding\":1,\"ready\":false,\"seal\":false},{\"label\":\"following-flag\",\"outstanding\":1,\"ready\":false,\"seal\":false},{\"label\":\"saved\",\"outstanding\":0,\"ready\":true,\"seal\":true},{\"label\":\"lost\",\"outstanding\":0,\"ready\":true,\"seal\":true},{\"label\":\"inactive\",\"outstanding\":0,\"ready\":true,\"seal\":true},{\"label\":\"not-civilian\",\"outstanding\":0,\"ready\":true,\"seal\":true}],\"unchangedShaders\":null}\n",
+      "stderr": ""
+    },
+    {
+      "test": "roadmap96-opening.test.cjs",
+      "exit": 0,
+      "stdout": "roadmap96-opening: modes, tutorial transitions, separation, pressure caps and recovery passed (CPU host only)\n",
+      "stderr": ""
+    },
+    {
+      "test": "roadmap96-specials.test.cjs",
+      "exit": 0,
+      "stdout": "roadmap96-specials: production-fragment spit lifecycle, mode placement, and portal crossing passed (CPU only)\n",
+      "stderr": ""
+    }
+  ],
+  "negativeControl": {
+    "source": "ab286297",
+    "exit": 1,
+    "expectedFailure": true
+  }
+}

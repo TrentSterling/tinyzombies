@@ -1,0 +1,28 @@
+{
+  "clear": {
+    "i": 6,
+    "bonus": 6000,
+    "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+    "spoken": [],
+    "jingles": [],
+    "drawn": [
+      "MAPLE STREET EVACUATED",
+      "4 / 12 NEIGHBORS SAVED",
+      "0 put down   /   0 crushed   /   8:20",
+      "Most of the street made it. Brenda says it was her idea.",
+      "ENTER   LEVEL 2",
+      "N twice   New run"
+    ]
+  },
+  "overrun": {
+    "i": 6,
+    "bonus": 6000,
+    "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+    "spoken": [],
+    "jingles": [],
+    "drawn": [
+      "Overrun",
+      "Backspace  Retry     N twice  New run"
+    ]
+  }
+}

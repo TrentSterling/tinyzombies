@@ -1,0 +1,166 @@
+{
+  "method": "Exact HTML locally fulfilled in muted isolated Chrome WebGPU. Explicit terminal host/GPU-buffer fixtures at mission 7, not earned endings or ordinary full-route evidence. Production hud/drawFrame and audio functions run; wrappers only count calls/returns. Simulation is suspended after initialization.",
+  "runs": [
+    {
+      "name": "baseline",
+      "sha256": "174363198212eea4f8d6bfd426a7af29a9313b1acadab0744320f863ed3c5141",
+      "errors": [],
+      "rows": [
+        {
+          "terminal": 1,
+          "label": "clear",
+          "first": {
+            "i": 6,
+            "bonus": 6000,
+            "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+            "spoken": [],
+            "jingles": [],
+            "saved": 4,
+            "lost": 8,
+            "score": 13000
+          },
+          "screenshot": "baseline-clear.png",
+          "repeat": {
+            "i": 6,
+            "bonus": 6000,
+            "spoken": [],
+            "jingles": [],
+            "terminal": 1,
+            "stopped": false,
+            "score": 13000
+          }
+        },
+        {
+          "terminal": 2,
+          "label": "overrun",
+          "first": {
+            "i": 6,
+            "bonus": 6000,
+            "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+            "spoken": [],
+            "jingles": [],
+            "saved": 4,
+            "lost": 8,
+            "score": 13000
+          },
+          "screenshot": "baseline-overrun.png",
+          "repeat": {
+            "i": 6,
+            "bonus": 6000,
+            "spoken": [],
+            "jingles": [],
+            "terminal": 2,
+            "stopped": false,
+            "score": 13000
+          }
+        }
+      ],
+      "readySeconds": 1.259,
+      "setup": {
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "blackwell",
+          "device": "",
+          "description": ""
+        },
+        "voiceBank": "chatterbox-matched",
+        "voiceClipLoaded": true,
+        "audioState": "running",
+        "defaultHard": false
+      },
+      "passed": true
+    },
+    {
+      "name": "candidate",
+      "sha256": "a69fa4b7517a1ac40455fa7b3cb514f883379bcb89d37f9472cdfe53788e00d4",
+      "errors": [],
+      "rows": [
+        {
+          "terminal": 1,
+          "label": "clear",
+          "first": {
+            "i": 7,
+            "bonus": 7000,
+            "radio": "Radio Pleasant Acres, signing off. You saved the street.",
+            "spoken": [
+              {
+                "line": "Radio Pleasant Acres, signing off. You saved the street.",
+                "priority": true,
+                "returned": true
+              }
+            ],
+            "jingles": [
+              {
+                "kind": "jingle",
+                "returned": true
+              }
+            ],
+            "saved": 4,
+            "lost": 8,
+            "score": 14000
+          },
+          "screenshot": "candidate-clear.png",
+          "repeat": {
+            "i": 7,
+            "bonus": 7000,
+            "spoken": [
+              {
+                "line": "Radio Pleasant Acres, signing off. You saved the street.",
+                "priority": true,
+                "returned": true
+              }
+            ],
+            "jingles": [
+              {
+                "kind": "jingle",
+                "returned": true
+              }
+            ],
+            "terminal": 1,
+            "stopped": false,
+            "score": 14000
+          }
+        },
+        {
+          "terminal": 2,
+          "label": "overrun",
+          "first": {
+            "i": 6,
+            "bonus": 6000,
+            "radio": "The fallout shelter is open. Get everybody inside. Wipe your feet.",
+            "spoken": [],
+            "jingles": [],
+            "saved": 4,
+            "lost": 8,
+            "score": 13000
+          },
+          "screenshot": "candidate-overrun.png",
+          "repeat": {
+            "i": 6,
+            "bonus": 6000,
+            "spoken": [],
+            "jingles": [],
+            "terminal": 2,
+            "stopped": false,
+            "score": 13000
+          }
+        }
+      ],
+      "readySeconds": 1.292,
+      "setup": {
+        "adapter": {
+          "vendor": "nvidia",
+          "architecture": "blackwell",
+          "device": "",
+          "description": ""
+        },
+        "voiceBank": "chatterbox-matched",
+        "voiceClipLoaded": true,
+        "audioState": "running",
+        "defaultHard": false
+      },
+      "passed": true
+    }
+  ],
+  "passed": true
+}

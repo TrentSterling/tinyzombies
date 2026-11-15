@@ -4235,9 +4235,9 @@ const QUESTS65=[
  {title:'AIR SUPERIORITY',goal:()=>'Bounce on a trampoline (yellow paint)',done:()=>(counters[83]|0)>=1,radio:'Trampolines, people. Height is safety. Zombies cannot reach a wall top.'},
  {title:'BLOCK PARTY',goal:()=>'Rescue 4 neighbors ('+Math.min(4,counters[98]|0)+'/4)',done:()=>(counters[98]|0)>=4,radio:'Bring four neighbors to safety. Everyone already rescued counts.',textOnly:true},
  {title:'FORECLOSURE',goal:()=>(counters[101]|0)>=1?'Put down the HOA President':'Hold out until the HOA President shows up ('+Math.floor(bossAt65()/60)+':'+String(bossAt65()%60).padStart(2,'0')+')',done:()=>(counters[101]|0)===2,radio:'Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.'},
- {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>(playerValues[L7.goal+3]||0)>0,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
+ {title:'LAST BUS OUT',goal:()=>'Bring everyone left to the fallout shelter',done:()=>playerValues[L7.goal+3]===1,radio:'The fallout shelter is open. Get everybody inside. Wipe your feet.'}];
 const quest65={i:0,epoch:-1,world:null,bonus:0,banner:'',until:0,radio:'',radioUntil:0};
-function questHUD65(k){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16){Object.assign(q,{i:0,epoch:runEpoch16,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
+function questHUD65(k,terminal=false){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16){Object.assign(q,{i:0,epoch:runEpoch16,world,bonus:0,banner:'',until:0,radio:'',radioUntil:0});}if(!settings.started)return;
  if(!q.radio){q.radio=QUESTS65[0].radio;q.radioUntil=time+7;announce65(q.radio);}
  while(q.i<QUESTS65.length&&QUESTS65[q.i].done()){q.banner='QUEST COMPLETE: '+QUESTS65[q.i].title+'  +1000';q.until=time+2.8;q.bonus+=1000;q.i++;synth65('jingle');
   if(q.i<QUESTS65.length){q.radio=QUESTS65[q.i].radio;q.radioUntil=time+8;if(!QUESTS65[q.i].textOnly)announce65(q.radio);}else{q.radio='Radio Pleasant Acres, signing off. You saved the street.';q.radioUntil=time+8;announce65(q.radio,true);}}
@@ -4246,7 +4246,7 @@ function questHUD65(k){const q=quest65;if(q.world!==world||q.epoch!==runEpoch16)
  const fit=(s,px,w)=>Math.min(px,px*w/Math.max(1,textWidth9(s,px)));
  if(q.i<QUESTS65.length){const m=QUESTS65[q.i],t='MISSION '+(q.i+1)+'/'+QUESTS65.length+'  '+m.title,g=m.goal();text(t,x+12*k,y+8*k,fit(t,15*k,276*k),COL9.gold);text(g,x+12*k,y+32*k,fit(g,12*k,276*k),COL9.white);}
  else text('ALL MISSIONS COMPLETE',x+12*k,y+20*k,16*k,COL9.gold);
- if(q.banner&&time<q.until){const px=(30+4*Math.sin((q.until-time)*9))*k;text(q.banner,width/2-textWidth9(q.banner,px)/2,height*.42,px,COL9.gold);}
+ if(!terminal&&q.banner&&time<q.until){const px=(30+4*Math.sin((q.until-time)*9))*k;text(q.banner,width/2-textWidth9(q.banner,px)/2,height*.42,px,COL9.gold);}
  if(q.radio&&time<q.radioUntil){const r='RADIO:  '+q.radio,px=fit(r,14*k,width-40*k);text(r,width/2-textWidth9(r,px)/2,height-96*k,px,[.55,1,.70,1]);}}
 // Player two joins the first time IJKL or a gamepad stick moves; a green P2 tag rides over bot 1 and a banner announces it.
 const p2_65={on:false,at:-9};
@@ -4582,7 +4582,7 @@ function hud(){
   centre('Overrun',height*.344,51*k,COL9.red);
   centre('Backspace  Retry     N twice  New run',height*.502,17*k,COL9.white);
  }
-  if(won&&SANDBOX25){evacCard30(k);}
+  if(won&&SANDBOX25){questHUD65(k,true);evacCard30(k);}
   else if(won){panel9(width*.18,height*.25,width*.64,height*.54,.90);
    centre(SANDBOX25?'Maple Street evacuated':finalResult19?'Campaign survived':'Safehouse secured',height*.29,39*k,COL9.green);
    centre(SANDBOX25?(counters[98]|0)+'/'+(world.civilians30?.length||0)+' neighbors saved  /  '+fmt(counters[0])+' put down  /  '+(counters[34]|0)+' crushed  /  '+Math.round(playerValues[24]||0)+'s':checkpointStatus13||'CHAPTER COMPLETE',height*.39,14*k,COL9.white);

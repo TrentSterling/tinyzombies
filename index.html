@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:radial-gradient(ellipse at 30% 40%,#163039,#0b1b22 70%);color:#e1e9d2;font:500 17px/1.65 Rubik,'Segoe UI',system-ui,sans-serif;z-index:2}#boot h1{font:clamp(44px,9vw,120px)/1 Bangers,Impact,'Arial Black',sans-serif;letter-spacing:.03em;color:#f0f7ee;text-shadow:0 5px 0 #03090c,0 0 32px rgba(255,189,97,.25);margin:0 0 18px}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:default}#game.gameplay-aim{cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:radial-gradient(ellipse at 30% 40%,#163039,#0b1b22 70%);color:#e1e9d2;font:500 17px/1.65 Rubik,'Segoe UI',system-ui,sans-serif;z-index:2}#boot h1{font:clamp(44px,9vw,120px)/1 Bangers,Impact,'Arial Black',sans-serif;letter-spacing:.03em;color:#f0f7ee;text-shadow:0 5px 0 #03090c,0 0 32px rgba(255,189,97,.25);margin:0 0 18px}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
 #boot .loading93{width:min(100%,620px);margin:10px 0 22px}#boot .loading-meta93{display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;font-variant-numeric:tabular-nums}#boot #boot-percent93{font:40px/1 Bangers,Impact,sans-serif;color:#b8ec76;letter-spacing:.04em}#boot #boot-count93{align-self:center;color:#9db5ac;font-size:14px}#boot .loading-track93{height:20px;border:2px solid #536b56;background:#061015;box-shadow:0 4px 0 #03090c;padding:3px}#boot #boot-fill93{height:100%;width:0;background:repeating-linear-gradient(110deg,#b8ec76 0 18px,#8fc958 18px 22px)}#boot .loading-note93{font-size:12px;margin:10px 0 0}#boot button{align-self:flex-start;background:#b8ec76;color:#101d22;border:0;box-shadow:0 4px 0 #03090c;padding:12px 20px;font:700 16px Rubik,system-ui,sans-serif;cursor:pointer}#boot button:focus-visible{outline:3px solid #f6d43a;outline-offset:4px}
 </style></head><body><canvas id="game" tabindex="0" aria-label="Tiny Zombies compute prototype"></canvas><div id="boot"><h1>TINY ZOMBIES</h1><p id="boot-status93" role="status" aria-live="polite">Preparing the neighborhood...</p><div class="loading93"><div class="loading-meta93"><span id="boot-percent93">0%</span><span id="boot-count93">Preparing startup steps</span></div><div id="boot-progress93" class="loading-track93" role="progressbar" aria-label="Game startup" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-describedby="boot-status93 boot-count93"><div id="boot-fill93"></div></div><p class="loading-note93">Completed steps, not a time estimate. Shader compilation may take a moment.</p></div></div><noscript>This game requires JavaScript and WebGPU.</noscript><script>
 /* TINY ZOMBIES — NO ONE LEFT / V9 — QUIET HUD
@@ -38,7 +38,9 @@ const BALANCE94={guns:[{clip:45,reserve:360,rate:.065,reload:1.2,damage:42,range
 const statsWGSL94=g=>[g.clip,g.rate,g.reload,g.reserve].join(',');
 const hitsWGSL94=g=>[g.damage,g.range,g.pellets,g.pierce].join(',');
 function gunHUD94(w,bits=0){if(SANDBOX25)return w===0&&(bits&1)?BALANCE94.bazooka:w===1&&(bits&2)?BALANCE94.auto:BALANCE94.guns[w];return w===0&&(bits&1)?{clip:14,reload:1.55}:w===1&&(bits&2)?{clip:8,reload:.34}:GUN12[w];}
-const settings={zombies:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false,hard:SANDBOX25&&(params.has('hard')||params.get('difficulty')==='hard')};
+// Maple Street defaults to the full horde. Quiet mode and explicit legacy hard remain available.
+const HORDE104=SANDBOX25&&!params.has('lab')&&(params.has('horde')||(!params.has('gentle')&&!params.has('hard')&&!['standard','hard'].includes(params.get('difficulty'))));
+const settings={zombies:HORDE104?8192:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false,hard:SANDBOX25&&(params.has('hard')||params.get('difficulty')==='hard')};
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
@@ -1737,7 +1739,7 @@ const initShader=COMMON+`
  // Maple Street starts slow and ramps: about 30% of the infected are in the street at the start. The rest wait offstage
  // (special13.w=-2) and walk in offscreen between 25 s and 3 min, through the respawn path in the zombie pass.
  // Early scare: robot playtests ended the first 30 s at ~95 HP, so a small pack (1.2%) of the held infected comes in at 15-17 s, awake.
-  if(mapleEasy94()){let f=rnd(i+5003u);let initial=select(.18,.30,mapleHard96())+min(.30,max(0.0,u.v3.x-1.0)*.10);let delayedSpecial=!mapleHard96()&&u.v3.x<1.5&&kind>1.0;if(f>initial||delayedSpecial){Z[i].p.w=0.0;let spread=clamp((f-initial)/max(.01,1.0-initial),0.0,1.0);Z[i].v.w=select(40.0+spread*260.0,25.0+spread*155.0,mapleHard96());if(delayedSpecial){Z[i].v.w=max(Z[i].v.w,120.0);}if(mapleHard96()&&f>initial&&f<initial+.012){Z[i].v.w=15.0+(f-initial)/.012*2.0;}Z[i].special13.w=-2.0;}}
+  if(mapleEasy94()&&!${HORDE104}){let f=rnd(i+5003u);let initial=select(.18,.30,mapleHard96())+min(.30,max(0.0,u.v3.x-1.0)*.10);let delayedSpecial=!mapleHard96()&&u.v3.x<1.5&&kind>1.0;if(f>initial||delayedSpecial){Z[i].p.w=0.0;let spread=clamp((f-initial)/max(.01,1.0-initial),0.0,1.0);Z[i].v.w=select(40.0+spread*260.0,25.0+spread*155.0,mapleHard96());if(delayedSpecial){Z[i].v.w=max(Z[i].v.w,120.0);}if(mapleHard96()&&f>initial&&f<initial+.012){Z[i].v.w=15.0+(f-initial)/.012*2.0;}Z[i].special13.w=-2.0;}}
 }
 `;
 
@@ -3932,7 +3934,7 @@ function bindInput(){
    case 'Digit1':case 'Digit2':case 'Digit3':if(seedRequested)break;if(playerValues[464]>.5){pendingChoice=+e.code.slice(-1);cancelInput12();}else if(playerValues[67]===1){saveBoundary13();continueBoundary13();}else selectGear12(+e.code.slice(-1)-1);break;
    case 'Digit4':case 'KeyG':case 'KeyC':throwable12();break;
    case 'Backquote':director70.on=!director70.on;break;
-   case 'F4':if(SANDBOX25&&!settings.started){e.preventDefault();settings.hard=!settings.hard;resetRequested=true;}break;
+   case 'F4':if(SANDBOX25&&!settings.started&&!HORDE104){e.preventDefault();settings.hard=!settings.hard;resetRequested=true;}break;
    case 'Digit5':case 'KeyF':case 'KeyH':selectGear12(5);break;
    case 'KeyQ':selectGear12(input12.selected>=3?input12.lastGun:(input12.previous<3?input12.previous:(input12.selected===0?1:0)));break;
    case 'KeyR':if(!settings.paused)input12.reload++;break;
@@ -4126,6 +4128,11 @@ function text(str,x,y,px=17,col=[.89,.94,.93,1]){
 }
 function centre(str,y,px,col){text(str,(width-textWidth9(str,px))/2,y,px,col);}
 function fmt(n){return Math.round(n).toLocaleString('en-US');}
+let showingAim105=false;
+function setAimCursor105(active){
+ if(active===showingAim105)return;
+ showingAim105=active;canvas.classList.toggle('gameplay-aim',active);
+}
 function aimHUD(){
  if(!settings.started||settings.paused||playerValues[67]!==0)return;
  let scale=(width/(window.innerWidth||width))*settings.reticle,sz=48*scale;
@@ -4221,7 +4228,7 @@ function poster52(k){const ctx=hud2d30,s=hudScale30,W=width*s,H=height*s;ctx.sav
  pill30('CLICK TO PLAY',width/2,height*.56,24*k,COL9.gold);
  centre('Rescue your neighbors. Drop the houses on everyone else. Kick the cheese.',height*.65,17*k,[1,1,.96,1]);
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit   /   ? controls',height*.71,14*k,[1,.97,.86,1]);
-  centre(settings.hard?'HARD director: stronger waves, recovery breaks. F4 for Standard.':'STANDARD: a gentler first five minutes. F4 for Hard director.',height*.77,14*k,COL9.gold);
+  centre(HORDE104?'HORDE: full streets. Add ?gentle for the quieter opening.':settings.hard?'HARD director: stronger waves, recovery breaks. F4 for Standard.':'STANDARD: a gentler first five minutes. F4 for Hard director.',height*.77,14*k,COL9.gold);
 }
 // ZAMN-style level card for the first 3.6 s of a run: LEVEL 1, a drippy ZOMBIE PANIC!, and the victim count. It slams in and fades out.
 let levelCardSaid65=null;
@@ -4356,12 +4363,12 @@ function directorTick70(){const d=director70,t=playerValues[24]||0;
  d.timeIn[d.state]+=dt;const age=t-d.since,go=(s,why)=>{d.state=s;d.since=t;d.events.push([+t.toFixed(1),s,why]);if(d.events.length>6)d.events.shift();if(s==='PEAK')d.peaks++;};
  if(d.state==='BUILD-UP'&&(d.intensity>=.65||hp<45||age>=35))go('PEAK',hp<45?'health under 45':age>=35?'35 s wave limit':'intensity '+d.intensity.toFixed(2));else if(d.state==='PEAK'&&age>=3)go('FADE','peak held 3 s');else if(d.state==='FADE'&&(d.intensity<.3||age>=8))go('RELAX','pressure release');else if(d.state==='RELAX'&&age>=(settings.hard?22:30)&&hp>=45&&!(playerValues[L7.player7]>0))go('BUILD-UP',(settings.hard?'22':'30')+' s breather over');
   {const aw=counters[53]|0,hard=settings.hard,opening=!hard&&t<300,cap=hard?120:t<60?30:t<180?50:80;let r=0,a='HOLD (safe room)';
-   if(playerValues[L7.journey7]>.5){if(hp<45||playerValues[L7.player7]>0){a='HOLD (recover)';}else if(aw>=cap){a='HOLD (crowded)';}else if(d.state==='RELAX'){a='HOLD (breather)';}else if(d.state==='BUILD-UP'){r=hard?(d.intensity<.3?1.5:1):opening?(t<60?.25:t<180?.4:.65):(d.intensity<.3?1:.65);a=(hard?'HARD BUILD':opening?'GENTLE OPENING':'BUILD')+' x'+r;}else{r=hard?.3:.15;a='TRICKLE x'+r;}}d.rate=SANDBOX25?r:1;d.action=a;}
+   if(playerValues[L7.journey7]>.5){if(hp<45||playerValues[L7.player7]>0){a='HOLD (recover)';}else if(aw>=cap){a='HOLD (crowded)';}else if(d.state==='RELAX'){a='HOLD (breather)';}else if(d.state==='BUILD-UP'){r=hard?(d.intensity<.3?1.5:1):opening?(t<60?.25:t<180?.4:.65):(d.intensity<.3?1:.65);a=(hard?'HARD BUILD':opening?'GENTLE OPENING':'BUILD')+' x'+r;}else{r=hard?.3:.15;a='TRICKLE x'+r;}}if(HORDE104&&playerValues[L7.journey7]>.5&&hp>0&&!(playerValues[L7.player7]>0)){r=1;a='HORDE x1';}d.rate=SANDBOX25?r:1;d.action=a;}
  d.log.push([t,hurt,got]);while(d.log.length&&d.log[0][0]<t-60)d.log.shift();const span=Math.max(5,Math.min(60,t)),dpm=d.log.reduce((s,e)=>s+e[1],0)*60/span,kpm=d.log.reduce((s,e)=>s+e[2],0)*60/span;
  if(t-d.histAt>=.25){d.histAt=t;d.hist.push([d.intensity,Math.min(1,(counters[53]|0)/200)]);if(d.hist.length>240)d.hist.shift();}
  const nb=[0,0,0,0,0];for(let c=0;c<CIV_MAX30;c++){const s=Math.round(playerValues[CIV_STATE30+c*4+2]);if(s>=1&&s<=4)nb[s]++;}
  const boss=counters[101]|0,awake=counters[53]|0;
- d.last={difficulty:settings.hard?'hard':'standard',opening:!settings.hard&&t<300,t:+t.toFixed(2),state:d.state,stateAge:+age.toFixed(1),intensity:+d.intensity.toFixed(3),awake,alive,held,near,close,hp:+hp.toFixed(1),dpm:+dpm.toFixed(1),kpm:+kpm.toFixed(1),
+ d.last={difficulty:HORDE104?'horde':settings.hard?'hard':'standard',opening:!HORDE104&&!settings.hard&&t<300,t:+t.toFixed(2),state:d.state,stateAge:+age.toFixed(1),intensity:+d.intensity.toFixed(3),awake,alive,held,near,close,hp:+hp.toFixed(1),dpm:+dpm.toFixed(1),kpm:+kpm.toFixed(1),
   combo:combo69.chain,mult:combo69.mult,waiting:nb[1],following:nb[2],saved:counters[98]|0,lost:counters[97]|0,boss:boss===1?'ALIVE':boss===2?'DOWN':'-',
   music:boss===1?'THEREMIN':(t>60||awake>40)?'DRUMS':'CALM',rate:d.rate,action:d.action,peaks:d.peaks,events:d.events.slice(-4),
   share:Object.fromEntries(Object.entries(d.timeIn).map(([s,v])=>[s,+(v/Math.max(.001,t)).toFixed(3)]))};return d.last;}
@@ -4397,7 +4404,7 @@ function titleCard30(k){
  centre('Rescue your neighbors. Drop the houses on everyone else.',height*.6,15*k,COL9.white);
  centre('WASD move   /   mouse aim and fire   /   1 2 3 guns   /   G throw   /   F medkit',height*.655,13*k,COL9.soft);
  centre('Press ? for all controls',height*.7,12*k,COL9.soft);
-  centre(settings.hard?'HARD director / F4 for Standard':'STANDARD / F4 for Hard director',height*.75,12*k,COL9.gold);
+  centre(HORDE104?'HORDE / full streets':settings.hard?'HARD director / F4 for Standard':'STANDARD / F4 for Hard director',height*.75,12*k,COL9.gold);
 }
 function evacQuip30(saved,lost,total){if(total&&saved===total)return 'Perfect attendance. The HOA is deeply suspicious.';if(!saved)return 'Technically, the street is much quieter now.';if(lost>saved)return 'The block party is cancelled. Again.';return 'Most of the street made it. Brenda says it was her idea.';}
 function evacCard30(k){
@@ -4514,6 +4521,29 @@ function debugHUD101(k){
  rows.forEach((v,i)=>{let t=v;while(t.length&&textWidth9(t,px)>w-2*pad)t=t.slice(0,-1);if(t)text(t,x+pad,y+pad+i*line,px,i===0?[.72,.92,.46,1]:[.93,.97,1,1]);});
 }
 
+function cellCarryTarget105(){
+ if(!SANDBOX25||settings.lab||playerValues[L7.cell+3]!==1)return null;
+ const g=world?.generators;return g&&Number.isFinite(g[2])&&Number.isFinite(g[3])?{x:g[2],z:g[3]}:null;
+}
+function drawCellDestination105(target,k){
+ const [sx,sy]=screenPoint(target.x,target.z,1.5),midX=width/2,midY=height/2;
+ const padX=Math.min(width*.22,76*k),padY=Math.min(height*.22,70*k);
+ const on=sx>=padX&&sx<=width-padX&&sy>=padY&&sy<=height-padY;
+ const d=Math.hypot(target.x-playerValues[0],target.z-playerValues[2]),col=COL9.cyan;
+ let x=sx,y=sy;
+ if(on){aimBeacon9(x,y,col,34*k);}else{
+  const dx=sx-midX,dy=sy-midY;
+  const scale=Math.min((midX-padX)/Math.max(.001,Math.abs(dx)),(midY-padY)/Math.max(.001,Math.abs(dy)));
+  x=midX+dx*scale;y=midY+dy*scale;arrow9(x,y,Math.atan2(dy,dx),col,27*k);
+ }
+ const tag='RELAY B  '+Math.round(d)+'m',px=14*k,w=textWidth9(tag,px);
+ const tx=clamp9(x-w/2,7*k,Math.max(7*k,width-w-7*k));
+ text(tag,tx,Math.max(6*k,y-28*k),px,col);
+ const install=Math.round(playerValues[L7.mission5+1]||0)===4;
+ const carry=install?'HOLD E TO INSTALL  /  U TO DROP':'CARRY CELL TO RELAY B  /  U TO DROP';
+ const sz=Math.min(15*k,(width-16*k)/Math.max(1,textWidth9(carry,1)));
+ if(sz>0)centre(carry,height-118*k,sz,col);
+}
 function hud(){
  glyphCount=0;if(hud2d30)sizeHud2d30();
  const choosing=playerValues[464]>.5,won=playerValues[67]===1||completedBoundary15,dead=playerValues[67]===2;
@@ -4544,7 +4574,7 @@ function hud(){
   if(SANDBOX25)questHUD65(k);
   if(SANDBOX25)p2HUD65(k);
   if(SANDBOX25)toastHUD67(k);
-  if(SANDBOX25)helpArrow68(k);
+  if(SANDBOX25&&!cellCarryTarget105())helpArrow68(k);
   if(SANDBOX25)specialsHUD96(k);
   if(SANDBOX25)comboHUD69(k);
   if(SANDBOX25)scareHUD69(k);
@@ -4583,7 +4613,9 @@ function hud(){
    if(thp<=0){uiQuad9(sx-9*k,sy-30*k,18*k,18*k,COL9.red,135);pulse9(sx,sy-20*k,Math.min(1,.25+.75*(.5+.5*Math.sin(clock*5))),COL9.red,15*k);}
   }
   // World-anchored current mission marker; only distance when it is outside the camera.
-  if(!settings.lab){
+  const cellTarget105=cellCarryTarget105();
+  if(cellTarget105)drawCellDestination105(cellTarget105,k);
+  else if(!settings.lab){
    const ox=playerValues[488],oz=playerValues[489],dist=Math.hypot(ox-playerValues[0],oz-playerValues[2]);
    if(Number.isFinite(dist)&&dist>2.2){
     const [sx,sy]=screenPoint(ox,oz,1.5),onscreen=sx>40*k&&sx<width-40*k&&sy>60*k&&sy<height-60*k;
@@ -4693,7 +4725,8 @@ function hud(){
   const lines=['Move with WASD or arrows. Aim with the mouse.','LMB fires or uses selected gear. RMB / Space shoves.','1 / 2 / 3 guns. R reloads. Q returns to the last gun.','4 / G cycles throwables. 5 / F selects a medkit.','Medkit: hold LMB to heal yourself; RMB heals an ally.','Shift holds sprint. V toggles dragging. X orders the squad.','E interacts. Tab toggles map. Wheel cycles gear; Ctrl zooms.','M mutes. Backspace restarts. ? shows help; Esc pauses.'];
   lines.forEach((line,i)=>centre(line,y+(72+i*31)*k,14*k,i===2?COL9.gold:COL9.soft));}
  }
- if(active&&!settings.tactical&&!settings.help&&!settings.paused)aimHUD();
+ const aiming105=active&&!settings.tactical&&!settings.help&&!settings.paused;
+ setAimCursor105(aiming105);if(aiming105)aimHUD();
  debugHUD101(k);
  device.queue.writeBuffer(glyphBuffer,0,glyphMemory,0,glyphCount*48);
 }
@@ -4719,7 +4752,7 @@ function updateUniforms(dt){
  uniformData.set([stage,settings.lab?1:0,upgrades[0],upgrades[1]],60);
  uniformData.set([world.count,world.propCount,runSeed,upgrades[2]],64);uniformData.set(world.generators,68);uniformData.set([...world.start,...world.exit],72);
  uniformData.set([SANDBOX25?mapleLevel65:0,p2_65.on?1:0,p2X,p2Z],76);pendingPipeBomb=0;
- uniformData.set([SANDBOX25?director70.rate-1:0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyK')?1:0],80);pendingChoice=0;
+ uniformData.set([SANDBOX25?director70.rate-1:0,keys.has('KeyX')?1:0,pendingChoice,keys.has('KeyU')&&!settings.paused&&!settings.help&&!settings.tactical?1:0],80);pendingChoice=0;
  uniformData.set([input12.selected,input12.seq,input12.attack,input12.reload],84);
  uniformData.set([input12.release,input12.blocked?1:0,(keys.has('ShiftLeft')||keys.has('ShiftRight'))?1:0,keys.has('Space')?1:0],88);
  uniformData.set([input12.drag,input12.order,input12.cancel,(settings.tactical||settings.help||settings.paused)?1:0],92);

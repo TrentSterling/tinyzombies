@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {loadHost}=require('./deadends-cpu-host.cjs');
+const file=process.argv[2]||path.join(__dirname,'../index.html'),baseline=process.argv[3],h=loadHost(file,{plain:true});
+const entry='Bring four neighbors to safety. Everyone already rescued counts.';
+const next='Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.';
+h.run("var spoken99=[];announce65=s=>{spoken99.push(s);return true;};synth65=()=>{};text=()=>{};rect=()=>{};textWidth9=(s,px)=>s.length*px*.5;settings.started=true;quest65.world=world;quest65.epoch=runEpoch16;quest65.i=3;quest65.radio='prior';playerValues[L7.journey7]=1;counters[98]=1;counters[48]=1;counters[83]=1;time=50;questHUD65(1)");
+assert.equal(h.run('quest65.i'),4,'one saved enters BLOCK PARTY, not its completion');
+assert.equal(h.run('quest65.radio'),entry,'entry gives a truthful instruction');
+assert.equal(h.run('QUESTS65[4].goal()'),'Rescue 4 neighbors (1/4)');
+assert.equal(h.run('QUESTS65[4].done()'),false);
+assert.equal(h.run('QUESTS65[4].textOnly'),true);
+assert.deepEqual(h.json('spoken99'),[],'neither incorrect recorded cue nor fallback TTS is called');
+h.run('time+=1;questHUD65(1);counters[98]=3;questHUD65(1)');
+assert.equal(h.run('quest65.i'),4);assert.equal(h.run('QUESTS65[4].goal()'),'Rescue 4 neighbors (3/4)');assert.deepEqual(h.json('spoken99'),[]);
+h.run('counters[98]=4;questHUD65(1)');
+assert.equal(h.run('quest65.i'),5);assert.equal(h.run('quest65.radio'),next);assert.deepEqual(h.json('spoken99'),[next],'unchanged FORECLOSURE voice fires exactly once at completion');
+h.run('time+=1;questHUD65(1)');assert.deepEqual(h.json('spoken99'),[next]);
+h.run("quest65.i=3;quest65.radio='prior';counters[98]=4;spoken99=[];questHUD65(1)");
+assert.equal(h.run('quest65.i'),5,'already completed rescue count skips through normally');assert.equal(h.run('quest65.radio'),next);assert.deepEqual(h.json('spoken99'),[next]);
+h.run("quest65.i=5;quest65.radio='prior';counters[101]=2;spoken99=[];questHUD65(1)");
+assert.equal(h.run('quest65.i'),6);assert.deepEqual(h.json('spoken99'),['The fallout shelter is open. Get everybody inside. Wipe your feet.']);
+h.run('runEpoch16++;playerValues[L7.journey7]=0;counters.fill(0);spoken99=[];questHUD65(1)');assert.equal(h.run('quest65.i'),0);assert.equal(h.run('spoken99.length'),1,'reset opening voice retained');
+let identicalShaders=null;if(baseline){const b=loadHost(baseline,{plain:true});const old="radio:'Four saved and the casserole count is rising. Keep going.'",replacement="radio:'"+entry+"',textOnly:true";assert.equal(h.html,b.html.replace(old,replacement),'entire runtime differs only by scoped entry replacement');identicalShaders=Object.keys(h.sources).length;for(const name of Object.keys(h.sources))assert.equal(h.sources[name],b.sources[name],name+' unchanged');}
+console.log(JSON.stringify({passed:true,method:'CPU execution of production quest HUD/announcement path, not GPU rendering or audio listening',sha256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),checks:['One saved: truthful text-only entry','Three saved: no early completion or voice','Four saved: unchanged next quest/voice once','Already four saved: skip retains next quest','Later shelter voice retained','Reset opening voice retained','Only the BLOCK PARTY entry changes'],identicalShaders},null,2));

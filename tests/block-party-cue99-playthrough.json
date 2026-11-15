@@ -1,0 +1,70 @@
+{
+  "method": "Headless Chrome RTX 5070 Ti; exact shipped HTML fulfilled locally; Standard defaults. Ordinary mouse start and WASD/E only. Read-only snapshots and offline authored-geometry route planner assist steering. No gameplay state/source writes, teleport, time advance or cheats.",
+  "baseline": {
+    "sha256": "91cc5b7b5a1252a7305e273533a6861f74229f0dc031e36dd521d01071863d0c",
+    "firstSavedGameSeconds": 27.58,
+    "cheeseKickGameSeconds": 38.83,
+    "trampolineBounceGameSeconds": 50.25,
+    "wallSeconds": 53.391,
+    "health": 100,
+    "saved": 1,
+    "lost": 0,
+    "errors": []
+  },
+  "candidate": {
+    "sha256": "174363198212eea4f8d6bfd426a7af29a9313b1acadab0744320f863ed3c5141",
+    "firstSavedGameSeconds": 29,
+    "cheeseKickGameSeconds": 40.5,
+    "trampolineBounceGameSeconds": 52,
+    "wallSeconds": 55.146,
+    "health": 100,
+    "saved": 1,
+    "lost": 0,
+    "errors": []
+  },
+  "browserHostFixture": {
+    "method": "Targeted synchronous browser-host quest-state fixture AFTER ordinary run, not a four-neighbor ordinary rescue or GPU state simulation. Announcement calls recorded, audio not heard.",
+    "rows": [
+      {
+        "saved": 1,
+        "i": 4,
+        "radio": "Bring four neighbors to safety. Everyone already rescued counts.",
+        "spoken": []
+      },
+      {
+        "saved": 3,
+        "i": 4,
+        "radio": "Bring four neighbors to safety. Everyone already rescued counts.",
+        "spoken": []
+      },
+      {
+        "saved": 4,
+        "i": 5,
+        "radio": "Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.",
+        "spoken": [
+          "Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership."
+        ]
+      },
+      {
+        "saved": 4,
+        "repeat": true,
+        "i": 5,
+        "radio": "Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership.",
+        "spoken": [
+          "Something big is filing complaints on Elm Street. It is the H O A President. Revoke his membership."
+        ]
+      }
+    ]
+  },
+  "critic": {
+    "accepted": true,
+    "round": 1,
+    "scope": "Actual baseline and candidate post-bounce screenshots: radio instruction agrees with saved count and is fully readable; no in-scope faults."
+  },
+  "limits": [
+    "Route steering used offline authored geometry and read-only state: not a blind human playtest",
+    "Exact published HTML fulfilled locally; direct PC1 live fetch failed sandbox DNS",
+    "No audio listening, performance comparison, full ordinary evacuation or weak-hardware claim"
+  ],
+  "preserved": "All 43 shaders and the entire runtime except one BLOCK PARTY entry are identical. No asset or DSP changes. Four saved recordings retained but no longer triggered by this quest."
+}

@@ -37,10 +37,16 @@ const SANDBOX25=params.has('sandbox')||!(params.has('deadends')||params.has('cam
 const BALANCE94={guns:[{clip:45,reserve:360,rate:.065,reload:1.2,damage:42,range:1100,pellets:1,pierce:1},{clip:12,reserve:96,rate:.42,reload:.30,damage:29,range:650,pellets:9,pierce:2},{clip:24,reserve:9999,rate:.12,reload:.8,damage:44,range:850,pellets:1,pierce:1}],bazooka:{clip:6,reserve:48,rate:.50,reload:1.25,damage:110,range:1400,pellets:1,pierce:1},auto:{clip:12,reserve:112,rate:.16,reload:.22,damage:23,range:620,pellets:8,pierce:2},neighborHP:120};
 const statsWGSL94=g=>[g.clip,g.rate,g.reload,g.reserve].join(',');
 const hitsWGSL94=g=>[g.damage,g.range,g.pellets,g.pierce].join(',');
-function gunHUD94(w,bits=0){if(SANDBOX25)return w===0&&(bits&1)?BALANCE94.bazooka:w===1&&(bits&2)?BALANCE94.auto:BALANCE94.guns[w];return w===0&&(bits&1)?{clip:14,reload:1.55}:w===1&&(bits&2)?{clip:8,reload:.34}:GUN12[w];}
+function gunHUD94(w,bits=0){if(freshRiflesEnabled106()&&w===0&&!(bits&1))return {...BALANCE94.guns[0],clip:PLAYER_RIFLE106.clip,reserve:PLAYER_RIFLE106.reserve};if(SANDBOX25)return w===0&&(bits&1)?BALANCE94.bazooka:w===1&&(bits&2)?BALANCE94.auto:BALANCE94.guns[w];return w===0&&(bits&1)?{clip:14,reload:1.55}:w===1&&(bits&2)?{clip:8,reload:.34}:GUN12[w];}
 // Maple Street defaults to the full horde. Quiet mode and explicit legacy hard remain available.
 const HORDE104=SANDBOX25&&!params.has('lab')&&(params.has('horde')||(!params.has('gentle')&&!params.has('hard')&&!['standard','hard'].includes(params.get('difficulty'))));
 const settings={zombies:HORDE104?8192:2048,pool:32768,demo:false,started:false,paused:false,stats:false,muted:false,zoom:34,quality:1,lab:params.has('lab'),map:true,hideUI:false,reticle:1,tactical:false,help:false,hard:SANDBOX25&&(params.has('hard')||params.get('difficulty')==='hard')};
+// Opt-in CPU/renderer prototype only. Ammo-only A/B: ?freshRifles=ammo; pickups: ?freshRifles.
+const FRESH_RIFLES106=SANDBOX25&&!settings.hard&&!params.has('lab')&&params.has('freshRifles');
+const GROUND_RIFLES106=FRESH_RIFLES106&&params.get('freshRifles')!=='ammo';
+const PLAYER_RIFLE106={clip:75,reserve:450,pickupReserve:150,hold:.5};
+function freshRiflesEnabled106(){return FRESH_RIFLES106&&!settings.hard&&!settings.lab;}
+if(freshRiflesEnabled106())settings.practice=true;
 if(params.has('z'))settings.zombies=Math.max(64,Math.min(MAX_Z,+params.get('z')||1024));
 if(params.has('g'))settings.pool=Math.max(1024,Math.min(MAX_P,+params.get('g')||32768));
 if(params.has('demo'))settings.demo=settings.started=true;
@@ -488,7 +494,22 @@ function makeWorld(){
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
  occ.set(navSeed,NAV_OFFSET);occ.set(walk,WALK_OFFSET);
- return {cheese48,trampolines65,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ const freshRifles106=[];
+ if(GROUND_RIFLES106&&freshRiflesEnabled106()){
+  const n=civilians30[0],home=n&&buildings.find(b=>n.x>b.x&&n.x<b.x+b.w&&n.z>b.z&&n.z<b.z+b.d);
+  const porch=home?[home.x+home.w/2+2.5,home.z+home.d+2.5]:[start[0]-17,start[1]+8];
+  // Follow the existing distance field toward home; never force northern rescues onto a southern detour.
+  const route106=[];let rc=Math.floor(porch[0]+96)+NG*Math.floor(porch[1]+96);
+  for(let step=0;step<NAV_SIZE&&navSeed[rc]<0x3fffffff;step++){const x=rc%NG,z=Math.floor(rc/NG);route106.push([x-96+.5,z-96+.5]);if(navSeed[rc]===0)break;let next=rc;for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,nz=z+dz;if(nx>=0&&nx<NG&&nz>=0&&nz<NG&&navSeed[nx+NG*nz]<navSeed[next])next=nx+NG*nz;}if(next===rc)break;rc=next;}
+  const middle=route106.length?route106[Math.floor(route106.length/2)]:[start[0]-10,start[1]+8];
+  const anchors=[[start[0]+7,start[1]+1.5],middle,porch];
+  const clear=(x,z)=>{if(Math.abs(x)>89||Math.abs(z)>89)return false;const c=Math.floor(x+96)+NG*Math.floor(z+96);if(walk[c]||navSeed[c]>=0x3fffffff)return false;
+   for(let dx=-3;dx<=3;dx++)for(let dz=-3;dz<=3;dz++)for(let y=0;y<6;y++)if(cells.has(keyCell(Math.floor((x+96)*4)+dx,y,Math.floor((z+96)*4)+dz)))return false;
+   if([[...start],[...exit],cellPoint,[generators[0],generators[1]],[generators[2],generators[3]]].some(p=>Math.hypot(x-p[0],z-p[1])<4))return false;
+   for(let j=0;j<MAX_PROPS;j++){const o=j*16,t=props[o+3];if(props[o+4]<=0)continue;const gap=[7,8,9].includes(t)?3.8:2.5;if(Math.hypot(x-props[o],z-props[o+2])<gap)return false;}return true;};
+  for(const [ax,az]of anchors){if(propCount>=TRAMP_BASE65)break;for(const [dx,dz]of [[0,0],[2,0],[-2,0],[0,2],[0,-2],[2,2],[-2,2],[2,-2],[-2,-2]]){const x=ax+dx,z=az+dz;if(!clear(x,z))continue;const index=propCount++;props.set([x,0,z,7,1,0,0,0,8,0,0,0,106,0,0,0],index*16);freshRifles106.push({x,z,index});break;}}
+ }
+ return {freshRifles106,cheese48,trampolines65,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
 }
 let world; // Built as a counted startup step after the loading screen can paint.
 
@@ -554,6 +575,10 @@ fn gunStats14(w:u32,bits:f32)->vec4f {
  let b=u32(bits);if(w==0u&&(b&1u)!=0u){if(mapleEasy94()){return vec4f(${statsWGSL94(BALANCE94.bazooka)});}return vec4f(14,.27,1.55,98);}if(w==1u&&(b&2u)!=0u){if(mapleEasy94()){return vec4f(${statsWGSL94(BALANCE94.auto)});}return vec4f(8,.24,.34,56);}return gunStats12(w);
 }
 fn ammoCap94(w:u32,bits:f32)->f32 {if(mapleEasy94()){return gunStats14(w,bits).w;}return select(select(240.0,140.0,(u32(bits)&1u)!=0u),56.0,w==1u);}
+// Human base carbine only: squad stats, attacks, shot cadence and all other weapons stay authored.
+fn freshRifle106()->bool {return ${FRESH_RIFLES106?'true':'false'}&&mapleEasy94()&&!mapleHard96();}
+fn playerGunStats106(w:u32,bits:f32)->vec4f {var v=gunStats14(w,bits);if(freshRifle106()&&w==0u&&(u32(bits)&1u)==0u){v.x=${PLAYER_RIFLE106.clip}.0;v.w=${PLAYER_RIFLE106.reserve}.0;}return v;}
+fn playerAmmoCap106(w:u32,bits:f32)->f32 {if(freshRifle106()&&w==0u&&(u32(bits)&1u)==0u){return ${PLAYER_RIFLE106.reserve}.0;}return ammoCap94(w,bits);}
 fn gunHit14(w:u32,bits:f32)->vec4f {
  if(mapleEasy94()){if(w==0u&&(u32(bits)&1u)!=0u){return vec4f(${hitsWGSL94(BALANCE94.bazooka)});}if(w==1u&&(u32(bits)&2u)!=0u){return vec4f(${hitsWGSL94(BALANCE94.auto)});}return array<vec4f,3>(${BALANCE94.guns.map(g=>`vec4f(${hitsWGSL94(g)})`).join(',')})[w];}
  let b=u32(bits);if(w==0u&&(b&1u)!=0u){return vec4f(76,1180,1,4);}if(w==1u&&(b&2u)!=0u){return vec4f(17,545,8,2);}if(w==1u){return vec4f(23,570,9,2);}if(w==2u){return vec4f(34,750,1,1);}return vec4f(30,940,1,1);
@@ -1161,7 +1186,7 @@ fn haveGear12(n:u32)->bool {if(n<3u){return true;}return S.items12[n-3u]>0.0;}
 fn axeEquipped14()->bool {return (u32(S.upgrades14.x)&4u)!=0u&&S.gear12.x==2.0&&S.player7.x==0.0&&S.cell.w!=1.0&&S.flags12.w==0.0&&S.pos.w>0.0;}
 fn reloadGun12(){
  if(axeEquipped14()){return;}
- let w=u32(S.gear12.w);let stat=gunStats14(w,S.upgrades14.x);
+ let w=u32(S.gear12.w);let stat=playerGunStats106(w,S.upgrades14.x);
  if(S.player7.x>0.0||S.reload12.x>0.0||S.mag12[w]>=stat.x||S.reserve12[w]<=0.0){return;}
  S.reload12=vec4f(stat.z,stat.z,f32(w),S.reload12.w);S.heal12.x=0.0;S.events12.y+=1.0;atomicAdd(&C[102],1u);// accepted primary reload start, not shell continuation
 }
@@ -1220,7 +1245,7 @@ fn equipment12(dt:f32){
  if(u.gear12.w>S.equipAck12.z){S.equipAck12.z=u.gear12.w;if(!down&&S.flags12.w==0.0&&u.controlEdges12.w<.5){reloadGun12();}}
  if(!down&&S.reload12.x>0.0){
   S.reload12.x=max(0.0,S.reload12.x-dt);
-  if(S.reload12.x==0.0){let w=u32(S.reload12.z);let stat=gunStats14(w,S.upgrades14.x);
+  if(S.reload12.x==0.0){let w=u32(S.reload12.z);let stat=playerGunStats106(w,S.upgrades14.x);
    let take=min(select(stat.x-S.mag12[w],1.0,w==1u),S.reserve12[w]);S.mag12[w]+=take;S.reserve12[w]-=take;
    if(w==1u&&S.mag12[w]<stat.x&&S.reserve12[w]>0.0){S.reload12.x=stat.z;S.events12.y+=1.0;}
   }
@@ -1268,7 +1293,7 @@ fn equipment12(dt:f32){
   if(w==1u&&S.mag12.y>0.0){S.reload12.x=0.0;}
   if(S.reload12.x<=0.0){
    if(S.mag12[w]<=0.0){reloadGun12();S.reload12.w=.25;}
-   else{let stat=gunStats14(w,S.upgrades14.x);S.mag12[w]-=1.0;S.reload12.w=stat.y;S.events12.x+=1.0;S.edges12.y=f32(w);
+   else{let stat=playerGunStats106(w,S.upgrades14.x);S.mag12[w]-=1.0;S.reload12.w=stat.y;S.events12.x+=1.0;S.edges12.y=f32(w);
     S.ballistic.x+=1.0;S.ballistic.y=0.0;S.ballistic.z=1.0;S.aux.y=select(1.0,2.0,w==1u);S.look.z=1.0;
     S.noise=vec4f(S.pos.xz,3.0,select(select(650.0,790.0,w==1u),490.0,w==2u)/64.0);
     let pellets=select(1u,8u,w==1u);let damage=gunHit14(w,S.upgrades14.x).x;
@@ -1679,7 +1704,8 @@ fn chapterMission13(dt:f32){
  for(var k=u32(S.rules7.x);k<u32(S.rules7.x+S.rules7.y);k++){let d=P[k];if(d.data.x>0.0){interactAt(d.p.xz,8.0,f32(k));}}
  if(S.cell.w==0.0){interactAt(S.cell.xz,2.0,-1.0);}
  for(var q=0u;q<2u;q++){if(S.relay[q+2u]==0.0){interactAt(select(u.goals.xy,u.goals.zw,q==1u),3.0+f32(q),f32(q));}}
- for(var i=0u;i<u32(u.worldInfo.y);i++){let p=P[i];if(p.data.x<=0.0){continue;}if(p.p.w==7.0){interactAt(p.p.xz,5.0,f32(i));}if(p.p.w==8.0){let slab=P[u32(p.aux.x)];if(slab.data.y==0.0&&slab.data.x>0.0){interactAt(p.p.xz,6.0,f32(i));}}}
+ for(var i=0u;i<u32(u.worldInfo.y);i++){let p=P[i];if(p.data.x<=0.0){continue;}if(p.p.w==7.0&&p.more.x!=106.0){interactAt(p.p.xz,5.0,f32(i));}if(p.p.w==8.0){let slab=P[u32(p.aux.x)];if(slab.data.y==0.0&&slab.data.x>0.0){interactAt(p.p.xz,6.0,f32(i));}}}
+ if(${GROUND_RIFLES106?'true':'false'}&&freshRifle106()&&S.mission5.y==0.0){for(var i=0u;i<u32(u.worldInfo.y);i++){let p=P[i];if(p.p.w==7.0&&p.more.x==106.0&&p.data.x>0.0){interactAt(p.p.xz,9.0,f32(i));}}}
  let dp=S.pos.xz-u.route.zw;let inside=dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25;
  let db=S.buddy.xz-u.route.zw;let buddyInside=db.x> -1.75&&db.x<2.30&&abs(db.y)<2.25;
  S.spare5.x=f32(atomicExchange(&C[56],0u));
@@ -1687,6 +1713,15 @@ fn chapterMission13(dt:f32){
  S.squad7.z=f32(present);let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0&&neighborsOutstanding98()==0u;
  if(inside&&S.player7.x==0.0){S.orders.x=0.0;S.mission5.y=7.0;S.objectivePoint.w=0.0;}
  if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5){S.mission5.w=0.0;}
+ // A finite replacement, NOT a dropped weapon. GPU owns the live flag and complete ammo transaction.
+ if(S.mission5.y==9.0){
+  let canSwap=${GROUND_RIFLES106?'true':'false'}&&freshRifle106()&&S.pos.w>0.0&&S.player7.x==0.0&&S.flags12.w==0.0&&S.cell.w!=1.0&&S.heal12.x<=0.0&&S.gear12.x<3.0&&u.inputMove.z<.5&&u.inputMove.w<.5&&u.input12.w<.5&&u.controlEdges12.w<.5&&((u32(S.upgrades14.x)&1u)!=0u||S.mag12.x+S.reserve12.x<=${PLAYER_RIFLE106.clip+PLAYER_RIFLE106.pickupReserve}.0);
+  if(!canSwap||u.controls.x<.5||S.lastInput.w>.5){S.mission5.w=0.0;}
+  else{S.mission5.w+=dt;if(S.mission5.w>=${PLAYER_RIFLE106.hold}){let ix=u32(S.mission5.z);var pr=P[ix];if(pr.p.w==7.0&&pr.more.x==106.0&&pr.data.x>0.0){
+    pr.data.x=0.0;P[ix]=pr;S.upgrades14.x=f32(u32(S.upgrades14.x)&0xfffffffeu);S.mag12.x=${PLAYER_RIFLE106.clip}.0;S.reserve12.x=${PLAYER_RIFLE106.pickupReserve}.0;
+    S.gear12=vec4f(0,0,S.gear12.x,0);S.reload12=vec4f(0,0,0,max(.15,S.reload12.w));S.heal12.x=0.0;S.flags12.x=1.0;S.equipAck12.w=u.input12.x;S.weapons.x=S.mag12.x;S.weapons.y=0.0;
+   }S.lastInput.w=1.0;S.mission5.w=0.0;}}
+ }
  if(u.controls.x>.5&&S.lastInput.w<.5&&S.mission5.y>=2.0&&S.mission5.y<=6.0){
   let kind=S.mission5.y;
   // Shelter items (more.x=44) are a quick grab and give exactly what they show: 0 ammo, 3 a medkit, 5 the auto shotgun.
@@ -1698,12 +1733,12 @@ fn chapterMission13(dt:f32){
     if(kind==3.0){S.relay.x=12.0;S.relay.z=1.0;alarmAt(u.goals.xy,16.0);announce(3.0,0.0);}
     if(kind==4.0){S.relay.y=9.0;S.relay.w=1.0;S.cell.w=2.0;S.cell.x=u.goals.z;S.cell.z=u.goals.w;alarmAt(u.goals.zw,18.0);announce(3.0,1.0);}
     if(item44){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;let what=u32(pr.aux.x);
-     if(what==0u){let clip=gunStats14(0u,S.upgrades14.x).x;S.reserve12.x=max(S.reserve12.x,ammoCap94(0u,S.upgrades14.x));S.reserve12.y=select(56.0,max(S.reserve12.y,ammoCap94(1u,S.upgrades14.x)),mapleEasy94());S.mag12.x=clip;S.mag12.y=max(S.mag12.y,gunStats14(1u,S.upgrades14.x).x);}
+     if(what==0u){let clip=playerGunStats106(0u,S.upgrades14.x).x;S.reserve12.x=max(S.reserve12.x,playerAmmoCap106(0u,S.upgrades14.x));S.reserve12.y=select(56.0,max(S.reserve12.y,ammoCap94(1u,S.upgrades14.x)),mapleEasy94());S.mag12.x=clip;S.mag12.y=max(S.mag12.y,gunStats14(1u,S.upgrades14.x).x);}
      if(what==3u){S.items12.y=min(4.0,S.items12.y+1.0);}
      if(what==4u){S.upgrades14.x=f32(u32(S.upgrades14.x)|1u);let stats=gunStats14(0u,S.upgrades14.x);S.mag12[0]=stats.x;S.reserve12[0]=stats.w;S.gear12=vec4f(0,0,S.gear12.x,0);S.reload12.x=0.0;}
      if(what==5u){S.upgrades14.x=f32(u32(S.upgrades14.x)|2u);let stats=gunStats14(1u,S.upgrades14.x);S.mag12[1]=stats.x;S.reserve12[1]=max(S.reserve12[1],stats.w);S.gear12=vec4f(1,1,S.gear12.x,1);S.reload12.x=0.0;}
      S.feedback.z=max(S.feedback.z,.5);}
-    else if(kind==5.0){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;S.runStats.x+=1.0;S.items12.x=min(4.0,S.items12.x+2.0);S.items12.y=min(4.0,S.items12.y+1.0);S.items12.z=min(2.0,S.items12.z+1.0);S.reserve12.x=select(180.0,max(S.reserve12.x,ammoCap94(0u,S.upgrades14.x)),mapleEasy94());S.reserve12.y=select(48.0,max(S.reserve12.y,ammoCap94(1u,S.upgrades14.x)),mapleEasy94());S.stageRecord.z=f32(u32(S.stageRecord.z)|(1u<<u32(pr.aux.x)));S.chooser.z+=1.0;if(pr.aux.y>.5){alarmAt(pr.p.xz,14.0);}S.feedback.z=max(S.feedback.z,.8);announce(6.0,0.0);}
+    else if(kind==5.0){let idx=u32(S.mission5.z);var pr=P[idx];pr.data.x=0.0;P[idx]=pr;S.runStats.x+=1.0;S.items12.x=min(4.0,S.items12.x+2.0);S.items12.y=min(4.0,S.items12.y+1.0);S.items12.z=min(2.0,S.items12.z+1.0);S.reserve12.x=select(180.0,max(S.reserve12.x,playerAmmoCap106(0u,S.upgrades14.x)),mapleEasy94());S.reserve12.y=select(48.0,max(S.reserve12.y,ammoCap94(1u,S.upgrades14.x)),mapleEasy94());S.stageRecord.z=f32(u32(S.stageRecord.z)|(1u<<u32(pr.aux.x)));S.chooser.z+=1.0;if(pr.aux.y>.5){alarmAt(pr.p.xz,14.0);}S.feedback.z=max(S.feedback.z,.8);announce(6.0,0.0);}
     if(kind==6.0){let idx=u32(S.mission5.z);var sw=P[idx];var slab=P[u32(sw.aux.x)];slab.data.y=1.0;slab.data.z=.65;P[u32(sw.aux.x)]=slab;sw.data.x=0.0;P[idx]=sw;S.runStats.w+=1.0;atomicAdd(&C[35],1u);announce(7.0,0.0);}
    }
   }
@@ -2528,6 +2563,7 @@ fn pipeBomb44(c:vec3f){box(c,vec3f(.24,.07,.07),vec3f(.52,.54,.55),1,0);box(c+ve
 fn table44(c:vec2f,size:vec2f,top:vec3f)->f32 {box(vec3f(c.x,.76,c.y),vec3f(size.x,.06,size.y),top,1,0);
  for(var k=0u;k<4u;k++){let q=(vec2f(select(-.5,.5,(k&1u)>0u),select(-.5,.5,(k&2u)>0u))*(size-vec2f(.12)));box(vec3f(c.x+q.x,.365,c.y+q.y),vec3f(.05,.73,.05),vec3f(.10,.11,.11),1,0);}return .79;}
 // A supply cache on Maple Street: a folding table laid out like an armory until it is looted, then the bare table and an empty can.
+fn groundRifle106(p:vec3f,there:bool){if(!there||!freshRifle106()){return;}paint65(p.xz,.85);gunFlat44(p+vec3f(0,.065,0),0u);box(p+vec3f(0,.85+sin(S.aux.x*3.0)*.04,0),vec3f(.10,.10,.10),vec3f(.2,1,.85),1,1.4);}
 fn supplyTable44(p:vec3f,unopened:bool){let y=table44(p.xz,vec2f(1.7,.78),vec3f(.36,.40,.29));
  if(unopened){gunFlat44(vec3f(p.x-.22,y+.04,p.z-.17),1u);gunFlat44(vec3f(p.x-.18,y+.04,p.z+.13),0u);ammoCan44(vec3f(p.x+.55,y+.10,p.z-.15));ammoCan44(vec3f(p.x+.55,y+.10,p.z+.15));medkit44(vec3f(p.x+.10,y+.07,p.z+.27));pipeBomb44(vec3f(p.x+.25,y+.035,p.z-.30));
   box(vec3f(p.x,1.55+sin(S.aux.x*2.5)*.05,p.z),vec3f(.10,.25,.10),vec3f(.15,1,.85),1,1.4);paint65(p.xz,1.35);}
@@ -2649,7 +2685,7 @@ fn exitDecor54(){let o=u.route.zw;let y=vec3f(1,.80,.10);let k=vec3f(.06,.05,.04
   }
   // Mission silhouettes share the existing cube renderer and fixed palettes.
   if(pr.p.w==7.0&&pr.aux.x==7.0&&pr.data.y!=15.0){box(p+vec3f(0,.3,0),vec3f(.42,.55,.30),vec3f(.72,.22,.07),1,0);box(p+vec3f(0,.6,0),vec3f(.25,.08,.20),vec3f(.94,.70,.21),1,.2);}
-  if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){if(pr.more.x==44.0){shelterItem44(p,u32(pr.aux.x),pr.data.x>0.0);}else{supplyTable44(p,pr.data.x>0.0);}}
+  if(pr.p.w==7.0&&pr.aux.x!=7.0&&u.run.x>5.0&&u.run.y<.5){if(pr.more.x==106.0){groundRifle106(p,pr.data.x>0.0);}else if(pr.more.x==44.0){shelterItem44(p,u32(pr.aux.x),pr.data.x>0.0);}else{supplyTable44(p,pr.data.x>0.0);}}
   else if(pr.p.w==7.0&&pr.aux.x!=7.0){
    let unopened=pr.data.x>0.0;let col=select(vec3f(.19,.30,.29),vec3f(.11,.57,.60),unopened);
    box(p+vec3f(0,.09,0),vec3f(1.45,.18,1.04),vec3f(.18,.23,.22),1,0);
@@ -2721,7 +2757,7 @@ fn civStep30(me:vec2f,goal:vec2f)->vec2f {
   // Characters hand something over as they join (caps match the pickups). SR[557] is reserve12 (L12.reserve/4), SR[558] items12
   // (L12.items/4: x pipe bombs, y molotovs, z medkits). Match actual equipment slots so rescue rewards really supply medicine.
   let t30=u32(c.more.z);var it=SR[558u];var rs=SR[557u];
-  if(t30==1u){let bits=SR[960u].x;rs.x=max(rs.x,min(ammoCap94(0u,bits),rs.x+select(120.0,12.0,(u32(bits)&1u)!=0u)));rs.y=max(rs.y,min(ammoCap94(1u,bits),rs.y+24.0));}if(t30==2u){it.y=min(3.0,it.y+1.0);}if(t30==3u||t30==5u){it.z=min(3.0,it.z+1.0);}if(t30==4u){it.x=min(4.0,it.x+2.0);}
+  if(t30==1u){let bits=SR[960u].x;rs.x=max(rs.x,min(playerAmmoCap106(0u,bits),rs.x+select(120.0,12.0,(u32(bits)&1u)!=0u)));rs.y=max(rs.y,min(ammoCap94(1u,bits),rs.y+24.0));}if(t30==2u){it.y=min(3.0,it.y+1.0);}if(t30==3u||t30==5u){it.z=min(3.0,it.z+1.0);}if(t30==4u){it.x=min(4.0,it.x+2.0);}
   it.z=min(3.0,it.z+1.0);SR[558u]=it;SR[557u]=rs;}
  // Awake infected in contact bite; awake infected within 2.2 m push a following neighbor aside (never backwards) instead of being walked into.
  var bites=0u;var threatened=false;var away=vec2f(0);var flee=vec2f(0);let cell=vec2i(floor(me+HALF));
@@ -2947,7 +2983,7 @@ fn moveBuddy7(a0:Buddy7,goal:vec2f,speed:f32,stop:f32)->Buddy7 {
      if(medic==i32(id)){goal=select(3u,4u,i32(ti)-1==i32(id));destination7=vec4f(q.xyz,f32(i32(ti)-1));goalScore=600.0;break;}
     }}
     var cache=-1;var ammoCache=-1;var cd=880.0/64.0;var ad=880.0/64.0;
-    for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var p=P[pi];let bit=1u<<(id+1u);if(p.p.w!=7.0||(u32(p.data.y)&bit)!=0u||(p.aux.x==7.0&&S.botFuel15[id]>.5)){continue;}let d=distance(p.p.xz,a.p.xz);
+    for(var pi=0u;pi<u32(u.worldInfo.y);pi++){var p=P[pi];let bit=1u<<(id+1u);if(p.p.w!=7.0||p.more.x==106.0||(u32(p.data.y)&bit)!=0u||(p.aux.x==7.0&&S.botFuel15[id]>.5)){continue;}let d=distance(p.p.xz,a.p.xz);
      if(d<690.0/64.0&&clearSegment7(a.p.xyz+vec3f(0,.4,0),p.p.xyz+vec3f(0,.4,0),.02)){p.aux.y=f32(u32(p.aux.y)|bit);P[pi]=p;}
      if((u32(p.aux.y)&bit)==0u||danger7(p.p.xz).w>0.0||(p.data.w>S.aux.x&&p.data.z!=f32(id+1u))){continue;}
      if(p.aux.x==1.0&&d<cd){cd=d;cache=i32(pi);}if(p.aux.x==0.0&&d<ad){ad=d;ammoCache=i32(pi);}
@@ -4076,6 +4112,7 @@ function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBee
  if(world.source13){for(let id=0;id<3;id++){const p=world.source13.players[id+1],o=L7.team7+id*128;st.set([p.x/64-42,0,p.y/64-27,100],o);}st.set(st.subarray(L7.team7,L7.team7+4),L7.buddy);st.set([world.gate13,world.final13,world.startDoor13,0],L13.chapter);st.set([15,24,0,0],L13.director);}
  st.set([0,-1,0,0],L7.squad7);st.set([world.doorFirst7,world.doors7.length,0,0],L7.rules7);st.set([settings.lab?1:0,0,0,0],L7.journey7);st.set([0,0,20,0],L7.pace7);
  if(SANDBOX25){const g=BALANCE94.guns;st.set([g[0].clip,g[1].clip,g[2].clip,0],L12.mag);st.set([g[0].reserve,g[1].reserve,g[2].reserve,0],L12.reserve);st[L12.items+2]=2;st[100]=g[0].clip;for(let id=0;id<3;id++){const o=L7.team7+id*128,w=id===1?1:0;st.set([g[0].clip,g[1].clip,g[2].clip,w],L13.botMag+id*4);st.set([g[0].reserve,g[1].reserve,g[2].reserve,0],L13.botReserve+id*4);st[o+16]=st[o+17]=g[w].clip;st[o+19]=2;st[L13.botItems+id*4+2]=2;}}
+ if(freshRiflesEnabled106()){st[L12.mag]=PLAYER_RIFLE106.clip;st[L12.reserve]=PLAYER_RIFLE106.reserve;st[100]=PLAYER_RIFLE106.clip;}
  st.set([100,100,100,0],L13.botStamina);applyCarry13(st);if(SANDBOX25&&!settings.lab)packFloors42(st,world.buildings,world.pools45||[]);device.queue.writeBuffer(S,0,st);playerValues.set(st);
  updateUniforms(0);
  const enc=device.createCommandEncoder({label:'reset seeded compound'});for(const b of [C,pA,pB,Paint,WP,zHeads,pHeads])enc.clearBuffer(b);
@@ -4692,7 +4729,7 @@ function hud(){
   if(SANDBOX25)directorHUD70(k);
   if(SANDBOX25&&world.civilians30?.length)neighborsHUD30(k);
   if(SANDBOX25&&playerValues[461]>0){const line=sandboxBanner25(Math.round(playerValues[460]),playerValues[462]);if(line){const g=COL9.gold;text(line,width/2-textWidth9(line,17*k)/2,40*k,17*k,[g[0],g[1],g[2],clamp9(playerValues[461]/.6,0,1)]);}}
-  if(settings.practice){const note='PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
+  if(settings.practice){const note=freshRiflesEnabled106()?(GROUND_RIFLES106?'RIFLE PROTOTYPE: replacements only, no recoverable dropped guns':'RIFLE AMMO PROTOTYPE: no ground pickups, progress not saved'):'PRACTICE: progress is not being saved';text(note,width/2-textWidth9(note,12*k)/2,14*k,12*k,COL9.gold);}
   if(playerValues[110]>0){
    const fuse=playerValues[110],total=playerValues[499]||6,t=clamp9((total-fuse)/.45,0,1),bx=playerValues[497]+(playerValues[108]-playerValues[497])*t,bz=playerValues[498]+(playerValues[109]-playerValues[498])*t;
    const [sx,sy]=screenPoint(bx,bz,.55+Math.sin(t*Math.PI)*2.8);const label=(SANDBOX25?'Soda can ':'Pipe bomb ')+fuse.toFixed(1)+'s';
@@ -4747,11 +4784,13 @@ function hud(){
    if(world.mercer24&&interaction===7&&playerValues[L7.relay+2]<.5)label='Force the service gate before extraction';
    if(SANDBOX25&&interaction===5){const o=Math.round(playerValues[450])*16;if(world.props[o+12]===44)label=['E  Grab ammo','','','E  Grab medkit','E  Grab BAZOOKA','E  Grab AUTO SHOTGUN'][world.props[o+8]]||label;else label='E  Raid supply table';}
    if(SANDBOX25&&interaction===7&&waitingNeighbors30()>0)label='Neighbors still at home: '+waitingNeighbors30();else if(SANDBOX25&&interaction===7&&followingNeighbors98()>0)label='Bring followers to safety: '+followingNeighbors98();
-   const s=14*k,x=cx-textWidth9(label,s)/2,y=cy-r-43*k,w=textWidth9(label,s)+22*k;
-   panel9(x-11*k,y-4*k,w,27*k,.76);text(label,x,y,s,interaction===1?COL9.violet:COL9.white);
-   let prog=0;switch(interaction){case 1:prog=playerValues[89]/2.4;break;case 2:case 3:case 4:prog=playerValues[451]/.8;break;case 5:prog=playerValues[451]/1.4;break;case 7:prog=playerValues[104];break;}
+   const stocked106=interaction===9&&freshRiflesEnabled106()&&!(playerValues[L13.upgrades]&1)&&playerValues[L12.mag]+playerValues[L12.reserve]>PLAYER_RIFLE106.clip+PLAYER_RIFLE106.pickupReserve;
+    if(interaction===9&&freshRiflesEnabled106())label=stocked106?'M4 STOCKED: leave this rifle for later':'HOLD E: '+gearLabel14(0)+' > M4  75 / 150';
+    const s=14*k,x=cx-textWidth9(label,s)/2,y=cy-r-43*k,w=textWidth9(label,s)+22*k;
+   panel9(x-11*k,y-4*k,w,(interaction===9&&freshRiflesEnabled106()?44:27)*k,.76);text(label,x,y,s,interaction===1?COL9.violet:COL9.white);if(interaction===9&&freshRiflesEnabled106())text(stocked106?'Pickup holds 75 loaded / 150 reserve':'Old slot 1 gun and ammo discarded',x,y+17*k,11*k,COL9.gold);
+   let prog=0;switch(interaction){case 1:prog=playerValues[89]/2.4;break;case 2:case 3:case 4:prog=playerValues[451]/.8;break;case 5:prog=playerValues[451]/1.4;break;case 7:prog=playerValues[104];break;case 9:if(freshRiflesEnabled106())prog=playerValues[451]/PLAYER_RIFLE106.hold;break;}
    if(world.source13&&interaction===7){const state=Math.round(playerValues[L7.squad7+3]);prog=state===3?playerValues[L7.escape]:state===0||state===4?playerValues[L7.escape+1]/(state===4?1.6:.18):0;}
-   if(world.source13&&interaction===3)prog=playerValues[451]/(stage===5?2.4:stage===4?2.3:stage===3?2:stage===2?2.1:4.2);if(world.source13&&interaction===9)prog=playerValues[451]/1.8;if(prog>0.01)rect(x-11*k,y+22*k,w*clamp9(prog,0,1),2.5*k,COL9.gold);
+   if(world.source13&&interaction===3)prog=playerValues[451]/(stage===5?2.4:stage===4?2.3:stage===3?2:stage===2?2.1:4.2);if(world.source13&&interaction===9)prog=playerValues[451]/1.8;if(prog>0.01)rect(x-11*k,y+(interaction===9&&freshRiflesEnabled106()?39:22)*k,w*clamp9(prog,0,1),2.5*k,COL9.gold);
   }
   // Supplies in the nearby world only. They are visible without reading an inventory list.
   const mask=Math.round(playerValues[486]||0);

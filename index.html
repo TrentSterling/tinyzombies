@@ -1911,7 +1911,7 @@ fn flowDirection(p:vec2f,direct:vec2f,prior:vec2f,id:u32,base:u32)->vec2f {
  var catchFire=false;var sep=vec2f(0);var forwardSpace=1.0;var leaderSpeed=speed;var steerCount=0u;var checks=0u;let cell=vec2i(floor(z.p.xz+HALF));var damage=0.0;let radius=footprint(kind);
  for(var k=0u;k<25u;k++){let rot=hash(i+u32(u.clock.z/4.0))%16u;let off=neighbor6(k,rot);
   let c=cell+off;if(any(c<vec2i(0))||any(c>=vec2i(192))){continue;}var it=H[u32(c.x+192*c.y)];
-  for(var n=0u;n<20u&&it>0u&&checks<72u;n++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;if(other.body.z>.5&&other.p.w>0.0&&dist<rr+.18){catchFire=true;}
+  for(var n=0u;n<20u&&it>0u&&checks<72u;n++){let j=it-1u;it=H[ZHEADS+j];if(j==i){continue;}checks++;let other=A[j];let delta=z.p.xz-other.p.xz;let dist=length(delta);let rr=radius+footprint(other.extraData.z);let comfort=rr+.24;if(other.body.z>.5&&other.p.w>0.0&&dist<rr+.18){catchFire=false;}
    if(dist<comfort){var away=safe2(delta);if(dist<.0001){let angle=rnd(min(i,j)*8191u+max(i,j))*6.2831853;away=vec2f(cos(angle),sin(angle))*select(-1.0,1.0,i>j);}sep+=away*(1.0-dist/comfort)*select(1.0,.5,kind==2.0);steerCount++;}
    let ahead=dot(-delta,dir);let crossLane=abs(dot(delta,vec2f(-dir.y,dir.x)));if(ahead>0.0&&ahead<rr+1.0&&crossLane<rr*.9){let space=clamp((ahead-rr+.05)/.7,0.0,1.0);if(space<forwardSpace){forwardSpace=space;leaderSpeed=clamp(dot(other.v.xy,dir),0.0,speed);}}
    if(other.extraData.z==3.0&&other.extraData.w>=.90&&dist<1.7){damage+=30.0;}
@@ -3799,7 +3799,7 @@ function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.st
   for(const id of v.ids)clip(bank,id).catch(e=>{if(bank==='voice')throw e;return clip('voice',id);}).then(b=>v.buf.set(id,b)).catch(()=>{});
  })().catch(()=>{v.ids=new Set();});}
 // Optional decoded callout only; consume missed events rather than replay later.
-function playReloadVoice102(){const v=voiceFiles70,b=v.buf.get('reloading');if(!audioAllowed9()||!audioMix9||!b||time<v.until)return false;
+function playReloadVoice102(){const v=voiceFiles70,b=v.buf.get('reloading');if(!audioAllowed9()||!audioMix9||!b)return false;releaseCrispy105();if(time<v.until)return false;
  try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return false;}catch{return false;}
  const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);
  s.onended=()=>{s.disconnect();g.disconnect();if(v.src===s){v.src=null;v.until=-9;}};
@@ -4227,6 +4227,7 @@ function pumpNpcVoice103(){
  if(!SANDBOX25)return;syncNpcEpoch103();const q=npcVoice103;
  const blocked=npcBlock103();if(blocked){for(const e of q.pending)skipNpc103(e,blocked);q.pending=[];return;}
  for(let i=q.pending.length-1;i>=0;i--)if(time>=q.pending[i].expires){skipNpc103(q.pending[i],'expired');q.pending.splice(i,1);}
+ if(q.pending.length)releaseCrispy105();
  if(!q.pending.length||time<q.nextAt||time<voiceFiles70.until)return;
  // Never preempt active/queued browser speech, including urgent non-NPC lines.
  if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return;
@@ -4349,8 +4350,24 @@ function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx
  else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}
 // ZAMN-style status block, top left: ten blue health cells and a big orange score (put down x10, crushed x25, saved x500).
 // TOASTED xN: fire kills (C[61], set when an infected dies burning) within 1.5 s stack into one callout.
+// Cosmetic fire callout: one opportunity per observed 1.5s streak, never queued.
+const crispy105={epoch:-1,world:null,n:0,burst:0,at:-Infinity,fired:false,nextAt:-Infinity,src:null};
+function releaseCrispy105(){const s=crispy105.src;crispy105.src=null;if(!s)return;
+ if(voiceFiles70.src===s){voiceFiles70.src=null;voiceFiles70.until=-9;}try{s.stop();}catch(e){} }
+function updateCrispy105(){const c=crispy105,n=counters[61]>>>0;
+ if(c.epoch!==runEpoch16||c.world!==world||n<c.n){releaseCrispy105();Object.assign(c,{epoch:runEpoch16,world,n:0,burst:0,at:-Infinity,fired:false,nextAt:-Infinity});}
+ if(n===c.n)return;const delta=n-c.n;c.n=n;
+ if(time-c.at>=1.5){c.burst=0;c.fired=false;}c.burst+=delta;c.at=time;
+ if(c.burst<3||c.fired)return;c.fired=true;
+ if(time<c.nextAt)return;c.nextAt=time+8;
+ if(!SANDBOX25||!settings.started||settings.paused||!audioAllowed9()||!audioMix9||time<voiceFiles70.until||npcVoice103.pending.length)return;
+ try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return;}catch(e){return;}
+ // Recorded only: do not create an unowned browser utterance for a cosmetic cue.
+ const take=playVoice70('Extra crispy!',false);if(!take)return;
+ c.src=voiceFiles70.src;voice65.last='Extra crispy!';voice65.at=time;voice65.lines++;voiceDecision101('Extra crispy!',true,'recorded',take);
+}
 const toast67={n:0,burst:0,at:-9};
-function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;if(toast67.burst>=3)announce65('Extra crispy!');}
+function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;}
  if(time-toast67.at<1.3){const s='TOASTED x'+toast67.burst;text(s,width/2-textWidth9(s,30*k)/2,height*.335,30*k,[1,.55,.12,1]);}}
 // Off-screen HELP arrow: when the nearest waiting neighbor is off screen, a pulsing gold arrow on the screen edge points at them,
 // with the distance, so the next rescue is never a guess.
@@ -4922,7 +4939,7 @@ function drawFrame(now){
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  updateEquipmentAudio12();
  updateBombAudio();updateMapleAudio62();try{updateMusic67();}catch(e){diagnostics.notes.push('music off: '+String(e.message||e).slice(0,80));music67.on=false;}
- pumpNpcVoice103();
+ pumpNpcVoice103();updateCrispy105();
  if(!startup93||startup93.state.status==='ready')frameCallback=requestAnimationFrame(drawFrame);
  }catch(e){fail(e);}
 }

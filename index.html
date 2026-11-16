@@ -1163,7 +1163,7 @@ fn reloadGun12(){
  if(axeEquipped14()){return;}
  let w=u32(S.gear12.w);let stat=gunStats14(w,S.upgrades14.x);
  if(S.player7.x>0.0||S.reload12.x>0.0||S.mag12[w]>=stat.x||S.reserve12[w]<=0.0){return;}
- S.reload12=vec4f(stat.z,stat.z,f32(w),S.reload12.w);S.heal12.x=0.0;S.events12.y+=1.0;
+ S.reload12=vec4f(stat.z,stat.z,f32(w),S.reload12.w);S.heal12.x=0.0;S.events12.y+=1.0;atomicAdd(&C[102],1u);// accepted primary reload start, not shell continuation
 }
 fn settleGear12(retain:bool){
  if(!retain){S.gear12.x=S.gear12.y;}
@@ -3670,6 +3670,7 @@ function updateEquipmentAudio12(){
  if(reloads>audioReload12&&audioAllowed9())playAudio9('ratchet','cue',.14);
  if(shoves>audioShove12&&audioAllowed9())playAudio9('snap','cue',.12);
  audioShot12=shots;audioReload12=reloads;audioShove12=shoves;
+ const starts=counters[102]>>>0;if(starts>audioReloadStart102)playReloadVoice102();audioReloadStart102=starts;
 }
 function audioHash9(n){n=Math.imul(n^(n>>>16),0x45d9f3b);n=Math.imul(n^(n>>>16),0x45d9f3b);return((n^(n>>>16))>>>0)/4294967296;}
 function audioAllowed9(){return audio&&audio.state==='running'&&!settings.muted&&settings.started&&!settings.paused&&playerValues[464]<.5&&!diagnostics.audio.error;}
@@ -3797,6 +3798,12 @@ function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.st
   if(bank==='chatterbox-matched')fetch('assets/audio/'+bank+'/variants101.json',{credentials:'same-origin'}).then(r=>r.ok?r.json():null).then(j=>{v.variants=readVoiceVariants101(j,v.ids);}).catch(()=>{});
   for(const id of v.ids)clip(bank,id).catch(e=>{if(bank==='voice')throw e;return clip('voice',id);}).then(b=>v.buf.set(id,b)).catch(()=>{});
  })().catch(()=>{v.ids=new Set();});}
+// Optional decoded callout only; consume missed events rather than replay later.
+function playReloadVoice102(){const v=voiceFiles70,b=v.buf.get('reloading');if(!audioAllowed9()||!audioMix9||!b||time<v.until)return false;
+ try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return false;}catch{return false;}
+ const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);
+ s.onended=()=>{s.disconnect();g.disconnect();if(v.src===s){v.src=null;v.until=-9;}};
+ s.start();v.src=s;v.until=time+b.duration;voice65.last='Reloading!';voice65.at=time;voice65.lines++;return true;}
 function playVoice70(line,prio){const v=voiceFiles70,pick=pickVoiceTake101(line),b=pick&&v.buf.get(pick.id);if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
  try{if(voice65.ok&&speechSynthesis.speaking)speechSynthesis.cancel();}catch(e){}
  const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;const cue=voiceSlug70(line);let cycle=v.takeCycle.get(cue);if(!cycle||cycle.has(pick.id)){cycle=new Set();v.takeCycle.set(cue,cycle);}cycle.add(pick.id);v.lastTake.set(cue,pick.id);v.lastWording.set(cue,pick.text);return pick.id;}
@@ -3883,7 +3890,7 @@ function gearLabel14(n){const b=playerValues[L13.upgrades]|0;if(n===3&&SANDBOX25
 const GUN12=[{clip:30,reserve:180,rate:.098,reload:1.8},{clip:8,reserve:48,rate:.69,reload:.48},{clip:15,reserve:9999,rate:.21,reload:1.15}];
 const L12={gear:2220,mag:2224,reserve:2228,items:2232,ack:2236,flags:2240,reload:2244,heal:2248,events:2252,edges:2256,extraShot:2260,throw:2276,throwFrom:2280,pipes:2284,pipeStarts:2348,flights:2412,flightStarts:2476,stateFloats:2540};
 const input12={selected:0,lastGun:0,previous:2,seq:1,attack:0,reload:0,release:0,blocked:false,throwable:3,wheelAt:-Infinity,drag:0,order:0,cancel:0};
-let audioShot12=0,audioReload12=0,audioShove12=0;
+let audioShot12=0,audioReload12=0,audioShove12=0,audioReloadStart102=0;
 function gearAvailable12(n){return n<3||playerValues[L12.items+n-3]>0;}
 function selectGear12(n){
  if(settings.paused||settings.help||playerValues[L7.player7]>0||playerValues[67]>0||(playerValues[444+3]===1&&n!==2))return;
@@ -3899,7 +3906,7 @@ function throwable12(){let n=input12.selected===3?4:input12.selected===4?3:input
 function syncGear12(){
  if(playerValues[L12.ack]>=input12.seq){input12.selected=Math.round(playerValues[L12.gear]);input12.lastGun=Math.round(playerValues[L12.gear+1]);input12.previous=Math.round(playerValues[L12.gear+2]);}
 }
-function resetGear12(){Object.assign(input12,{selected:0,lastGun:0,previous:2,seq:1,attack:0,reload:0,release:0,blocked:false,throwable:3,wheelAt:-Infinity,drag:0,order:0,cancel:0});audioShot12=audioReload12=audioShove12=0;}
+function resetGear12(){Object.assign(input12,{selected:0,lastGun:0,previous:2,seq:1,attack:0,reload:0,release:0,blocked:false,throwable:3,wheelAt:-Infinity,drag:0,order:0,cancel:0});audioShot12=audioReload12=audioShove12=audioReloadStart102=0;}
 function cancelInput12(){keys.clear();mouse.left=mouse.right=mouse.middle=false;input12.release++;input12.cancel=input12.attack;input12.blocked=false;}
 function pointerButtons12(e){
  if(stopped||(startup93&&startup93.state.status!=='ready'))return;
@@ -4170,22 +4177,70 @@ const CIV_LINES30={join:['{n} has joined you. She brought a casserole.','{n} is 
  saved:['{n} is safe. {n} is already filming it.','{n} made it. Somebody owes {n} a lawnmower back.','{n} is in the shelter, rating it two stars.'],
  lost:['We lost {n}. The HOA will hear about this.','{n} did not make it. {n}\'s lawn will grow wild now.','{n} is gone. Their casserole lives on.']};
 let civSeen30={joined:0,saved:0,lost:0},civNote30='',civNoteUntil30=0;
+// NPC lifecycle routing consumes existing mirrored samples, independently of HUD drawing.
+const npcVoice103={world:null,epoch:-1,pending:[],nextAt:0,serial:0};
+function skipNpc103(e,reason){voiceDecision101(e.line,false,'npc '+reason);}
+function syncNpcEpoch103(){
+ const q=npcVoice103;if(q.world===world&&q.epoch===runEpoch16)return;
+ for(const e of q.pending)skipNpc103(e,'run reset');
+ q.pending=[];q.nextAt=0;q.serial=0;q.world=world;q.epoch=runEpoch16;
+ civPrevWorld47=world;civPrev47=(world.civilians30||[]).map(()=>1);
+ civSeen30={joined:0,saved:0,lost:0};civNote30='';civNoteUntil30=0;civBanner47='';civBannerUntil47=0;
+}
+function npcBlock103(){
+ if(!settings.started)return 'inactive';
+ if(playerValues[67]!==0||completedBoundary15)return 'terminal';
+ if(!audioAllowed9())return 'audio off';
+ return '';
+}
+function enqueueNpc103(e){
+ const q=npcVoice103;
+ for(let i=q.pending.length-1;i>=0;i--)if(time>=q.pending[i].expires){skipNpc103(q.pending[i],'expired');q.pending.splice(i,1);}
+ // A newer lifecycle state makes an unspoken older state misleading.
+ for(let i=q.pending.length-1;i>=0;i--)if(q.pending[i].index===e.index){skipNpc103(q.pending[i],'superseded');q.pending.splice(i,1);}
+ const blocked=npcBlock103();if(blocked){skipNpc103(e,blocked);return;}
+ e.order=q.serial++;e.expires=time+(e.state===2?5:8);
+ q.pending.push(e);q.pending.sort((a,b)=>b.state-a.state||a.order-b.order);
+ if(q.pending.length>4)skipNpc103(q.pending.pop(),'queue full');
+}
+function observeNeighbors103(){
+ if(!SANDBOX25)return;syncNpcEpoch103();
+ if(!settings.started)return;
+ const batch=[];
+ (world.civilians30||[]).forEach((n,c)=>{
+  const st=Math.round(playerValues[CIV_STATE30+c*4+2]);
+  if(st<1||st>4||st===civPrev47[c])return;
+  civPrev47[c]=st;if(st===1)return;
+  const kind=st===2?'join':st===3?'saved':'lost',name=n.name||'A neighbor';
+  const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];
+  civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
+  if(st===3&&n.type){civBanner47=name.toUpperCase()+' RESCUED!';civBannerUntil47=time+2.4;civBannerCol47=COL9.gold;}
+  if(st===4){civBanner47=name.toUpperCase()+' GOT EATEN!';civBannerUntil47=time+2.6;civBannerCol47=COL9.red;}
+  if(st===2){civBanner47=name.toUpperCase()+'  '+CIV_REWARD47[n.type||0];civBannerUntil47=time+2.2;civBannerCol47=COL9.gold;}
+  batch.push({index:c,state:st,line:name+(st===2?' joined the squad!':st===3?' is safe!':' got eaten!')});
+ });
+ // Gather the whole sample before priority selection; even/odd indices are equal.
+ batch.forEach(enqueueNpc103);
+ civSeen30={joined:counters[96]|0,saved:counters[98]|0,lost:counters[97]|0};
+}
+function pumpNpcVoice103(){
+ if(!SANDBOX25)return;syncNpcEpoch103();const q=npcVoice103;
+ const blocked=npcBlock103();if(blocked){for(const e of q.pending)skipNpc103(e,blocked);q.pending=[];return;}
+ for(let i=q.pending.length-1;i>=0;i--)if(time>=q.pending[i].expires){skipNpc103(q.pending[i],'expired');q.pending.splice(i,1);}
+ if(!q.pending.length||time<q.nextAt||time<voiceFiles70.until)return;
+ // Never preempt active/queued browser speech, including urgent non-NPC lines.
+ if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return;
+ const e=q.pending.shift();
+ // announce65 owns actual play/skip logging and variant commits. No retry storm.
+ if(announce65(e.line,false))q.nextAt=Math.max(time+.35,voiceFiles70.until+.25);
+}
+
 function neighborsHUD30(k){
  const total=world.civilians30.length,joined=counters[96]|0,saved=counters[98]|0,lost=counters[97]|0;
- // Quips name the neighbor whose state actually changed (mirror states: 1 waiting, 2 following, 3 saved, 4 lost); typed rescues get a banner.
- if(civPrevWorld47!==world){civPrevWorld47=world;civPrev47=world.civilians30.map(()=>1);civBanner47='';}
- world.civilians30.forEach((n,c)=>{const st=Math.round(playerValues[CIV_STATE30+c*4+2]);if(st<2||st>4||st===civPrev47[c])return;const kind=st===2?'join':st===3?'saved':'lost';
-  const lines=CIV_TYPE_LINES47[n.type||0]?.[kind]||CIV_LINES30[kind];civNote30=lines[(c+st)%lines.length].replaceAll('{n}',n.name||CIV_NAMES30[c%8]);civNoteUntil30=time+4;
-  if(st===3&&n.type)civBanner47=n.name.toUpperCase()+' RESCUED!',civBannerUntil47=time+2.4,civBannerCol47=COL9.gold;
-  if(st===4)civBanner47=(n.name||'A NEIGHBOR').toUpperCase()+' GOT EATEN!',civBannerUntil47=time+2.6,civBannerCol47=COL9.red;
-  if(st===4)announce65((n.name||'A neighbor')+' got eaten!',true);if(st===3)announce65((n.name||'A neighbor')+' is safe!');if(st===2&&c%2===0)announce65((n.name||'A neighbor')+' joined the squad!');
-  if(st===2)civBanner47=n.name.toUpperCase()+'  '+CIV_REWARD47[n.type],civBannerUntil47=time+2.2,civBannerCol47=COL9.gold;civPrev47[c]=st;});
- for(const kind of ['joined','saved','lost']){const now=kind==='joined'?joined:kind==='saved'?saved:lost;if(now>civSeen30[kind])civSeen30[kind]=now;}
- if(joined<civSeen30.joined)civSeen30={joined,saved,lost};
  const tally='Neighbors  '+saved+' saved  /  '+lost+' lost  /  '+Math.max(0,total-saved-lost)+' out there';text(tally,width/2-textWidth9(tally,13*k)/2,66*k,13*k,COL9.soft);
  if(civNote30&&time<civNoteUntil30)text(civNote30,width/2-textWidth9(civNote30,15*k)/2,88*k,15*k,COL9.green);
  if(civBanner47&&time<civBannerUntil47){const px=(40+6*Math.sin((civBannerUntil47-time)*9))*k;text(civBanner47,width/2-textWidth9(civBanner47,px)/2,height*.30,px,civBannerCol47||COL9.gold);}
- for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=screenPoint(playerValues[o],playerValues[o+1],1.9);if(sx<20||sy<20||sx>width-20||sy>height-20)continue;const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
+ for(let c=0;c<CIV_MAX30;c++){const o=CIV_STATE30+c*4;if(Math.round(playerValues[o+2])!==1)continue;const [sx,sy]=markerPoint104('civilian:'+c,playerValues[o],playerValues[o+1],1.9,Math.round(playerValues[o+2]));if(sx<20||sy<20||sx>width-20||sy>height-20)continue;const panic=playerValues[o+2]-1>.1;if(panic){const px=15*k,j=Math.sin(time*47+c*3)*2*k;text('HELP!!',sx-textWidth9('HELP!!',px)/2+j,sy-3*k,px,COL9.red);continue;}text('HELP!',sx-textWidth9('HELP!',12*k)/2,sy,12*k,COL9.gold);}
 }
 // Breakmass-style plain callouts: bursts of crush kills or chained explosions within 1.5 s.
 const callout30={crushed:0,crushBurst:0,crushAt:-9,chain:0,chainBurst:0,chainAt:-9};
@@ -4258,7 +4313,7 @@ const boing65={me:0,them:0,meAt:-9,themAt:-9,burst:0};
 function boingHUD65(k){const me=counters[83]|0,them=counters[88]|0;if(me<boing65.me||them<boing65.them){boing65.me=me;boing65.them=them;}
  if(me>boing65.me){boing65.meAt=time;synth65('boing');playAudio9('snap','cue',.10,null,me,0,.55);if(me===1)announce65('Boing!');}
  if(them>boing65.them){boing65.burst=time-boing65.themAt<1.5?boing65.burst+(them-boing65.them):them-boing65.them;boing65.themAt=time;playAudio9('snap','cue',.12,null,them,0,.6);}boing65.me=me;boing65.them=them;
- if(time-boing65.meAt<.7){const [sx,sy]=screenPoint(playerValues[0],playerValues[2],2.2+(playerValues[1]||0));const px=(26+(time-boing65.meAt)*20)*k;text('BOING!',sx-textWidth9('BOING!',px)/2,sy-(time-boing65.meAt)*60*k,px,[.40,.85,1,1]);}
+ if(time-boing65.meAt<.7){const [sx,sy]=markerPoint104('camera',playerValues[0],playerValues[2],2.2+(playerValues[1]||0));const px=(26+(time-boing65.meAt)*20)*k;text('BOING!',sx-textWidth9('BOING!',px)/2,sy-(time-boing65.meAt)*60*k,px,[.40,.85,1,1]);}
  if(time-boing65.themAt<1.2){const s='BOING x'+boing65.burst;text(s,width/2-textWidth9(s,24*k)/2,height*.19,24*k,[.40,.85,1,1]);}}
 // Story and quests: Radio Pleasant Acres walks the player through every Maple Street system, one mission at a time. Each completed
 // mission is worth 1000 points, a banner, a jingle and the next radio line (spoken by the announcer, subtitled at the bottom).
@@ -4288,7 +4343,7 @@ function p2Input65(){let x=(keys.has('KeyL')?1:0)-(keys.has('KeyJ')?1:0),y=(keys
  try{const pads=navigator.getGamepads?[...navigator.getGamepads()]:[];const g=pads.find(p=>p&&p.connected);if(g){const ax=g.axes[0]||0,ay=g.axes[1]||0;if(Math.hypot(ax,ay)>.25){x=ax;y=-ay;}}}catch(e){}
  if(time-net65.remote.at<.5&&(net65.remote.x||net65.remote.y)){x=net65.remote.x;y=net65.remote.y;}
  if((x||y)&&!p2_65.on){p2_65.on=true;p2_65.at=time;announce65('Player two has entered the neighborhood!',true);}return [x,y];}
-function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx,sy]=screenPoint(playerValues[o],playerValues[o+2],2.1);text('P2',sx-textWidth9('P2',16*k)/2,sy,16*k,[.35,1,.55,1]);}
+function p2HUD65(k){const o=L7.team7;if(p2_65.on&&playerValues[o+3]>0){const [sx,sy]=markerPoint104('team:0',playerValues[o],playerValues[o+2],2.1);text('P2',sx-textWidth9('P2',16*k)/2,sy,16*k,[.35,1,.55,1]);}
  if(time-p2_65.at<2.8){const s='PLAYER 2 JOINED!';text(s,width/2-textWidth9(s,34*k)/2,height*.28,34*k,[.35,1,.55,1]);}
  if(NET_HOST65){const s='ONLINE ROOM '+(net65.code||'....')+'  ('+net65.status+')   friend opens tront.xyz/tinyzombies/?join='+(net65.code||'....');text(s,width/2-textWidth9(s,13*k)/2,height-120*k,13*k,[.35,1,.55,1]);}
  else if(!p2_65.on&&(playerValues[24]||0)<25){const s='Player 2: IJKL or a gamepad';text(s,18*k,height-130*k,12*k,COL9.soft);}}
@@ -4301,14 +4356,14 @@ function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>to
 // with the distance, so the next rescue is never a guess.
 function rescueGuide96(){
  if(!SANDBOX25||!world)return null;const px=playerValues[0],pz=playerValues[2];let waiting=null,following=null,separated=null;
- for(let c=0;c<world.civilians30.length;c++){const o=CIV_STATE30+c*4,st=Math.round(playerValues[o+2]),n=world.civilians30[c],x=playerValues[o],z=playerValues[o+1],d=Math.hypot(x-px,z-pz),v={x,z,d,name:n.name||'Neighbor'};
+ for(let c=0;c<world.civilians30.length;c++){const o=CIV_STATE30+c*4,st=Math.round(playerValues[o+2]),n=world.civilians30[c],x=playerValues[o],z=playerValues[o+1],d=Math.hypot(x-px,z-pz),v={x,z,d,name:n.name||'Neighbor',stableId:c};
   if(st===1&&(!waiting||d<waiting.d))waiting=v;if(st===2){if(!following||d<following.d)following=v;if(d>10&&(!separated||d>separated.d))separated=v;}}
  if(separated)return {...separated,phase:'separated',label:separated.name+' is separated',instruction:'Go back for '+separated.name};
  if(!(playerValues[L7.journey7]>.5)){const door=world.doors7.find(d=>d.startDoor);return {phase:'exit',x:door?.x??world.start[0]+3.75,z:door?.z??world.start[1],label:'SAFE ROOM EXIT',instruction:'WASD to the door. Press E to open it.'};}
  if(following){const home=world.start,exit=world.exit,useHome=Math.hypot(px-home[0],pz-home[1])<=Math.hypot(px-exit[0],pz-exit[1])||!(counters[98]>0),to=useHome?home:exit;return {phase:'return',x:to[0],z:to[1],label:useHome?'SAFE ROOM':'FALLOUT SHELTER',instruction:useHome?'Bring your neighbor inside the safe room.':'Bring your neighbor into the shelter.'};}
  if(waiting)return {...waiting,phase:'find',label:waiting.name+' needs help',instruction:'Walk up to '+waiting.name+' so they follow you.'};return null;
 }
-function helpArrow68(k){if(!hud2d30||!settings.started)return;const g=rescueGuide96();if(!g)return;const bd=Math.hypot(g.x-playerValues[0],g.z-playerValues[2]),[sx,sy]=screenPoint(g.x,g.z,1.2),m=56*k;
+function helpArrow68(k){if(!hud2d30||!settings.started)return;const g=rescueGuide96();if(!g)return;const bd=Math.hypot(g.x-playerValues[0],g.z-playerValues[2]),[sx,sy]=Number.isInteger(g.stableId)?markerPoint104('rescue-pointer',g.x,g.z,1.2,g.phase+':'+g.stableId):screenPoint(g.x,g.z,1.2),m=56*k;
  const teaching=(counters[98]|0)<1||g.phase==='separated';if(teaching){const px=Math.min(15*k,(width-80*k)/Math.max(1,textWidth9(g.instruction,1)));text(g.instruction,width/2-textWidth9(g.instruction,px)/2,height-151*k,px,COL9.gold);if(g.phase==='find'){const tip='Quiet feet leave fewer clues. G selects a soda can; click to throw it away from your route.';const sz=Math.min(12*k,(width-80*k)/Math.max(1,textWidth9(tip,1)));text(tip,width/2-textWidth9(tip,sz)/2,height-130*k,sz,COL9.soft);}}
  if(sx>m&&sx<width-m&&sy>m&&sy<height-m){const c=hud2d30,s=hudScale30;c.save();c.strokeStyle=g.phase==='separated'?'#ff8c60':'#f6d43a';c.lineWidth=2*k*s;c.beginPath();c.ellipse(sx*s,(sy+18*k)*s,19*k*s,8*k*s,0,0,Math.PI*2);c.stroke();c.restore();const t=g.label;text(t,sx-textWidth9(t,12*k)/2,sy-19*k,12*k,COL9.gold);return;}
  const cx=width/2,cy=height/2,dx=sx-cx,dy=sy-cy,sc=Math.min((width/2-m)/Math.max(1e-6,Math.abs(dx)),(height/2-m)/Math.max(1e-6,Math.abs(dy))),ax=cx+dx*sc,ay=cy+dy*sc,ang=Math.atan2(dy,dx),s=hudScale30,pulse=.75+.25*Math.sin(time*6);
@@ -4442,7 +4497,41 @@ let mapleLevel65=1;const LEVEL_NAMES65=['ZOMBIE PANIC!','NIGHT OF THE LIVING HOA
 const levelName65=()=>LEVEL_NAMES65[(mapleLevel65-1)%LEVEL_NAMES65.length],bossHP65=()=>3500+(mapleLevel65-1)*1000,bossAt65=()=>Math.max(settings.hard?120:300,(settings.hard?180:360)-(mapleLevel65-1)*30);
 function nextSandbox25(){mapleLevel65++;runSeed=(runSeed+7919)>>>0;seedRequested=true;settings.started=true;cancelInput12();}
 const BANNERS=[]; // Presentation deliberately suppresses staccato combat/objective banners.
-function screenPoint(x,z,y=0){const dx=x-playerValues[0],dz=z-playerValues[2],hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
+// Presentation only. No gameplay state writes, extrapolation, or extra GPU reads.
+// Tracks blend the existing sampled positions across submitted frames; identity changes snap.
+function makeMarkerSmoothing104(){
+ const tracks=new Map();let now=0,epoch=null,scene=null,active=false;
+ function begin(ms,e,w,on){
+  const next=Number.isFinite(ms)?ms:now;
+  if(e!==epoch||w!==scene||!on||!active||next-now>200||next<now)tracks.clear();
+  now=next;epoch=e;scene=w;active=on;
+  for(const [key,t] of tracks)if(now-t.seen>500)tracks.delete(key);
+ }
+ function at(t){const a=Math.max(0,Math.min(1,(now-t.at)/70));return [t.from[0]+(t.to[0]-t.from[0])*a,t.from[1]+(t.to[1]-t.from[1])*a];}
+ function point(key,x,z,identity=''){
+  if(!active||!Number.isFinite(x)||!Number.isFinite(z))return [x,z];
+  let t=tracks.get(key);
+  if(!t||t.identity!==identity||now-t.seen>200||Math.hypot(x-t.to[0],z-t.to[1])>8){
+   if(!t&&tracks.size>=128)tracks.delete(tracks.keys().next().value);
+   t={identity,from:[x,z],to:[x,z],at:now,seen:now};tracks.set(key,t);
+  }else if(x!==t.to[0]||z!==t.to[1]){
+   t.from=at(t);t.to=[x,z];t.at=now;
+  }
+  t.seen=now;return at(t);
+ }
+ return {begin,point};
+}
+const markerSmoothing104=makeMarkerSmoothing104();
+let markerCamera104=null;
+function beginMarkers104(){
+ markerSmoothing104.begin(performance.now(),runEpoch16,world,settings.started&&!settings.paused&&!settings.hideUI);
+ markerCamera104=markerSmoothing104.point('camera',playerValues[0],playerValues[2]);
+}
+function markerPoint104(key,x,z,y=0,identity=''){
+ const p=markerSmoothing104.point(key,x,z,identity);return screenPoint(p[0],p[1],y);
+}
+
+function screenPoint(x,z,y=0){const dx=x-(markerCamera104?.[0]??playerValues[0]),dz=z-(markerCamera104?.[1]??playerValues[2]),hw=settings.zoom*.5,hh=hw/(width/height);return [width*.5+(dx*right[0]+dz*right[2])/hw*width*.5,height*.5-(dx*up[0]+y*up[1]+dz*up[2])/hh*height*.5];}
 function timeLabel(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');}
 const COL9={white:[.94,.97,.93,1],shadow:[.008,.021,.029,.78],soft:[.66,.78,.80,1],green:[.29,.97,.66,1],red:[1,.32,.30,1],violet:[.90,.49,.99,1],cyan:[.22,.91,.94,1],gold:[1,.74,.38,1],dim:[.10,.18,.22,.78]};
 function disk9(cx,cy,r,progress,color,kind=136,side=0){uiQuad9(cx-r,cy-r,r*2,r*2,color,kind,Math.max(0,Math.min(65535,Math.round(progress*65535))),side);}
@@ -4549,12 +4638,13 @@ function drawCellDestination105(target,k){
  if(sz>0)centre(carry,height-118*k,sz,col);
 }
 function hud(){
+ beginMarkers104();
  glyphCount=0;if(hud2d30)sizeHud2d30();
  const choosing=playerValues[464]>.5,won=playerValues[67]===1||completedBoundary15,dead=playerValues[67]===2;
  const k=clamp9(height/900,.72,1.15),clock=playerValues[24]||0,active=settings.started&&!choosing&&!won&&!dead;
  const eq=Math.round(playerValues[L12.gear]||0),gun=Math.round(playerValues[L12.gear+3]||0),gs=gunHUD94(gun,playerValues[L13.upgrades]|0),hp=clamp9((playerValues[3]||0)/100,0,1),ammo=Math.round(playerValues[L12.mag+gun]||0),cap=gs.clip,reload=playerValues[L12.reload]||0,rd=gs.reload;
  const ord=Math.round(playerValues[L12.items]||0),kits=Math.round(playerValues[L12.items+2]||0),stock=eq<3?ammo:Math.round(playerValues[L12.items+eq-3]||0),reserve=gun===2?'INF':Math.round(playerValues[L12.reserve+gun]||0);
- let [cx,cy]=screenPoint(playerValues[0],playerValues[2],.67+(SANDBOX25?playerValues[1]||0:0));cx=clamp9(cx,85*k,width-85*k);cy=clamp9(cy,105*k,height-120*k);
+ let [cx,cy]=markerPoint104('camera',playerValues[0],playerValues[2],.67+(SANDBOX25?playerValues[1]||0:0));cx=clamp9(cx,85*k,width-85*k);cy=clamp9(cy,105*k,height-120*k);
  // The game itself remains full-screen. During normal play no corners are reserved for UI.
  if(active&&!settings.hideUI){
   const axe=eq===2&&gearLabel14(2)==='FIRE AXE',feedback102=ammoFeedback102(eq,axe,ammo,Math.round(playerValues[L12.reserve+gun]||0),reload),empty=feedback102.state==='empty'||feedback102.state==='out';
@@ -4604,7 +4694,7 @@ function hud(){
   for(let i=0;i<3;i++){
    const o=L7.team7+i*128,thp=playerValues[o+3],wx=playerValues[o],wz=playerValues[o+2];
    if(!(Number.isFinite(wx)&&Number.isFinite(wz))||thp<-1)continue;
-   const [sx,sy]=screenPoint(wx,wz,1.34);
+   const [sx,sy]=markerPoint104('team:'+i,wx,wz,1.34);
    const e=Math.hypot(wx-playerValues[0],wz-playerValues[2]);
    const visible=sx>=35*k&&sy>=40*k&&sx<=width-35*k&&sy<=height-50*k&&e<=30;
    if(thp<=0&&!visible&&!(i===0&&Math.round(playerValues[448]||0)===0)){
@@ -4622,7 +4712,7 @@ function hud(){
   else if(!settings.lab){
    const ox=playerValues[488],oz=playerValues[489],dist=Math.hypot(ox-playerValues[0],oz-playerValues[2]);
    if(Number.isFinite(dist)&&dist>2.2){
-    const [sx,sy]=screenPoint(ox,oz,1.5),onscreen=sx>40*k&&sx<width-40*k&&sy>60*k&&sy<height-60*k;
+    const [sx,sy]=markerPoint104('objective',ox,oz,1.5,stage+':'+Math.round(playerValues[448]||0)),onscreen=sx>40*k&&sx<width-40*k&&sy>60*k&&sy<height-60*k;
     let mx=sx,my=sy;
     if(!onscreen){const dx=sx-cx,dy=sy-cy,mag=Math.max(1,Math.hypot(dx,dy)),rad=r+88*k;mx=cx+dx/mag*rad;my=cy+dy/mag*rad;mx=clamp9(mx,26*k,width-26*k);my=clamp9(my,32*k,height-30*k);
      arrow9(mx,my,Math.atan2(dy,dx),COL9.gold,23*k);
@@ -4828,10 +4918,11 @@ function drawFrame(now){
  if(stampThisFrame){tsBusy=true;enc.resolveQuerySet(tsQuery,0,12,tsResolve,0);enc.copyBufferToBuffer(tsResolve,0,tsRead,0,96);}
  device.queue.submit([enc.finish()]);inFlight++;device.queue.onSubmittedWorkDone().then(()=>{inFlight--;}).catch(fail);
  cpuMs=cpuMs*.9+(performance.now()-start)*.1;
- if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,512)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(512,16384)));syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
+ if(sample){const sampleEpoch16=runEpoch16;sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}counters.set(new Uint32Array(sampleBuffer.getMappedRange(0,512)));playerValues.set(new Float32Array(sampleBuffer.getMappedRange(512,16384)));observeNeighbors103();syncGear12();saveBoundary13();if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}if(audioSample&&readEpoch9===audioEpoch9){try{updateAudioWorld9(audioZData9,audioCount9,audioPropData9);}catch(e){diagnostics.audio.error=e.message;diagnostics.notes.push("Audio mix stopped: "+e.message);stopAudio9();}}if(counters[90]>lastMasonry7){lastMasonry7=counters[90];impactTone7(false);}if(counters[91]>lastDoor7){lastDoor7=counters[91];impactTone7(true);}if(counters[46]>lastCritSound){lastCritSound=counters[46];sound(3);}if(playerValues[463]>lastBannerSound){lastBannerSound=playerValues[463];missionTone(Math.round(playerValues[460]));}}finally{sampleBuffer.unmap();readBusy=false;}}).catch(e=>{readBusy=false;fail(e);});}
  if(stampThisFrame){tsRead.mapAsync(GPUMapMode.READ).then(()=>{const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=Number(t[1]-t[0])/1e6;for(let i=1;i<6;i++)gpuStages[["","AI","WORLD","NAV","GIBS","GEOMETRY"][i]]=Number(t[i*2+1]-t[i*2])/1e6;tsRead.unmap();tsBusy=false;}).catch(()=>{tsBusy=false;});}
  updateEquipmentAudio12();
  updateBombAudio();updateMapleAudio62();try{updateMusic67();}catch(e){diagnostics.notes.push('music off: '+String(e.message||e).slice(0,80));music67.on=false;}
+ pumpNpcVoice103();
  if(!startup93||startup93.state.status==='ready')frameCallback=requestAnimationFrame(drawFrame);
  }catch(e){fail(e);}
 }

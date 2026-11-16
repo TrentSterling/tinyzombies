@@ -6,6 +6,36 @@
         "id": "neighborly_take_03",
         "text": "Doing the block a favor!"
       }
+    ],
+    "brenda_got_eaten": [
+      {
+        "id": "brenda_got_eaten_take_01",
+        "text": "We lost Brenda. The block won't be the same."
+      },
+      {
+        "id": "brenda_got_eaten_take_02",
+        "text": "Brenda didn't make it. Keep the others together."
+      }
+    ],
+    "brenda_is_safe": [
+      {
+        "id": "brenda_is_safe_take_01",
+        "text": "Brenda is safe. The welcome committee survives."
+      },
+      {
+        "id": "brenda_is_safe_take_03",
+        "text": "Brenda is safe now."
+      }
+    ],
+    "brenda_joined_the_squad": [
+      {
+        "id": "brenda_joined_the_squad_take_01",
+        "text": "Brenda is following. The casserole can wait."
+      },
+      {
+        "id": "brenda_joined_the_squad_take_03",
+        "text": "Brenda is on your team."
+      }
     ]
   }
 }

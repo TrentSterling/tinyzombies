@@ -1707,17 +1707,18 @@ fn chapterMission13(dt:f32){
  for(var q=0u;q<2u;q++){if(S.relay[q+2u]==1.0){S.relay[q]=max(0.0,S.relay[q]-dt);let duration=select(12.0,9.0,q==1u);S.goal[q]=min(2.399,2.4*(1.0-S.relay[q]/duration));if(S.relay[q]==0.0){S.relay[q+2u]=2.0;S.goal[q]=2.4;if(S.pos.w>0.0){S.pos.w=min(100.0,S.pos.w+15.0);}announce(4.0,f32(q));}}}
  // Find one nearby, line-of-sight interaction. Holding E never activates two things at once.
  let oldKind=S.mission5.y;let oldIndex=S.mission5.z;S.mission5.y=0.0;S.mission5.z=-1.0;S.objectivePoint.w=999.0;
- for(var k=0u;k<3u;k++){if(S.team7[k].p.w<=0.0&&distance(S.team7[k].p.xz,S.pos.xz)<1.6){S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
+ for(var k=0u;k<3u;k++){if(S.botLife13[k].y<.5&&S.team7[k].p.w<=0.0&&distance(S.team7[k].p.xz,S.pos.xz)<1.6){S.mission5.y=1.0;S.mission5.z=f32(k);S.objectivePoint.w=0.0;}}
  for(var k=u32(S.rules7.x);k<u32(S.rules7.x+S.rules7.y);k++){let d=P[k];if(d.data.x>0.0){interactAt(d.p.xz,8.0,f32(k));}}
  if(S.cell.w==0.0){interactAt(S.cell.xz,2.0,-1.0);}
  for(var q=0u;q<2u;q++){if(S.relay[q+2u]==0.0){interactAt(select(u.goals.xy,u.goals.zw,q==1u),3.0+f32(q),f32(q));}}
  for(var i=0u;i<u32(u.worldInfo.y);i++){let p=P[i];if(p.data.x<=0.0){continue;}if(p.p.w==7.0&&p.more.x!=106.0){interactAt(p.p.xz,5.0,f32(i));}if(p.p.w==8.0){let slab=P[u32(p.aux.x)];if(slab.data.y==0.0&&slab.data.x>0.0){interactAt(p.p.xz,6.0,f32(i));}}}
  if(${GROUND_RIFLES106?'true':'false'}&&freshRifle106()&&S.mission5.y==0.0){for(var i=0u;i<u32(u.worldInfo.y);i++){let p=P[i];if(p.p.w==7.0&&p.more.x==106.0&&p.data.x>0.0){interactAt(p.p.xz,9.0,f32(i));}}}
  let dp=S.pos.xz-u.route.zw;let inside=dp.x> -1.75&&dp.x<2.30&&abs(dp.y)<2.25;
- let db=S.buddy.xz-u.route.zw;let buddyInside=db.x> -1.75&&db.x<2.30&&abs(db.y)<2.25;
+ // Permanently lost squadmates do not count against the survivors; downed, revivable ones still do.
+ let leadLost=S.botLife13[0].y>.5;
  S.spare5.x=f32(atomicExchange(&C[56],0u));
- var allInside=true;var present=0u;for(var k=0u;k<3u;k++){let p=S.team7[k].p.xz-u.route.zw;let here=p.x> -1.75&&p.x<2.30&&abs(p.y)<2.25;allInside=allInside&&here;if(here){present++;}}
- S.squad7.z=f32(present);let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&S.rescue.z>.0&&S.player7.x==0.0&&neighborsOutstanding98()==0u;
+ var allInside=true;var present=0u;for(var k=0u;k<3u;k++){if(S.botLife13[k].y>.5){continue;}let p=S.team7[k].p.xz-u.route.zw;let here=p.x> -1.75&&p.x<2.30&&abs(p.y)<2.25;allInside=allInside&&here;if(here){present++;}}
+ S.squad7.z=f32(present);let ready=S.goal.x>=2.4&&S.goal.y>=2.4&&allInside&&(S.rescue.z>.0||leadLost)&&S.player7.x==0.0&&neighborsOutstanding98()==0u;
  if(inside&&S.player7.x==0.0){S.orders.x=0.0;S.mission5.y=7.0;S.objectivePoint.w=0.0;}
  if(oldKind!=S.mission5.y||oldIndex!=S.mission5.z||u.controls.x<.5){S.mission5.w=0.0;}
  // A finite replacement, NOT a dropped weapon. GPU owns the live flag and complete ammo transaction.
@@ -1751,10 +1752,10 @@ fn chapterMission13(dt:f32){
   }
  }
  if(inside&&ready&&u.controls.x>.5){S.escape.x=min(1.0,S.escape.x+dt/2.2);S.orders.x=0.0;}
- if(S.escape.x>=1.0&&inside&&allInside&&S.spare5.x==0.0&&neighborsOutstanding98()==0u){S.escape.y+=dt;S.rescue.x=4.0;S.buddy.w=max(S.buddy.w,50.0);S.goal.z=S.escape.y;if(S.escape.y>=3.0){S.goal.w=1.0;S.stageRecord.x=S.aux.x;announce(15.0,0.0);}}
+ if(S.escape.x>=1.0&&inside&&allInside&&S.spare5.x==0.0&&neighborsOutstanding98()==0u){S.escape.y+=dt;if(!leadLost){S.rescue.x=4.0;S.buddy.w=max(S.buddy.w,50.0);}S.goal.z=S.escape.y;if(S.escape.y>=3.0){S.goal.w=1.0;S.stageRecord.x=S.aux.x;announce(15.0,0.0);}}
  // The objective marker advances immediately; no searching the entire 192m map for the next verb.
  S.mission5.x=0.0;S.objectivePoint.x=S.buddy.x;S.objectivePoint.y=S.buddy.z;S.objectivePoint.z=0.0;
- if((S.rescue.z>.5&&S.buddy.w>0.0)||S.rescue.x==3.0){
+ if(leadLost||(S.rescue.z>.5&&S.buddy.w>0.0)||S.rescue.x==3.0){
   S.mission5.x=1.0;S.objectivePoint.x=u.goals.x;S.objectivePoint.y=u.goals.y;
   if(S.relay.z>0.0){S.mission5.x=2.0;S.objectivePoint.x=S.cell.x;S.objectivePoint.y=S.cell.z;
    if(S.cell.w>0.0){S.mission5.x=3.0;S.objectivePoint.x=u.goals.z;S.objectivePoint.y=u.goals.w;

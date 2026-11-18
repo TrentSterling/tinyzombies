@@ -9,7 +9,7 @@ const seal=s.match(/if\((S\.escape\.x>=1\.0[^\n]+?)\)\{S\.escape\.y\+=dt;/)[1].r
 const rows=[];
 for(const [label,state,kind,expected]of [['waiting',1,30,false],['panicked-waiting',1.25,30,false],['following',2,30,false],['following-flag',2.25,30,false],['saved',3,30,true],['lost',4,30,true],['inactive',0,30,true],['not-civilian',2,0,true]]){
  const P=Array.from({length:192},()=>({p:{w:0},data:{y:0}}));P[180]={p:{w:kind},data:{y:state}};
- const context={P,CIV_BASE30:180,S:{goal:{x:2.4,y:2.4},rescue:{z:1},player7:{x:0},escape:{x:1},spare5:{x:0}},allInside:true,inside:true};
+ const context={P,CIV_BASE30:180,S:{goal:{x:2.4,y:2.4},rescue:{z:1},player7:{x:0},escape:{x:1},spare5:{x:0}},leadLost:false,allInside:true,inside:true};
  const got=vm.runInNewContext(js+';({outstanding:'+name+'(),ready:'+ready+',seal:'+seal+'})',context);
  rows.push({label,...got});assert.equal(got.ready,expected,label+' arming');assert.equal(got.seal,expected,label+' final sealing');
 }

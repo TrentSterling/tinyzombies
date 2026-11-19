@@ -3980,6 +3980,33 @@ const voiceChoice70=new URLSearchParams(location.search).get('voice');
 const voiceBank70=['voice','kokoro'].includes(voiceChoice70)?'voice':voiceChoice70==='chatterbox-draft'?'chatterbox':'chatterbox-matched';
 const voiceFiles70={ids:null,buf:new Map(),started:false,src:null,until:-9,variants:new Map(),lastTake:new Map(),lastWording:new Map(),takeCycle:new Map()};
 const voiceSlug70=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,64);
+// One cadence for all spoken paths; effects and mechanical reload cues are separate.
+// A distinct urgent line can cut in, but priority never bypasses repeat suppression.
+function makeVoiceCadence117(){
+ const recent=new Map(),lanes=new Map();
+ let last=-Infinity;
+ return {
+  skip(line,now,{priority=false,lane=''}={}){
+   const key=voiceSlug70(line);
+   if(now-(recent.get(key)??-Infinity)<(key==='reloading'?25:24))return 'line cooldown';
+   if(!priority&&now-last<2.5)return 'speech spacing';
+   if(lane&&now-(lanes.get(lane)??-Infinity)<8)return 'callout group cooldown';
+   return '';
+  },
+  played(line,now,{lane=''}={}){
+   const key=voiceSlug70(line);
+   recent.delete(key);recent.set(key,now);
+   if(recent.size>128)recent.delete(recent.keys().next().value);
+   if(lane)lanes.set(lane,now);
+   last=now;
+  },
+ };
+}
+const voiceCadence117=makeVoiceCadence117();
+const voiceClock117=()=>performance.now()/1000;
+function rememberSpoken117(line,now,info){
+ voiceCadence117.played(line,now,info);voice65.last=line;voice65.at=time;voice65.lines++;
+}
 // Opt-in assets in the matched voice bank; original bank and synthesis fallback remain canonical.
 function readVoiceVariants101(raw,ids){
  const out=new Map();if(raw?.version!==1||!raw.cues||typeof raw.cues!=='object')return out;
@@ -4008,21 +4035,26 @@ function preloadVoices70(){const v=voiceFiles70;if(v.started||!audio)return;v.st
   for(const id of v.ids)clip(bank,id).catch(e=>{if(bank==='voice')throw e;return clip('voice',id);}).then(b=>v.buf.set(id,b)).catch(()=>{});
  })().catch(()=>{v.ids=new Set();});}
 // Optional decoded callout only; consume missed events rather than replay later.
-function playReloadVoice102(){const v=voiceFiles70,b=v.buf.get('reloading');if(!audioAllowed9()||!audioMix9||!b)return false;releaseCrispy105();if(time<v.until)return false;
+function playReloadVoice102(){const v=voiceFiles70,b=v.buf.get('reloading');if(!audioAllowed9()||!audioMix9||!b)return false;
+ const line='Reloading!',now=voiceClock117(),skip=voiceCadence117.skip(line,now);
+ if(skip)return voiceDecision101(line,false,skip);
+ if(time<v.until)return false;
  try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return false;}catch{return false;}
  const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);
  s.onended=()=>{s.disconnect();g.disconnect();if(v.src===s){v.src=null;v.until=-9;}};
- s.start();v.src=s;v.until=time+b.duration;voice65.last='Reloading!';voice65.at=time;voice65.lines++;return true;}
+ s.start();v.src=s;v.until=time+b.duration;rememberSpoken117(line,now);return voiceDecision101(line,true,'recorded','reloading');}
 function playVoice70(line,prio){const v=voiceFiles70,pick=pickVoiceTake101(line),b=pick&&v.buf.get(pick.id);if(!b||!audio||!audioMix9)return false;if(time<v.until){if(!prio)return false;try{v.src.stop();}catch(e){}}
- try{if(voice65.ok&&speechSynthesis.speaking)speechSynthesis.cancel();}catch(e){}
+ try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending)){if(!prio)return false;speechSynthesis.cancel();}}catch(e){}
  const s=audio.createBufferSource(),g=audio.createGain();g.gain.value=1.1;s.buffer=b;s.connect(g);g.connect(audioMix9);s.start();v.src=s;v.until=time+b.duration;const cue=voiceSlug70(line);let cycle=v.takeCycle.get(cue);if(!cycle||cycle.has(pick.id)){cycle=new Set();v.takeCycle.set(cue,cycle);}cycle.add(pick.id);v.lastTake.set(cue,pick.id);v.lastWording.set(cue,pick.text);return pick.id;}
 function voiceDecision101(line,played,reason,take=''){if(debugView101.enabled)recordAudioDebug101({status:played?'played':'skipped',cue:voiceSlug70(line),reason,take});return played;}
-function announce65(line,prio=false){if(!SANDBOX25||!audioAllowed9())return voiceDecision101(line,false,'audio off');if(line===voice65.last&&time-voice65.at<4)return voiceDecision101(line,false,'recent repeat');
- preloadVoices70();const playedTake=playVoice70(line,prio);if(playedTake){voice65.last=line;voice65.at=time;voice65.lines++;return voiceDecision101(line,true,'recorded',playedTake);}if(time<voiceFiles70.until&&!prio)return voiceDecision101(line,false,'recorded voice busy');if(!voice65.ok)return voiceDecision101(line,false,'clip not ready; no speech fallback');
- try{if(speechSynthesis.speaking){if(!prio)return voiceDecision101(line,false,'speech busy');speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
+function announce65(line,prio=false,lane=''){if(!SANDBOX25||!audioAllowed9())return voiceDecision101(line,false,'audio off');
+ const now=voiceClock117(),info={priority:prio,lane},skip=voiceCadence117.skip(line,now,info);
+ if(skip)return voiceDecision101(line,false,skip);
+ preloadVoices70();const playedTake=playVoice70(line,prio);if(playedTake){rememberSpoken117(line,now,info);return voiceDecision101(line,true,'recorded',playedTake);}if(time<voiceFiles70.until&&!prio)return voiceDecision101(line,false,'recorded voice busy');if(!voice65.ok)return voiceDecision101(line,false,'clip not ready; no speech fallback');
+ try{if(speechSynthesis.speaking||speechSynthesis.pending){if(!prio)return voiceDecision101(line,false,'speech busy');speechSynthesis.cancel();}const u=new SpeechSynthesisUtterance(line);u.rate=.9;u.pitch=.5;u.volume=.95;
   const v=speechSynthesis.getVoices();const pick=v.find(x=>/^en/i.test(x.lang)&&/male|david|daniel|fred|guy|alex/i.test(x.name))||v.find(x=>/^en/i.test(x.lang));if(pick)u.voice=pick;
   if(debugView101.enabled){u.onstart=()=>voiceDecision101(line,true,'browser speech started');u.onerror=()=>voiceDecision101(line,false,'browser speech error');}
-  speechSynthesis.speak(u);voice65.last=line;voice65.at=time;voice65.lines++;return true;}catch(e){voice65.ok=false;return voiceDecision101(line,false,'speech failed');}}
+  speechSynthesis.speak(u);rememberSpoken117(line,now,info);return true;}catch(e){voice65.ok=false;return voiceDecision101(line,false,'speech failed');}}
 // Synthesised layers on top of the clip bank: a cartoon boing, a cheese thud, a wet splat, a rescue jingle and a B-movie horror sting.
 function synth65(kind){if(!audioAllowed9()||!audioMix9)return false;const t=audio.currentTime,g=audio.createGain();g.connect(audioMix9);g.gain.setValueAtTime(.0001,t);
  const tone=(type,f0,f1,f2,d,peak,at=0)=>{const o=audio.createOscillator(),e=audio.createGain();o.type=type;o.frequency.setValueAtTime(f0,t+at);o.frequency.exponentialRampToValueAtTime(f1,t+at+d*.35);o.frequency.exponentialRampToValueAtTime(f2,t+at+d);
@@ -4447,13 +4479,14 @@ function pumpNpcVoice103(){
  if(!SANDBOX25)return;syncNpcEpoch103();const q=npcVoice103;
  const blocked=npcBlock103();if(blocked){for(const e of q.pending)skipNpc103(e,blocked);q.pending=[];return;}
  for(let i=q.pending.length-1;i>=0;i--)if(time>=q.pending[i].expires){skipNpc103(q.pending[i],'expired');q.pending.splice(i,1);}
- if(q.pending.length)releaseCrispy105();
  if(!q.pending.length||time<q.nextAt||time<voiceFiles70.until)return;
  // Never preempt active/queued browser speech, including urgent non-NPC lines.
  if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return;
- const e=q.pending.shift();
+ const e=q.pending[0];
+ if(voiceCadence117.skip(e.line,voiceClock117(),{lane:'neighbor:'+e.state})==='speech spacing')return;
+ q.pending.shift();
  // announce65 owns actual play/skip logging and variant commits. No retry storm.
- if(announce65(e.line,false))q.nextAt=Math.max(time+.35,voiceFiles70.until+.25);
+ if(announce65(e.line,false,'neighbor:'+e.state))q.nextAt=Math.max(time+.35,voiceFiles70.until+.25);
 }
 
 function neighborsHUD30(k){
@@ -4583,8 +4616,10 @@ function updateCrispy105(){const c=crispy105,n=counters[61]>>>0;
  if(!SANDBOX25||!settings.started||settings.paused||!audioAllowed9()||!audioMix9||time<voiceFiles70.until||npcVoice103.pending.length)return;
  try{if(voice65.ok&&(speechSynthesis.speaking||speechSynthesis.pending))return;}catch(e){return;}
  // Recorded only: do not create an unowned browser utterance for a cosmetic cue.
- const take=playVoice70('Extra crispy!',false);if(!take)return;
- c.src=voiceFiles70.src;voice65.last='Extra crispy!';voice65.at=time;voice65.lines++;voiceDecision101('Extra crispy!',true,'recorded',take);
+ const line='Extra crispy!',now=voiceClock117(),skip=voiceCadence117.skip(line,now);
+ if(skip){voiceDecision101(line,false,skip);return;}
+ const take=playVoice70(line,false);if(!take)return;
+ c.src=voiceFiles70.src;rememberSpoken117(line,now);voiceDecision101(line,true,'recorded',take);
 }
 const toast67={n:0,burst:0,at:-9};
 function toastHUD67(k){const n=counters[61]|0;if(n<toast67.n)toast67.n=n;if(n>toast67.n){toast67.burst=time-toast67.at<1.5?toast67.burst+(n-toast67.n):n-toast67.n;toast67.at=time;toast67.n=n;}

@@ -3610,15 +3610,21 @@ const dripShader=COMMON+`
 const meshResetShader=COMMON+`
 @group(0) @binding(1) var<storage,read_write> Ch:array<atomic<u32>>;
 @group(0) @binding(2) var<storage,read_write> C:array<atomic<u32>>;
-@compute @workgroup_size(64) fn reset(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=CHUNKS){return;}let dirty=atomicLoad(&Ch[i*4u]);atomicStore(&Ch[i*4u+2u],dirty);if(dirty>0u){atomicStore(&Ch[i*4u+1u],0u);atomicStore(&Ch[i*4u],0u);atomicAdd(&C[30],1u);}}
+@group(0) @binding(3) var<storage,read_write> Dirty:array<u32>;
+@group(0) @binding(4) var<storage,read_write> MeshArgs:array<atomic<u32>>;
+@group(0) @binding(5) var<storage,read> O:array<u32>;
+@compute @workgroup_size(64) fn reset(@builtin(global_invocation_id) gid:vec3u){let i=gid.x;if(i>=CHUNKS){return;}let dirty=atomicLoad(&Ch[i*4u]);atomicStore(&Ch[i*4u+2u],dirty);if(dirty>0u){atomicStore(&Ch[i*4u+1u],0u);atomicStore(&Ch[i*4u],0u);atomicAdd(&C[30],1u);
+ // Exactly one lane per chunk: the list and indirect count are bounded by CHUNKS.
+ if(O[i]!=0u){Dirty[atomicAdd(&MeshArgs[0],1u)]=i;}}}
 `;
 const meshShader=COMMON+`
 @group(0) @binding(1) var<storage,read> O:array<u32>;
 @group(0) @binding(2) var<storage,read_write> Ch:array<atomic<u32>>;
 @group(0) @binding(3) var<storage,read_write> Cache:array<vec2u>;
 @group(0) @binding(4) var<storage,read_write> C:array<atomic<u32>>;
+@group(0) @binding(5) var<storage,read> Dirty:array<u32>;
 `+OCC_HELP+`
-@compute @workgroup_size(64) fn mesh(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=wg.x;if(chunk>=CHUNKS||atomicLoad(&Ch[chunk*4u+2u])==0u||O[chunk]==0u){return;}let origin=vec2i(i32(chunk%48u)*16,i32(chunk/48u)*16);let base=atomicLoad(&Ch[chunk*4u+3u]);
+@compute @workgroup_size(64) fn mesh(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=Dirty[wg.x];let origin=vec2i(i32(chunk%48u)*16,i32(chunk/48u)*16);let base=atomicLoad(&Ch[chunk*4u+3u]);
  for(var v=lid.x;v<3072u;v+=64u){let p=vec3i(origin.x+i32(v%16u),i32(v/256u),origin.y+i32((v/16u)%16u));let id=occAt(p);if(id==0u){continue;}
   for(var f=0u;f<6u;f++){let n=array<vec3i,6>(vec3i(0,0,1),vec3i(0,0,-1),vec3i(1,0,0),vec3i(-1,0,0),vec3i(0,1,0),vec3i(0,-1,0))[f];let q=p+n;if(q.y<0){continue;}if(occAt(q)==0u){let dst=atomicAdd(&Ch[chunk*4u+1u],1u);if(base+dst<${FACE_CACHE_CAP}u){Cache[base+dst]=vec2u(id-1u,f);}else{atomicAdd(&C[31],1u);}}}
  }
@@ -4221,6 +4227,7 @@ function bindInput(){
  document.addEventListener('visibilitychange',()=>{if(document.hidden){settings.paused=true;cancelInput12();}});
 }
 
+let meshDirtyChunks,meshArgs;
 let zA,zB,pA,pB,C,S,U,O,W,WP,Paint,Events,zHeads,zNext,pHeads,pNext,Boxes,drawArgs,spawnArgs,vBuffer,glyphBuffer,fontBuffer,uiUniform;
 let Lights,LightTiles,Fracture;
 let NavA,NavB,Groups,Props,Chunks,FaceCache,Faces,faceArgs,facePipeline,faceShadowPipeline,faceBG,faceShadowBG;let gpuStages={};
@@ -4302,8 +4309,8 @@ function buildComputeBindings(){
  bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);
  bindings.props=bg(compute.props,[[0,U],[1,S],[2,C],[3,Props],[4,Events],[5,Groups],[6,O]]);
  bindings.drip=bg(compute.drip,[[0,U],[1,W],[2,O],[3,WP],[4,S]]);
- bindings.meshReset=bg(compute.meshReset,[[1,Chunks],[2,C]]);
- bindings.mesh=bg(compute.mesh,[[1,O],[2,Chunks],[3,FaceCache],[4,C]]);
+ bindings.meshReset=bg(compute.meshReset,[[1,Chunks],[2,C],[3,meshDirtyChunks],[4,meshArgs],[5,O]]);
+ bindings.mesh=bg(compute.mesh,[[1,O],[2,Chunks],[3,FaceCache],[4,C],[5,meshDirtyChunks]]);
  bindings.faces=bg(compute.faces,[[0,U],[1,S],[2,C],[3,Chunks],[4,FaceCache],[5,W],[6,WP],[7,Faces]]);
  bindings.faceFinalize=bg(compute.faceFinalize,[[1,C],[2,faceArgs]]);
 }
@@ -5161,7 +5168,9 @@ function runSimulation(enc,beginExtra={}){
  pass(enc,'prepare',bindings.prepare,1,stamp(8,null));
  {const p=enc.beginComputePass({label:'bounded flesh and rubble rings'});p.setPipeline(compute.spawn);p.setBindGroup(0,bindings.spawn);p.dispatchWorkgroupsIndirect(spawnArgs,0);p.end();}
  for(let sub=0;sub<2;sub++){pass(enc,'integrate',bindings.integrate,Math.ceil(settings.pool/64));enc.clearBuffer(pHeads);pass(enc,'gridP',bindings.gridP,Math.ceil(settings.pool/64));pass(enc,'solve',bindings.solve,Math.ceil(settings.pool/64),sub===1?stamp(null,9):{});}
- pass(enc,'meshReset',bindings.meshReset,Math.ceil(CHUNK_COUNT/64),stamp(10,null));pass(enc,'mesh',bindings.mesh,CHUNK_COUNT);
+ // Preserve y/z from initialization and clear x before each dirty-list collection.
+ enc.clearBuffer(meshArgs,0,4);pass(enc,'meshReset',bindings.meshReset,Math.ceil(CHUNK_COUNT/64),stamp(10,null));
+ {const p=enc.beginComputePass({label:'remesh occupied dirty chunks'});p.setPipeline(compute.mesh);p.setBindGroup(0,bindings.mesh);p.dispatchWorkgroupsIndirect(meshArgs,0);p.end();}
  pass(enc,'lights',bindings.lights,1);pass(enc,'lightTiles',bindings.lightTiles,4);
  if(world.civilians30?.length)pass(enc,'civilians30',bindings.civilians30[zParity],1);pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));
  pass(enc,'wreckBoxes8',bindings.wreckBoxes8,Math.ceil(WRECK_MAX8/64));pass(enc,'faces',bindings.faces,CHUNK_COUNT);pass(enc,'finalize',bindings.finalize,1);pass(enc,'faceFinalize',bindings.faceFinalize,1,stamp(null,11));
@@ -5302,6 +5311,7 @@ async function main(){
  if(features.length){tsQuery=device.createQuerySet({type:'timestamp',count:12});tsResolve=buf('GPU timestamp resolve',256,GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC);tsRead=buf('GPU timestamp readback',96,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ);}
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
+ meshDirtyChunks=storage('occupied dirty chunk indices',CHUNK_COUNT*4);meshArgs=storage('dirty chunk dispatch arguments',12,new Uint32Array([0,1,1]),GPUBufferUsage.INDIRECT);
  });
  for(const [name,source,entry]of startupCompute93)await startup93.run('compute:'+name,'Compiling '+name+'...',()=>cp(name,source(),entry));
  const rm=renderModule25=await startup93.run('shader:render','Checking the voxel renderer...',()=>shader('voxel renderer',renderShader)),pm=await startup93.run('shader:post','Checking the tone mapper...',()=>shader('tone map',postShader)),um=await startup93.run('shader:ui','Checking the interface...',()=>shader('GPU glyphs',uiShader));

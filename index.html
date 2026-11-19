@@ -5307,11 +5307,14 @@ function createStartup93(steps){
  const status=document.getElementById('boot-status93'),percent=document.getElementById('boot-percent93'),count=document.getElementById('boot-count93'),bar=document.getElementById('boot-progress93'),fill=document.getElementById('boot-fill93');
  function paint(){status.textContent=state.label;percent.textContent=state.percent+'%';count.textContent=state.completed+' / '+state.total+' steps';bar.setAttribute('aria-valuenow',String(state.percent));bar.setAttribute('aria-valuetext',state.percent+'%, '+state.completed+' of '+state.total+' steps complete');fill.style.width=state.percent+'%';}
  function guard(){if(stopped||state.status==='failed')throw Error('Startup stopped during '+state.label);}
- // Yield to the browser so even cached shaders and synchronous world generation show real progress.
+ // Keep exact completed-work progress; avoid a forced frame wait for every cached step.
+ // First and final paints are mandatory. Hidden tabs retain the existing rAF suspension.
+ let lastPaint=-Infinity;
  const yieldPaint=()=>new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
- async function run(key,label,work){guard();if(!pending.has(key)||done.has(key))throw Error('Unexpected startup step: '+key);state.current=key;state.label=label;paint();await yieldPaint();guard();const value=await work();guard();done.add(key);state.completed=done.size;state.percent=Math.floor(done.size*100/state.total);state.history.push({key,completed:state.completed,percent:state.percent});paint();return value;}
+ async function yieldProgress(force=false){if(force||performance.now()-lastPaint>=50){await yieldPaint();lastPaint=performance.now();}}
+ async function run(key,label,work){guard();if(!pending.has(key)||done.has(key))throw Error('Unexpected startup step: '+key);state.current=key;state.label=label;paint();await yieldProgress();guard();const value=await work();guard();done.add(key);state.completed=done.size;state.percent=Math.floor(done.size*100/state.total);state.history.push({key,completed:state.completed,percent:state.percent});paint();return value;}
  function fail(){state.status='failed';}
- async function finish(){guard();if(done.size!==state.total)throw Error('Startup has unfinished steps');state.label='Neighborhood ready!';paint();await yieldPaint();guard();state.status='ready';boot.hidden=true;}
+ async function finish(){guard();if(done.size!==state.total)throw Error('Startup has unfinished steps');state.label='Neighborhood ready!';paint();await yieldProgress(true);guard();state.status='ready';boot.hidden=true;}
  paint();return {state,run,finish,fail};
 }
 async function main(){

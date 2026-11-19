@@ -318,7 +318,7 @@ function makeWorld13(){
   }
   if(count<budget)throw Error('Mercer population exceeds safe district spawn sites');mercer24.population=count;
  }
- return {...(mercer24?{mercer24}:{}),source13:source,sourceSeed13:source.seed,initialZ13,sourceDoors13,sourceProps15,gate13,final13,startDoor13,sourcePickups13,flow9:null,objectGroups8,extraBarrels8:[],chapter8:{name:source.map.name,location:source.map.district,theme:0},doors7,doorFirst7,caches:sourcePickups13,switches:[],cellPoint:[0,0],blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges:[],seed:runSeed,roomCount:7,start,generators,exit,buddy,rescueRoom:0,slabs:[],gateIndex:-1,buildings:[],yards:[],occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {...(mercer24?{mercer24}:{}),source13:source,sourceSeed13:source.seed,initialZ13,sourceDoors13,sourceProps15,gate13,final13,startDoor13,sourcePickups13,flow9:null,objectGroups8,extraBarrels8:[],chapter8:{name:source.map.name,location:source.map.district,theme:0},doors7,doorFirst7,caches:sourcePickups13,switches:[],cellPoint:[0,0],blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges:[],seed:runSeed,roomCount:7,start,generators,exit,buddy,rescueRoom:0,slabs:[],gateIndex:-1,buildings:[],yards:[],occupiedPages:ids.length,occupiedChunkIds:new Uint32Array(ids),cacheSize,navSeed,walk};
 }
 function makeWorld(){
  if(!settings.lab&&stage<=SOURCE_CHAPTERS16)return makeWorld13();
@@ -516,7 +516,7 @@ function makeWorld(){
    for(let j=0;j<MAX_PROPS;j++){const o=j*16,t=props[o+3];if(props[o+4]<=0)continue;const gap=[7,8,9].includes(t)?3.8:2.5;if(Math.hypot(x-props[o],z-props[o+2])<gap)return false;}return true;};
   for(const [ax,az]of anchors){if(propCount>=TRAMP_BASE65)break;for(const [dx,dz]of [[0,0],[2,0],[-2,0],[0,2],[0,-2],[2,2],[-2,2],[2,-2],[-2,-2]]){const x=ax+dx,z=az+dz;if(!clear(x,z))continue;const index=propCount++;props.set([x,0,z,7,1,0,0,0,8,0,0,0,106,0,0,0],index*16);freshRifles106.push({x,z,index});break;}}
  }
- return {freshRifles106,cheese48,trampolines65,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,cacheSize,navSeed,walk};
+ return {freshRifles106,cheese48,trampolines65,pools45,civilians30,flow9:settings.lab?null:FLOW9,objectGroups8,extraBarrels8,chapter8:SANDBOX25?{name:'MAPLE STREET',location:'PLEASANT ACRES, POP. DECLINING',theme:0}:CHAPTER8[(stage-1)%3],doors7,doorFirst7,caches,switches,cellPoint,blocks,occ,chunks,count:i,props,propCount,groups,groupCount:group+1,edges,seed:runSeed,roomCount:settings.lab?1:16,start,generators,exit,buddy,rescueRoom:8,slabs,gateIndex,buildings,yards,occupiedPages:ids.length,occupiedChunkIds:new Uint32Array(ids),cacheSize,navSeed,walk};
 }
 let world; // Built as a counted startup step after the loading screen can paint.
 
@@ -3638,7 +3638,8 @@ const faceBuildShader=COMMON+`
 @group(0) @binding(5) var<storage,read> W:array<Block>;
 @group(0) @binding(6) var<storage,read> WP:array<u32>;
 @group(0) @binding(7) var<storage,read_write> Faces:array<Box>;
-@compute @workgroup_size(64) fn build(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=wg.x;if(chunk>=CHUNKS){return;}let centre=vec3f(f32(chunk%48u)*4.0-94.0,1.0,f32(chunk/48u)*4.0-94.0);let clip=u.vp*vec4f(centre-vec3f(S.pos.x,0,S.pos.z),1);if(abs(clip.x)>1.0+8.0/u.screen.z||abs(clip.y)>1.0+8.0/u.screen.w){return;}
+@group(0) @binding(8) var<storage,read> Occupied:array<u32>;
+@compute @workgroup_size(64) fn build(@builtin(workgroup_id) wg:vec3u,@builtin(local_invocation_id) lid:vec3u){let chunk=Occupied[wg.x];let centre=vec3f(f32(chunk%48u)*4.0-94.0,1.0,f32(chunk/48u)*4.0-94.0);let clip=u.vp*vec4f(centre-vec3f(S.pos.x,0,S.pos.z),1);if(abs(clip.x)>1.0+8.0/u.screen.z||abs(clip.y)>1.0+8.0/u.screen.w){return;}
  let count=Ch[chunk*4u+1u];let base=Ch[chunk*4u+3u];for(var k=lid.x;k<count;k+=64u){let item=Cache[base+k];let b=W[item.x];if(b.p.w<=0.0){continue;}let n=array<vec3f,6>(vec3f(0,0,1),vec3f(0,0,-1),vec3f(1,0,0),vec3f(-1,0,0),vec3f(0,1,0),vec3f(0,-1,0))[item.y];var color=vec3f(.25,.29,.30);let mat=u32(b.extraData.x);if(mat==1u){color=vec3f(.31,.27,.22);}if(mat==2u){color=vec3f(.28,.31,.32);}if(mat==3u){color=vec3f(.32,.25,.24);}if(mat==4u){color=vec3f(.14,.19,.21);}if(mat==5u){color=vec3f(.17,.23,.26);}if(mat==6u){color=vec3f(.09,.27,.11)*(.8+rnd(item.x*29u)*.45);}if(mat==7u){color=vec3f(.86,.86,.82);}if(mat==8u){color=vec3f(.80,.50,.54);}if(mat==9u){color=vec3f(.50,.72,.60);}if(mat==10u){color=vec3f(.52,.63,.80);}color*=.94+rnd(item.x*17u)*.12;
  let char6=WP[${MAX_WORLD}u+item.x];let charAmount=f32(char6&255u)/255.0;color=mix(color,vec3f(.065,.051,.044),smoothstep(.05,.70,charAmount));
  let packed=WP[item.x];let amount=f32(packed&255u)/255.0;let age=max(0.0,S.aux.x-f32(packed>>8u)/16.0);color=mix(color,mix(vec3f(.25,.022,.025),vec3f(.56,.015,.035),exp(-age*.05)),amount*.9*select(1.0,.24,char6>packed));color=mix(color,vec3f(.034,.029,.025),charAmount*.60);
@@ -4227,7 +4228,7 @@ function bindInput(){
  document.addEventListener('visibilitychange',()=>{if(document.hidden){settings.paused=true;cancelInput12();}});
 }
 
-let meshDirtyChunks,meshArgs;
+let meshDirtyChunks,meshArgs,faceOccupiedChunks;
 let zA,zB,pA,pB,C,S,U,O,W,WP,Paint,Events,zHeads,zNext,pHeads,pNext,Boxes,drawArgs,spawnArgs,vBuffer,glyphBuffer,fontBuffer,uiUniform;
 let Lights,LightTiles,Fracture;
 let NavA,NavB,Groups,Props,Chunks,FaceCache,Faces,faceArgs,facePipeline,faceShadowPipeline,faceBG,faceShadowBG;let gpuStages={};
@@ -4311,7 +4312,7 @@ function buildComputeBindings(){
  bindings.drip=bg(compute.drip,[[0,U],[1,W],[2,O],[3,WP],[4,S]]);
  bindings.meshReset=bg(compute.meshReset,[[1,Chunks],[2,C],[3,meshDirtyChunks],[4,meshArgs],[5,O]]);
  bindings.mesh=bg(compute.mesh,[[1,O],[2,Chunks],[3,FaceCache],[4,C],[5,meshDirtyChunks]]);
- bindings.faces=bg(compute.faces,[[0,U],[1,S],[2,C],[3,Chunks],[4,FaceCache],[5,W],[6,WP],[7,Faces]]);
+ bindings.faces=bg(compute.faces,[[0,U],[1,S],[2,C],[3,Chunks],[4,FaceCache],[5,W],[6,WP],[7,Faces],[8,faceOccupiedChunks]]);
  bindings.faceFinalize=bg(compute.faceFinalize,[[1,C],[2,faceArgs]]);
 }
 
@@ -4321,7 +4322,10 @@ function relaxNav(enc,iterations,stamped=false){const opts=stamped?{timestampWri
 function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExplosion=lastGrenadeExplosion=0;pendingPipeBomb=pendingGrenade=pendingDash=0;toolHint='';toolHintUntil=0;settings.help=false;diagnostics.audio.pipeBeeps=0;
  pendingChoice=0;keys.clear();mouse.left=mouse.right=mouse.middle=false;lastBannerSound=0;
  device.queue.writeBuffer(W,0,world.blocks);device.queue.writeBuffer(O,0,world.occ);device.queue.writeBuffer(Props,0,world.props);device.queue.writeBuffer(Groups,0,world.groups);
- device.queue.writeBuffer(Chunks,0,world.chunks);device.queue.writeBuffer(Fracture,0,fractureData8(world));
+ device.queue.writeBuffer(Chunks,0,world.chunks);
+ // Destruction removes cells, not their owning pages. Refresh this list only on reset/reseed.
+ if(world.occupiedChunkIds.length)device.queue.writeBuffer(faceOccupiedChunks,0,world.occupiedChunkIds);
+ device.queue.writeBuffer(Fracture,0,fractureData8(world));
  const st=new Float32Array(4096);st[0]=world.start[0];st[2]=world.start[1];st[3]=100;st[9]=1;st[70]=3;st[84]=world.buddy[0];st[86]=world.buddy[1];st[87]=100;st[88]=2;st[90]=1;st[100]=30;st[109]=0;st.set([6,1,0,0],428);st.set(carryMods,432);st.set([world.cellPoint[0],0,world.cellPoint[1],0],444);st.set([0,10,0,100],452);st[450]=-1;st[468]=0;st.set([world.buddy[0],world.buddy[1],0,999],488);if(stage>1){st[84]=world.start[0]+1.2;st[86]=world.start[1];st[87]=75;st[88]=2;st[90]=1;}
  for(let id=0;id<3;id++){const o=L7.team7+id*128;const pos=id===0?[st[84],st[86]]:[world.start[0]-1.2+id*.7,world.start[1]+(id===1?-1:1)];
   st.set([pos[0],0,pos[1],100],o);st.set([0,1,0,0],o+4);st.set([0,0,-1,id*.05],o+8);st.set([world.start[0],0,world.start[1],-1],o+12);
@@ -5173,7 +5177,7 @@ function runSimulation(enc,beginExtra={}){
  {const p=enc.beginComputePass({label:'remesh occupied dirty chunks'});p.setPipeline(compute.mesh);p.setBindGroup(0,bindings.mesh);p.dispatchWorkgroupsIndirect(meshArgs,0);p.end();}
  pass(enc,'lights',bindings.lights,1);pass(enc,'lightTiles',bindings.lightTiles,4);
  if(world.civilians30?.length)pass(enc,'civilians30',bindings.civilians30[zParity],1);pass(enc,'boxes',bindings.boxes[zParity],Math.ceil(Math.max(settings.zombies,settings.pool,world.propCount)/64));
- pass(enc,'wreckBoxes8',bindings.wreckBoxes8,Math.ceil(WRECK_MAX8/64));pass(enc,'faces',bindings.faces,CHUNK_COUNT);pass(enc,'finalize',bindings.finalize,1);pass(enc,'faceFinalize',bindings.faceFinalize,1,stamp(null,11));
+ pass(enc,'wreckBoxes8',bindings.wreckBoxes8,Math.ceil(WRECK_MAX8/64));if(world.occupiedChunkIds.length)pass(enc,'faces',bindings.faces,world.occupiedChunkIds.length);pass(enc,'finalize',bindings.finalize,1);pass(enc,'faceFinalize',bindings.faceFinalize,1,stamp(null,11));
 }
 
 function drawFrame(now){
@@ -5311,6 +5315,7 @@ async function main(){
  if(features.length){tsQuery=device.createQuerySet({type:'timestamp',count:12});tsResolve=buf('GPU timestamp resolve',256,GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC);tsRead=buf('GPU timestamp readback',96,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ);}
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
+ faceOccupiedChunks=storage('world occupied chunk indices',MAX_PAGES*4);
  meshDirtyChunks=storage('occupied dirty chunk indices',CHUNK_COUNT*4);meshArgs=storage('dirty chunk dispatch arguments',12,new Uint32Array([0,1,1]),GPUBufferUsage.INDIRECT);
  });
  for(const [name,source,entry]of startupCompute93)await startup93.run('compute:'+name,'Compiling '+name+'...',()=>cp(name,source(),entry));

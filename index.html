@@ -286,17 +286,15 @@ function makeWorld13(){
  const ids=[...new Set([...cells.values()].map(([x,y,z])=>(x>>4)+CGRID*(z>>4)))].sort((a,b)=>a-b);
  if(ids.length>MAX_PAGES)throw Error('Occupied page budget exceeded '+ids.length);
  ids.forEach((c,i)=>{occ[c]=i+1;chunks[c*4]=1;});
+ // One navigation cell spans 4x4 voxels; only the lowest three voxel layers block it.
+ const walk=new Uint8Array(NAV_SIZE);
  let i=0;const materialHP=[4,1,4,3,7,8];
- for(const [key,[x,y,z,mat,g]]of cells){let addr=occAddress(x,y,z,occ),hp=g===0?1000000:materialHP[mat];blocks.set([x*.25-96+.125,y*.25+.125,z*.25-96+.125,hp,mat,addr,hp,g],i*8);occ[addr]=i+1;chunks[((x>>4)+CGRID*(z>>4))*4+3]+=6;if(g&&y<2)groups[g*4]++;i++;}
+ for(const [key,[x,y,z,mat,g]]of cells){let addr=occAddress(x,y,z,occ),hp=g===0?1000000:materialHP[mat];blocks.set([x*.25-96+.125,y*.25+.125,z*.25-96+.125,hp,mat,addr,hp,g],i*8);occ[addr]=i+1;chunks[((x>>4)+CGRID*(z>>4))*4+3]+=6;if(g&&y<2)groups[g*4]++;if(y<3)walk[(x>>2)+NG*(z>>2)]=1;i++;}
  let cacheSize=0;for(let c=0;c<CHUNK_COUNT;c++){let cap=chunks[c*4+3];chunks[c*4+3]=cacheSize;cacheSize+=cap;}
  // Each original voxel reserves at most six faces. Removal can never exceed that bound.
  for(let g=1;g<=group;g++)groups[g*4+1]=groups[g*4];
  occ.fill(0x3fffffff,NAV_OFFSET,NAV_OFFSET+NAV_SIZE);
  const navSeed=new Uint32Array(NAV_SIZE);navSeed.fill(0x3fffffff);
- const walk=new Uint8Array(NAV_SIZE);for(let z=0;z<NG;z++)for(let x=0;x<NG;x++){
-  // Coarse metre routes; exact quarter-metre collision remains local to each moving actor.
-  const px=x-96+.5,pz=z-96+.5;let blocked=false;for(let vz=Math.floor((pz+96-.30)*4);vz<=Math.floor((pz+96+.30)*4)&&!blocked;vz++)for(let vx=Math.floor((px+96-.30)*4);vx<=Math.floor((px+96+.30)*4)&&!blocked;vx++)for(let y of [0,1,2]){let k=occAddress(vx,y,vz,occ);if(k>=0&&occ[k]){blocked=true;break;}}walk[x+NG*z]=blocked?1:0;
- }
  // Boot-only exact distance field avoids a hundreds-dispatch start-up stall. GPU updates thereafter.
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}
@@ -486,17 +484,15 @@ function makeWorld(){
  const ids=[...new Set([...cells.values()].map(([x,y,z])=>(x>>4)+CGRID*(z>>4)))].sort((a,b)=>a-b);
  if(ids.length>MAX_PAGES)throw Error('Occupied page budget exceeded '+ids.length);
  ids.forEach((c,i)=>{occ[c]=i+1;chunks[c*4]=1;});
+ // One navigation cell spans 4x4 voxels; only the lowest three voxel layers block it.
+ const walk=new Uint8Array(NAV_SIZE);
  let i=0;const materialHP=[4,1,4,3,7,8,2,1,1,1,1];
- for(const [key,[x,y,z,mat,g]]of cells){let addr=occAddress(x,y,z,occ),hp=materialHP[mat];blocks.set([x*.25-96+.125,y*.25+.125,z*.25-96+.125,hp,mat,addr,hp,g],i*8);occ[addr]=i+1;chunks[((x>>4)+CGRID*(z>>4))*4+3]+=6;if(g&&y<2)groups[g*4]++;i++;}
+ for(const [key,[x,y,z,mat,g]]of cells){let addr=occAddress(x,y,z,occ),hp=materialHP[mat];blocks.set([x*.25-96+.125,y*.25+.125,z*.25-96+.125,hp,mat,addr,hp,g],i*8);occ[addr]=i+1;chunks[((x>>4)+CGRID*(z>>4))*4+3]+=6;if(g&&y<2)groups[g*4]++;if(y<3)walk[(x>>2)+NG*(z>>2)]=1;i++;}
  let cacheSize=0;for(let c=0;c<CHUNK_COUNT;c++){let cap=chunks[c*4+3];chunks[c*4+3]=cacheSize;cacheSize+=cap;}
  // Each original voxel reserves at most six faces. Removal can never exceed that bound.
  for(let g=1;g<=group;g++)groups[g*4+1]=groups[g*4];
  occ.fill(0x3fffffff,NAV_OFFSET,NAV_OFFSET+NAV_SIZE);
  const navSeed=new Uint32Array(NAV_SIZE);navSeed.fill(0x3fffffff);
- const walk=new Uint8Array(NAV_SIZE);for(let z=0;z<NG;z++)for(let x=0;x<NG;x++){
-  // Coarse metre routes; exact quarter-metre collision remains local to each moving actor.
-  const px=x-96+.5,pz=z-96+.5;let blocked=false;for(let vz=Math.floor((pz+96-.30)*4);vz<=Math.floor((pz+96+.30)*4)&&!blocked;vz++)for(let vx=Math.floor((px+96-.30)*4);vx<=Math.floor((px+96+.30)*4)&&!blocked;vx++)for(let y of [0,1,2]){let k=occAddress(vx,y,vz,occ);if(k>=0&&occ[k]){blocked=true;break;}}walk[x+NG*z]=blocked?1:0;
- }
  // Boot-only exact distance field avoids a hundreds-dispatch start-up stall. GPU updates thereafter.
  const queue=new Int32Array(NAV_SIZE),src=Math.floor(start[0]+96)+NG*Math.floor(start[1]+96);let read=0,write=0;queue[write++]=src;navSeed[src]=0;walk[src]=0;
  while(read<write){let c=queue[read++],x=c%NG,z=Math.floor(c/NG);for(const [dx,dz]of [[1,0],[-1,0],[0,1],[0,-1]]){let nx=x+dx,nz=z+dz,n=nx+NG*nz;if(nx<0||nx>=NG||nz<0||nz>=NG||walk[n]||navSeed[n]!==0x3fffffff)continue;navSeed[n]=navSeed[c]+10;queue[write++]=n;}}

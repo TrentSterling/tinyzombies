@@ -8,9 +8,9 @@ Play at [tront.xyz/tinyzombies](https://tront.xyz/tinyzombies/). The former `/ti
 
 ## First rescue and opt-in Hard director, November 13
 
-Standard is still the default. The in-world marker now guides you to the safe-room door (E), the nearest waiting neighbor, and back to safety once they follow. The starting safe room accepts rescued neighbors as well as the fallout shelter. A separated follower gets a named return marker instead of the game silently directing you to another rescue.
+Maple Street now defaults to Horde (8,192 configured infected slots). For the quieter Standard opening, launch with [?gentle](https://tront.xyz/tinyzombies/?gentle). In both modes, the in-world marker now guides you to the safe-room door (E), the nearest waiting neighbor, and back to safety once they follow. The starting safe room accepts rescued neighbors as well as the fallout shelter. A separated follower gets a named return marker instead of the game silently directing you to another rescue.
 
-Standard starts with fewer active infected, protects waiting neighbors for five minutes, gradually increases arrival pressure, and delays the first HOA boss to six minutes. On the title screen, **F4** opts into Hard's stronger waves and shorter recovery breaks; `?hard` also opts in. Low health and crowd caps hold new arrivals in both modes. Hard does not silently reduce your weapon stock or health protections.
+Standard starts with fewer active infected, protects waiting neighbors for five minutes, gradually increases arrival pressure, and delays the first HOA boss to six minutes. On the Standard title screen, **F4** opts into Hard's stronger waves and shorter recovery breaks; `?hard` also opts in. Low health and crowd caps hold new arrivals in Standard and Hard. Horde keeps full reinforcements after you leave the safe room while alive and standing. Hard does not silently reduce your weapon stock or health protections.
 
 Soda cans now distract common infected and runners within 18 metres, with a 5.5-second fuse. Gunfire still leaves a location to investigate, so throwing a can away from your route can open a quieter way past a crowd. Specials ignore that lure. Spitters mark a fixed acid landing area that flushes you from cover; brutes show a locked charge lane aimed slightly ahead of a moving player. Sidestep instead of retreating straight along it.
 
@@ -57,7 +57,7 @@ Houses have a plain 2 m front doorway instead of the old roll-up garage shutters
 
 Play it at [tront.xyz/tinyzombies/?sandbox](https://tront.xyz/tinyzombies/?sandbox). This is the first step of the destruction-first redesign: an open, breakable suburb instead of DEAD ENDS corridors.
 
-- It runs the original V9 open-town mission at the full configured horde (2,048 by default): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).
+- It runs the original V9 open-town mission at the full configured Horde (8,192 slots by default; 2,048 in Standard without a population override): find Gary (HOA President), start the karaoke generator, steal the car battery, hot-wire the ice cream truck, then get everyone into the fallout shelter (HOA approved).
 - Every block gets up to two small houses with garage doors and side doors, knee-high picket fences and yard junk. All of it breaks. The seed rerolls the street; `?sandbox&seed=1234` picks one.
 - A very calm announcer comments on the chaos. After the evacuation, Enter rolls a new street.
 - No checkpoints or records are saved in the sandbox. The campaign URL is unchanged.

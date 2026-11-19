@@ -3493,6 +3493,20 @@ const navRelaxShader=COMMON+`
  }B[i]=squad|(heard<<16u);
 }
 `;
+const navCheckShader=COMMON+`
+@group(0) @binding(1) var<storage,read> A:array<u32>;
+@group(0) @binding(2) var<storage,read> B:array<u32>;
+@group(0) @binding(3) var<storage,read_write> D:array<atomic<u32>>;
+var<workgroup> Different:atomic<u32>;
+@compute @workgroup_size(64) fn check(@builtin(global_invocation_id) gid:vec3u,@builtin(local_invocation_index) li:u32){
+ if(li==0u){atomicStore(&Different,0u);}
+ workgroupBarrier();
+ let i=gid.x;
+ if(i<NAV_N && A[i]!=B[i]){atomicStore(&Different,1u);}
+ workgroupBarrier();
+ if(li==0u && atomicLoad(&Different)!=0u){atomicStore(&D[0],(NAV_N+63u)/64u);}
+}
+`;
 // Publishes both lanes: the squad lane keeps its 10/14 units and INF in the nav region; the heard lane fills the old pressure region.
 const navPublishShader=COMMON+`
 @group(0) @binding(1) var<storage,read> A:array<u32>;
@@ -4228,7 +4242,7 @@ function bindInput(){
  document.addEventListener('visibilitychange',()=>{if(document.hidden){settings.paused=true;cancelInput12();}});
 }
 
-let meshDirtyChunks,meshArgs,faceOccupiedChunks;
+let meshDirtyChunks,meshArgs,faceOccupiedChunks,navArgs;
 let zA,zB,pA,pB,C,S,U,O,W,WP,Paint,Events,zHeads,zNext,pHeads,pNext,Boxes,drawArgs,spawnArgs,vBuffer,glyphBuffer,fontBuffer,uiUniform;
 let Lights,LightTiles,Fracture;
 let NavA,NavB,Groups,Props,Chunks,FaceCache,Faces,faceArgs,facePipeline,faceShadowPipeline,faceBG,faceShadowBG;let gpuStages={};
@@ -4304,7 +4318,7 @@ function buildComputeBindings(){
  bindings.boxes=[zA,zB].map(z=>bg(compute.boxes,[[0,U],[1,S],[2,C],[3,z],[4,pA],[5,Props],[7,Boxes]]));bindings.crush30=device.createBindGroup({layout:compute.crush30.getBindGroupLayout(0),entries:[{binding:1,resource:{buffer:Fracture,offset:F8.pieces*4-CRUSH_LEAD30,size:CRUSH_LEAD30+WRECK_MAX8*F8.stride*4}},{binding:2,resource:{buffer:O}}]});bindings.civilians30=[zA,zB].map(z=>bg(compute.civilians30,[[0,U],[1,S],[2,C],[3,z],[4,zHeads],[5,O],[6,Props]]));
  bindings.finalize=bg(compute.finalize,[[1,C],[2,drawArgs]]);
  bindings.navInit=bg(compute.navInit,[[1,S],[2,O],[3,NavA]]);
- bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);
+ bindings.navRelax=[[NavA,NavB],[NavB,NavA]].map(([a,b])=>bg(compute.navRelax,[[1,O],[2,a],[3,b]]));bindings.navPublish=bg(compute.navPublish,[[1,NavA],[2,O]]);bindings.navCheck=bg(compute.navCheck,[[1,NavA],[2,NavB],[3,navArgs]]);
  bindings.groupClear=bg(compute.groupClear,[[1,Groups]]);
  bindings.support=bg(compute.support,[[0,U],[1,W],[2,Groups]]);
  bindings.collapse=bg(compute.collapse,[[0,U],[1,Groups],[2,C]]);
@@ -4318,7 +4332,13 @@ function buildComputeBindings(){
 
 function pass(enc,name,binding,count,extra={}){const p=enc.beginComputePass({label:name,...extra});p.setPipeline(compute[name]);p.setBindGroup(0,binding);p.dispatchWorkgroups(Math.max(1,count));p.end();}
 function clearParticles(){if(!device||!pA)return;const e=device.createCommandEncoder();e.clearBuffer(pA);e.clearBuffer(pB);e.clearBuffer(pHeads);device.queue.submit([e.finish()]);}
-function relaxNav(enc,iterations,stamped=false){const opts=stamped?{timestampWrites:{querySet:tsQuery,beginningOfPassWriteIndex:6,endOfPassWriteIndex:7}}:{};const p=enc.beginComputePass({label:'clearance-aware flow-field relaxation',...opts});p.setPipeline(compute.navRelax);for(let i=0;i<iterations;i++){p.setBindGroup(0,bindings.navRelax[i&1]);p.dispatchWorkgroups(Math.ceil(NAV_SIZE/64));}p.end();}
+function relaxNav(enc,iterations,first,lastBatch){
+ const p=enc.beginComputePass({label:'clearance-aware flow-field relaxation',...stamp(6,lastBatch?7:null)});
+ p.setPipeline(compute.navRelax);
+ for(let i=0;i<iterations;i++){p.setBindGroup(0,bindings.navRelax[i&1]);if(first)p.dispatchWorkgroups(Math.ceil(NAV_SIZE/64));else p.dispatchWorkgroupsIndirect(navArgs,0);}
+ p.end();
+ if(!lastBatch){enc.clearBuffer(navArgs,0,4);pass(enc,'navCheck',bindings.navCheck,Math.ceil(NAV_SIZE/64),stamp(null,7));}
+}
 function reset(){runEpoch16++;resetAudio9();lastMasonry7=lastDoor7=0;nextPipeBeep=lastPipeExplosion=lastGrenadeExplosion=0;pendingPipeBomb=pendingGrenade=pendingDash=0;toolHint='';toolHintUntil=0;settings.help=false;diagnostics.audio.pipeBeeps=0;
  pendingChoice=0;keys.clear();mouse.left=mouse.right=mouse.middle=false;lastBannerSound=0;
  device.queue.writeBuffer(W,0,world.blocks);device.queue.writeBuffer(O,0,world.occ);device.queue.writeBuffer(Props,0,world.props);device.queue.writeBuffer(Groups,0,world.groups);
@@ -5168,7 +5188,7 @@ function runSimulation(enc,beginExtra={}){
  pass(enc,'groupClear',bindings.groupClear,Math.ceil(MAX_GROUPS/64),stamp(4,null));pass(enc,'support',bindings.support,Math.ceil(world.count/64));pass(enc,'collapse',bindings.collapse,Math.ceil(MAX_GROUPS/64));
  pass(enc,'world',bindings.world,Math.ceil(world.count/64));pass(enc,'fracture8',bindings.fracture8,1,stamp(null,5));
  if(frame%8===0)pass(enc,'drip',bindings.drip,Math.ceil(world.count/64));
- if(navPhase===0)pass(enc,'navInit',bindings.navInit,Math.ceil(NAV_SIZE/64));relaxNav(enc,32,stampThisFrame);navPhase=(navPhase+1)%16;if(navPhase===0)pass(enc,'navPublish',bindings.navPublish,Math.ceil(NAV_SIZE/64));
+ if(navPhase===0)pass(enc,'navInit',bindings.navInit,Math.ceil(NAV_SIZE/64));relaxNav(enc,32,navPhase===0,navPhase===15);navPhase=(navPhase+1)%16;if(navPhase===0)pass(enc,'navPublish',bindings.navPublish,Math.ceil(NAV_SIZE/64));
  pass(enc,'prepare',bindings.prepare,1,stamp(8,null));
  {const p=enc.beginComputePass({label:'bounded flesh and rubble rings'});p.setPipeline(compute.spawn);p.setBindGroup(0,bindings.spawn);p.dispatchWorkgroupsIndirect(spawnArgs,0);p.end();}
  for(let sub=0;sub<2;sub++){pass(enc,'integrate',bindings.integrate,Math.ceil(settings.pool/64));enc.clearBuffer(pHeads);pass(enc,'gridP',bindings.gridP,Math.ceil(settings.pool/64));pass(enc,'solve',bindings.solve,Math.ceil(settings.pool/64),sub===1?stamp(null,9):{});}
@@ -5247,6 +5267,7 @@ const startupCompute93=[
  ['navInit',()=>navInitShader,'init'],
  ['navRelax',()=>navRelaxShader,'relax'],
  ['navPublish',()=>navPublishShader,'publish'],
+ ['navCheck',()=>navCheckShader,'check'],
  ['civilians30',()=>civilians30Shader,'update'],
  ['crush30',()=>crush30Shader,'crush'],
  ['groupClear',()=>groupClearShader,'clear'],
@@ -5315,6 +5336,7 @@ async function main(){
  if(features.length){tsQuery=device.createQuerySet({type:'timestamp',count:12});tsResolve=buf('GPU timestamp resolve',256,GPUBufferUsage.QUERY_RESOLVE|GPUBufferUsage.COPY_SRC);tsRead=buf('GPU timestamp readback',96,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ);}
  Lights=storage('tiled point lights',64*32);LightTiles=storage('world light tile lists',256*9*4);
  NavA=storage('navigation work A',NAV_SIZE*4);NavB=storage('navigation work B',NAV_SIZE*4);Groups=storage('authored structural supports and damage flags',GROUP_WORDS8*4,world.groups);Fracture=storage('bounded wake-on-break wreckage',F8.words*4,fractureData8(world));Props=storage('interactive props',MAX_PROPS*64,world.props);Chunks=storage('chunk dirty and face counts',CHUNK_COUNT*16);FaceCache=storage('occupied voxel face cache',FACE_CACHE_CAP*8);Faces=storage('visible world faces',MAX_FACES*48);faceArgs=storage('world face draw arguments',16,null,GPUBufferUsage.INDIRECT);
+ navArgs=storage('navigation dispatch arguments',12,new Uint32Array([0,1,1]),GPUBufferUsage.INDIRECT);
  faceOccupiedChunks=storage('world occupied chunk indices',MAX_PAGES*4);
  meshDirtyChunks=storage('occupied dirty chunk indices',CHUNK_COUNT*4);meshArgs=storage('dirty chunk dispatch arguments',12,new Uint32Array([0,1,1]),GPUBufferUsage.INDIRECT);
  });

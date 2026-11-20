@@ -90,3 +90,31 @@ test('accepted click hook is past readiness/help/choice guards and fires once',(
   vm.runInContext('var click=e=>{'+body.replace(/\}\);\s*$/,'')+'};',ctx);const e={preventDefault(){}};
   ctx.click(e);assert.equal(accepted,0);ctx.startup93.state.status='ready';ctx.settings.help=true;ctx.click(e);assert.equal(accepted,0);ctx.settings.help=false;ctx.playerValues[464]=1;ctx.click(e);assert.equal(accepted,0);ctx.playerValues[464]=0;ctx.click(e);ctx.click(e);assert.equal(accepted,1);
 });
+
+test('intervals and skipped callbacks belong to the preceding submission kind',()=>{
+  const {r}=clockRecorder();r.start();
+  const frame=(n,f,s,a)=>r.submit(n,f,0,1280,720,4,8192,true,false,73129,6,s,a,1048576,128);
+  frame(100,1,true,true);r.skip();frame(350,2,false,false);frame(366,3,true,false);frame(399,4,true,true);
+  const out=r.stop(), spans=out.intervalMsAfterSubmission;
+  assert.equal(out.skippedCallbacks,1);
+  assert.equal(spans.actor.n,1);assert.equal(spans.actor.p50,250);
+  assert.equal(spans.none.p50,16);assert.equal(spans.state.p50,33);
+  assert.deepEqual(Array.from(out.frames,row=>row[12]),['actor','none','state','actor']);
+  assert.equal(out.configuration.length,1);assert.equal(out.configuration[0].length,8);
+});
+
+test('actor timing separates queue-to-map and synchronous data copies',()=>{
+  const {r,at}=clockRecorder();r.start();at(100);
+  const submit=()=>r.submit(99,10,0,1280,720,4,8192,true,false,73129,6,true,true,1048576,128);
+  const read=submit();at(114);r.actorMapReady(read);at(121);const copyStart=r.actorCopyStart(read);at(124);r.actorCopied(read,copyStart);
+  const stale=submit();at(125);r.actorMapReady(stale);r.actorDiscarded(stale);
+  const mapFail=submit();r.actorFailed(mapFail);
+  const readFail=submit();at(130);r.actorMapReady(readFail);r.actorFailed(readFail);
+  const pending=submit();const out=r.stop();r.actorMapReady(pending);
+  assert.deepEqual(Array.from(out.actorReadbacks,row=>row.status),['copied','discarded','map-error','read-error','pending']);
+  assert.equal(out.actorReadbacks[0].actorBytes,1048576);assert.equal(out.actorReadbacks[0].propBytes,128);
+  assert.equal(out.actorReadbacks[0].submitToMapReadyMs,14);assert.equal(out.actorReadbacks[0].cpuCopyMs,3);
+  assert.equal(out.actorReadbacks[4].submitToMapReadyMs,null);assert.equal(out.actorTimingMs.submitToMapReady.n,3);
+  assert.equal(out.actorTimingMs.cpuCopy.n,1);assert.equal(out.actorTimingMs.cpuCopy.p50,3);
+  assert.equal(submit(),undefined); // callbacks outside capture cannot add records to previous runs
+});

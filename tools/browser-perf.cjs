@@ -22,15 +22,37 @@ function makeRecorder() {
     start(mode = 'frames') {
       if (active) throw Error('Stop the previous capture first');
       if (!['frames','gpu'].includes(mode)) throw Error('Use frames or gpu');
-      active = {mode, rows:[], skipped:0, gpu:[], nextPhase:0, nextFrame:0, pending:0, missed:0};
+      active = {mode, rows:[], actorReadbacks:[], skipped:0, gpu:[], nextPhase:0, nextFrame:0, pending:0, missed:0};
       last = undefined;
     },
     skip() { if (active) active.skipped++; },
-    submit(now, frame, phase, w, h, msaa, count, started, paused, seed, stage) {
+    submit(now, frame, phase, w, h, msaa, count, started, paused, seed, stage, sample = false, actor = false, actorBytes = 0, propBytes = 0) {
       if (started && this.playMs === null) this.playMs = performance.now();
       if (!active) return;
-      active.rows.push([now, last === undefined ? null : now-last, frame, phase, w, h, msaa, count, started, paused, seed, stage]);
+      const submittedMs = actor ? performance.now() : null;
+      active.rows.push([now, last === undefined ? null : now-last, frame, phase, w, h, msaa, count, started, paused, seed, stage, actor ? 'actor' : sample ? 'state' : 'none']);
       last = now;
+      if (!actor) return;
+      const read = {frame, actorBytes, propBytes, submittedMs, submitToMapReadyMs:null, cpuCopyMs:null, status:'pending'};
+      active.actorReadbacks.push(read);
+      return read;
+    },
+    actorMapReady(read) {
+      if (read) read.submitToMapReadyMs = performance.now() - read.submittedMs;
+    },
+    actorCopyStart(read) {
+      return read ? performance.now() : null;
+    },
+    actorCopied(read, startMs) {
+      if (!read) return;
+      read.cpuCopyMs = performance.now() - startMs;
+      read.status = 'copied';
+    },
+    actorDiscarded(read) {
+      if (read) read.status = 'discarded';
+    },
+    actorFailed(read) {
+      if (read?.status === 'pending') read.status = read.submitToMapReadyMs === null ? 'map-error' : 'read-error';
     },
     shouldStamp(frame, phase) {
       return active && active.mode === 'gpu' ? frame >= active.nextFrame && phase === active.nextPhase : frame%30===0;
@@ -59,12 +81,21 @@ function makeRecorder() {
       if (!active) throw Error('No capture in progress');
       if (active.pending) throw Error('GPU sample pending; stop after a frame without a pending sample');
       const r = active; active = null;
+      const intervals = {actor:[], state:[], none:[]};
+      for (let i=1; i<r.rows.length; i++) intervals[r.rows[i-1][12]].push(r.rows[i][1]);
+      const actorReadbacks = r.actorReadbacks.map(read=>({...read}));
       return {mode:r.mode, readyMs:this.readyMs, firstStartedSubmitMs:this.playMs,
         acceptedPlayMs:this.acceptedPlayMs,
         acceptedPlayToFirstSubmitMs:this.acceptedPlayMs===null||this.playMs===null?null:this.playMs-this.acceptedPlayMs,
         startupWork:this.startupWork.map(row=>({...row})), skippedCallbacks:r.skipped,
         intervalMs:stats(r.rows.slice(1).map(row=>row[1])),
-        configuration:[...new Set(r.rows.map(row=>JSON.stringify(row.slice(4))))].map(JSON.parse),
+        intervalMsAfterSubmission:Object.fromEntries(Object.entries(intervals).map(([kind, values])=>[kind, stats(values)])),
+        actorReadbacks,
+        actorTimingMs:{
+          submitToMapReady:stats(actorReadbacks.filter(read=>read.submitToMapReadyMs!==null).map(read=>read.submitToMapReadyMs)),
+          cpuCopy:stats(actorReadbacks.filter(read=>read.cpuCopyMs!==null).map(read=>read.cpuCopyMs)),
+        },
+        configuration:[...new Set(r.rows.map(row=>JSON.stringify(row.slice(4,12))))].map(JSON.parse),
         phaseCounts:Array.from({length:16},(_,phase)=>r.gpu.filter(s=>s.phase===phase).length),
         missedGpuSamples:r.missed, gpu:r.gpu, frames:r.rows};
     },
@@ -82,7 +113,12 @@ function instrument(source) {
     ["if(inFlight>=2){frameCallback=requestAnimationFrame(drawFrame);return;}", "if(inFlight>=2){perfAB.skip();frameCallback=requestAnimationFrame(drawFrame);return;}"],
     ["stampThisFrame=!!tsQuery&&!tsBusy&&!settings.paused&&playerValues[464]<.5&&frame%30===0;", "const phaseAB=navPhase;stampThisFrame=!!tsQuery&&!tsBusy&&!settings.paused&&playerValues[464]<.5&&perfAB.shouldStamp(frame,phaseAB);"],
     ["if(stampThisFrame){tsBusy=true;enc.resolveQuerySet", "if(stampThisFrame){perfAB.stamped(frame,phaseAB,audioSample);tsBusy=true;enc.resolveQuerySet"],
-    ["device.queue.submit([enc.finish()]);inFlight++;", "device.queue.submit([enc.finish()]);perfAB.submit(now,frame,phaseAB,width,height,renderSamples25,settings.zombies,settings.started,settings.paused,runSeed,stage);inFlight++;"],
+    ["device.queue.submit([enc.finish()]);inFlight++;", "device.queue.submit([enc.finish()]);const actorReadAB=perfAB.submit(now,frame,phaseAB,width,height,renderSamples25,settings.zombies,settings.started,settings.paused,runSeed,stage,sample,audioSample,audioCount9*ZOMBIE_BYTES13,audioProps9*64);inFlight++;"],
+    ["sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){return;}",
+      "sampleBuffer.mapAsync(GPUMapMode.READ).then(()=>{try{perfAB.actorMapReady(actorReadAB);if(sampleEpoch16!==runEpoch16||seedRequested||resetRequested){perfAB.actorDiscarded(actorReadAB);return;}"],
+    ["if(audioSample){audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));}",
+      "if(audioSample){const copyStartAB=perfAB.actorCopyStart(actorReadAB);audioZData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_OFFSET9,audioCount9*ZOMBIE_BYTES13)));audioPropData9.set(new Float32Array(sampleBuffer.getMappedRange(AUDIO_PROPS_OFFSET9,audioProps9*64)));perfAB.actorCopied(actorReadAB,copyStartAB);}"],
+    ["}).catch(e=>{readBusy=false;fail(e);});}", "}).catch(e=>{perfAB.actorFailed(actorReadAB);readBusy=false;fail(e);});}"],
     ["const t=new BigUint64Array(tsRead.getMappedRange());gpuMs=", "const t=new BigUint64Array(tsRead.getMappedRange());perfAB.timestamps(t);gpuMs="],
     ["}).catch(()=>{tsBusy=false;});}", "}).catch(()=>{perfAB.failedTimestamp();tsBusy=false;});}"],
     ["window.__TINY_READY__=true;frameCallback=requestAnimationFrame(drawFrame);", "perfAB.readyMs=performance.now();window.__TINY_READY__=true;frameCallback=requestAnimationFrame(drawFrame);"],

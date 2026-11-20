@@ -12,7 +12,13 @@ function makeRecorder() {
     return {n: sorted.length, p50:p(.50), p95:p(.95), p99:p(.99), worst:sorted.at(-1)};
   }
   return {
-    readyMs: null, playMs: null,
+    readyMs: null, playMs: null, acceptedPlayMs: null, startupWork: [],
+    acceptPlay() { if (this.acceptedPlayMs === null && this.playMs === null) this.acceptedPlayMs = performance.now(); },
+    async work(key, label, work) {
+      const startMs = performance.now(); let status = 'failed';
+      try { const value = await work(); status = 'completed'; return value; }
+      finally { const endMs = performance.now(); this.startupWork.push({key, label, startMs, endMs, durationMs:endMs-startMs, status}); }
+    },
     start(mode = 'frames') {
       if (active) throw Error('Stop the previous capture first');
       if (!['frames','gpu'].includes(mode)) throw Error('Use frames or gpu');
@@ -27,7 +33,7 @@ function makeRecorder() {
       last = now;
     },
     shouldStamp(frame, phase) {
-      return !!active && active.mode === 'gpu' && frame >= active.nextFrame && phase === active.nextPhase;
+      return active && active.mode === 'gpu' ? frame >= active.nextFrame && phase === active.nextPhase : frame%30===0;
     },
     stamped(frame, phase, hasActorRead) {
       if (!active || active.mode !== 'gpu') return;
@@ -53,7 +59,10 @@ function makeRecorder() {
       if (!active) throw Error('No capture in progress');
       if (active.pending) throw Error('GPU sample pending; stop after a frame without a pending sample');
       const r = active; active = null;
-      return {mode:r.mode, readyMs:this.readyMs, firstStartedSubmitMs:this.playMs, skippedCallbacks:r.skipped,
+      return {mode:r.mode, readyMs:this.readyMs, firstStartedSubmitMs:this.playMs,
+        acceptedPlayMs:this.acceptedPlayMs,
+        acceptedPlayToFirstSubmitMs:this.acceptedPlayMs===null||this.playMs===null?null:this.playMs-this.acceptedPlayMs,
+        startupWork:this.startupWork.map(row=>({...row})), skippedCallbacks:r.skipped,
         intervalMs:stats(r.rows.slice(1).map(row=>row[1])),
         configuration:[...new Set(r.rows.map(row=>JSON.stringify(row.slice(4))))].map(JSON.parse),
         phaseCounts:Array.from({length:16},(_,phase)=>r.gpu.filter(s=>s.phase===phase).length),
@@ -66,6 +75,8 @@ function instrument(source) {
   if (source.includes('__tinyPerf')) throw Error('Already instrumented');
   const eol = source.includes('\r\n') ? '\r\n' : '\n';
   const edits = [
+    ["if(completedBoundary15)return;if(!settings.started){settings.started=true;", "if(completedBoundary15)return;if(!settings.started){perfAB.acceptPlay();settings.started=true;"],
+    ["const value=await work();guard();done.add(key);", "const value=await perfAB.work(key,label,work);guard();done.add(key);"],
     ["const params=new URLSearchParams(location.search);", "const params=new URLSearchParams(location.search);" + eol +
       "const perfAB=window.__tinyPerf=("+makeRecorder.toString()+")();"],
     ["if(inFlight>=2){frameCallback=requestAnimationFrame(drawFrame);return;}", "if(inFlight>=2){perfAB.skip();frameCallback=requestAnimationFrame(drawFrame);return;}"],
@@ -95,3 +106,4 @@ if (require.main === module) {
 }
 
 module.exports = {instrument, makeRecorder};
+

@@ -7,7 +7,7 @@ async function boot(search,adaptive=false){
  const calls=[],steps=[],bindings=[];
  const proxy=new Proxy(()=>proxy,{get:(_,k)=>k===Symbol.toPrimitive?()=>0:k==='then'?undefined:proxy});
  const gpuDevice={createRenderPipelineAsync:async desc=>{calls.push([desc.vertex.entryPoint,desc.multisample?.count??1]);return desc;},
-  createSampler:()=>proxy,createTexture:()=>proxy,addEventListener(){},lost:{then(){}},pushErrorScope(){}};
+  createSampler:()=>proxy,createTexture:()=>proxy,addEventListener(){},lost:{then(){}},pushErrorScope(){},popErrorScope:async()=>null};
  const adapter={features:new Set(),requestDevice:()=>gpuDevice};
  const navigator={gpu:{requestAdapter:()=>adapter,getPreferredCanvasFormat:()=>'rgba8unorm'}};
  const ctx=vm.createContext({console,performance,URLSearchParams,location:{search},window:{addEventListener(){}},document:proxy,

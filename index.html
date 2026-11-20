@@ -4258,21 +4258,33 @@ function createWorldPipeline25(module,faces,samples){
 function worldGeometryBinding25(pipeline,geometry){
  return bg(pipeline,[[0,U],[1,S],[2,geometry],[3,Paint],[4,shadowTexture],[5,shadowSampler],[6,Lights],[7,LightTiles]]);
 }
-async function ensureNoMSAA25(){
- if(!renderPipeline1){
-  renderPipeline1=await createWorldPipeline25(renderModule25,false,1);
-  facePipeline1=await createWorldPipeline25(renderModule25,true,1);
-  renderBG1=worldGeometryBinding25(renderPipeline1,Boxes);
-  faceBG1=worldGeometryBinding25(facePipeline1,Faces);
+let noMSAAPending25=null;
+function activateNoMSAA25(){
+ if(!stopped&&QUALITY_TIERS25[qualityTier25].msaa===1&&renderSamples25!==1){
+  renderSamples25=1;width=0;diagnostics.quality.actualMsaa=1;
  }
- if(QUALITY_TIERS25[qualityTier25].msaa===1&&renderSamples25!==1){renderSamples25=1;width=0;}
+}
+function ensureNoMSAA25(){
+ if(renderPipeline1&&facePipeline1&&renderBG1&&faceBG1){activateNoMSAA25();return;}
+ if(noMSAAPending25)return;
+ // Keep the active 4x renderer until both pipelines and both matching bindings exist.
+ noMSAAPending25=(async()=>{
+  const voxel=await createWorldPipeline25(renderModule25,false,1);
+  const faces=await createWorldPipeline25(renderModule25,true,1);
+  let voxelBG,facesBG;
+  device.pushErrorScope('validation');
+  try{voxelBG=worldGeometryBinding25(voxel,Boxes);facesBG=worldGeometryBinding25(faces,Faces);}
+  finally{const validation=await device.popErrorScope();if(validation)throw Error(validation.message);}
+  renderPipeline1=voxel;facePipeline1=faces;renderBG1=voxelBG;faceBG1=facesBG;
+  activateNoMSAA25();
+ })().catch(e=>diagnostics.notes.push('1x pipeline: '+e.message)).finally(()=>{noMSAAPending25=null;});
 }
 function applyQualityTier25(t,preparePipelines=true){
  qualityTier25=Math.max(0,Math.min(QUALITY_TIERS25.length-1,t));const tier=QUALITY_TIERS25[qualityTier25];
  settings.quality=params.has('q')?Math.max(.5,Math.min(1,+params.get('q')||1)):tier.q;
  if(params.get('msaa')==='1')tier.msaa=1;else if(params.get('msaa')==='4')tier.msaa=4;
- if(tier.msaa===1){if(preparePipelines&&renderSamples25!==1)ensureNoMSAA25().catch(e=>diagnostics.notes.push('1x pipeline: '+e.message));}else if(renderSamples25!==4){renderSamples25=4;width=0;}
- width=0;diagnostics.quality={tier:qualityTier25,scale:settings.quality,msaa:tier.msaa,locked:qualityLocked25};
+ if(tier.msaa===1){if(preparePipelines&&renderSamples25!==1)ensureNoMSAA25();}else if(renderSamples25!==4){renderSamples25=4;width=0;}
+ width=0;diagnostics.quality={tier:qualityTier25,scale:settings.quality,msaa:tier.msaa,actualMsaa:renderSamples25,locked:qualityLocked25};
 }
 function qualityGovernor25(elapsed){
  if(qualityLocked25||!settings.started||settings.paused||time<4||elapsed<=0)return;

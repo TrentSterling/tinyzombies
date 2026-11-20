@@ -4,10 +4,10 @@ const section=(from,to)=>{const a=html.indexOf(from),b=html.indexOf(to,a);assert
 function fixture(){
  const warnings=[],copies=[],errors=[],writes=[];
  const proxy=new Proxy(()=>proxy,{get:(_,k)=>k===Symbol.toPrimitive?()=>0:k==='then'?undefined:proxy});
- const settings={started:true,muted:true,zombies:2,paused:false,lab:true};
+ const settings={started:true,muted:true,zombies:2,zoom:34,paused:false,lab:true};
  const draw={save(){},restore(){},beginPath(){},stroke(){},ellipse(){},moveTo(){},lineTo(){}};
  const gpu={queue:{writeBuffer(...args){writes.push(args)},submit(){}},createCommandEncoder(){return {clearBuffer(){},finish(){}}}};
- const c=vm.createContext({Float32Array,Uint32Array,settings,audio:{state:'running'},hud2d30:draw,hudScale30:1,screenPoint:(x,z)=>[x,z],text:s=>warnings.push(s),textWidth9:()=>0,COL9:{},SANDBOX25:true,SURFACE_FIRE107:false,params:new URLSearchParams(),diagnostics:{audio:{}},MAX_Z:2,ZOMBIE_FLOATS13:32,ZOMBIE_BYTES13:128,MAX_PROPS:2,now:0,runSeed:1,
+ const c=vm.createContext({Float32Array,Uint32Array,settings,width:1280,height:720,right:[1,0,0],up:[0,.8,.6],audio:{state:'running'},hud2d30:draw,hudScale30:1,screenPoint:(x,z)=>[640+x,360+z],text:s=>warnings.push(s),textWidth9:()=>0,COL9:{},SANDBOX25:true,SURFACE_FIRE107:false,params:new URLSearchParams(),diagnostics:{audio:{}},MAX_Z:2,ZOMBIE_FLOATS13:32,ZOMBIE_BYTES13:128,MAX_PROPS:2,now:0,runSeed:1,
   world:{start:[0,0],buddy:[0,0],cellPoint:[0,0],occupiedChunkIds:[],doors7:[],propCount:1,navSeed:[0],initialZ13:null},device:gpu,bindings:proxy,L7:{team7:128,squad7:530,rules7:534,journey7:538,pace7:542},L12:{gear:546,mag:550,reserve:554,items:558,heal:562},L13:{botMag:566,botReserve:578,botItems:590,botLife:602,botStamina:614},BALANCE94:{guns:[{clip:8,reserve:30},{clip:4,reserve:12},{clip:6,reserve:10}]},carryMods:[0,0,0,0],stage:6,
   W:'W',S:'S',O:'O',Props:'Props',Groups:'Groups',Chunks:'Chunks',Fracture:'Fracture',C:'C',pA:'pA',pB:'pB',Paint:'Paint',WP:'WP',zHeads:'zHeads',pHeads:'pHeads',NavA:'NavA',NavB:'NavB',zA:'zA',zB:'zB',
   NAV_SIZE:1,PRESS_OFFSET:2,CHUNK_COUNT:4,keys:new Set(),mouse:{},enc:{copyBufferToBuffer(...args){copies.push(args)}},

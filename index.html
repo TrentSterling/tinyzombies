@@ -4688,9 +4688,23 @@ function helpArrow68(k){if(!hud2d30||!settings.started)return;const g=rescueGuid
  const t=g.label+' '+Math.round(bd)+'m',tx=ax-Math.cos(ang)*34*k,ty=ay-Math.sin(ang)*26*k;text(t,Math.max(6*k,Math.min(width-textWidth9(t,13*k)-6*k,tx-textWidth9(t,13*k)/2)),ty-6*k,13*k,COL9.gold);}
 function specialsHUD96(k){if(!hud2d30||!settings.started||actorSnapshotEpoch96!==runEpoch16)return;const c=hud2d30,s=hudScale30;c.save();c.lineWidth=3*k*s;
  for(let i=0;i<Math.min(MAX_Z,settings.zombies);i++){const o=i*ZOMBIE_FLOATS13;if(audioZData9[o+3]<=0)continue;const kind=audioZData9[o+10],x=audioZData9[o],z=audioZData9[o+2];if(Math.hypot(x-playerValues[0],z-playerValues[2])>24)continue;
-  if(kind===3&&audioZData9[o+23]===1&&audioZData9[o+22]>0){const [tx,ty]=screenPoint(audioZData9[o+24],audioZData9[o+25],.05);c.strokeStyle='#c8ff58';c.beginPath();c.ellipse(tx*s,ty*s,30*k*s,15*k*s,0,0,Math.PI*2);c.stroke();text('SPITTER: move out of the ring',tx-textWidth9('SPITTER: move out of the ring',12*k)/2,ty-30*k,12*k,COL9.gold);}
+  if(kind===3&&audioZData9[o+23]===1&&audioZData9[o+22]>0){spitterRingHUD96(c,s,k,audioZData9[o+24],audioZData9[o+25]);}
   if(kind===2&&audioZData9[o+19]>0){const [ax,ay]=screenPoint(x,z,.1),[bx,by]=screenPoint(x+audioZData9[o+20]*4.6,z+audioZData9[o+21]*4.6,.1);c.strokeStyle='#ff8764';c.beginPath();c.moveTo(ax*s,ay*s);c.lineTo(bx*s,by*s);c.stroke();text('BRUTE: sidestep the charge',ax-textWidth9('BRUTE: sidestep the charge',12*k)/2,ay-24*k,12*k,COL9.gold);}}
  c.restore();}
+function spitterRingHUD96(c,s,k,x,z){
+ // Match advanceSpit13's 71/64 m pool and the player damage check's .25 m padding.
+ // The orthographic camera's right and up ground rows are perpendicular, so the disk projects to an axis-aligned ellipse.
+ const radius=71/64+.25,px=radius*width/settings.zoom;
+ const [tx,ty]=screenPoint(x,z,0),rx=px*Math.hypot(right[0],right[2]),ry=px*Math.hypot(up[0],up[2]);
+ if(![tx,ty,rx,ry].every(Number.isFinite)||rx<=0||ry<=0)return;
+ const pad=1.5*k;
+ if(tx+rx+pad<0||tx-rx-pad>width||ty+ry+pad<0||ty-ry-pad>height)return;
+ c.strokeStyle='#c8ff58';c.beginPath();c.ellipse(tx*s,ty*s,rx*s,ry*s,0,0,Math.PI*2);c.stroke();
+ const label='SPITTER: move out of the ring',size=12*k,ly=ty-Math.max(30*k,ry+20*k),margin=4*k;
+ if(ly<0)return;
+ const tw=textWidth9(label,size);
+ text(label,Math.max(margin,Math.min(width-tw-margin,tx-tw/2)),ly,size,COL9.gold);
+}
 // Kill combo: kills less than 2.5 s apart chain; every 5 in the chain adds a multiplier (max x6) and each kill pays 10 x (mult-1) extra.
 // The chain shows under the score with a draining timer bar; new tiers get a campy announcer line.
 const combo69={n:0,chain:0,at:-9,mult:1,bonus:0,best:0,world:null,neighborlyAt:-Infinity},COMBO_LINES69=['','','Neighborly!','Block party!','Lawn massacre!','Cul-de-sac carnage!','H O A VIOLATION!'];

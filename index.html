@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap"><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><title>Tiny Zombies — NO ONE LEFT / V9 — QUIET HUD — BREAK THE WAY</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#0b1b22}canvas{display:block;width:100vw;height:100vh;outline:none;touch-action:none;cursor:default}#game.gameplay-aim{cursor:none}#hud2d{position:fixed;inset:0;pointer-events:none;z-index:1}#boot{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:center;padding:7vw;background:radial-gradient(ellipse at 30% 40%,#163039,#0b1b22 70%);color:#e1e9d2;font:500 17px/1.65 Rubik,'Segoe UI',system-ui,sans-serif;z-index:2}#boot h1{font:clamp(44px,9vw,120px)/1 Bangers,Impact,'Arial Black',sans-serif;letter-spacing:.03em;color:#f0f7ee;text-shadow:0 5px 0 #03090c,0 0 32px rgba(255,189,97,.25);margin:0 0 18px}#boot[hidden]{display:none}h1{letter-spacing:.06em;font-size:clamp(25px,5vw,60px);margin:0 0 12px}#boot p{max-width:780px;color:#9db5ac}textarea{width:min(100%,960px);height:38vh;background:#101d22;border:1px solid #39594e;color:#e8e7d5;font:13px/1.4 monospace;padding:18px;resize:vertical}noscript{position:absolute;inset:30px;color:white;font:22px monospace}
 #boot .loading93{width:min(100%,620px);margin:10px 0 22px}#boot .loading-meta93{display:flex;justify-content:space-between;gap:16px;margin-bottom:8px;font-variant-numeric:tabular-nums}#boot #boot-percent93{font:40px/1 Bangers,Impact,sans-serif;color:#b8ec76;letter-spacing:.04em}#boot #boot-count93{align-self:center;color:#9db5ac;font-size:14px}#boot .loading-track93{height:20px;border:2px solid #536b56;background:#061015;box-shadow:0 4px 0 #03090c;padding:3px}#boot #boot-fill93{height:100%;width:0;background:repeating-linear-gradient(110deg,#b8ec76 0 18px,#8fc958 18px 22px)}#boot .loading-note93{font-size:12px;margin:10px 0 0}#boot button{align-self:flex-start;background:#b8ec76;color:#101d22;border:0;box-shadow:0 4px 0 #03090c;padding:12px 20px;font:700 16px Rubik,system-ui,sans-serif;cursor:pointer}#boot button:focus-visible{outline:3px solid #f6d43a;outline-offset:4px}
@@ -11,6 +11,13 @@
    Finite pools and bounded neighbour queries are intentional safety limits, not exact rigid-body physics.
 */
 'use strict';
+// The boot screen and game can start on fallback fonts while this optional stylesheet loads.
+{
+ const fonts=document.createElement('link');
+ fonts.rel='stylesheet';
+ fonts.href='https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@500;700&display=swap';
+ document.head.appendChild(fonts);
+}
 const canvas=document.getElementById('game'), boot=document.getElementById('boot');
 const diagnostics={version:'Tiny Zombies / NO ONE LEFT / V9.1',errors:[],notes:[],audio:{pipeBeeps:0},startedAt:new Date().toISOString()};
 let stopped=false,device,adapter,context,inFlight=0;

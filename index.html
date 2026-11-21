@@ -3363,6 +3363,27 @@ const doors7Shader=COMMON+`
 @group(0) @binding(5) var<storage,read> H:array<u32>;
 @group(0) @binding(6) var<storage,read_write> E:array<Event>;
 `+EMIT+`
+// H was built from this Z snapshot before motion. Only an explicit close
+// press can request the exact slab check; regular attack pressure stays capped.
+fn closeHasZombie7(d:Prop)->bool {
+ let bound=d.aux.xz*.5+vec2f(footprint(6.0)+.00025);
+ let lo=clamp(vec2i(floor(d.p.xz-bound+HALF)),vec2i(0),vec2i(NG-1));
+ let hi=clamp(vec2i(floor(d.p.xz+bound+HALF)),vec2i(0),vec2i(NG-1));
+ let actorCount=min(u32(u.config.x),arrayLength(&Z));
+ var remaining=actorCount;
+ for(var cz=lo.y;cz<=hi.y;cz++){
+  for(var cx=lo.x;cx<=hi.x;cx++){
+   var it=H[u32(cx+NG*cz)];
+   while(it>0u){
+    // Valid bucket chains are disjoint. Fail closed if a bad link breaks that bound.
+    if(remaining==0u||it>actorCount){return true;}
+    remaining--;let j=it-1u;it=H[ZHEADS+j];let z=Z[j];
+    if(z.p.w>0.0&&all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(footprint(z.extraData.z)))){return true;}
+   }
+  }
+ }
+ return false;
+}
 @compute @workgroup_size(1) fn update(){
  if(u.clock.x<=0.0||S.goal.w>0.0||S.chooser.x>.5){return;}
  for(var i=u32(S.rules7.x);i<u32(S.rules7.x+S.rules7.y);i++){
@@ -3375,7 +3396,7 @@ const doors7Shader=COMMON+`
    for(var q=0u;q<16u&&it>0u&&checked<96u;q++){let j=it-1u;it=H[ZHEADS+j];checked++;let z=Z[j];if(z.p.w<=0.0){continue;}if(all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(footprint(z.extraData.z)))){occupied=true;}if(z.v.w>0.0&&all(abs(z.p.xz-d.p.xz)<d.aux.xz*.5+vec2f(.85))){attackers+=select(1u,6u,z.extraData.z==6.0);}}
   }}
   let press=u.controls.x>.5&&S.mission5.y==8.0&&u32(S.mission5.z)==i&&S.player7.x==0.0;
-  if(press&&d.more.y<.5){if(d.data.y<.5&&occupied){S.radio7=vec4f(0,2,5,0);atomicAdd(&C[82],1u);}else{d.data.y=1.0-d.data.y;atomicAdd(&C[76],1u);S.radio7=vec4f(0,1.5,select(6.0,7.0,d.data.y>.5),0);}}
+  if(press&&d.more.y<.5){if(d.data.y<.5&&(occupied||closeHasZombie7(d))){S.radio7=vec4f(0,2,5,0);atomicAdd(&C[82],1u);}else{d.data.y=1.0-d.data.y;atomicAdd(&C[76],1u);S.radio7=vec4f(0,1.5,select(6.0,7.0,d.data.y>.5),0);}}
   d.more.y=select(0.0,1.0,press);
   // Bots open a door only when moving through it, never autonomously close it.
   if(d.data.y>.5&&S.journey7.x>.5){for(var t=0u;t<3u;t++){let a=S.team7[t];let along=select(1u,0u,d.aux.x<d.aux.z);let offset=a.p.xz-d.p.xz;let dest=a.destination7.xz-d.p.xz;
